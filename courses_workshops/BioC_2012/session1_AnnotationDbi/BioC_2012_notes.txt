@@ -1,0 +1,145 @@
+annotation packages
+
+ls("package:hgu95av2.db")
+cols(hgu95av2.db)
+hgu95av2.db
+
+help("SYMBOL") # if that's a col of the db
+
+keytypes(hgu95av2.db) # similar to cols but might be shorter
+
+k <- head(keys(hgu95av2.db, keytype="PROBEID")) ## shows some of the keys
+
+select ( hgu95av2.db, keys=k, cols=c("SYMBOL", "GENENAME"), keytype="PROBEID")
+
+
+help(package='AnnotationDbi')
+
+http://www.bioconductor.org/packages/2.10/bioc/vignettes/AnnotationDbi/inst/doc/IntroToAnnotationPackages.R
+
+vignette exercises
+-----------------
+
+Exercise 1
+Display the OrgDb object for the org.Hs.eg.db package.
+
+library(org.Hs.eg.db)
+ls("package:org.Hs.eg.db")
+org.Hs.eg.db
+
+#Use the cols method to discover which sorts of annotations can be extracted from it. Is this the same as the result from the keytypes method? Use the keytypes method to find out.
+
+cols(org.Hs.eg.db)
+keytypes(org.Hs.eg.db)
+
+Use the keys method to extract UNIPROT identifiers and then pass those keys in to the select method in such a way that you extract the gene symbol and KEGG pathway information for each.
+
+up <- keys (org.Hs.eg.db, "UNIPROT")
+head(up)
+# [1] "P04217" "P01023" "F5H5R8" "P18440" "Q400J6" "A4Z6T7"
+
+temp <- select ( org.Hs.eg.db, keys=up, cols=c("SYMBOL","PATH"), keytype="UNIPROT")
+
+
+Exercise 2
+Display the TranscriptDb object for the TxDb.Hsapiens.UCSC.hg19.knownGene package.
+As before, use the cols and keytypes methods to discover which sorts of annotations can be extracted from it.
+Use the keys method to extract just a few gene identifiers and then pass those keys in to the select method in such a way that you extract the transcript ids and transcript starts for each.
+
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+TxDb.Hsapiens.UCSC.hg19.knownGene
+
+cols(TxDb.Hsapiens.UCSC.hg19.knownGene)
+keytypes(TxDb.Hsapiens.UCSC.hg19.knownGene)
+
+genenames <- head(keys( TxDb.Hsapiens.UCSC.hg19.knownGene, "GENEID"))
+
+geneinfo <- select ( TxDb.Hsapiens.UCSC.hg19.knownGene, keys=genenames, cols=c("TXID","TXSTART"), keytype="GENEID")
+
+
+txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
+# if a package is not available can use a function to do this from UCSC files that can save to a sql file or can save to a db package
+
+## can make certain chrs active or inaactive (by default it will be all of them).
+head(isActiveSeq(txdb))
+
+# If you then wanted to only set Chromosome 1 to be active you could do it like this:
+isActiveSeq(txdb)[seqlevels(txdb)] <- FALSE
+isActiveSeq(txdb) <- c("chr15"=TRUE)
+
+keys <- c("100033416", "100033417", "100033420")
+keytypes(txdb)
+# [1] "GENEID" "TXID" "TXNAME" "EXONID" "EXONNAME" "CDSID" "CDSNAME"
+select(txdb, keys = keys, cols="TXNAME", keytype="GENEID")
+
+cols <- c("TXNAME", "TXSTRAND", "TXCHROM")
+select(txdb, keys=keys, cols=cols, keytype="GENEID")
+
+
+GR <- transcripts(txdb)
+
+exons(txdb)
+cds(txdb)
+# microRNAs(txdb) # not installed
+# tRNAs(txdb) # not installed
+
+
+temp <- transcriptsBy( txdb, "gene")
+# GRangesList
+
+temp <- exonsBy( txdb, "gene")
+
+GR <- transcripts(txdb, vals <- list(tx_chrom = "chr15", tx_strand = "+"))
+
+### to see what's new in a package
+news(package="AnnotationDbi")
+
+
+library( VariantAnnotation)
+
+
+fl <- system.file("extdata", "chr22.vcf.gz", package="VariantAnnotation")
+(hdr <- scanVcfHeader(fl))
+info(hdr)[c("VT", "RSQ"),]
+
+
+vcf <- readVcf(fl, "hg19")
+## rowData is how to get at the positions
+head(rowData(vcf), 3)
+
+
+
+rowData(vcf) <- renameSeqlevels(rowData(vcf), c("22"="ch22"))
+
+# Discover whether SNPs are located in dbSNP:
+
+library(SNPlocs.Hsapiens.dbSNP.20101109)
+
+snpFilt <- dbSNPFilter("SNPlocs.Hsapiens.dbSNP.20101109")
+
+inDbSNP <- snpFilt(rowData(vcf), subset=FALSE)
+
+table(inDbSNP)
+
+
+
+metrics <- data.frame(inDbSNP=inDbSNP, RSQ=values(info(vcf))$RSQ)
+
+#Finally, visualize the data, e.g., using ggplot2 (Figure 1).
+
+
+makeOrganismPackage
+
+there is some kind of splice graph package
+library(ggplot2)
+ggplot(metrics, aes(RSQ, fill=inDbSNP)) +
+ geom_density(alpha=0.5) +
+ scale_x_continuous(name="MaCH / Thunder Imputation Quality") +
+ scale_y_continuous(name="Density") +
+ opts(legend.position="top")
+
+
+library(TxDb.Hsapiens.UCSC.hg19.ensGene)
+
+
+

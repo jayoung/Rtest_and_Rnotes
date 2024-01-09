@@ -1,0 +1,131 @@
+#####  resources
+
+https://r4ds.had.co.nz/
+
+https://rviews.rstudio.com/2017/06/08/what-is-the-tidyverse/
+
+http://www.storybench.org/getting-started-with-tidyverse-in-r/
+
+#####  general notes
+
+Higher-level consistency 
+ 
+tidy data - a data frame where each row is an observation and each column contains the value of a single variable
+
+or, said differently:
+  Variables make up the columns
+  Observations make up the rows
+  Values go into cells
+
+Variables can generally fit into three categories: 
+  fixed variables (characteristics that were known before the data were collected) (example - in a clinical trial, the setup - drug vs control vs placebo - is a fixed variable) 
+  measured variables (variables containing information captured during a study)
+  derived variables (variables created during the analysis process from other variables - e.g. taking a continuous blood pressure measurement and putting a threshold on it to classify as high/low)
+
+
+fixed variables versus measured variables:  example - in a clinical trial, the setup (drug vs control cs placebo) is a fixed variable. the measured things are obviously the other things.
+
+
+
+# Some Limitations
+The tidyverse, of course, is not without limitations. Some of these are due to factors that are beyond the designer’s control, and others may be by design. Limitations of the first kind may arise from a lack of agreement as to whether some data can be, or should be, forced into a “rectangular” data structure. For example, although there are scientists and data scientists working in genomics that are fans of dplyr and ggplot2, much of the work done in the Bioconductor Project remains outside of the tidyverse workflow.
+
+The need for the close coordination of tidyverse packages produces some limitations of the second sort. There are many high-quality R packages that are of great use to data scientists, but based on design goals that differ from those of the tidyverse. There will always be more than the tidyverse.
+
+
+# Lambda expression
+"in computer programming, also called anonymous function, a function (or a subroutine) defined, and possibly called, without being bound to an identifier"
+
+
+########## tidyverse programming concepts
+
+#### tibbles
+
+'tibble' is like a table but better. it is actually a 'key-value pair reference' (?)
+
+
+Tibbles are data.frames that are lazy and surly: they do less (i.e. they don’t change variable names or types, and don’t do partial matching) and complain more (e.g. when a variable does not exist). 
+it never changes the type of the inputs (e.g. it never converts strings to factors!), it never changes the names of variables, it only recycles inputs of length 1, and it never creates row.names(). You can read more about these features in the vignette,
+This forces you to confront problems earlier, typically leading to cleaner, more expressive code. Tibbles also have an enhanced print() method which makes them easier to use with large datasets containing complex objects. 
+
+as_tibble(iris)
+tibble(x = 1:5, y = 1, z = x ^ 2 + y)
+
+You can define a tibble row-by-row with tribble()   (short for transposed tibble)  tribble() is customised for data entry in code: column headings are defined by formulas (i.e. they start with ~), and entries are separated by commas. This makes it possible to lay out small amounts of data in easy to read form.
+
+It’s possible for a tibble to have column names that are not valid R variable names, aka non-syntactic names. For example, they might not start with a letter, or they might contain unusual characters like a space. To refer to these variables, you need to surround them with backticks, `:
+
+There are two main differences in the usage of a tibble vs. a classic data.frame: printing and subsetting.
+
+i <- as_tibble(iris)
+print (i)
+print (i, n=5)
+
+print (i, n=5, width=Inf)
+
+You can also control the default print behaviour by setting options:
+options(tibble.print_max = n, tibble.print_min = m)
+
+A final option is to use RStudio’s built-in data viewer to get a scrollable view of the complete dataset. This is also often useful at the end of a long chain of manipulations.
+
+df <- tibble(
+  x = runif(5),
+  y = rnorm(5)
+)
+
+# Extract by name
+df$x # returns a simple vector of numbers
+df[[1]]
+
+df[,"x"] # returns a dataframe - probably not what I want
+
+Compared to a data.frame, tibbles are more strict: they never do partial matching, and they will generate a warning if the column you are trying to access does not exist.
+
+as.data.frame(df)
+
+With base R data frames, [ sometimes returns a data frame, and sometimes returns a vector. With tibbles, [ always returns another tibble.
+
+
+#### the %>% operator
+
+the pipe operator, %>%, channels the flow of tidy operations. 
+
+?"%>%"
+
+
+# Basic use:
+iris %>% head
+
+# Use with lhs as first argument
+iris %>% head(10)
+
+# Using the dot place-holder
+"Ceci n'est pas une pipe" %>% gsub("une", "un", .)
+
+#### working through some exercises
+  df <- data.frame(abc = 1, xyz = "a")
+tb <- tibble(df)
+
+tb <- as_tibble(cars)
+
+
+annoying <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)
+
+plot(annoying$`1`, annoying$`2`)
+
+
+annoying$`3` <- annoying$`1` / annoying$`2`
+
+colnames(annoying) <- c("one","two","three")
+
+tibble::enframe(annoying)
+
+
+annoying <- tibble::enframe(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)
+

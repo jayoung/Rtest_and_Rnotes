@@ -1,0 +1,147 @@
+designed to mimic UCSC somewhat
+
+library(Gviz)
+
+library(GenomicRanges)
+
+data(cpgIslands)
+class(cpgIslands)
+
+
+chr <- as.character(unique(seqnames(cpgIslands)))
+
+gen <- genome(cpgIslands)
+
+atrack <- AnnotationTrack(cpgIslands, name = "CpG")
+
+plotTracks(atrack)
+
+gtrack <- GenomeAxisTrack()
+
+plotTracks(list(gtrack, atrack))
+
+itrack <- IdeogramTrack(genome = gen, chromosome = chr)
+
+plotTracks(list(itrack, gtrack, atrack))
+
+
+
+
+data(geneModels)
+grtrack <- GeneRegionTrack(geneModels, genome = gen, chromosome = chr, name = "Gene Model")
+plotTracks(list(itrack, gtrack, atrack, grtrack))
+
+
+## there is some way to set active chromosome. can also set chr in plotTracks
+
+
+## zoom
+
+plotTracks(list(itrack, gtrack, atrack, grtrack), from = 2.5e+07, to = 2.8e+07)
+
+
+
+set.seed(255)
+lim <- c(26463500, 26495000)
+coords <- sort(c(lim[1], sample(seq(from = lim[1], to = lim[2]), 99), lim[2]))
+
+dat <- runif(100, min = -10, max = 10)
+
+dtrack <- DataTrack(data = dat, start = coords[-length(coords)], end = coords[-1], chromosome = chr, genome = gen, name = "Uniform")
+
+plotTracks(list(itrack, gtrack, atrack, grtrack, dtrack), from = lim[1], to = lim[2])
+
+plotTracks(list(itrack, gtrack, atrack, grtrack, dtrack), from = lim[1], to = lim[2], type = "histogram")
+
+### this are grid-based graphics - hard to integrate with regular plotting
+
+
+
+grtrack <- GeneRegionTrack(geneModels, genome = gen, chromosome = chr, name = "Gene Model", showId = TRUE, background.title = "brown")
+
+head(displayPars(grtrack))
+
+## can set pars for specific tracks
+displayPars(grtrack) <- list(background.panel = "#FFFEDB")
+head(displayPars(grtrack))
+
+
+plotTracks(list(itrack, gtrack, atrack, grtrack), from = lim[1], to = lim[2])
+
+
+## setting pars within the plotTracks applies to every track
+plotTracks(list(itrack, gtrack, atrack, grtrack), from = lim[1] - 1000, to = lim[2], background.panel = "#FFFEDB", background.title = "darkblue")
+
+
+dp <- availableDisplayPars(grtrack)
+tail(dp)
+
+? GeneRegionTrack
+
+axisTrack <- GenomeAxisTrack()
+plotTracks(axisTrack, from = 1e+06, to = 9e+06)
+axisTrack <- GenomeAxisTrack(range = IRanges(start = c(2e+06, 4e+06), end = c(3e+06, 7e+06)))
+plotTracks(axisTrack, from = 1e+06, to = 9e+06)
+
+data(twoGroups)
+dTrack <- DataTrack(twoGroups, name = "uniform")
+plotTracks(dTrack)
+plotTracks(dTrack, type = c("boxplot", "a", "g"))
+plotTracks(dTrack, groups = rep(c("control", "treated"), each = 3), type = c("a", "p"))
+
+# mostly lattice-based, so help from that could be useful
+
+# try with legend=TRUE
+
+plotTracks(dTrack, groups = rep(c("control", "treated"), each = 3), type = c("a", "p"), legend=TRUE)
+
+
+dat <- sin(seq(pi, 10 * pi, len = 500))
+
+dTrack.big <- DataTrack(start = seq(1, 1e+05, len = 500), width = 15, chromosome = "chrX", genome = "hg19", name = "sinus", data = sin(seq(pi, 5 * pi, len = 500)) * runif(500, 0.5, 1.5))
+
+plotTracks(dTrack.big, type = "hist")
+
+plotTracks(dTrack.big, type = "hist", window = 50)
+
+### negative window value does not bin - smooths over a window. don't understand the difference
+plotTracks(dTrack.big, type = "hist", window = -1, windowSize = 2500)
+
+### a trivial transformation that cuts off everything below 0
+plotTracks(dTrack.big, type = "l", transformation = function(x) {
+    x[x < 0] <- 0
+    x
+})
+
+
+
+### alternative way to aggregate the groups
+plotTracks(dTrack, groups = rep(c("control", "treated"), each = 3), type = c("b"), aggregateGroups = TRUE)
+
+### or take max per group
+plotTracks(dTrack, groups = rep(c("control", "treated"), each = 3), type = c("b"), aggregateGroups = TRUE, aggregation = "max")
+
+
+aTrack <- AnnotationTrack(start = c(10, 40, 120), width = 15, chromosome = "chrX", strand = c("+", "*", "-"), id = c("Huey", "Dewey", "Louie"), genome = "hg19", name = "foo")
+plotTracks(aTrack)
+
+plotTracks(aTrack, shape = "box", showFeatureId = TRUE)
+
+plotTracks(aTrack, shape = "ellipse", showFeatureId = TRUE, fontcolor = "darkblue")
+
+
+
+aTrack.groups <- AnnotationTrack(start = c(50, 180, 260, 460, 860, 1240), width = c(15, 20, 40, 100, 200, 20), chromosome = "chrX", strand = rep(c("+", "*", "-"), c(1, 3, 2)), group = rep(c("Huey", "Dewey", "Louie"), c(1, 3, 2)), genome = "hg19", name = "foo")
+
+plotTracks(aTrack.groups, showId = TRUE)
+
+
+
+
+aTrack.stacked <- AnnotationTrack(start = c(50, 180, 260, 800, 600, 1240), width = c(15, 20, 40, 100, 500, 20), chromosome = "chrX", strand = "*", group = rep(c("Huey", "Dewey", "Louie"), c(1, 3, 2)), genome = "hg19", name = "foo")
+
+plotTracks(aTrack.stacked, showId = TRUE)
+
+## some kind of default to say that every feature must be at least 1 pixel wide, to make sure they're all visible.   min.width parameter.   also a collapse=TRUE/FALSE setting to determine how overlapping features are plotted.  see also mergeGroups
+
+## see end of vignette for plotting multiple chrs on same page - can do via grid or lattice methods

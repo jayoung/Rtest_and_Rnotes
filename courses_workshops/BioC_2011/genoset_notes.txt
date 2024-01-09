@@ -1,0 +1,47 @@
+extends eSet. (had ExpressionSet MultiSet SNPSet NChannelSet)  
+
+now GenoSet. has locData slot for probe locations (as RangedData - probe name, chr loc, perhaps GC content) as well as assayData, phenoData, featureData, universe (i.e. which genome we're on). Has ways to store big data out of memory (on disk)
+
+can subset a genoset using a RangedData object to get summaries for only parts of the genome
+	myGenoset[ myRD, ]
+quicker to look up regions if they're sorted.
+
+assayData can handle Rle
+
+genoPlot looks very useful.  dots and lines. whole chr, whole genome, etc.
+
+
+concept of boundingIndices - might want all probes within a gene but perhaps also the nearest two probes outside the gene if there aren't probes in the gene.
+
+easy to produce gene-by-gene summaries. fast.
+
+genoSet is kind of generic version of the class. 
+Some extended versions of genoSet class:  cnSet - one of them has to be cn, has some extra methods association, bafSet requires baf (B-allele frequency) and lrr (the copy number data - Illumina's name for it).
+
+cn is an accessor equivalent to exprs for cnSet
+
+most RangedData accessors work on genoSets, looking in the locData item
+
+(there's some fancy way to hook up emacs and R) 
+
+it matches up locData and assayData by names of rows
+
+chrInfo - first and last probes
+
+segmentation packages - several. GLAD. DNACopy. (another one)
+
+correct for GC before segmenting. effects in both array data and sequencing data too. correct individual samples using linear regression. See e.g. Lee et al 2010 cancer sequencing (lung, complete genomics)
+
+upcoming function to do this is called loadGC (?).  There's a GCcorrect function.
+
+look at Diskin paper to see optimal window size and wave size.
+
+might want to use genoPlot function on any old data
+
+learn about do.call with rbind to combine data frames
+
+BAF segmentation - Staaf et al 2008.  BAF is symmetric around 0.5, so can collapse bottom and top half of plot. Can ignore homozygous SNPs (best case you have matched normal so just throw away uniformative SNPs). Can then segment remaining values, as they'll be homogeneous by genomic region.   This approach does much better than using HMM on the genotype calls.
+
+netCDF and HDF5 big file access protocols.  GenoSet has ways to use these to access data.
+
+summaries across samples:  GISTIC looks at both frequency of change and amplitude of it. Beroukhim et al 2008 PNAS.  Might need ~50 samples to get stats.

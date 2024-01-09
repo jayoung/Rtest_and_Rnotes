@@ -1,0 +1,124 @@
+installed 
+BLAS http://www.netlib.org/blas/
+and GSL http://gnu.spinellicreations.com/gnu/gsl/
+(in ~/lib) and added to LD_LIBRARY_PATH
+
+may not need BLAS on Mac OS
+
+#######
+
+library(ChipSeq)
+library(ShortRead)
+
+data(ER)
+data(FOXA1)
+data (mapp)
+
+ls()
+# [1] "ER.E2"         "ER.ethl"       "FOXA1.INP"     "FOXA1.IP"     
+# [5] "jaspar"        "jaspar.scores" "mapp27"        "mapp36"       
+
+### ER.E2, ER.ethl, FOXA1.INP, FOXA1.IP are GenomeData objects with two chrs. Each is a list with two components, "+" and "-", each of which is a vector of integers (presumably start positions)
+
+metadata(FOXA1.IP)$organism <- "FOXA1 blah blah"
+
+### mapp36 and mapp27 are RangedData objects - ranges all with score 0. Presumambly these are the mappable regions.
+
+
+seg <- segmentReads(data=ER.E2, dataC=ER.ethl, mapp36)
+
+summary(seg)
+
+pics <- PICS(seg, dataType="TF")
+
+
+mu <- mu(pics)
+delta <- delta(pics)
+summary(delta)
+
+score <- score(pics)
+summary(score)
+
+
+hist(delta, xlim=c(0,500), 50)
+
+nEvents <- K(pics)
+table(nEvents)
+#   1   2 
+# 288  24 
+
+plot(pics[2], seg[2])
+
+
+# Filter atypical peaks
+myFilter<-list(score=c(4,Inf),delta=c(50,300),se=c(0,50), sigmaSqF=c(0,22500),sigmaSqR=c(0,22500))
+
+# Make a RangedData Object
+RD<-makeRangedDataOutput(pics, type="bed", filter=myFilter)
+
+RD<-as(pics,"RangedData")
+
+DF<-as(pics,"data.frame")
+
+# Filter atypical peaks
+myFilter<-list(score=c(1,Inf),delta=c(50,300),se=c(0,50),sigmaSqF=c(0,22500) ,sigmaSqR=c(0,22500))
+
+# Make a RangedData Object
+RDwig<-makeRangedDataOutput(pics, type="wig", filter=myFilter)
+
+
+segC<-segmentReads(data=ER.ethl, dataC=ER.E2, mapp36)
+picsC<-PICS(segC,dataType="TF")
+
+library(GenomeGraphs)
+
+# Here I use the current genome build
+mart = useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+
+genomeAxis<-makeGenomeAxis(add53 = TRUE, add35 = TRUE)
+
+RDwig1<-RDwig["chr21"]
+
+RD1<-RD["chr21"]  # RangedData, just the chr21 regions
+
+minbase<-start(RD1[2,])-500   #second region, with flanking
+maxbase<-start(RD1[2,])+500
+
+genesplus<-makeGeneRegion(start = minbase, end = maxbase, strand = "+", chromosome = 21, biomart = mart)
+genesmin<-makeGeneRegion(start = minbase, end = maxbase, strand = "-", chromosome = 21, biomart = mart)
+
+score = makeBaseTrack(value=score(RDwig1), base = start(RDwig1), dp = DisplayPars(lwd=2,color="black", type="h"))
+
+rectList<- makeRectangleOverlay(start = start(RD1), end = end(RD1), region = c(1, 4), dp = DisplayPars(color = "green", alpha = 0.1))
+
+gdPlot(list("score" = score, "Gene +" = genesplus, Position = genomeAxis, "Gene -" = genesmin), minBase = minbase, maxBase = maxbase, labelCex = 1, overlays=rectList)
+
+
+
+
+
+library(rGADEM)
+library(BSgenome.Hsapiens.UCSC.hg18)
+RDfixed<-makeRangedDataOutput(pics, type="fixed", filter=myFilter)
+ERgadem<-GADEM(RDfixed,seed=1,genome=Hsapiens,verbose=TRUE)
+
+
+
+
+library(MotIV)
+data(ERgadem)
+
+# Find the 5 best match in Jaspar.
+jaspar.match <- motifMatch(inputPWM = getPWM(ERgadem), top = 5)
+
+# Plot the motifs with their matches
+plot(jaspar.match , main = "Motifs in ER",top=5)
+
+
+Filter<-setFilter(name = "", tfname = "ESR1", top = 5, evalueMax = 10^-4)
+
+jaspar.match.ESR1<-filter(jaspar.match, Filter, verbose = TRUE)
+
+plot(jaspar.match.ESR1 , main = "ER motif",top=5)
+
+ERoc<-exportAsRangedData(jaspar.match.ESR1, ERgadem, correction=TRUE)

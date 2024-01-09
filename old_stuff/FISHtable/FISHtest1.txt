@@ -1,0 +1,19 @@
+				Expt #1	Expt #1	Expt #1	Expt #1
+				Humans	Humans	Tank	Individual4
+				HS1	HS2	Tank	Individual4
+probe1	terminal	1p	Norm'd	25	0	14	43
+probe1	terminal	1q	Norm'd	100	0	57	29
+probe1	terminal	2p	Norm'd	0	0	71	71
+probe1	terminal	2q	Norm'd	0	0	86	86
+probe1	pericen	7p11.2	Norm'd	0	0	100	100
+probe1	pericen	10p11.2	Norm'd	0	0	0	0
+probe1	other	1q41	Norm'd	0	0	0	0
+probe1	other	2q13-14	Norm'd	0	0	0	0
+probe2	terminal	1p	Norm'd	0	0	0	0
+probe2	terminal	1q	Norm'd	0	0	0	0
+probe2	terminal	2p	Norm'd	0	0	0	0
+probe2	terminal	2q	Norm'd	0	0	0	0
+probe2	pericen	7p11.2	Norm'd	17	50	0	0
+probe2	pericen	10p11.2	Norm'd	67	33	0	0
+probe2	other	1q41	Norm'd	83	83	0	0
+probe2	other	2q13-14	Norm'd	100	100	0	0

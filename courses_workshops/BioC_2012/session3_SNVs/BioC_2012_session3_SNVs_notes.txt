@@ -1,0 +1,38 @@
+
+### gmapR - can access most of GMAP and GSNAP suite inside R.  Can also do many of these things on the command line
+
+### GSNAP SNP tolerant aligner (include known SNP annotation), allows splicing, can use splice annotation and find novel splices
+
+
+can now use yieldSize arg on bamfile/scanBam to get first 100 (or whatever) reads
+
+applyPileups  gets info about particular positions in bam file
+PileupParam
+
+common SNP-calling methods rely on assumptions e.g. diploid, with 50-50 freqs
+
+GATK assumes only two haplotypes
+
+begin by calling variants, don't try to make het/hom call (genotype call)
+
+also special methods for comparing two samples
+
+artefacts:
+
+RNAseq:  cDNA made using random hexamers, so introduce changes in first and last 6bp
+
+some variants introduced by mismapping to paralogous locations, especially if there are SNPs 
+
+ghost variants only seen in reads from one strand even if coverage is good on both strands
+
+
+typical pipeline:
+- only uniquely mapped reads (tolerance for secondary maych - 2 mismatch)
+- mapq < 13 filter
+- alleles must have >= 2 reads, one of q>22
+- alleles must be supported by multiple reads in multiple different positions per read (does bias against calling SNPs near start/end of transcript)
+- fisher exact test to look for strand bias of alternate allele
+- remove variants only seen iin first or last 10% of any read
+- variants with <4% reads as non-reference filtered out
+
+another method:   varScan2 (a couple of additional filters)

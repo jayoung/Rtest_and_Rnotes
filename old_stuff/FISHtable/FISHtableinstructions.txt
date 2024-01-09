@@ -1,0 +1,19 @@
+1. output a data table (or several) from Quantrix/Excel, save each as tab-delimtied text. Only one table per file.
+
+2. transfer to fred/bedrock, ensure line breaks are in unix format
+
+3. (optional) make a file called probecolors.txt specifying the colors for some or all of the probes. this file is tab-delimited and looks something like this:
+-----------
+probe1	red
+probe2	skyblue
+-----------
+R provides many many colors - see this file for the full list:
+/home/btrask/traskdata/lib/R/doc/Rcolors.txt
+
+
+4. run the script on one or more data table:
+plotFishTable.pl FISHtest1.txt FISHtest2.txt
+Output files are in postscript format
+FISHtest1.txt.balloonplot.ps   FISHtest2.txt.balloonplot.ps
+
+(we can modify plot sizes etc if the table looks too small/big)

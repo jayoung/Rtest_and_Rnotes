@@ -1,0 +1,41 @@
+#### don't use iplots directly. use from JGR interface to R instead (or Rstudio?)
+
+library(iplots)
+
+??iplots
+
+?iplot
+
+data(iris)
+attach(iris)
+iplot(Sepal.Width,Petal.Width)
+
+## or
+cyl.f <- factor(mtcars$cyl)
+gear.f <- factor(mtcars$factor) 
+attach(mtcars) 
+ihist(mpg) # histogram 
+ibar(carb) # barchart
+iplot(mpg, wt) # scatter plot
+ibox(mtcars[c("qsec","disp","hp")]) # boxplots 
+ipcp(mtcars[c("mpg","wt","hp")]) # parallel coordinates
+imosaic(cyl.f,gear.f) # mosaic plot
+
+
+### could also try:
+# playwith R package
+# rggobi R package (or just GGobi program)
+# Rcmdr R package
+
+###   example data not provided for this:
+
+mydata <- data.frame(x=rnorm(10), y=rnorm(10) )
+rownames(mydata) <- paste("dat",1:10,sep="")
+
+attach(mydata)
+
+plot(x, y) # scatterplot
+identify(x, y, labels=row.names(mydata)) # identify points as they are left-clicked by adding labels to the plot
+## terminate the identification by clicking any other mouse button than left
+coords <- locator(type="l") # draws lines on the plot and also records positions of vertices
+coords # display list

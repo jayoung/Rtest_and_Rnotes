@@ -1,3 +1,13 @@
+##### my .gitignore stuff
+extdata
+StudentGWAS
+*RData
+
+# wierd mac files:
+._*
+.DS_Store
+
+##### template .gitignore for R:
 # History files
 .Rhistory
 .Rapp.history

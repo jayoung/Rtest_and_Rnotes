@@ -1,0 +1,29 @@
+Actually, it's not so hard.
+
+Say you have a TranscriptDb object from e.g. makeTranscriptDbFromUCSC(),
+then you can just get the transcripts:
+
+tx <- transcripts(txdb, columns = "gene_id")
+
+And match the SNPs to them:
+
+values(snps)$gene_id <- values(tx)$gene_id[match(snps, tx)]
+
+Your SNPs should be a GRanges, RangedData or RangesList.
+
+
+snps$gene_id <- values(tx)$gene_id[match(snps, tx)]
+
+
+
+library(GenomicFeatures)
+
+txdb1 <- makeTranscriptDbFromUCSC(genome="sacCer2", tablename="ensGene")
+txdb1
+
+tx <- transcripts(txdb1, columns = "gene_id")
+
+
+snps <- GRanges (seqnames=c("chrI","chrI"),IRanges(start=c(400,10100),width=1),SNPnames=c("snp1","snp2"))
+
+values(tx)$gene_id[match(snps, tx)]

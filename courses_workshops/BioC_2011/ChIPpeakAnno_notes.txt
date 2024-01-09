@@ -1,0 +1,36 @@
+PeakLocForDistance = c("start", "middle", "end"), 
+FeatureLocForDistance = c("TSS", "middle","start", "end","geneEnd"))
+     
+     
+these parameters are for selecting the overlapping regions, not for the report. There's lots more types of distance in the output.  Can also use overlapping with maxgap function.
+
+
+annotatedPeak[1:2,]
+RangedData with 2 rows and 9 value columns across 1 space
+                                space             ranges |         peak
+                             <factor>          <IRanges> |  <character>
+1_14_1269014 ENSG00000169962        1 [1270239, 1270339] | 1_14_1269014
+1_11_1041174 ENSG00000131591        1 [1041646, 1041746] | 1_11_1041174
+                                  strand         feature start_position
+                             <character>     <character>      <numeric>
+1_14_1269014 ENSG00000169962           + ENSG00000169962        1266694
+1_11_1041174 ENSG00000131591           - ENSG00000131591        1017198
+                             end_position insideFeature distancetoFeature
+                                <numeric>   <character>         <numeric>
+1_14_1269014 ENSG00000169962      1270686        inside              3545
+1_11_1041174 ENSG00000131591      1051741        inside             10095
+                             shortestDistance fromOverlappingOrNearest
+                                    <numeric>              <character>
+1_14_1269014 ENSG00000169962              347             NearestStart
+1_11_1041174 ENSG00000131591             9995             NearestStart
+
+shortestDistance always absolute
+distancetoFeature gives upstream or downstream
+
+default option usually the first of the list of options
+
+significance of overlaps by hypergeometric tests.
+
+GO tests are hypergeometric with multtest
+
+FAQ site very useful

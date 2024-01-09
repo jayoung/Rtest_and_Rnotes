@@ -1,0 +1,13 @@
+			Humans	Humans	Humans	Humans	Humans	Humans	Humans	Humans	Humans	Tank	Tank	Tank	Individual4	Individual4	Individual4
+			HS1	HS1	HS1	HS2	HS2	HS2	HS3	HS3	HS3	Tank	Tank	Tank	Individual4	Individual4	Individual4
+			Expt #1	Expt #1	Expt #1	Expt #1	Expt #1	Expt #1	Expt #1	Expt #1	Expt #1	Expt #1	Expt #1	Expt #1	Expt #1	Expt #1	Expt #1
+			probe1	probe2	probe3	probe1	probe2	probe3	probe1	probe2	probe3	probe1	probe2	probe3	probe1	probe2	probe3
+terminal	1p	Norm'd	25	0			0					14			43		
+terminal	1q	Norm'd	100	0			0					57			29		
+terminal	2p	Norm'd	0	0			0					71			71		
+terminal	2q	Norm'd	0	0			0					86			86		
+pericen	7p11.2	Norm'd	0	17			50					100			100		
+pericen	10p11.2	Norm'd	0	67			33					0			0		
+other	1q41	Norm'd	0	83			83					0			0		
+other	2q13-14	Norm'd	0	100			100					0			0		
+Max of chr_loc	Max of chr_loc	Norm'd	100	100			100					100			100		

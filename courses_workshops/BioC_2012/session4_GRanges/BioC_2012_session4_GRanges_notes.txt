@@ -1,0 +1,46 @@
+library(RangesRNAseqTutorial)
+
+
+help(package="RangesRNAseqTutorial")
+
+end of tutorial looks at junction counts
+
+leeBamViews data = yeast, two WT, two RLP mutants 36bp single-end reads, bam files extracted to contain just certain region of chrXIII 
+one weirdness of different versions of sacCer2 UCSC versus BioC package - one chr is 1bp different length?!?!?!
+
+readGappedAlignments is workhorse - gives GappedAlignment
+
+need to use grglist to do overlap computations - gives a GRangesList
+
+plot(hist(width(reads_ga)))
+
+table(width(reads_ga))
+
+head(cigar(reads_ga))
+
+head(table(cigar(reads_ga)))
+
+
+fragment length can cause some big bias.  coverage at ends can be reduced (edge effects) problematic for short genes.  probability of hitting various portions of gene depends on fragment length.
+
+
+ALDOA data:  ALDOA gene, tumor and normal matched bam files, 75mer paired end
+
+
+### class to deal with paired ends:
+readGappedAlignmentPairs
+
+first(x) last(x) ### by order in bam file
+left(x) right(x) ### by position in genome
+grglist(x) # grouped by read pair
+introns(x)
+
+
+
+
+#### isoform counting
+
+compatibility and uniquenesss
+
+compatible = agrees completely with annotated gene model
+unique = agrees completely with only one annotated gene model

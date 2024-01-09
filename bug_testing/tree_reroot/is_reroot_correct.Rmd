@@ -1,0 +1,77 @@
+---
+title: "test_reroot2"
+author: "Janet Young"
+date: "`r Sys.Date()`"
+output: github_document
+always_allow_html: true
+---
+```{r setup, include=FALSE}
+library(ape)
+library(ggtree)
+library(tidyverse)
+```
+
+this is code where I try to understand whether the re-rooting is done CORRECTLY
+
+get an unrooted tree:
+```{r}
+data(woodmouse)
+woodmouse_tree <- nj(dist.dna(woodmouse))
+   # 15 tips, 13 internal nodes
+```
+
+
+woodmouse_tree has `r Ntip(woodmouse_tree)` tips, and `r Nnode(woodmouse_tree)` internal nodes
+
+the 'basal' node is node 16 and it has 4 descendents
+
+```{r}
+woodmouse_tree %>% as_tibble() %>% count(parent)
+```
+
+
+```{r}
+woodmouse_tree %>% as_tibble() %>% filter(parent==16)
+```
+
+Add fake node labels
+
+```{r}
+woodmouse_tree$node.label <- paste("node_", 1:Nnode(woodmouse_tree), sep="")
+```
+
+
+```{r look at it ggtree}
+options(ignore.negative.edge=TRUE)
+woodmouse_tree %>% 
+    ggtree() +
+    geom_tiplab() +
+    geom_nodelab() +
+    labs(title="original NJ tree")
+```
+
+## reroot woodmouse_tree
+
+this is the bit where I think `root(treedata)` would have screwed up the node labels before. `root(phylo)` is fine though
+
+```{r}
+newRoot <- MRCA(woodmouse_tree, c("No1007S","No1103S"))
+# numericID 23. I can see from the plot above it's node_8
+
+woodmouse_tree_reroot <- root(woodmouse_tree, 
+     node=MRCA(woodmouse_tree, c("No1007S","No1103S")) )
+ 
+options(ignore.negative.edge=TRUE)
+woodmouse_tree_reroot %>% 
+    ggtree() +
+    geom_tiplab() +
+    geom_nodelab() +
+    labs(title="rerooted NJ tree")
+
+```
+
+
+## with MY data
+
+
+

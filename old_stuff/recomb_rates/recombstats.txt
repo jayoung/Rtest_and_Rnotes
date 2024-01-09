@@ -1,0 +1,191 @@
+rat Jun03, anyORs (yes or no), RecombSHRSPxBN
+
+summary(recORno)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.2340  0.5041  0.5817  0.8294  3.8900 
+summary(recORyes)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.2713  0.4708  0.5221  0.6891  1.6200 
+ 
+ > wilcox.test(RecombSHRSPxBN ~ anyORs,data=ratrec)
+
+	Wilcoxon rank sum test with continuity correction
+
+data:  RecombSHRSPxBN by anyORs 
+W = 161204, p-value = 0.2391
+alternative hypothesis: true mu is not equal to 0 
+
+> wilcox.test(recORyes5ormore,recORyesno4orless)
+
+	Wilcoxon rank sum test with continuity correction
+
+data:  recORyes5ormore and recORyesno4orless 
+W = 74710.5, p-value = 0.1071
+alternative hypothesis: true mu is not equal to 0 
+> summary(recORyes5ormore)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.2168  0.4653  0.4945  0.6996  1.6200 
+> summary(recORyesno4orless)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.2341  0.5042  0.5811  0.8273  3.8900 
+
+
+> wilcox.test(recORyesF,recORnoF)
+
+	Wilcoxon rank sum test with continuity correction
+
+data:  recORyesF and recORnoF 
+W = 139158.5, p-value = 0.1264
+alternative hypothesis: true mu is not equal to 0 
+> summary(recORyesF)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.2734  0.4990  0.5403  0.7427  2.1910 
+> summary(recORnoF)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.2784  0.5417  0.6060  0.8440  3.1190 
+
+
+> wilcox.test(recORyes5ormoreF,recORyesno4orlessF)
+
+	Wilcoxon rank sum test with continuity correction
+
+data:  recORyes5ormoreF and recORyesno4orlessF 
+W = 79669, p-value = 0.426
+alternative hypothesis: true mu is not equal to 0 
+> summary(recORyes5ormoreF)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.3056  0.4691  0.5570  0.7829  2.1910 
+> summary(recORyesno4orlessF)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.2784  0.5389  0.6042  0.8384  3.1190 
+ 
+ 
+ human May 04
+ ------------
+DeCode sex-averaged recombination
+
+ > wilcox.test(decodeavgORyes,decodeavgORno)
+
+	Wilcoxon rank sum test with continuity correction
+
+data:  decodeavgORyes and decodeavgORno 
+W = 138731, p-value = 0.2848
+alternative hypothesis: true mu is not equal to 0 
+
+> summary(decodeavgORyes)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   0.478   1.012   1.205   1.811   6.989 
+> summary(decodeavgORno)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.6196  1.0630  1.2960  1.7350  8.4550 
+
+
+> wilcox.test(decodeavgORyes5ormore,decodeavgORyesno4orless)
+
+	Wilcoxon rank sum test with continuity correction
+
+data:  decodeavgORyes5ormore and decodeavgORyesno4orless 
+W = 45595, p-value = 0.2339
+alternative hypothesis: true mu is not equal to 0 
+
+> summary(decodeavgORyesno4orless)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.6173  1.0600  1.2950  1.7360  8.4550 
+> summary(decodeavgORyes5ormore)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.4373  1.0310  1.0630  1.7210  2.7330 
+
+
+
+> summary(hapmapORno)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   0.104   0.315   1.419   1.002  94.560 
+> summary(hapmapORyes)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   0.055   0.280   1.214   0.999  39.340 
+  > hist(hapmapORyes,xlab="RecombRateHapMap",main="HumMay04, Recombination rate in bins with ORs",breaks=c(
+0,1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90,100),ylim=c(0,0.1),xlim=c(0,40),plot=FALSE)
+$breaks
+ [1]   0   1   2   3   4   5   6   7   8   9  10  20  30  40  50  60  70  80  90
+[20] 100
+$counts
+ [1] 597  66  51  31  11   5   9   5   3   1  18   1   1   0   0   0   0   0   0
+
+
+> wilcox.test(hapmapORno,hapmapORyes)
+
+	Wilcoxon rank sum test with continuity correction
+
+data:  hapmapORno and hapmapORyes 
+W = 659124075, p-value = 7.909e-07
+alternative hypothesis: true mu is not equal to 0 
+
+
+> hist(binsizes,breaks=breakvector,xlim=c(0,20000),main="Bin sizes in HapMap recombination data, bp",plot=FALSE)
+$breaks
+ [1]      0    500   1000   1500   2000   3000   4000   5000  10000  15000  20000  25000
+[13]  30000  50000 100000 200000 400000
+
+$counts
+ [1] 172201 114918  97632  88977 165907 133016 103002 137667   9094   1551    445    211
+[13]    326    172     52     15
+
+
+
+> summary(perlrec[,"RecombRatePerlegen"])
+    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+  0.0000   0.0761   0.2883   1.4520   1.0310 102.6000 
+> summary(perlORno)
+    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+  0.0000   0.0761   0.2884   1.4520   1.0310 102.6000 
+> summary(perlORyes)
+    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+ 0.00020  0.03238  0.20610  1.08500  0.83340 43.73000 
+> wilcox.test(perlORyes,perlORno)
+
+        Wilcoxon rank sum test with continuity correction
+
+data:  perlORyes and perlORno 
+W = 799482664, p-value = 2.525e-11
+alternative hypothesis: true mu is not equal to 0 
+
+
+
+
+re-did Perlegen and HapMap datasets so that only one bin is counted as positive for each OR, to make data points more independent.
+
+> summary(perl1ORno)
+    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+  0.0000   0.0761   0.2884   1.4520   1.0310 102.6000 
+> summary(perl1ORyes)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0002  0.0363  0.2113  1.1530  0.8367 43.7300 
+ > hist(perlORyes,xlab="RecombRatePerlegen",main="HumMay04, Recombination rate in bins with ORs",breaks=c(0,1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90,100),ylim=c(0,0.1),xlim=c(0,40),plot=FALSE)
+$breaks
+ [1]   0   1   2   3   4   5   6   7   8   9  10  20  30  40  50  60  70  80  90
+[20] 100
+$counts
+ [1] 592  66  31  20  15  11   4   8   7   1  12   2   0   1   0   0   0   0   0
+
+> wilcox.test(perl1ORno,perl1ORyes)
+
+        Wilcoxon rank sum test with continuity correction
+
+data:  perl1ORno and perl1ORyes 
+W = 672795900, p-value = 6.645e-07
+alternative hypothesis: true mu is not equal to 0 
+
+
+> summary(hapmap1ORno)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   0.104   0.315   1.419   1.002  94.560 
+> summary(hapmap1ORyes)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.0545  0.2770  1.2200  1.0180 39.1600 
+> wilcox.test(hapmap1ORno,hapmap1ORyes)
+
+        Wilcoxon rank sum test with continuity correction
+
+data:  hapmap1ORno and hapmap1ORyes 
+W = 442602080, p-value = 6.625e-05
+alternative hypothesis: true mu is not equal to 0 

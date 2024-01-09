@@ -1,0 +1,708 @@
+rank	name	box	date
+1	Titanic	$600.788	December 19, 1997
+2	Star Wars: Episode IV - A New Hope	$460.998	May 25, 1977
+3	Shrek 2	$436.721	May 19, 2004
+4	E.T. the Extra-Terrestrial	$433.005	June 11, 1982
+5	Star Wars: Episode I - The Phantom Menace	$431.088	May 19, 1999
+6	Spider-Man	$407.681	May 3, 2002
+7	Star Wars: Episode III - Revenge of the Sith	$380.262	May 19, 2005
+8	The Lord Of The Rings: The Return of The King	$377.027	December 17, 2003
+9	Spider-Man 2	$373.378	June 30, 2004
+10	The Passion of the Christ	$370.500	February 25, 2004
+11	Jurassic Park	$357.067	June 11, 1993
+12	The Lord Of The Rings: The Two Towers	$340.655	December 18, 2002
+13	Finding Nemo	$339.714	May 30, 2003
+14	Forrest Gump	$329.693	July 4, 1994
+15	The Lion King	$328.538	June 15, 1994
+16	Harry Potter and the Sorcerers Stone	$317.575	November 16, 2001
+17	The Lord Of The Rings: Fellowship of The Ring	$314.163	December 19, 2001
+18	Star Wars: Episode II - Attack Of The Clones	$310.675	May 16, 2002
+19	Star Wars: Episode VI - Return Of The Jedi	$309.206	May 25, 1983
+20	Independence Day	$306.169	July 3, 1996
+21	Pirates of the Caribbean: The Curse of the Black Pearl	$305.413	July 9, 2003
+22	The Sixth Sense	$293.506	August 6, 1999
+23	Star Wars: Episode V - The Empire Strikes Back	$290.272	May 21, 1980
+24	Home Alone	$285.761	November 16, 1990
+25	Harry Potter and the Goblet of Fire	$284.361	November 18, 2005
+26	The Matrix Reloaded	$281.519	May 15, 2003
+27	Meet the Fockers	$279.167	December 22, 2004
+28	Shrek	$267.665	May 18, 2001
+29	The Chronicles of Narnia: The Lion, The Witch and The Wardrobe	$265.073	December 9, 2005
+30	Harry Potter and the Chamber of Secrets	$261.988	November 15, 2002
+31	The Incredibles	$261.437	November 5, 2004
+32	Dr. Seuss How The Grinch Stole Christmas	$260.030	November 17, 2000
+33	Jaws	$260.000	June 20, 1975
+34	Monsters Inc.	$255.830	November 2, 2001
+35	Batman	$251.190	June 23, 1989
+36	Men In Black	$250.156	July 2, 1997
+37	Harry Potter and the Prisoner of Azkaban	$249.359	June 4, 2004
+38	Toy Story 2	$245.822	November 24, 1999
+39	Bruce Almighty	$242.704	May 23, 2003
+40	Raiders Of The Lost Ark	$242.374	June 1, 1981
+41	Twister	$241.721	May 10, 1996
+42	My Big Fat Greek Wedding	$241.438	July 7, 2002
+43	Ghostbusters	$238.600	June 8, 1984
+44	Beverly Hills Cop	$234.760	December 5, 1984
+45	War of the Worlds	$234.277	June 29, 2005
+46	Cast Away	$233.630	December 22, 2000
+47	The Exorcist	$232.671	September 15, 2000
+48	The Lost World: Jurassic Park	$229.086	May 23, 1997
+49	Signs	$227.965	August 2, 2002
+50	Rush Hour 2	$226.138	August 3, 2001
+51	Mrs. Doubtfire	$219.195	November 24, 1993
+52	Ghost	$217.631	July 13, 1990
+53	Aladdin	$217.350	November 11, 1992
+54	Saving Private Ryan	$216.335	July 24, 1998
+55	Mission: Impossible 2	$215.409	May 24, 2000
+56	X2: X-Men United	$214.949	May 2, 2003
+57	Austin Powers in Goldmember	$213.080	July 26, 2002
+58	Back to The Future	$210.610	July 3, 1985
+59	Wedding Crashers	$209.218	July 15, 2005
+60	Charlie and the Chocolate Factory	$206.456	July 15, 2005
+61	Austin Powers: The Spy Who Shagged Me	$205.399	June 11, 1999
+62	Batman Begins	$205.343	June 15, 2005
+63	King Kong	$205.298	December 14, 2005
+64	Terminator 2: Judgement Day	$204.843	July 3, 1991
+65	The Mummy Returns	$202.008	May 4, 2001
+66	Armageddon	$201.578	July 1, 1998
+67	Gone With the Wind	$198.655	December 15, 1939
+68	Pearl Harbor	$198.542	May 25, 2001
+69	Indiana Jones & The Last Crusade	$197.171	May 24, 1989
+70	Men In Black II	$194.391	July 3, 2002
+71	Madagascar	$193.136	May 27, 2005
+72	Toy Story	$191.773	November 22, 1995
+73	Gladiator	$187.683	May 5, 2000
+74	The Day After Tomorrow	$186.740	May 28, 2004
+75	Mr. and Mrs. Smith	$186.336	June 10, 2005
+76	Snow White and the Seven Dwarfs	$184.925	February 4, 1938
+77	Dances with Wolves	$184.925	November 21, 1990
+78	Batman Forever	$184.031	June 16, 1995
+79	The Fugitive	$183.753	August 6, 1993
+80	Oceans Eleven	$183.349	December 7, 2001
+81	What Women Want	$182.805	December 15, 2000
+82	The Perfect Storm	$182.618	June 30, 2000
+83	Liar Liar	$181.395	March 21, 1997
+84	Grease	$181.360	July 7, 1978
+85	Jurassic Park III	$181.166	July 18, 2001
+86	Mission: Impossible	$180.981	May 22, 1996
+87	Planet Of The Apes	$180.012	July 27, 2001
+88	Indiana Jones & The Temple Of Doom	$179.870	May 1, 1984
+89	Hitch	$179.200	February 11, 2005
+90	Pretty Woman	$178.406	March 23, 1990
+91	Tootsie	$177.200	December 17, 1982
+92	Top Gun	$176.782	May 16, 1986
+93	Theres Something About Mary	$176.484	July 15, 1998
+94	Ice Age	$176.387	March 15, 2002
+95	The Bourne Supremacy	$176.049	July 23, 2004
+96	Crocodile Dundee	$174.635	September 26, 1986
+97	Apollo 13	$173.756	June 30, 1995
+98	Home Alone 2: Lost in New York	$173.600	November 20, 1992
+99	The Polar Express	$173.493	November 10, 2004
+100	Elf	$173.381	November 7, 2003
+101	National Treasure	$173.016	November 19, 2004
+102	Air Force One	$172.888	July 25, 1997
+103	Rain Man	$172.825	December 12, 1988
+104	The Matrix	$171.479	March 31, 1999
+105	Beauty and the Beast	$171.301	January 1, 1991
+106	Tarzan	$171.085	June 18, 1999
+107	Chicago	$170.685	January 24, 2003
+108	A Beautiful Mind	$169.348	January 4, 2002
+109	Three Men and a Baby	$167.781	November 25, 1987
+110	Meet the Parents	$166.244	October 6, 2000
+111	Robin Hood: Prince of Thieves	$165.494	June 14, 1991
+112	Hannibal	$165.091	February 9, 2001
+113	Catch Me if You Can	$164.607	December 25, 2002
+114	Big Daddy	$163.480	June 25, 1999
+115	Batman Returns	$162.832	June 19, 1992
+116	The Polar Express	$162.793	November 10, 2004
+117	The Waterboy	$161.487	November 6, 1998
+118	Shark Tale	$161.412	October 1, 2004
+119	Die Another Day	$160.701	November 22, 2002
+120	The Sting	$159.600	December 25, 1973
+121	The Sound of Music	$158.671	March 2, 1965
+122	The Firm	$158.348	June 30, 1993
+123	The Longest Yard	$158.115	May 27, 2005
+124	X-Men	$157.175	July 14, 2002
+125	Scary Movie	$156.997	July 7, 2000
+126	Fatal Attraction	$156.646	September 18, 1987
+127	What Lies Beneath	$155.370	July 21, 2000
+128	The Mummy	$155.248	May 7, 1999
+129	Fantastic Four	$154.693	July 8, 2005
+131	Beverly Hills Cop 2	$153.665	May 20, 1987
+132	Jerry Maguire	$153.621	December 13, 1996
+133	Scooby Doo	$153.294	June 14, 2002
+134	Runaway Bride	$152.150	July 30, 1999
+135	Rambo: First Blood Part II	$150.415	May 24, 1985
+136	Terminator 3: Rise Of The Machines	$150.350	July 2, 2003
+137	Gremlins	$148.168	June 8, 1984
+138	As Good As It Gets	$147.637	December 25, 1995
+139	Lethal Weapon 2	$147.254	July 7, 1989
+140	True Lies	$146.282	July 15, 1994
+141	Lilo & Stitch	$145.772	June 21, 2002
+142	American Pie 2	$145.097	August 10, 2001
+143	101 Dalmatians	$144.880	January 25, 1961
+144	I, Robot	$144.795	July 16, 2004
+147	The Fast and the Furious	$144.512	June 22, 2001
+148	Dr. Dolittle	$144.156	June 26, 1998
+149	xXx	$141.931	August 9, 2002
+151	Animal House	$141.600	July 1, 1978
+152	Pocahontas	$141.579	June 23, 1995
+153	A Few Good Men	$141.340	December 11, 1992
+154	Rush Hour	$141.154	September 18, 1998
+155	The Blair Witch Project	$140.530	July 16, 1999
+156	Deep Impact	$140.388	May 8, 1998
+158	Stuart Little	$140.015	December 17, 1999
+161	The Matrix Revolutions	$139.260	November 5, 2003
+162	The Santa Clause 2	$139.227	November 1, 2002
+163	Cheaper by the Dozen	$138.614	December 25, 2003
+164	Bad Boys II	$138.500	July 18, 2003
+165	Good Will Hunting	$138.339	December 5, 1997
+167	Dinosaur	$137.748	May 19, 2000
+168	The Green Mile	$136.801	December 10, 1999
+169	Ransom	$136.385	November 10, 1996
+170	Godzilla	$136.142	May 20, 1998
+171	101 Dalmatians	$135.539	November 27, 1996
+172	Teenage Mutant Ninja Turtles	$135.266	
+173	The Godfather	$134.966	March 14, 1972
+174	Patch Adams	$134.900	December 25, 1998
+176	The Rock	$134.100	June 7, 1996
+177	Anger Management	$133.757	April 11, 2003
+178	Troy	$133.259	May 14, 2004
+179	Chicken Little	$133.235	November 4, 2005
+180	Bringing Down The House	$132.541	March 7, 2003
+181	The Hulk	$132.123	June 20, 2003
+182	Minority Report	$132.024	June 21, 2002
+183	Lara Croft: Tomb Raider	$131.145	June 15, 2001
+184	Silence Of The Lambs	$130.727	August 1, 1991
+186	The Flintstones	$130.513	May 27, 1994
+187	American Beauty	$130.058	September 15, 1999
+189	Lethal Weapon 4	$129.735	July 10, 1998
+191	The Ring	$128.581	October 18, 2002
+192	Close Encounters of the Third Kind	$128.290	November 16, 1977
+193	Robots	$128.195	March 11, 2005
+194	Coming to America	$128.152	June 29, 1988
+195	Crouching Tiger, Hidden Dragon	$128.079	December 15, 2000
+197	Sweet Home Alabama	$127.613	September 27, 2002
+198	2Fast 2Furious	$127.084	June 6, 2003
+200	My Best Friends Wedding	$126.805	June 27, 1997
+204	Mr. Deeds	$126.293	June 28, 2002
+205	Erin Brockovich	$125.549	March 17, 2000
+206	Oceans Twelve	$125.531	December 10, 2004
+207	Dumb and Dumber	$125.464	December 16, 1994
+208	Tomorrow Never Dies	$125.332	December 19, 1997
+209	Charlies Angels	$125.306	November 3, 2000
+210	Somethings Gotta Give	$124.591	December 12, 2003
+211	Traffic	$124.107	January 5, 2001
+212	City Slickers	$124.034	June 7, 1991
+213	The Birdcage	$123.987	March 8, 1996
+215	Nutty Professor II: The Klumps	$123.308	July 28, 2000
+217	Clear and Present Danger	$121.985	August 3, 1994
+218	The Bodyguard	$121.946	November 25, 1992
+220	The Bourne Identity	$121.661	June 14, 2002
+221	Speed	$121.248	June 10, 1994
+222	50 First Dates	$120.777	February 13, 2004
+224	Mulan	$120.570	June 19, 1998
+225	Seabiscuit	$120.147	July 25, 2003
+226	Van Helsing	$120.025	May 7, 2004
+229	Blazing Saddles	$119.500	February 7, 1974
+230	Total Recall	$119.395	June 1, 1990
+232	Fahrenheit 9/11	$119.078	June 25, 2004
+233	Lemony Snickets A Series of Unfortunate Events	$118.627	December 17, 2004
+234	The Sum Of All Fears	$118.501	May 31, 2002
+235	Back To The Future Part II	$118.500	November 22, 1989
+236	Basic Instinct	$117.727	March 20, 1992
+237	Big Mommas House	$117.559	June 2, 2000
+238	Die Hard: With a Vengeance	$117.324	May 19, 1995
+239	Rocky	$117.235	November 21, 1976
+240	S.W.A.T.	$116.750	August 8, 2003
+241	Double Jeopardy	$116.735	September 24, 1999
+242	8 Mile	$116.725	November 8, 2002
+243	Notting Hill	$116.006	May 13, 1999
+245	Youve Got Mail	$115.732	December 18, 1998
+246	Remember the Titans	$115.649	September 29, 2000
+248	American Graffiti	$115.000	August 11, 1973
+249	Big	$114.969	June 3, 1988
+250	Dodgeball: A True Underdog Story	$114.324	June 18, 2004
+251	The Village	$114.195	July 30, 2004
+252	The Addams Family	$113.502	November 22, 1991
+253	The Pacifier	$113.436	March 4, 2005
+254	The Patriot	$113.330	June 28, 2000
+255	Dr. Dolittle 2	$112.951	June 22, 2001
+256	Spy Kids	$112.692	March 30, 2001
+257	Face/Off	$112.678	June 27, 1997
+259	One Flew Over the Cuckoos Nest	$112.000	November 19, 1975
+261	Spy Kids 3: Game Over	$111.761	July 25, 2003
+262	Doctor Zhivago	$111.721	December 22, 1965
+263	Enemy of the State	$111.544	November 20, 1998
+264	The Little Mermaid	$111.500	November 14, 1989
+265	The Last Samurai	$111.127	December 5, 2003
+266	Freaky Friday	$110.222	August 6, 2003
+267	The Grudge	$110.176	October 22, 2004
+268	Scary Movie 3	$110.003	October 24, 2003
+270	The 40 Year Old Virgin	$109.329	August 19, 2005
+271	Crocodile Dundee II	$109.306	May 25, 1988
+272	Black Hawk Down	$108.639	January 18, 2002
+274	Ace Ventura: When Nature Calls	$108.360	November 10, 1995
+275	A Time To Kill	$108.285	July 24, 1996
+276	The Princess Diaries	$108.245	August 3, 2001
+278	Pulp Fiction	$107.900	October 14, 1994
+280	Batman & Robin	$107.285	June 20, 1997
+281	Miss Congeniality	$106.808	December 22, 2002
+282	Analyze This	$106.694	March 5, 1999
+283	Goldeneye	$106.636	November 17, 1995
+285	Chicken Run	$106.604	June 23, 2000
+286	Driving Miss Daisy	$106.593	December 13, 1989
+289	The Italian Job	$106.126	May 30, 2003
+291	How to Lose A Guy In 10 Days	$105.808	February 7, 2003
+292	Porkys	$105.492	March 19, 1982
+293	The First Wives Club	$105.306	September 20, 1996
+295	George of the Jungle	$105.265	July 16, 1997
+296	Phenomenon	$104.632	July 3, 1996
+298	American Wedding	$104.354	August 1, 2003
+299	Road To Perdition	$104.339	July 12, 2002
+300	Daddy Day Care	$104.149	May 9, 2003
+301	Dick Tracy	$103.738	June 15, 1990
+303	Scream	$103.002	December 20, 1996
+305	Bambi	$102.797	August 21, 1942
+307	The Aviator	$102.608	December 17, 2004
+308	Daredevil	$102.544	February 14, 2003
+309	Butch Cassidy and the Sundance Kid	$102.309	September 23, 1969
+312	American Pie	$101.736	July 9, 1999
+313	Gone in Sixty Seconds	$101.643	June 9, 2000
+317	Scream 2	$101.363	December 12, 1997
+320	Con Air	$101.087	June 6, 1997
+321	Sleepy Hollow	$101.068	November 19, 1999
+322	Contact	$100.850	July 11, 1997
+323	Charlies Angels: Full Throttle	$100.785	June 27, 2003
+325	Dr. Seuss The Cat In The Hat	$100.750	November 21, 2003
+326	Eraser	$100.630	June 21, 1996
+327	Vanilla Sky	$100.594	December 14, 2001
+329	Airport	$100.489	March 5, 1970
+330	Collateral	$100.440	August 6, 2004
+331	Million Dollar Baby	$100.422	December 15, 2004
+332	Casper	$100.280	May 26, 1995
+333	Shakespeare in Love	$100.241	December 18, 1998
+334	Jumanji	$100.192	December 15, 1995
+336	The Hunchback of Notre Dame	$100.118	June 21, 1996
+338	Die Hard: With a Vengeance	$100.012	May 19, 1995
+341	Walk the Line	$98.254	November 18, 2005
+342	Billy Jack	$98.000	May 1, 1971
+343	Inspector Gadget	$97.360	July 23, 1999
+344	Legally Blonde	$96.493	July 13, 2001
+345	The Others	$96.471	August 10, 2001
+346	Schindlers List	$96.067	December 15, 1993
+347	Dead Poets Society	$95.860	June 9, 1989
+348	Cold Mountain	$95.633	December 25, 2003
+349	Arthur	$95.462	July 17, 1981
+350	Michael	$95.345	December 25, 1996
+351	Panic Room	$95.308	March 29, 2002
+352	Fun with Dick and Jane	$95.166	December 21, 2005
+353	The Princess Diaries 2: Royal Engagement	$95.149	August 11, 2004
+354	Unbreakable	$95.000	November 22, 2000
+355	Flashdance	$94.900	April 15, 1983
+357	The Color Purple	$94.175	December 18, 1985
+358	Maid In Manhattan	$93.932	December 13, 2002
+359	Master and Commander: The Far Side Of The World	$93.926	November 14, 2003
+361	Americas Sweethearts	$93.608	July 20, 2001
+363	Cats and Dogs	$93.375	July 4, 2001
+364	Two Weeks Notice	$93.354	December 20, 2002
+366	Red Dragon	$93.101	October 4, 2002
+367	Flubber	$92.969	November 26, 1997
+369	The Client	$92.115	July 20, 1994
+370	Star Trek: First Contact	$92.001	November 22, 1996
+372	Crimson Tide	$91.400	May 12, 1995
+373	Back to School	$91.258	June 13, 1986
+374	The Haunting	$91.188	July 23, 1999
+375	Stepmom	$91.030	December 25, 1998
+376	The Karate Kid	$90.800	June 22, 1984
+377	Antz	$90.646	October 2, 1998
+378	Me, Myself & Irene	$90.567	June 23, 2000
+379	Space Cowboys	$90.454	August 4, 2000
+380	The Scorpion King	$90.450	April 19, 2002
+381	Space Jam	$90.443	October 15, 1996
+383	Mystic River	$90.135	October 8, 2003
+384	Legally Blonde 2: Red, White, & Blonde	$89.884	July 2, 2003
+385	Flightplan	$89.422	September 23, 2005
+386	Father of the Bride	$89.326	December 20, 1991
+387	The Emperors New Groove	$89.303	December 15, 2000
+388	Scream 3	$89.138	February 4, 2000
+390	Waterworld	$88.246	July 28, 1995
+391	Starsky & Hutch	$88.200	March 5, 2004
+393	Along Came Polly	$87.857	January 16, 2004
+394	Back To The Future Part III	$87.728	May 25, 1990
+395	Entrapment	$87.704	April 30, 1999
+398	Saw II	$87.025	October 28, 2005
+403	Mean Girls	$86.049	April 30, 2004
+405	Spy Kids 2: The Island of Lost Dreams	$85.634	August 9, 2002
+406	The SpongeBob SquarePants Movie	$85.416	November 19, 2004
+407	Brother Bear	$85.329	October 24, 2003
+409	Cinderella	$85.000	February 15, 1950
+410	Dangerous Minds	$84.919	August 11, 1995
+412	Scooby Doo 2: Monsters Unleashed	$84.185	March 26, 2004
+413	Anchorman: The Legend of Ron Burgundy	$84.137	July 9, 2004
+414	Atlantis: The Lost Empire	$84.053	June 8, 2001
+415	Cliffhanger	$84.049	May 28, 1993
+416	The X-Files	$83.892	June 19, 1998
+419	Airplane!	$83.454	July 2, 1980
+421	Disclosure	$83.000	December 9, 1994
+422	Monster-in-Law	$82.887	May 13, 2005
+423	Days of Thunder	$82.671	June 27, 1990
+425	Dracula	$82.523	November 13, 1992
+427	Freddy vs. Jason	$82.500	August 15, 2003
+429	Are We There Yet?	$82.400	January 21, 2005
+431	Aliens	$81.843	July 18, 1986
+432	Blade 2	$81.676	March 22, 2002
+434	Payback	$81.517	February 5, 1999
+435	Die Hard	$81.350	July 13, 1988
+437	School of Rock	$81.258	October 3, 2003
+439	Snow Dogs	$81.158	January 18, 2002
+441	Congo	$81.022	June 9, 1995
+442	The Notebook	$81.002	June 25, 2004
+443	Jimmy Neutron: Boy Genius	$80.936	December 21, 2001
+444	Another 48 Hours	$80.819	June 8, 1990
+446	Fiddler on the Roof	$80.500	November 3, 1971
+447	Alien vs. Predator	$80.281	August 13, 2004
+448	The Dukes of Hazzard	$80.270	August 5, 2005
+449	The Wedding Singer	$80.224	February 13, 1998
+450	The Texas Chainsaw Massacre	$80.148	October 17, 2003
+451	Footloose	$80.035	February 17, 1984
+453	Earthquake	$79.700	November 15, 1974
+455	Cape Fear	$79.092	November 13, 1991
+457	Apocalypse Now	$78.800	August 15, 1979
+458	City of Angels	$78.685	April 10, 1998
+460	The English Patient	$78.651	November 15, 1996
+461	A.I.: Artificial Intelligence	$78.617	June 29, 2001
+462	Cocktail	$78.223	July 29, 1988
+463	We Were Soldiers	$78.122	August 20, 2002
+464	Man on Fire	$77.911	April 23, 2004
+465	Backdraft	$77.869	May 24, 1991
+466	Gangs Of New York	$77.820	December 20, 2002
+469	Everest	$77.418	March 6, 1998
+470	March of the Penguins	$77.413	June 24, 2005
+471	U-571	$77.086	April 20, 2000
+472	The Terminal	$77.032	June 18, 2004
+474	Training Day	$76.632	October 5, 2001
+475	Poltergeist	$76.606	June 4, 1982
+478	Rugrats in Paris: The Movie	$76.508	November 17, 2000
+480	Fantasia 2000	$76.400	January 1, 2000
+483	Cocoon	$76.113	June 21, 1985
+484	Conspiracy Theory	$76.081	August 8, 1997
+485	The Ring Two	$76.032	March 18, 2005
+487	48 Hours	$75.900	December 8, 1982
+488	The Haunted Mansion	$75.818	November 26, 2003
+489	The Family Man	$75.793	December 22, 2000
+490	Barbershop	$75.782	September 13, 2002
+492	Braveheart	$75.610	May 24, 1995
+493	The Rookie	$75.600	March 29, 2002
+494	Any Given Sunday	$75.531	December 22, 1999
+496	Constantine	$75.500	February 18, 2005
+498	Garfield: The Movie	$75.367	June 11, 2004
+499	Ray	$75.305	October 29, 2004
+500	The Exorcism of Emily Rose	$75.200	September 9, 2005
+501	Old School	$75.151	February 21, 2003
+502	Cheaper by the Dozen 2	$75.052	December 21, 2005
+504	10	$74.865	October 5, 1979
+506	Ladder 49	$74.540	October 1, 2004
+507	Four Brothers	$74.484	August 12, 2005
+508	Six Days, Seven Nights	$74.339	June 12, 1998
+509	Sin City	$74.098	April 1, 2005
+510	Along Came A Spider	$74.059	April 6, 2001
+512	Christmas With the Kranks	$73.701	November 24, 2004
+513	Deep Blue Sea	$73.648	July 30, 1999
+514	Beetlejuice	$73.327	March 30, 1988
+515	Spirit: Stallion of the Cimarron	$73.280	May 24, 2002
+516	Hollow Man	$73.209	August 4, 2000
+518	I Know What You Did Last Summer	$72.586	October 17, 1997
+519	The Interpreter	$72.515	April 22, 2005
+520	Ace Ventura: Pet Detective	$72.217	February 4, 1994
+521	The Cannonball Run	$72.180	June 19, 1981
+522	Get Shorty	$72.102	October 20, 1995
+526	Galaxy Quest	$71.584	December 25, 1999
+528	Bridget Joness Diary	$71.543	April 13, 2001
+529	Grumpier Old Men	$71.519	December 22, 1995
+530	The Bridges of Madison County	$71.517	June 2, 1995
+531	Chocolat	$71.509	January 5, 2001
+532	Sideways	$71.502	October 22, 2004
+533	Christmas Vacation	$71.320	December 1, 1989
+534	Scary Movie 2	$71.277	July 4, 2001
+536	The Score	$71.108	July 13, 2001
+538	John Q	$71.026	February 15, 2002
+539	Bird on a Wire	$70.978	May 18, 1990
+541	Shallow Hal	$70.839	November 9, 2001
+542	Broken Arrow	$70.770	February 9, 1996
+543	Any Which Way You Can	$70.687	December 17, 1980
+544	All the Presidents Men	$70.600	April 9, 1976
+545	Mortal Kombat	$70.454	August 18, 1995
+546	JFK	$70.405	December 20, 1991
+547	Shaft	$70.334	June 16, 2000
+550	Ferris Buellers Day Off	$70.136	June 11, 1986
+551	Kill Bill Vol. 1	$70.098	October 10, 2003
+552	Blade	$70.088	August 19, 1998
+553	Boomerang	$70.052	July 1, 1992
+554	Born on the 4th of July	$70.002	December 20, 1989
+557	Swordfish	$69.773	June 8, 2001
+558	The Best Little Whorehouse in Texas	$69.702	July 23, 1982
+559	The Kid	$69.692	May 19, 2000
+560	Nine Months	$69.685	July 12, 1995
+561	Divine Secrets Of The Ya-Ya Sisterhood	$69.599	June 7, 2002
+564	Vertical Limit	$69.244	December 8, 2000
+565	White Chicks	$69.149	June 23, 2004
+566	Lost In Space	$69.118	April 3, 1998
+567	Cool Runnings	$68.856	October 1, 1993
+569	Sahara	$68.573	April 8, 2005
+570	Road Trip	$68.541	May 19, 2000
+572	Bring It On	$68.379	August 25, 2000
+573	Guess Who	$67.962	March 25, 2005
+577	A Perfect Murder	$67.638	June 5, 1998
+578	Heat	$67.437	December 15, 1995
+579	Insomnia	$67.355	May 24, 2002
+580	Holes	$67.326	April 18, 2003
+581	Hidalgo	$67.287	March 5, 2004
+582	Coach Carter	$67.253	January 14, 2005
+583	Coal Miners Daughter	$67.183	March 7, 1980
+584	Dantes Peak	$67.128	February 7, 1997
+587	102 Dalmatians	$66.957	November 22, 2000
+588	End Of Days	$66.889	November 24, 1999
+589	The Mexican	$66.845	March 2, 2001
+590	Changing Lanes	$66.802	April 12, 2002
+592	Kangaroo Jack	$66.736	January 17, 2003
+593	The Godfather: Part III	$66.666	December 25, 1990
+594	The Forgotten	$66.641	September 24, 2004
+596	The Bone Collector	$66.519	November 5, 1999
+597	The League of Extraordinary Gentlemen	$66.463	July 11, 2003
+598	Kill Bill Vol. 2	$66.372	April 16, 2004
+599	Bowfinger	$66.365	August 13, 1999
+601	Big Fish	$66.257	December 10, 2003
+603	Herbie: Fully Loaded	$66.002	June 22, 2005
+604	The Manchurian Candidate	$65.949	July 30, 2004
+605	Anaconda	$65.886	April 11, 1997
+606	Bad Boys	$65.807	April 7, 1995
+607	Ever After	$65.706	July 31, 1998
+609	Lara Croft Tomb Raider: The Cradle Of Life	$65.654	July 25, 2003
+610	Deuce Bigalow: Male Gigolo	$65.539	December 10, 1999
+612	Lethal Weapon	$65.207	January 1, 1987
+613	Barbershop 2: Back In Business	$65.189	February 6, 2004
+615	About Schmidt	$65.011	December 13, 2002
+616	Breach	$65.000	
+618	The Amityville Horror	$64.918	April 15, 2005
+620	Stuart Little 2	$64.801	July 26, 2002
+622	L.A. Confidential	$64.617	September 19, 1997
+623	Field of Dreams	$64.432	April 21, 1989
+624	Miracle	$64.371	February 6, 2004
+625	Mona Lisa Smile	$64.362	December 19, 2003
+626	Jackass: The Movie	$64.269	October 25, 2002
+627	Down to Earth	$64.187	February 16, 2001
+628	Sky High	$63.939	July 29, 2005
+629	Life	$63.886	April 16, 1999
+631	The Fifth Element	$63.820	May 9, 1997
+635	Babe	$63.659	August 4, 1995
+637	Alien	$63.594	May 25, 1979
+639	A Fish Called Wanda	$63.494	July 29, 1988
+640	Dirty Dancing	$63.446	August 21, 1987
+642	Shes All That	$63.367	January 29, 1999
+643	Dave	$63.271	May 7, 1993
+646	Beavis and Butt-Head Do America	$63.118	December 20, 1996
+649	Jarhead	$62.647	November 4, 2005
+650	The Crying Game	$62.549	November 25, 1992
+652	Spy Game	$62.363	November 21, 2001
+653	Bewitched	$62.252	June 24, 2005
+654	Space Station	$62.222	April 19, 2002
+655	Down and Out in Beverly Hills	$62.134	January 31, 1986
+656	Mouse Hunt	$61.917	December 19, 1997
+657	The Electric Horseman	$61.802	December 21, 1979
+658	Cinderella Man	$61.649	June 3, 2005
+659	Flatliners	$61.489	August 10, 1990
+661	The Goonies	$61.390	June 7, 1985
+662	The Saint	$61.363	April 4, 1997
+663	Rules of Engagement	$61.335	April 7, 2000
+664	The Cell	$61.334	August 18, 2000
+666	Good Night, And Good Luck.	$61.207	October 7, 2005
+667	Friday Night Lights	$61.188	October 8, 2004
+668	The Devils Advocate	$60.945	October 17, 1997
+669	Mission to Mars	$60.883	March 10, 2000
+671	Coyote Ugly	$60.786	August 4, 2000
+672	Fantasia 2000	$60.655	January 1, 2000
+673	Three Kings	$60.652	October 1, 1999
+674	Jingle All the Way	$60.592	November 22, 1996
+675	Kiss the Girls	$60.528	October 3, 1997
+676	Shanghai Knights	$60.470	February 7, 2003
+677	The Wedding Planner	$60.401	January 26, 2001
+678	The Amityville Horror	$60.308	July 27, 1979
+679	The Cable Guy	$60.240	June 14, 1996
+681	The American President	$60.079	November 17, 1995
+682	Species	$60.074	July 7, 1995
+683	Bad Santa	$60.058	November 26, 2003
+684	Hope Floats	$60.053	May 29, 1998
+685	Snow Day	$60.008	February 11, 2000
+688	Jungle 2 Jungle	$59.928	March 7, 1997
+689	Predator	$59.736	June 12, 1987
+690	Gothika	$59.588	November 21, 2003
+693	The Stepford Wives	$59.476	June 11, 2004
+694	Love Actually	$59.365	November 7, 2003
+695	Radio	$59.206	October 24, 2003
+696	Hellboy	$59.035	April 2, 2004
+697	Courage Under Fire	$59.031	July 12, 1996
+698	Chariots of Fire	$58.973	October 9, 1981
+699	Dawn Of The Dead	$58.885	March 19, 2004
+700	Far and Away	$58.884	May 22, 1992
+701	Behind Enemy Lines	$58.857	November 30, 2001
+702	Honey I Blew Up the Kid	$58.662	July 17, 1992
+703	Jack	$58.621	August 2, 1996
+707	Death Becomes Her	$58.423	July 31, 1992
+708	Anastasia	$58.406	November 21, 1997
+709	Open Range	$58.329	August 15, 2003
+710	Bicentennial Man	$58.224	December 17, 1999
+711	Ali	$58.203	December 25, 2001
+712	Without a Paddle	$58.156	August 20, 2004
+713	Demolition Man	$58.056	October 8, 1993
+715	Shall We Dance?	$57.887	October 15, 2004
+716	Red Eye	$57.859	August 19, 2005
+717	Cleopatra	$57.778	June 12, 1963
+718	The Butterfly Effect	$57.762	January 23, 2004
+719	The Animal	$57.743	June 1, 2001
+720	The Chronicles of Riddick	$57.637	June 11, 2004
+721	The Cider House Rules	$57.545	December 10, 1999
+722	Boyz N the Hood	$57.504	July 12, 1991
+723	The Family Stone	$57.496	December 16, 2005
+725	Dragnet	$57.388	June 26, 1986
+726	Moulin Rouge	$57.387	May 18, 2001
+728	Next Friday	$57.329	January 12, 2000
+730	The Godfather: Part II	$57.300	December 12, 1974
+731	Willow	$57.270	May 20, 1988
+733	Life is Beautiful	$57.247	December 11, 1998
+734	The Blues Brothers	$57.230	June 20, 1980
+735	U.S. Marshals	$57.167	March 6, 1998
+737	12 Monkeys	$57.141	January 5, 1995
+739	Beethoven	$57.114	April 3, 1992
+740	Annie	$57.059	May 21, 1982
+741	Beaches	$57.042	December 21, 1988
+743	Shanghai Noon	$56.938	May 26, 2000
+744	Once Upon A Time In Mexico	$56.820	September 12, 2003
+745	The Time Machine	$56.712	July 23, 2002
+746	A Civil Action	$56.710	December 25, 1998
+747	2001: A Space Odyssey	$56.700	January 1, 1968
+749	Clueless	$56.632	July 19, 1995
+750	Rat Race	$56.607	August 17, 2001
+751	A Knights Tale	$56.570	May 11, 2001
+805	Blow	$52.991	April 6, 2001
+807	Varsity Blues	$52.894	January 15, 1999
+808	Forces of Nature	$52.888	March 19, 1999
+810	Message in a Bottle	$52.823	February 12, 1999
+811	The Recruit	$52.786	January 31, 2003
+813	Unfaithful	$52.756	May 10, 2002
+816	Blade: Trinity	$52.411	December 10, 2004
+817	Yours, Mine & Ours	$52.399	November 23, 2005
+818	Kicking and Screaming	$52.375	May 13, 2005
+819	The Royal Tenenbaums	$52.364	December 14, 2001
+820	The Color of Money	$52.294	October 17, 1986
+821	Stand By Me	$52.287	August 8, 1986
+824	Awakenings	$52.096	December 20, 1990
+825	South Park: Bigger, Longer & Uncut	$52.038	June 30, 1999
+826	King Arthur	$51.877	July 7, 2004
+827	Finding Forrester	$51.805	January 12, 2001
+828	Exit Wounds	$51.759	March 14, 2001
+829	Finding Neverland	$51.753	November 12, 2004
+830	Identity	$51.700	April 25, 2003
+832	Underworld	$51.600	September 19, 2003
+833	Amadeus	$51.564	September 19, 1984
+835	Like Mike	$51.432	July 3, 2002
+836	A Cinderella Story	$51.431	July 16, 2004
+837	Enemy at the Gates	$51.402	March 16, 2001
+838	Dragonheart	$51.367	May 31, 1996
+840	Dennis the Menace	$51.271	June 24, 1993
+841	Broadcast News	$51.249	December 16, 1987
+842	Andrew Lloyd Webbers The Phantom of the Opera	$51.225	December 25, 2004
+846	Hide and Seek	$51.097	January 28, 2005
+847	Up Close & Personal	$51.089	March 1, 1996
+850	The Hitchhikers Guide to the Galaxy	$51.019	April 29, 2005
+851	Bull Durham	$50.889	June 15, 1988
+854	A Bridge Too Far	$50.800	June 15, 1977
+855	Resident Evil: Apocalypse	$50.757	September 10, 2004
+857	The Net	$50.728	July 28, 1995
+858	Bonnie and Clyde	$50.700	August 13, 1967
+859	The Hurricane	$50.699	January 14, 2000
+860	The Crow	$50.693	May 11, 1994
+861	The Deep	$50.682	June 17, 1977
+862	Mighty Joe Young	$50.632	December 25, 1998
+863	Fletch	$50.613	May 31, 1985
+867	Diary of a Mad Black Woman	$50.382	February 25, 2005
+868	T-Rex: Back to the Cretaceous	$50.344	October 23, 1998
+869	K-PAX	$50.338	October 26, 2001
+871	Serendipity	$50.294	October 5, 2001
+873	The Tuxedo	$50.280	September 27, 2002
+874	Angels in the Outfield	$50.237	July 15, 1994
+875	Breakdown	$50.159	May 2, 1997
+878	Evita	$50.047	January 10, 1997
+879	Stigmata	$50.046	September 10, 1999
+880	Absolute Power	$50.045	February 14, 1997
+881	Home On The Range	$50.026	April 2, 2004
+885	A Walk in the Clouds	$50.008	August 11, 1995
+887	The Deer Hunter	$50.000	December 8, 1978
+893	Runaway Jury	$49.441	October 17, 2003
+895	European Vacation	$49.400	July 26, 1985
+896	A Nightmare On Elm Street 4: The Dream Master	$49.370	August 19, 1988
+897	Volcano	$49.323	April 25, 1997
+898	Racing Stripes	$49.186	January 14, 2005
+899	Bugsy	$49.114	December 20, 1991
+900	Cobra	$49.042	May 23, 1986
+901	Addams Family Values	$48.860	November 19, 1993
+902	Men of Honor	$48.815	November 10, 2000
+905	Miss Congeniality 2: Armed and Fabulous	$48.472	March 24, 2005
+906	Return to Neverland	$48.423	February 15, 2002
+907	Peter Pan	$48.418	December 25, 2003
+908	Just Like Heaven	$48.291	September 16, 2005
+909	The Game	$48.266	September 12, 1997
+912	G.I. Jane	$48.169	August 22, 1997
+913	Fat Albert	$48.114	December 25, 2004
+914	The Preachers Wife	$48.103	December 13, 1996
+916	Memoirs of a Geisha	$48.095	December 9, 2005
+921	The Blue Lagoon	$47.924	July 5, 1980
+922	The Jungle Book 2	$47.888	February 14, 2003
+923	Big Fat Liar	$47.811	February 8, 2002
+924	The Skeleton Key	$47.806	August 12, 2005
+925	Alien: Resurrection	$47.795	November 26, 1997
+927	Secret Window	$47.781	March 12, 2004
+928	Agent Cody Banks	$47.700	March 14, 2003
+930	The Rundown	$47.593	September 26, 2003
+931	An American Tail	$47.483	November 21, 1986
+933	Kingdom Of Heaven	$47.396	May 6, 2005
+934	The Legend of Zorro	$47.308	October 28, 2005
+935	Airport 1975	$47.285	October 18, 1974
+936	Kate & Leopold	$47.121	December 21, 2001
+938	Halloween	$47.000	October 25, 1978
+941	Final Destination 2	$46.897	January 31, 2003
+942	Goodfellas	$46.836	October 19, 1990
+945	Dude, Wheres My Car?	$46.729	December 15, 2000
+947	Firefox	$46.700	June 18, 1982
+948	Practical Magic	$46.683	October 16, 1998
+949	The Distinguished Gentleman	$46.666	December 4, 1992
+950	Dog Day Afternoon	$46.666	September 21, 1975
+951	Colors	$46.616	April 15, 1988
+952	The Brady Bunch Movie	$46.576	February 17, 1995
+953	Phone Booth	$46.563	April 4, 2003
+956	Boogeyman	$46.363	February 4, 2005
+960	The Enforcer	$46.200	December 22, 1976
+961	One Fine Day	$46.170	December 20, 1996
+962	Deliverance	$46.122	July 30, 1972
+964	Walking Tall	$45.977	April 2, 2004
+966	The Rainmaker	$45.917	November 21, 1997
+967	The Breakfast Club	$45.900	February 15, 1985
+971	Black Rain	$45.645	September 22, 1989
+973	The Tigger Movie	$45.542	February 11, 2000
+974	O Brother, Where Art Thou?	$45.513	January 12, 2001
+976	In Good Company	$45.489	December 29, 2004
+978	Scarface	$45.377	December 9, 1983
+980	Bean	$45.334	November 7, 1997
+981	The Dirty Dozen	$45.300	June 15, 1967
+982	Domestic Disturbance	$45.246	November 2, 2001
+983	Zoolander	$45.163	September 28, 2001
+984	28 Days Later	$45.064	June 27, 2003
+985	Frequency	$44.984	April 28, 2000
+987	Cop Land	$44.907	August 15, 1997
+989	A Nightmare On Elm Street 3: Dream Warriors	$44.840	February 27, 1987
+990	A Nightmare On Elm Street 3: Dream Warriors	$44.793	February 27, 1987
+993	The Replacements	$44.737	August 11, 2000
+997	Meet Joe Black	$44.650	November 13, 1998
+998	Lost In Translation	$44.566	September 12, 2003
+999	The Negotiator	$44.548	July 31, 1998
+1000	Napoleon Dynamite	$44.540	June 11, 2004

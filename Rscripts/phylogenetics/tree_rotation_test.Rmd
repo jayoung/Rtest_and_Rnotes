@@ -1,0 +1,42 @@
+---
+title: "tree_rotation_test"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+Let's say we want to display a tree in a particular order - rotate nodes as much as we can to match that order
+
+Demo code found [here](http://blog.phytools.org/2015/04/finding-closest-set-of-node-rotations.html)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(phytools)
+```
+
+original `tree` object has tips in alphabetical order 
+
+```{r}
+tree <- pbtree(n=26,tip.label=LETTERS)
+plotTree(tree)
+```
+
+Rotate the tree randomly 100 times
+```{r}
+nn <- sample(1:tree$Nnode+Ntip(tree),100,replace=TRUE)
+for(i in 1:length(nn)) {
+    tree<-read.tree(text=write.tree(rotate(tree,nn[i])))
+}
+plotTree(tree)
+```
+
+get the tree original order
+```{r, include=FALSE}
+x <- setNames(1:Ntip(tree),LETTERS)
+# minRotate is noisy
+unscrambled <- minRotate(tree,x)
+```
+```{r}
+plotTree(unscrambled)
+```

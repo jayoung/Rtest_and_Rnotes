@@ -1,0 +1,40 @@
+## on updating to a new R:
+
+1. delete/hide all old packages
+cd /fh/fast/malik_h/grp/malik_lab_shared/linux_gizmo/R_packages
+mkdir old_XXX
+mv * old_XXX
+
+
+2. install latest version of BiocManager (sysadmins have a version but it may be out of date)
+install.packages("BiocManager")
+    after doing that on Oct 31 2019 from R version 3.6.1 (loaded using 'module load R/3.6.1-foss-2016b-fh1') I then do:
+library(BiocManager)
+    and get this message wither version info:
+Bioconductor version 3.10 (BiocManager 1.30.9), ?BiocManager::install for help
+
+
+3. installing any standard CRAN packages:
+install.packages(c("ggfortify","kableExtra"))
+
+
+4. installing standard bioconductor packages:
+?install
+
+.libPaths()
+[1] "/fh/fast/malik_h/grp/malik_lab_shared/linux_gizmo/R_packages"
+[2] "/app/easybuild/software/R/3.6.1-foss-2016b-fh1"              
+[3] "/app/easybuild/software/R/3.6.0-foss-2016b-fh1"              
+[4] "/app/easybuild/software/R/3.6.1-foss-2016b/lib/R/library"    
+
+BiocManager::install(c("Rsamtools","tximport"), lib=.libPaths()[1], lib.loc=.libPaths()[1])
+
+
+5. install packages I downloaded
+cd ~/FH_fast_storage/source_codes/R/other_packages
+R CMD INSTALL Digestion_1.0.tar.gz 
+
+### packages I had installed before that I have not yet re-installed:
+BSgenome.JU2079first10seqs.JY.v1
+BSgenome.JU2079.JY.v1
+

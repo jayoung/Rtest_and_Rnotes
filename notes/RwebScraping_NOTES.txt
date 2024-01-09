@@ -1,0 +1,161 @@
+##### web-scraping in R, using the tidyverse package rvest
+
+library(rvest)
+
+# tutorial : https://stat4701.github.io/edav/2015/04/02/rvest_tutorial/
+
+I wanted to get this working in order to use an online protein analysis tool called PONDR.  I didn't get it working in R, but quite easily did make it work in perl (~/FH_fast_storage/forOtherPeople/forRini/phaseSeparation/PONDRsubmission_WWW.pl)
+
+# see ../other/html_NOTES.txt for notes on how html is encoded.
+
+#### lego demo from the rvest documentation
+
+## there are various versions of the demo online, and it's hard to get them to work.
+
+##, trying to see a version that actually works: (older versions of the lego demo don't work, I think because the html gets laid out differently in IMDB website html)
+
+# Store web url
+lego_movie <- read_html("http://www.imdb.com/title/tt1490017/")
+
+#Scrape the website for the movie rating
+rating <- lego_movie %>% 
+  html_nodes("strong span") %>%
+  html_text() %>%
+  as.numeric()
+rating
+
+lego_movie %>% 
+  html_nodes("strong span") %>%
+  html_text()
+
+
+movie <- read_html("http://www.imdb.com/title/tt1490017/")
+cast <- html_nodes(movie, "strong span")
+html_text(cast)
+html_name(cast)
+html_attrs(cast)
+html_attr(cast, "class")
+
+
+# Get reviews of last company using follow_link()
+session2 <- follow_link(session1, css = "#more_9 li:nth-child(3) a")
+reviews <- session2 %>% html_nodes(".description") %>% html_text()
+reviews
+
+reviews <- session2 %>% html_nodes(".description") %>% html_text()
+reviews
+
+## forms:
+Extract, modify and submit forms with html_form(), set_values() and submit_form(). (This is still a work in progress, so I’d love your feedback.)
+To see these functions in action, check out package demos with demo(package = "rvest").
+
+search <- html_form(read_html("http://www.google.com"))[[1]]
+set_values(search, q = "My little pony")
+set_values(search, hl = "fr")
+
+
+test <- google_form("1M9B8DsYNFyDjpwSK6ur_bZf8Rv_04ma3rmaaBiveoUI")
+f0 <- html_form(test)[[1]]
+f1 <- set_values(f0, entry.564397473 = "abc")
+
+?submit_form
+
+?submit_request
+
+######### my actual example
+## get HP1a seq as plain text so I can put it in the form:
+library(readr)
+mySeq2 <- read_file("/Volumes/fh/user/jayoung/forOtherPeople/forRini/phaseSeparation/HP1a_Dmel.pep.fa")
+
+## rvest lets me interact with web forms
+library (rvest)
+
+# the whole website
+pon <- read_html("http://www.pondr.com")
+
+mySession <- html_session("http://www.pondr.com")
+
+
+# get a the form and set some of the values
+pon_form <- html_form(pon)[[2]]
+pon_form <- set_values(pon_form, Sequence=mySeq2)
+pon_form <- set_values(pon_form, VLXT="on")
+pon_form <- set_values(pon_form, graphic="off")
+pon_form <- set_values(pon_form, seq="on")
+# pon_form <- set_values(pon_form, stats="off") ## turning stats off seems to result in empty output
+
+pon_form <- set_values(pon_form, wcwraw="on")
+
+
+pon_result <- submit_form(mySession, pon_form, submit="submit_result") # session object
+
+pon_result_allNodes <- pon_result %>% html_nodes("*") %>% html_text()
+
+pon_result_allNodes[ grep ("PREDICTOR OUTPUT", pon_result_allNodes) ]
+
+## mess with the form - I do manage to get some sort of output:
+pon_result_allNodes[ grep ("PREDICTOR VALUES", pon_result_allNodes) ]
+
+## but I want the PREDICTOR VALUES output - don't think I ever did get that to work. Probably need to set up the form differently. 
+
+# get a the form and set some of the values
+pon_form2 <- html_form(pon)[[2]]
+pon_form2 <- set_values(pon_form2, Sequence=mySeq2)
+
+pon_result <- submit_form(mySession, pon_form2, submit="submit_result") # session object
+pon_result_allNodes <- pon_result %>% html_nodes("*") %>% html_text()
+pon_result_allNodes[ grep ("PREDICTOR OUTPUT", pon_result_allNodes) ]
+
+pon_result_allNodes[ grep ("PREDICTOR VALUES", pon_result_allNodes) ]
+
+
+pon_form2 <- set_values(pon_form2, VLXT="on")
+pon_form2 <- set_values(pon_form2, graphic="off")
+pon_form2 <- set_values(pon_form2, seq="on")
+# pon_form2 <- set_values(pon_form2, stats="off") ## turning stats off seems to result in empty output
+
+pon_form2 <- set_values(pon_form2, wcwraw="on")
+
+
+pon_result_2 <- pon_result %>% html_nodes("pre")  # xml_nodeset object.  pre works but PRE doesn't
+pon_result_2a <- pon_result_2 %>% html_text() # character
+
+pon_result_3 <- pon_result %>% html_nodes("PRE")  # xml_nodeset object. 
+pon_result_3a <- pon_result_3 %>% html_text() # character
+
+
+pon_result_2a  # 14 things
+pon_result_3a  # empty 
+
+
+## if I saved the result as html manually
+result1 <- read_html("Desktop/PONDR.outputSimple.html")
+result1 %>% html_text()  # a single character object 
+
+result1 %>% html_nodes("pre") # one character object per line, easier to parse, although it still has the tags
+
+html_nodes(result1, "pre")[6]
+
+
+html_text(html_nodes(result1, "pre"))[6]
+
+#pon_form <- set_values(pon_form, XL1="off")
+#pon_form <- set_values(pon_form, CAN="off")
+#pon_form <- set_values(pon_form, VL3="off")
+#pon_form <- set_values(pon_form, VSL2="off")
+#pon_form <- set_values(pon_form, CDF="off")
+#pon_form <- set_values(pon_form, CH="off")
+
+
+
+   ## 2a has quite a bit, with my OLDER query
+pon_result_3 <- pon_result %>% html_nodes("pre:nth-child(42)") %>% html_text()
+
+grep ("PREDICTOR OUTPUT", pon_result_2a)
+
+grep ("0.85803", pon_result_2a)
+
+0.85803
+
+grep ("PREDICTOR VALUES", pon_result_2a)
+
