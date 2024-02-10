@@ -1,0 +1,143 @@
+trees_usingDownloadedSpeciesTree
+================
+Janet Young
+
+2024-02-09
+
+I used a mammalian species tree from this paper: Upham, N. S., J. A.
+Esselstyn, and W. Jetz. 2019. Inferring the mammal tree: species-level
+sets of phylogenies for questions in ecology, evolution, and
+conservation. PLOS Biology.
+<https://doi.org/10.1371/journal.pbio.3000494>
+
+first I read tree and metadata I downloaded from [this
+website](https://data.vertlife.org)
+
+metadata file was from
+[here](https://data.vertlife.org/mammaltree/taxonomy_mamPhy_5911species.csv)
+
+see also notes in
+`/fh/fast/malik_h/grp/public_databases/trees/Upham_speciesTrees/Upham_speciesTrees_NOTES.txt`
+
+``` r
+mammalTreeFiles <- list.files("/Volumes/malik_h/grp/public_databases/trees/Upham_speciesTrees",
+                              pattern="nex$", full.names = TRUE)
+mammalTrees <- lapply(mammalTreeFiles, ape::read.nexus)
+names(mammalTrees) <- gsub("/Volumes/malik_h/grp/public_databases/trees/Upham_speciesTrees/MamPhy_fullPosterior_BDvr_","",mammalTreeFiles)
+names(mammalTrees) <- gsub("_MCC_v2_target.nex","",names(mammalTrees))
+
+mammalTreeTaxonomyInfo <- "/Volumes/malik_h/grp/public_databases/trees/Upham_speciesTrees/taxonomy_mamPhy_5911species.csv" %>% 
+    read_csv(show_col_types = FALSE)
+```
+
+``` r
+## get example species names I want a tree for. This is long-winded but it should be a working example:
+RTL3_alnFile <- here("Rscripts/phylogenetics/RTL3_aln2022summer_v28.fa")
+
+RTL3_aln <- readDNAStringSet(RTL3_alnFile)
+names(RTL3_aln) <- sapply(strsplit(names(RTL3_aln), " "), "[[", 1)
+
+## now make a seqinfo table - seqname, seqlength, these overlaps, num capsid/protease-overlapping stop-free regions
+RTL3_alnInfoTable <- tibble(id=names(RTL3_aln))
+## get species name from id
+RTL3_alnInfoTable <- RTL3_alnInfoTable %>% 
+    separate(id, into=c(NA,"species"), extra="drop", remove=FALSE) %>% 
+    mutate(species=str_replace(species, "CapsidHMMhit", "")) %>% 
+    mutate(species=str_replace(species, "ProteaseORF", "")) %>% 
+    mutate(species=str_replace(species, "BetweenORFsRegion", "")) %>% 
+    mutate(species=str_to_sentence(to_snake_case(species))) %>% 
+    mutate(species=str_replace_all(species,"_"," "))
+```
+
+``` r
+specNamesToGetTreeFor <- RTL3_alnInfoTable %>% 
+    select(species) %>% 
+    deframe() %>% 
+    unique()
+```
+
+look up common names for each species and add to RTL3_alnInfoTable
+
+``` r
+# sci2comm is from the taxize package. it's a bit slow, and very noisy.
+commonNameLookup <- sci2comm(sci=specNamesToGetTreeFor)
+## I checked - there was 1 character item found for each and none are NA
+# class(commonNameLookup)
+# table( sapply(commonNameLookup, length))
+# table( sapply(commonNameLookup, is.na))
+
+## add commonNameLookup to RTL3_alnInfoTable
+commonNameLookup_tbl <- commonNameLookup %>% 
+    unlist() %>% 
+    as_tibble(rownames="species")
+commonNameLookup_tbl <- commonNameLookup_tbl %>% 
+    dplyr::rename("common_name"="value")
+RTL3_alnInfoTable <- left_join(RTL3_alnInfoTable, commonNameLookup_tbl, by="species") %>% 
+    relocate(common_name, .after="species")
+```
+
+check they’re in the big tree
+
+``` r
+table(tolower(specNamesToGetTreeFor) %in% gsub("_"," ",tolower(mammalTreeTaxonomyInfo$Species_Name)))
+```
+
+    ## 
+    ## FALSE  TRUE 
+    ##    10    71
+
+they’re not all there so I do a bit of wrangling. google and NCBI
+taxonomy database helped me find the versions of species names that
+Upham used
+
+``` r
+RTL3_alnInfoTable <- RTL3_alnInfoTable %>% 
+    mutate(upham_name = case_when( species=="Equus asinus" ~ "Equus africanus",
+                                   species=="Carlito syrichta" ~ "Tarsius syrichta",
+                                   species=="Canis lupus familiaris" ~ "Canis lupus",
+                                   species=="Trichechus manatus latirostris" ~ "Trichechus manatus",
+                                   species=="Pongo pygmaeus abelii" ~ "Pongo abelii",
+                                   species=="Gorilla gorilla gorilla" ~ "Gorilla gorilla",
+                                   species=="Cebus imitator" ~ "Cebus capucinus",
+                                   species=="Cricetulus griseus" ~ "Cricetulus barabensis",
+                                   species=="Piliocolobus tephrosceles" ~ "Colobus guereza", ## not the same species, but I just want it appearing as a sister taxon to  ColobusAngolensism which is present
+                                   species=="Nannospalax galili" ~ "Myospalax aspalax", ## really not the same, but any spalax will do
+                                   .default = species) )
+RTL3_alnInfoTable <- RTL3_alnInfoTable %>% 
+    mutate(upham_name=str_replace_all(upham_name, " ", "_"))
+
+## add upham info to my table
+RTL3_alnInfoTable <- left_join(RTL3_alnInfoTable, mammalTreeTaxonomyInfo, by=c("upham_name"="Species_Name"))
+```
+
+``` r
+### check now whether all the species I want are in the big tree - they are
+specNamesToGetTreeFor_upham <- RTL3_alnInfoTable %>%
+    # filter(!is.na(name_in_fig)) %>%
+    # select(upham_name) %>%
+    select(tiplabel) %>% 
+    deframe() %>%
+    unique()
+# table( tolower(specNamesToGetTreeFor_upham) %in% tolower(mammalTreeTaxonomyInfo$tiplabel ))
+```
+
+subset the giant tree to get just the species I care about
+
+``` r
+## get tree
+upham_tree_subset <-  keep.tip(mammalTrees[["DNAonly_4098sp_topoFree_NDexp"]], specNamesToGetTreeFor_upham)
+
+## replace names with common name
+upham_tree_subset_rename <- upham_tree_subset
+upham_tree_subset_rename$tip.label <- RTL3_alnInfoTable[match(upham_tree_subset$tip.label, RTL3_alnInfoTable$tiplabel),"common_name"] %>% deframe()
+
+plot(upham_tree_subset_rename)
+```
+
+![](trees_usingDownloadedSpeciesTree_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+``` r
+write.tree(upham_tree_subset_rename, file=here("upham_tree_subset_rename.phy"))
+
+##  upham_tree_subset_rename_manuallyRotated.nex is where I used figTree to rotate that tree to match what I wanted
+```

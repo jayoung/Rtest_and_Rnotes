@@ -1,20 +1,10 @@
----
-title: "trees_usingPublicTrees"
-author: "Janet Young\n"
-date: "`r Sys.Date()`\n"
-output: github_document
-always_allow_html: true
----
+trees_usingPublicTrees
+================
+Janet Young
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(Biostrings)
-library(snakecase)
-library(taxize)
-```
+2024-02-09
 
-```{r}
+``` r
 ## get example species names I want a tree for. This is long-winded but it should be a working example:
 ## running from rhino
 # RTL3_alnFile <- "/fh/fast/malik_h/user/jayoung/miscMalikLab/domesticated_capsid/alignments/all_alignment_dirs/RTL3/RTL3_aln2022summer_v28.fa"
@@ -36,7 +26,7 @@ RTL3_alnInfoTable <- RTL3_alnInfoTable %>%
     mutate(species=str_replace_all(species,"_"," "))
 ```
 
-```{r}
+``` r
 specNamesToGetTreeFor <- RTL3_alnInfoTable %>% 
     # filter(!is.na(name_in_fig)) %>% 
     select(species) %>% 
@@ -44,18 +34,7 @@ specNamesToGetTreeFor <- RTL3_alnInfoTable %>%
     unique()
 ```
 
-
-```{r, include=FALSE}
-# look up common names
-# sci2comm is from the taxize package. it's a bit slow, and very noisy.
-commonNameLookup <- sci2comm(sci=specNamesToGetTreeFor)
-## I checked - there was 1 character item found for each and none are NA
-# class(commonNameLookup)
-# table( sapply(commonNameLookup, length))
-# table( sapply(commonNameLookup, is.na))
-```
-
-```{r}
+``` r
 ## add commonNameLookup to RTL3_alnInfoTable
 commonNameLookup_tbl <- commonNameLookup %>% 
     unlist() %>% 
@@ -66,8 +45,7 @@ RTL3_alnInfoTable <- left_join(RTL3_alnInfoTable, commonNameLookup_tbl, by="spec
     relocate(common_name, .after="species")
 ```
 
-```{r try taxize, eval=FALSE}
-
+``` r
 ### try taxize package
 
 ## try getting a tree, small test:
