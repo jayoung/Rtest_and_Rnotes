@@ -131,13 +131,18 @@ upham_tree_subset <-  keep.tip(mammalTrees[["DNAonly_4098sp_topoFree_NDexp"]], s
 upham_tree_subset_rename <- upham_tree_subset
 upham_tree_subset_rename$tip.label <- RTL3_alnInfoTable[match(upham_tree_subset$tip.label, RTL3_alnInfoTable$tiplabel),"common_name"] %>% deframe()
 
-plot(upham_tree_subset_rename)
+### write tree to a file
+write.tree(upham_tree_subset_rename, file=here("upham_tree_subset_rename.phy"))
+
+### plot it
+upham_tree_subset_rename %>% 
+    ggtree() +
+    geom_tiplab() +
+    hexpand(2)
 ```
 
 ![](trees_usingDownloadedSpeciesTree_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
-write.tree(upham_tree_subset_rename, file=here("upham_tree_subset_rename.phy"))
-
-##  upham_tree_subset_rename_manuallyRotated.nex is where I used figTree to rotate that tree to match what I wanted
+##  upham_tree_subset_rename_manuallyRotated.nex is where I used figTree to rotate that tree to match species order I wanted and reexported
 ```
