@@ -1,29 +1,31 @@
 library(tidyverse)
 library(patchwork)
 
-temp <- iris %>% 
-    group_by(Species) %>% 
-    map(plots=ggplot(data=.) +
-          aes(x=Petal.Width, y=Petal.Length) + 
-           geom_point() + 
-           ggtitle(unique(.$Species)))
-
-
-temp$plots[[1]]
-
-
-myPlotFunc <- function(x) {
-    ggplot(data=x) +
-        aes(x=Petal.Width, y=Petal.Length) + 
-        geom_point() + 
-        ggtitle(unique(x$Species))
+myPlotFunc <- function(dat) {
+    ggplot(dat,
+           aes(x = Petal.Width, y = Petal.Length)) +
+        geom_point() +
+        ggtitle(unique(dat$Species))
 }
 
-temp <- iris %>% 
-    group_split(Species) %>% 
-    map(function(x) {
-        ggplot(data=x) +
-            aes(x=Petal.Width, y=Petal.Length) + 
-            geom_point() + 
-            ggtitle(unique(x$Species))
-    })
+## all data
+iris %>% myPlotFunc()
+
+## group_split then map to plot each (purrr::map)
+temp <- iris %>%
+    group_split(Species) %>%
+    map(myPlotFunc)
+temp[[1]]
+
+
+## or use an anonymous function with the ~
+temp <- iris %>%
+    group_split(Species) %>%
+    map(~ggplot(.,
+               aes(x = Petal.Width, y = Petal.Length)) +
+            geom_point() +
+            ggtitle(unique(.$Species)))
+temp[[1]] + temp[[2]] + temp[[3]]
+
+
+

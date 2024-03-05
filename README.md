@@ -11,7 +11,7 @@ rhino location: `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes`
 
 Nick Tierney's (mostly) [rstats blog](https://www.njtierney.com)
 
-
+R For The Rest Of Us [resources](https://rfortherestofus.com/resources)
 
 ### haven't looked yet: future
 
@@ -19,6 +19,11 @@ Nick Tierney's (mostly) [rstats blog](https://www.njtierney.com)
 
 
 ## Things I've learned
+
+
+### Rstudio tricks
+
+"Reindenting your code only shifts things around horizontally. If you want more powerful code reformatting, try using “Code > Reformat Code” (or use ⌘⇧A on macOS or ctrl + shift + A on Windows). It’s a more aggressive form of reformatting that will add extra line breaks and other things to make the code more readable."
 
 ### Debugging
 
