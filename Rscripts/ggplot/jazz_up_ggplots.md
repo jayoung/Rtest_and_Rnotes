@@ -1,14 +1,12 @@
----
-title: "jazz_ggplots"
-author: "Janet Young"
-date: "`r Sys.Date()`\n"
-output: github_document
-always_allow_html: true
----
+jazz_ggplots
+================
+Janet Young
+2024-03-06
 
-Learning from a [USGS blog post](https://waterdata.usgs.gov/blog/ggplot-jazz/?ck_subscriber_id=2523933977&utm_source=convertkit&utm_medium=email&utm_campaign=What%27s+New+in+R%3A+February+20%2C+2024%20-%2013131084)
+Learning from a [USGS blog
+post](https://waterdata.usgs.gov/blog/ggplot-jazz/?ck_subscriber_id=2523933977&utm_source=convertkit&utm_medium=email&utm_campaign=What%27s+New+in+R%3A+February+20%2C+2024%20-%2013131084)
 
-```{r}
+``` r
 ### installed some packages
 # install.packages(c('tidyverse', 'remotes','showtext', 'sysfonts', 'cowplot',
 # 'dataRetrieval', 'geomtextpath', 'ggimage', 'rnpn', 'terra', 'raster', 'sf',
@@ -17,17 +15,15 @@ Learning from a [USGS blog post](https://waterdata.usgs.gov/blog/ggplot-jazz/?ck
 # remotes::install_github("hrbrmstr/waffle")
 ```
 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(here)
+``` r
+library(showtext) # For fonts
 ```
 
+    ## Loading required package: sysfonts
 
-```{r}
-library(showtext) # For fonts
+    ## Loading required package: showtextdb
 
+``` r
 # Supply custom fonts using `showtext` 
 font_legend <- 'Merriweather Sans'
 font_add_google(font_legend) ## downloads and installs a font
@@ -55,12 +51,12 @@ theme_fe <- function(text_size = 16, font_legend){
         strip.text.x = element_text(hjust = .5),
         panel.spacing = unit(1, "lines"))
 }
-
 ```
 
-use the annotate_text font ("Shadows Into Light") for everything in the plot
+use the annotate_text font (“Shadows Into Light”) for everything in the
+plot
 
-```{r}
+``` r
 iris %>% 
     ggplot(aes(x=Sepal.Length, y=Sepal.Width, color=Species)) +
     geom_point() +
@@ -68,15 +64,21 @@ iris %>%
                             color = "black", face = "bold"))
 ```
 
-use the entire theme_fe (now uses font_legend, 'Merriweather Sans') :
-```{r}
+![](jazz_up_ggplots_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+use the entire theme_fe (now uses font_legend, ‘Merriweather Sans’) :
+
+``` r
 iris %>% 
     ggplot(aes(x=Sepal.Length, y=Sepal.Width, color=Species)) +
     geom_point() +
     theme_fe(font_legend = font_legend)
 ```
-## gghighlight
-```{r}
+
+![](jazz_up_ggplots_files/figure-gfm/unnamed-chunk-4-1.png)<!-- --> \##
+gghighlight
+
+``` r
 library(snotelr) # To download data from SNOTEL network
 library(gghighlight)
 
@@ -84,7 +86,11 @@ library(gghighlight)
 # See https://www.nrcs.usda.gov/wps/portal/wcc/home/quicklinks/imap for map of 
 # SNOTEL sites
 site_data <- snotelr::snotel_download(site_id = 574, internal = TRUE)
+```
 
+    ## Downloading site: leavitt lake , with id: 574
+
+``` r
 # Munge data, converting units, determining water year, and setting up a plot 
 # ate variable
 munged_snotel_data <- site_data |> 
@@ -108,10 +114,10 @@ munged_snotel_data <- site_data |>
  # munged_snotel_data is a 12574x24 data frame
 ```
 
+uses gghighlight to highlight the 2023 data, and show the rest in gray.
+it also labels the highlighted data
 
-uses gghighlight to highlight the 2023 data, and show the rest in gray. it also labels the highlighted data
-```{r}
-
+``` r
 snotel_plot <- ggplot(munged_snotel_data) +
   geom_line(aes(x = plot_date, y = snow_water_equivalent_in, group = wy),
             color = 'dodgerblue2', lwd = 0.5) +
@@ -143,13 +149,19 @@ snotel_plot <- ggplot(munged_snotel_data) +
                        unique(munged_snotel_data$county),
                        unique(munged_snotel_data$state),
                        round(unique(munged_snotel_data$elev_ft))))
+```
 
+    ## Warning: Tried to calculate with group_by(), but the calculation failed.
+    ## Falling back to ungrouped filter operation...
+
+    ## label_key: wy
+
+``` r
 ggsave("gghighlight.png", plot = snotel_plot, width = 9, 
        height = 5, dpi = 300, bg = "white")
 ```
 
-
-```{r}
+``` r
 library(gganimate)
 
 ### this produces blank gif - not sure why
@@ -161,21 +173,115 @@ snotel_plot_w_transition <- snotel_plot +
 # Build the animation, pausing on the last frame
 animation <- gganimate::animate(snotel_plot_w_transition, end_pause = 20, 
                                 width = 9, height = 5, units = "in", res = 300)
+```
 
+    ## Warning: Cannot get dimensions of plot table. Plot region might not be fixed
+    ## Caused by error in `guides[[i]]$draw`:
+    ## ! $ operator is invalid for atomic vectors
+
+    ## Warning: Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Failed to plot frame
+    ## Caused by error in `guides[[i]]$draw`:
+    ## ! $ operator is invalid for atomic vectors
+
+``` r
 # Save the animation
 gganimate::anim_save(here("Rscripts/ggplot/gganimate.gif"), animation = animation)
 ```
 
-
-```{r}
+``` r
 anim <- ggplot(airquality, aes(Day, Temp, group = Month)) +
   geom_line() +
   transition_reveal(Day)
 anim
 ```
 
+    ## `geom_line()`: Each group consists of only one observation.
+    ## ℹ Do you need to adjust the group aesthetic?
+    ## `geom_line()`: Each group consists of only one observation.
+    ## ℹ Do you need to adjust the group aesthetic?
 
-```{r}
+![](jazz_up_ggplots_files/figure-gfm/unnamed-chunk-8-1.gif)<!-- -->
+
+``` r
 anim <- ggplot(mtcars, aes(mpg, disp)) +
   geom_point(aes(color = gear)) +
   transition_states(gear, transition_length = 2, state_length = 1) +
@@ -184,14 +290,14 @@ anim <- ggplot(mtcars, aes(mpg, disp)) +
 # anim
 ```
 
-
-```{r}
+``` r
 ggplot(iris, aes(x=Sepal.Width, y=Petal.Width, color=Species)) +
   geom_point() 
 ```
 
+![](jazz_up_ggplots_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
-```{r}
+``` r
 anim <- ggplot(iris, aes(Sepal.Width, Petal.Width)) +
   geom_point() +
   labs(title = "{closest_state}") +
@@ -199,3 +305,4 @@ anim <- ggplot(iris, aes(Sepal.Width, Petal.Width)) +
 anim
 ```
 
+![](jazz_up_ggplots_files/figure-gfm/unnamed-chunk-11-1.gif)<!-- -->

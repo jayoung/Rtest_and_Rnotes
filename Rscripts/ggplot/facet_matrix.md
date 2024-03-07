@@ -1,29 +1,17 @@
----
-title: "facet_matrix"
-author: "Janet Young"
-date: "`r Sys.Date()`\n"
-output: github_document
-always_allow_html: true
----
+facet_matrix
+================
+Janet Young
+2024-03-06
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(ggforce)
-library(palmerpenguins)
-library(gridExtra) # for grid.arrange
-
-library(showtext) # For fonts
-font_add_google("Roboto Condensed") ## downloads and installs a font
-```
-
-```{r}
+``` r
 ggplot(mpg) +
   geom_point(aes(x = .panel_x, y = .panel_y)) +
   facet_matrix(vars(displ, cty, hwy))
 ```
 
-```{r}
+![](facet_matrix_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+``` r
 # Switch the diagonal, alternate the axes and style strips as axis labels
 ggplot(mpg) +
   geom_point(aes(x = .panel_x, y = .panel_y)) +
@@ -32,23 +20,29 @@ ggplot(mpg) +
   theme(strip.background = element_blank(),
         strip.placement = 'outside',
         strip.text = element_text(size = 12))
-
 ```
 
-```{r}
+![](facet_matrix_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
+``` r
 # Mix discrete and continuous columns. Use geom_autopoint for scale-based jitter
 ggplot(mpg) +
   geom_autopoint() +
   facet_matrix(vars(drv:fl))
 ```
-```{r}
+
+![](facet_matrix_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
 ggplot(mpg) +
   geom_autopoint() +
   geom_autodensity() +
   facet_matrix(vars(drv:fl), layer.diag = 2)
 ```
 
-```{r}
+![](facet_matrix_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+``` r
 ggplot(mpg) +
   geom_autopoint() +
   geom_autodensity() +
@@ -58,14 +52,17 @@ ggplot(mpg) +
                layer.continuous = -4, layer.discrete = -3, layer.mixed = -3)
 ```
 
+![](facet_matrix_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-
-```{r}
+``` r
 ggplot(mpg) +
   geom_boxplot(aes(x = .panel_x, y = .panel_y, group = .panel_x)) +
   facet_matrix(rows = vars(cty, hwy), cols = vars(drv, fl))
 ```
-```{r}
+
+![](facet_matrix_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+``` r
 names <- c("bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g")
 ## ... and create all possible combinations
 names_set <- tidyr::expand_grid(names, names)
@@ -78,8 +75,33 @@ ggplot(penguins, aes(x = .panel_x, y = .panel_y)) +
   ggforce::facet_matrix(vars(names), layer.lower = 2, layer.diag = 3)
 ```
 
+    ## Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
+    ## ℹ Please use `all_of()` or `any_of()` instead.
+    ##   # Was:
+    ##   data %>% select(names)
+    ## 
+    ##   # Now:
+    ##   data %>% select(all_of(names))
+    ## 
+    ## See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
 
-```{r}
+    ## `geom_smooth()` using formula = 'y ~ x'
+
+    ## Warning: Removed 12 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning: Removed 8 rows containing non-finite outside the scale range
+    ## (`stat_autodensity()`).
+
+    ## Warning: Removed 12 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](facet_matrix_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+``` r
 plot_scatter_lm <-
     function(data,
              var1,
@@ -135,15 +157,33 @@ plot_scatter_lm <-
     }
 ```
 
-```{r}
-
+``` r
 all_plots <- pmap(
   names_set, ~plot_scatter_lm(
     data = penguins, 
     var1 = .x, var2 = .y, color = "species"
   )
 )
+```
+
+    ## Warning: Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+    ## Duplicated aesthetics after name standardisation: colour
+
+``` r
 # do.call("grid.arrange", c(all_plots, ncol=4))
 # all_plots[[2]]
 ```
-
