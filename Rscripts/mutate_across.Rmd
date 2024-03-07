@@ -1,0 +1,36 @@
+---
+title: "mutate_across"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+penguins <- palmerpenguins::penguins
+```
+
+```{r}
+# select columns based on data class:
+penguins |>
+  select(
+    where(is.numeric)
+  )
+# Notice that you don’t actually call is.numeric in your code. You only do where(is.numeric) and not where(is.numeric()) . That’s because you partner up the function is.numeric with the where function. This way, the where function just knows the name of its partner (in this case is.numeric ) and can let its partner do the checking whenever where feels like it.
+  
+
+# mutate across:
+divide_by_ten <- function(x) x / 10
+penguins |>
+  mutate(
+    across(
+      .cols = ends_with("mm"),
+      .fns = divide_by_ten,
+      .names = '{str_remove(.col, "_mm")}_cm'
+    )
+  ) |>
+  select(-ends_with("mm")) # remove old columns here
+```
+

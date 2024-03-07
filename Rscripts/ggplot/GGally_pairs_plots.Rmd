@@ -1,0 +1,75 @@
+---
+title: "GGally_pairs_plots"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+explore [GGally package](https://ggobi.github.io/ggally/articles/ggpairs.html)
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(GGally)
+
+# example data. 244 rows, 7 columns: total_bill  tip    sex smoker day   time size
+data(tips)
+
+tips %>% summary()
+```
+
+Defaults 
+- the diagonals give some kind of summary of that variable
+- upper and lower panels give different views of the pairwise comparisons:
+    - if both variables are continuous, one plot is a scatterplot and the other states the correlation
+    - if one continuous and one categorical, we get faceted histograms and boxplots
+
+```{r}
+pm <- ggpairs(tips, columns = c("total_bill", "time", "tip"), 
+              columnLabels = c("Total Bill", "Time of Day", "Tip"))
+pm
+```
+
+can group by color
+```{r}
+pm <- ggpairs(tips, mapping = aes(color = sex), columns = c("total_bill", "time", "tip"))
+pm
+```
+
+
+
+
+data where log10 would make sense:
+```{r}
+df_noZeros <- data.frame(x=c(1:50,800,1000), 
+                         y=c(1:50,800,1000))
+ggpairs(df_noZeros)
+```
+
+```{r}
+ggpairs(df_noZeros) +
+    scale_x_log10() +
+    scale_y_log10()
+```
+
+
+
+data where log10 would make sense, except there are zeros:
+```{r}
+df_zeros <- data.frame(x=c(0:50,800,1000), 
+                         y=c(0:50,800,1000))
+ggpairs(df_zeros)
+```
+add 1 to all columns then plot on a log10 scale:
+```{r}
+df_zeros %>% 
+    mutate(across(
+        .cols=x:y,
+        .fns = function(myNums) { myNums+1 } )
+        ) %>% 
+ggpairs() +
+    scale_x_log10() +
+    scale_y_log10()
+```
+```

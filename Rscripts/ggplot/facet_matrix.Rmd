@@ -9,7 +9,7 @@ always_allow_html: true
 ```{r setup, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(ggforce)
+library(ggforce) # for facet_matrix
 library(palmerpenguins)
 library(gridExtra) # for grid.arrange
 
