@@ -1,12 +1,12 @@
 ---
 title: "facet_matrix"
-author: "Janet Young"
+author: "Janet Young\n"
 date: "`r Sys.Date()`\n"
 output: github_document
 always_allow_html: true
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggforce)

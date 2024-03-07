@@ -1,6 +1,6 @@
 ---
 title: "jazz_ggplots"
-author: "Janet Young"
+author: "Janet Young\n"
 date: "`r Sys.Date()`\n"
 output: github_document
 always_allow_html: true
@@ -18,7 +18,7 @@ Learning from a [USGS blog post](https://waterdata.usgs.gov/blog/ggplot-jazz/?ck
 ```
 
 
-```{r setup, include=FALSE}
+```{r setup, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)

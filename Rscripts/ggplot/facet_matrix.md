@@ -1,7 +1,48 @@
 facet_matrix
 ================
 Janet Young
+
 2024-03-06
+
+``` r
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ## ✔ dplyr     1.1.4     ✔ readr     2.1.4
+    ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+    ## ✔ ggplot2   3.5.0     ✔ tibble    3.2.1
+    ## ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+    ## ✔ purrr     1.0.2     
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ✖ dplyr::filter() masks stats::filter()
+    ## ✖ dplyr::lag()    masks stats::lag()
+    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+``` r
+library(ggforce)
+library(palmerpenguins)
+library(gridExtra) # for grid.arrange
+```
+
+    ## 
+    ## Attaching package: 'gridExtra'
+    ## 
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     combine
+
+``` r
+library(showtext) # For fonts
+```
+
+    ## Loading required package: sysfonts
+    ## Loading required package: showtextdb
+
+``` r
+font_add_google("Roboto Condensed") ## downloads and installs a font
+```
 
 ``` r
 ggplot(mpg) +
