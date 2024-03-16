@@ -5,6 +5,8 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
+# colorBlindness package
+
 see [colorBlindness package vignette](https://cran.r-project.org/web/packages/colorBlindness/vignettes/colorBlindness.html)
 
 ```{r setup, include=FALSE}
@@ -43,3 +45,39 @@ cvdPlot(replacePlotColor(displayColors(c("Red", "Green", "blue"))))
 `colorBlindness::replacePlotColor` - replace the colors for plots
 replace the colors of plots to meet the requirement of publication. Replacing red with magenta or green with turquoise. Replacing all the colored symbols in the legend.
 
+# Ra11y package
+
+[Ra11y package](https://github.com/nicucalcea/Ra11y)
+
+```{r}
+# remotes::install_github("nicucalcea/Ra11y")
+library(Ra11y)
+
+## example plot
+
+starwars <- dplyr::starwars |> 
+  tidyr::drop_na(height, mass, gender)
+
+starwars_plot <- starwars |>
+  ggplot(aes(x = height, y = mass, colour = gender)) +
+  geom_point(size = 4) +
+  scale_colour_manual(values = c("red", "darkgreen")) +
+  labs(title = "Jabba the Hutt outweighs the competion",
+       subtitle = "Height and mass of Star Wars characters")
+
+starwars_plot
+```
+
+```{r}
+test_plot(starwars_plot, test = "cvd") # CVD stands for Colour Vision Deficiency
+```
+
+```{r}
+## colorblindr doesn't seem available any more byt cvdPlot seems to give similar results to what' the we's shown here https://github.com/nicucalcea/Ra11y?tab=readme-ov-file
+##colorblindr::cvd_grid(starwars_plot)
+
+cvdPlot(starwars_plot)
+```
+
+
+that Ra11y package has some suggestions about adding contrast and alt text to help with color blindness
