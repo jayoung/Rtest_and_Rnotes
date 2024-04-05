@@ -37,11 +37,14 @@ plain_tree_plot <- ggtree(tree) +
     geom_tiplab() #tree
 
 ## now use ggmsa function tidy_msa() to prep a chunk of the alignment. This returns a data.frame, three columns: seqname, position and amino acid
-data <- tidy_msa(prot_aln, start = 100, end = 350)  
+prot_aln_DF <- tidy_msa(prot_aln, start = 300, end = 330)  
 
 ## add alignment to the tree using geom_msa (a ggmsa function)
-plain_tree_plot + geom_facet(geom = geom_msa, data = data,
-               panel = 'msa', font = NULL,
+plain_tree_plot + 
+    geom_facet(geom = geom_msa, 
+               data = prot_aln_DF,
+               panel = 'msa', 
+               ## font = NULL, use NULL if we're zoomed way out and only want to show colors
                color = "Chemistry_AA")  +
     xlim_tree(1)
 ```
@@ -59,14 +62,12 @@ than just using colors
 ``` r
 msaplot(plain_tree_plot,
         prot_aln_file,
-        offset=1, width=3, window=c(100,130))
+        offset=2, width=3, window=c(200,230))
 ```
 
 ![](ggmsa_tests_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-# Playing around with the sizing of the plot
-
-I had some trouble with this - played around until I found a solution
+# Add logo plot using geom_seqlogo
 
 ``` r
 # example from here: https://github.com/YuLab-SMU/ggmsa/issues/56
@@ -81,10 +82,15 @@ ggmsa(dna_aln, seq_name = F,
 
 ![](ggmsa_tests_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
+# Playing around with the sizing of the plot
+
+I had some trouble with resizing to change dimensions when saving
+files - played around until I found a solution
+
 ``` r
 test_msa_plot <- ggmsa(dna_aln, seq_name = F,
-           char_width = 0.5,
-           font = NULL, border = NA, color = "Chemistry_NT") +
+                       char_width = 0.5,
+                       font = NULL, border = NA, color = "Chemistry_NT") +
     facet_msa(field=80) +
     geom_seqlogo(color = "Chemistry_NT")
 ```
