@@ -34,6 +34,7 @@ p + geom_facet(geom = geom_msa, data = data,
 ```{r}
 # example from here: https://github.com/YuLab-SMU/ggmsa/issues/56
 seq <- readDNAStringSet(here("Rscripts/ggmsa_mult_seq_alns/ggmsa_tests_example_for_github.fa"))
+
 ggmsa(seq, seq_name = F,
       char_width = 0.5,
       font = NULL, border = NA, color = "Chemistry_NT") +

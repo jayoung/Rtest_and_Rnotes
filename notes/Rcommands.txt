@@ -215,23 +215,8 @@ Note - they are different within R. The file /home/jayoung/traskdata/lib_linux_6
 gets read to modify paths within R.
 
 see also /home/jayoung/traskdata/lib_linux_64_hyrax/R/etc/Renviron
-Useful packages
----------------
 
-Phylogenies:  
-ape
-ggtree (can parse PAML and Hyphy output as well as make some very nice plots)
-https://yulab-smu.top/treedata-book
-https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12628
 
-Plotting genes:
-gggenes:  https://cran.r-project.org/web/packages/gggenes/vignettes/introduction-to-gggenes.html
-
-Useful web pages
----------------
-http://manuals.bioinformatics.ucr.edu/home/ht-seq
-
-https://rfortherestofus.com/resources/ to find packages and tutorials
 
 some example R commands:
 ------------------------
@@ -344,19 +329,6 @@ boxplot(list(x=x,y=y))
 
 boxplot(df, (rep(colnames(df),each=dim(df)[1])) )
 
-
-violin plots
-------------
-
-I found three different packages that can make violin plots. I like PlotViolin better than vioplot, but when I run it on large datasets it is very slow if I allow it to use its default bandwidth selection algorithm.   If I specify the bw="nrd0" option, it is MUCH quicker.
-
-library(vioplot)       # function = vioplot
-library(DescTools)     # function = PlotViolin
-library(easyGgplot2)   # function = ggplot2.violinplot
-library(UsingR)        # function = violinplot
-
-
-# http://www.sthda.com/english/wiki/ggplot2-violin-plot-easy-function-for-data-visualization-using-ggplot2-and-r-software
 
 ## test data: a bimodal distribution (x1 or x2), with means at 0 (2/3 of the datapoints) and 5 (1/3 of the datapoints).  Also, make a factor (f1 or f2) that divides the data into 5 groups. 
 
@@ -821,24 +793,12 @@ dev.off()
 
 
 
-######
-parsing fastq output:
-
-see ngsReports package - ~/public_databases/NCBI/SRA/data/mammalian_expression_profiles/human/human_spermMicrobiomeTotalRNAseq/fastqc/parseFastqc.R
-
-https://www.bioconductor.org/packages/devel/bioc/vignettes/ngsReports/inst/doc/ngsReportsIntroduction.html#loading-fastqc-data-into-r
-
 ###### reading files from a .zip file:
 
 
 ## the first argument is the zip file, the second is the path that would result once the zip is unpacked
 con <- unz("SRR10696710_fastqc.zip", "SRR10696710_fastqc/fastqc_data.txt")
 dat <- scan(con, what="character")
-
-
-#### wordclouds - wordcloud and wordcloud2 packages
-see /Volumes/malik_h/user/jayoung/presentations/MalikLab/otherSlides_mine/KennedyHighSchoolVisit_2021_Dec7/Hutch_wordCloud.R
-
 
 ##### Rstudio 
 
