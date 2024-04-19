@@ -78,6 +78,15 @@ myFunc <- function(x) {
 
 ## Useful packages
 
+### pretty tables in Rmarkdown (etc)
+
+`kable/kableExtra`
+
+`flextable` - see [Rscripts/flextable_demo.md](Rscripts/flextable_demo.md) 
+
+(and I think some others)
+
+
 ### fastq files
 
 shortRead package
