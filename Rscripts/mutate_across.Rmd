@@ -22,6 +22,7 @@ penguins |>
   
 # mutate across:
 divide_by_ten <- function(x) x / 10
+
 penguins |>
   mutate(
     across(

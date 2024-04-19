@@ -109,7 +109,24 @@ in ~/domesticated_capsid/Rreports/RTL3_frameshift_plots_v2_aln28.Rmd I got a tre
 
 [ggbio](https://www.bioconductor.org/packages/release/bioc/html/ggbio.html) - not sure whether it is still maintained  
 
-ggcoverage
+[ggcoverage](https://github.com/showteeth/ggcoverage)
+
+[Gviz](https://www.bioconductor.org/packages/release/bioc/vignettes/Gviz/inst/doc/Gviz.html) (that's what I used for the tetrahymena project, and Michelle's project, and SATAY data)
+
+[GenVisR](https://bioconductor.org/packages/release/bioc/html/GenVisR.html)
+
+for genomes with karyotypes: [karyoploteR](https://bioconductor.org/packages/release/bioc/vignettes/karyoploteR/inst/doc/karyoploteR.html)
+
+rtracklayer can make plots by interacting with a UCSC browser
+
+igvR can interact with IGV
+
+[tidyGenomeBrowser](https://github.com/MalteThodberg/tidyGenomeBrowser)
+
+[GenomicPlot](https://bioconductor.org/packages/release/bioc/vignettes/GenomicPlot/inst/doc/GenomicPlot_vignettes.html) is more for making metaplots combining data over multiple features
+
+Explored a few options in April 2024 for the SATAY data - see ~/FH_fast_storage/forOtherPeople/forGrantKing/SATAY/janet_Rscripts/ files browser_style_plots_failed_attempts.Rmd and browser_style_plots.Rmd
+
 
 ### miscellaneous
 
