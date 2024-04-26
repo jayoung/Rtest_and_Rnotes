@@ -66,8 +66,12 @@ How to select columns based on more than one condition - use
 `union`/`intersect`, or `|`/`&`
 
 ``` r
+## two alternative ways to write the same thing:
+# penguins |>
+#     select( ends_with("_mm") | ends_with("_sq")) %>% 
+#     head(3)
 penguins |> 
-    select(union (ends_with("_mm"), ends_with("_g") ))  %>% 
+    select(union (ends_with("_mm"), ends_with("_g") )) %>% 
     head(3)
 ```
 
@@ -79,12 +83,10 @@ penguins |>
     ## 3           40.3          18                 195        3250
 
 ``` r
-## same as this:
-# penguins |> 
-# select( ends_with("_mm") | ends_with("_sq")) 
-```
-
-``` r
+## two alternative ways to write the same thing:
+# penguins |>
+#     select( ends_with("_mm") & matches("_length") )  %>%
+#     head(3)
 penguins |>
     select(intersect (ends_with("_mm"), matches("_length") )) %>% 
     head(3)
@@ -96,13 +98,6 @@ penguins |>
     ## 1           39.1               181
     ## 2           39.5               186
     ## 3           40.3               195
-
-``` r
-## same as this:
-# penguins |> 
-#     select( ends_with("_mm") & matches("_length") )  %>% 
-    # head(3)
-```
 
 How to select columns based on class of data within them, using
 `where()`:
