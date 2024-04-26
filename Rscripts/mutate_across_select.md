@@ -10,7 +10,28 @@ Get example data
 penguins <- palmerpenguins::penguins
 ```
 
-Use mutate across (example from the help)
+Use mutate across with a simple built-in function (example from the
+help)
+
+``` r
+penguins |>
+    mutate(
+        across(ends_with("mm"), log10,
+            .names = '{.col}_log10'
+        )
+    ) |>
+    select(matches("depth") & (ends_with("mm") | ends_with("log10"))) %>% # remove old columns here
+    head(3)
+```
+
+    ## # A tibble: 3 × 2
+    ##   bill_depth_mm bill_depth_mm_log10
+    ##           <dbl>               <dbl>
+    ## 1          18.7                1.27
+    ## 2          17.4                1.24
+    ## 3          18                  1.26
+
+Use mutate across with a user-defined function (example from the help)
 
 ``` r
 ## make a function and use it in mutate across:
@@ -26,17 +47,39 @@ penguins |>
             .names = '{str_remove(.col, "_mm")}_cm'
         )
     ) |>
-    select(-ends_with("mm")) %>% # remove old columns here
+    select(matches("depth") & (ends_with("mm") | ends_with("cm"))) %>% # remove old columns here
     head(3)
 ```
 
-    ## # A tibble: 3 × 8
-    ##   species island    body_mass_g sex     year bill_length_cm bill_depth_cm
-    ##   <fct>   <fct>           <int> <fct>  <int>          <dbl>         <dbl>
-    ## 1 Adelie  Torgersen        3750 male    2007           3.91          1.87
-    ## 2 Adelie  Torgersen        3800 female  2007           3.95          1.74
-    ## 3 Adelie  Torgersen        3250 female  2007           4.03          1.8 
-    ## # ℹ 1 more variable: flipper_length_cm <dbl>
+    ## # A tibble: 3 × 2
+    ##   bill_depth_mm bill_depth_cm
+    ##           <dbl>         <dbl>
+    ## 1          18.7          1.87
+    ## 2          17.4          1.74
+    ## 3          18            1.8
+
+Same thing but without defining the function
+
+``` r
+penguins |>
+    mutate(
+        across(
+            .cols = ends_with("mm"),   ## everything() chooses all columns
+            .fns = function(x) x / 10,
+            ## use .names arg to figure out what output colnames will be. Empty names arg means values in current columns get replaced
+            .names = '{str_remove(.col, "_mm")}_cm'
+        )
+    ) |>
+    select(matches("depth") & (ends_with("mm") | ends_with("cm"))) %>% # remove old columns here
+    head(3)
+```
+
+    ## # A tibble: 3 × 2
+    ##   bill_depth_mm bill_depth_cm
+    ##           <dbl>         <dbl>
+    ## 1          18.7          1.87
+    ## 2          17.4          1.74
+    ## 3          18            1.8
 
 More practise:
 
@@ -45,7 +88,6 @@ myFunc <- function(x) {x^2}
 penguins %>% 
     mutate(across( ends_with("_mm"),
                    myFunc,
-                   # .names = '{str_remove(.col, "_mm")}_cm'
                    .names = '{.col}_sq'
     )) %>% 
     select(union (ends_with("_mm"), ends_with("_sq") )) %>% 
@@ -59,6 +101,26 @@ penguins %>%
     ## 2           39.5          17.4               186             1560.
     ## 3           40.3          18                 195             1624.
     ## # ℹ 2 more variables: bill_depth_mm_sq <dbl>, flipper_length_mm_sq <dbl>
+
+We can also use the ~ style way to specify a function on the fly, in
+which case we use `.x` as a standin for the data:
+
+``` r
+penguins %>% 
+    mutate(across( ends_with("_mm"),
+                   ~ (.x ^ 2),
+                   .names = '{.col}_sq'
+    )) %>% 
+    select(intersect(matches("length"), union(ends_with("_mm"), ends_with("_sq") ))) %>% 
+    head(3)
+```
+
+    ## # A tibble: 3 × 4
+    ##   bill_length_mm flipper_length_mm bill_length_mm_sq flipper_length_mm_sq
+    ##            <dbl>             <int>             <dbl>                <dbl>
+    ## 1           39.1               181             1529.                32761
+    ## 2           39.5               186             1560.                34596
+    ## 3           40.3               195             1624.                38025
 
 # A bit more on using `select()`
 

@@ -16,7 +16,20 @@ Get example data
 penguins <- palmerpenguins::penguins
 ```
 
-Use mutate across (example from the help)
+
+Use mutate across with a simple built-in function (example from the help)
+```{r}
+penguins |>
+    mutate(
+        across(ends_with("mm"), log10,
+            .names = '{.col}_log10'
+        )
+    ) |>
+    select(matches("depth") & (ends_with("mm") | ends_with("log10"))) %>% # remove old columns here
+    head(3)
+```
+
+Use mutate across with a user-defined function (example from the help)
 
 ```{r}
 ## make a function and use it in mutate across:
@@ -32,7 +45,23 @@ penguins |>
             .names = '{str_remove(.col, "_mm")}_cm'
         )
     ) |>
-    select(-ends_with("mm")) %>% # remove old columns here
+    select(matches("depth") & (ends_with("mm") | ends_with("cm"))) %>% # remove old columns here
+    head(3)
+```
+
+
+Same thing but without defining the function
+```{r}
+penguins |>
+    mutate(
+        across(
+            .cols = ends_with("mm"),   ## everything() chooses all columns
+            .fns = function(x) x / 10,
+            ## use .names arg to figure out what output colnames will be. Empty names arg means values in current columns get replaced
+            .names = '{str_remove(.col, "_mm")}_cm'
+        )
+    ) |>
+    select(matches("depth") & (ends_with("mm") | ends_with("cm"))) %>% # remove old columns here
     head(3)
 ```
 
@@ -43,10 +72,21 @@ myFunc <- function(x) {x^2}
 penguins %>% 
     mutate(across( ends_with("_mm"),
                    myFunc,
-                   # .names = '{str_remove(.col, "_mm")}_cm'
                    .names = '{.col}_sq'
     )) %>% 
     select(union (ends_with("_mm"), ends_with("_sq") )) %>% 
+    head(3)
+```
+
+We can also use the ~ style way to specify a function on the fly, in which case we use `.x` as a standin for the data:
+
+```{r}
+penguins %>% 
+    mutate(across( ends_with("_mm"),
+                   ~ (.x ^ 2),
+                   .names = '{.col}_sq'
+    )) %>% 
+    select(intersect(matches("length"), union(ends_with("_mm"), ends_with("_sq") ))) %>% 
     head(3)
 ```
 
