@@ -1,0 +1,82 @@
+---
+title: "mutate_across"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+Get example data
+```{r}
+penguins <- palmerpenguins::penguins
+```
+
+Use mutate across (example from the help)
+
+```{r}
+## make a function and use it in mutate across:
+divide_by_ten <- function(x) x / 10
+
+## do mutate(across())
+penguins |>
+    mutate(
+        across(
+            .cols = ends_with("mm"),   ## everything() chooses all columns
+            .fns = divide_by_ten,
+            ## use .names arg to figure out what output colnames will be. Empty names arg means values in current columns get replaced
+            .names = '{str_remove(.col, "_mm")}_cm'
+        )
+    ) |>
+    select(-ends_with("mm")) # remove old columns here
+```
+
+More practise:
+
+```{r}
+myFunc <- function(x) {x^2}
+penguins %>% 
+    mutate(across( ends_with("_mm"),
+                   myFunc,
+                   # .names = '{str_remove(.col, "_mm")}_cm'
+                   .names = '{.col}_sq'
+    )) %>% 
+    select(union (ends_with("_mm"), ends_with("_sq") )) 
+```
+
+# A bit more on using `select()`
+
+How to select columns based on more than one condition - use `union`/`intersect`, or `|`/`&`
+```{r}
+penguins |> 
+    select(union (ends_with("_mm"), ends_with("_g") )) 
+## same as this:
+# penguins |> 
+# select( ends_with("_mm") | ends_with("_sq")) 
+```
+
+
+```{r}
+penguins |>
+    select(intersect (ends_with("_mm"), matches("_length") ))
+## same as this:
+# penguins |> 
+#     select( ends_with("_mm") & matches("_length") ) 
+```
+
+
+How to select columns based on class of data within them, using `where()`:
+
+Notice that you don’t actually call is.numeric in your code (i.e. there are no paretheses after is.numeric). That’s because you partner up the function is.numeric with the where function. This way, the where function just knows the name of its partner (in this case is.numeric ) and can let its partner do the checking whenever where feels like it.
+
+```{r}
+penguins |>
+    select(
+        where(is.numeric)
+    )
+```
+
