@@ -6,7 +6,7 @@ output: github_document
 always_allow_html: true
 ---
 
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
@@ -32,7 +32,8 @@ penguins |>
             .names = '{str_remove(.col, "_mm")}_cm'
         )
     ) |>
-    select(-ends_with("mm")) # remove old columns here
+    select(-ends_with("mm")) %>% # remove old columns here
+    head(3)
 ```
 
 More practise:
@@ -45,7 +46,8 @@ penguins %>%
                    # .names = '{str_remove(.col, "_mm")}_cm'
                    .names = '{.col}_sq'
     )) %>% 
-    select(union (ends_with("_mm"), ends_with("_sq") )) 
+    select(union (ends_with("_mm"), ends_with("_sq") )) %>% 
+    head(3)
 ```
 
 # A bit more on using `select()`
@@ -53,7 +55,8 @@ penguins %>%
 How to select columns based on more than one condition - use `union`/`intersect`, or `|`/`&`
 ```{r}
 penguins |> 
-    select(union (ends_with("_mm"), ends_with("_g") )) 
+    select(union (ends_with("_mm"), ends_with("_g") ))  %>% 
+    head(3)
 ## same as this:
 # penguins |> 
 # select( ends_with("_mm") | ends_with("_sq")) 
@@ -62,10 +65,12 @@ penguins |>
 
 ```{r}
 penguins |>
-    select(intersect (ends_with("_mm"), matches("_length") ))
+    select(intersect (ends_with("_mm"), matches("_length") )) %>% 
+    head(3)
 ## same as this:
 # penguins |> 
-#     select( ends_with("_mm") & matches("_length") ) 
+#     select( ends_with("_mm") & matches("_length") )  %>% 
+    # head(3)
 ```
 
 
@@ -77,6 +82,7 @@ Notice that you don’t actually call is.numeric in your code (i.e. there are no
 penguins |>
     select(
         where(is.numeric)
-    )
+    ) %>% 
+    head(3)
 ```
 
