@@ -22,7 +22,7 @@ Use mutate across with a simple built-in function (example from the help)
 penguins |>
     mutate(
         across(ends_with("mm"), log10,
-            .names = '{.col}_log10'
+               .names = '{.col}_log10'
         )
     ) |>
     select(matches("depth") & (ends_with("mm") | ends_with("log10"))) %>% # remove old columns here
@@ -127,3 +127,12 @@ penguins |>
     head(3)
 ```
 
+
+# summarize(across())
+
+Use this instead to get column means, medians etc
+```{r}
+penguins %>% 
+    summarise(across(where(is.numeric), 
+                     ~ mean(.x, na.rm=TRUE)))
+```

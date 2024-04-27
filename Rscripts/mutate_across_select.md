@@ -17,7 +17,7 @@ help)
 penguins |>
     mutate(
         across(ends_with("mm"), log10,
-            .names = '{.col}_log10'
+               .names = '{.col}_log10'
         )
     ) |>
     select(matches("depth") & (ends_with("mm") | ends_with("log10"))) %>% # remove old columns here
@@ -184,3 +184,18 @@ penguins |>
     ## 1           39.1          18.7               181        3750  2007
     ## 2           39.5          17.4               186        3800  2007
     ## 3           40.3          18                 195        3250  2007
+
+# summarize(across())
+
+Use this instead to get column means, medians etc
+
+``` r
+penguins %>% 
+    summarise(across(where(is.numeric), 
+                     ~ mean(.x, na.rm=TRUE)))
+```
+
+    ## # A tibble: 1 × 5
+    ##   bill_length_mm bill_depth_mm flipper_length_mm body_mass_g  year
+    ##            <dbl>         <dbl>             <dbl>       <dbl> <dbl>
+    ## 1           43.9          17.2              201.       4202. 2008.

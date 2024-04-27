@@ -86,6 +86,9 @@ myFunc <- function(x) {
 
 (and I think some others)
 
+### Volcano plots
+
+[EnhancedVolcano](https://bioconductor.org/packages/release/bioc/vignettes/EnhancedVolcano/inst/doc/EnhancedVolcano.html)
 
 ### fastq files
 
