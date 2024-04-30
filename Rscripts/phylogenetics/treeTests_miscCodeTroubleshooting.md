@@ -1,20 +1,10 @@
----
-title: "treeTests"
-author: "Janet Young\n"
-date: "`r Sys.Date()`\n"
-output: github_document
-always_allow_html: true
----
+treeTests_miscCodeTroubleshooting
+================
+Janet Young
 
-```{r setup, include=FALSE}
-library(ggtree)
-library(treeio)
-library(tidytree)
-library(ggplot2)
-library(TDbook)
-```
+2024-04-29
 
-```{r}
+``` r
 #### tree_anole (phylo object) has 100 tips and 99 internal nodes
 ### df_svl is a data.frame, 100 rows (named like the tips of tree_anole), 1 column ("svl")
 ##  `tree_anole` and `df_svl` are from 'TDbook' package
@@ -46,7 +36,16 @@ p1 <- ggtree(tree, aes(color=trait), layout = 'circular',
     geom_tiplab(hjust = -.1) + 
     xlim(0, 1.2) + 
     theme(legend.position = c(.05, .85)) 
+```
 
+    ## Warning: A numeric `legend.position` argument in `theme()` was deprecated in ggplot2
+    ## 3.5.0.
+    ## ℹ Please use the `legend.position.inside` argument of `theme()` instead.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+``` r
 p2 <- ggtree(tree, layout='circular', ladderize = FALSE, size=2.8) + 
     geom_tree(aes(color=trait), continuous = 'colour', size=2) +  
     scale_color_gradientn(colours=c("red", 'orange', 'green', 'cyan', 'blue')) +
@@ -57,13 +56,9 @@ p2 <- ggtree(tree, layout='circular', ladderize = FALSE, size=2.8) +
 plot_list(p1, p2, ncol=2, tag_levels="A")    
 ```
 
+![](treeTests_miscCodeTroubleshooting_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
-
-
-
-```{r ggtree example code}
-
-
+``` r
 ### ggtree manual http://yulab-smu.top/treedata-book/chapter4.html
 ## treeio https://yulab-smu.top/treedata-book/chapter1.html
 ## tree
@@ -94,9 +89,19 @@ ggtree(tr) +
                    subset = !is.na(as.numeric(label)) & as.numeric(label) > 80))
 ```
 
-```{r}
+    ## Warning in FUN(X[[i]], ...): NAs introduced by coercion
+
+    ## Warning in FUN(X[[i]], ...): NAs introduced by coercion
+
+![](treeTests_miscCodeTroubleshooting_files/figure-gfm/ggtree%20example%20code-1.png)<!-- -->
+
+``` r
 raxml_file <- system.file("extdata/RAxML", "RAxML_bipartitionsBranchLabels.H3", package="treeio")
 raxml <- read.raxml(raxml_file)
 ggtree(raxml) + geom_text(aes(label=bootstrap/100))
 ```
 
+    ## Warning: Removed 65 rows containing missing values or values outside the scale range
+    ## (`geom_text()`).
+
+![](treeTests_miscCodeTroubleshooting_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->

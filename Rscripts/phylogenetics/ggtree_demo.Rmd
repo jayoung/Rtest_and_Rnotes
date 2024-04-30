@@ -1,0 +1,83 @@
+---
+title: "ggtree_demo"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggtree)
+library(treeio)
+library(tidytree)
+```
+
+# Useful links, general advice
+
+[ggtree manual](http://yulab-smu.top/treedata-book/index.html)
+
+Chapter 1 looks at reading/writing trees.  The treeio and ape packages both have tree read/write functions).
+
+
+## Read a tree and plot it
+
+read in a newick tree file: 
+```{r}
+nwk_file <- system.file("extdata/sample.nwk", package="treeio") 
+nwk_tree <- read.tree( nwk_file )
+class(nwk_tree)
+nwk_tree
+```
+
+plot it using ape's basic plot function
+```{r}
+plot(nwk_tree)
+```
+
+plot it using ggtree
+```{r}
+nwk_tree %>% 
+    ggtree() +
+    geom_tiplab()
+```
+
+## Associate a tree with addtional data
+
+Make a fake data tibble with info on each of the taxa in nkw_tree
+
+```{r}
+num_taxa <- length(nwk_tree$tip.label)
+tip_dat <- tibble( taxon=nwk_tree$tip.label,
+                   fake_height= rnorm(n=num_taxa, mean=100, sd=30 ),
+                   fake_phenotype= sample( c("teeth","nose","tail"), size=num_taxa, replace=TRUE ) )
+tip_dat
+```
+
+## combine tree and tbl
+Associate information tbl with the tree - this creates a `treedata` object that contains the tree (access it using `nwk_tree_with_info@phylo`) 
+
+Advice:    
+  - this joining can be flaky.
+  - BEFORE you combine tree with info tbl:
+    - manipulate tree to get as close to the final product as you can (e.g. reroot, subset, rotate clades)
+    - manipulate tbl get as close to the final product as you can (e.g. join a bunch of info togeter)
+    - CHECK taxon labels in tree and the tbl column you plan to join on match up OK
+    - CHECK the taxon ID in the join column of tbl is UNIQUE - repeated values will cause trouble
+
+
+```{r}
+nwk_tree_with_info <- left_join(nwk_tree, tip_dat, by=c("label"="taxon"))
+class(nwk_tree_with_info)
+nwk_tree_with_info
+```
+
+```{r}
+nwk_tree_with_info %>% 
+    ggtree(aes(color=fake_phenotype)) +  # color here colors the branches
+    geom_tiplab(aes(color=fake_phenotype)) + # color here colors the tip labels
+    geom_tippoint(aes(subset= fake_phenotype=="tail"), color="black") # add dots to taxa, using subset
+```
+
+
+

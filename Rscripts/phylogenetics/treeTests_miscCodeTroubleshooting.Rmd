@@ -1,10 +1,20 @@
-treeTests
-================
-Janet Young
+---
+title: "treeTests_miscCodeTroubleshooting"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
 
-2024-02-09
+```{r setup, include=FALSE}
+library(ggtree)
+library(treeio)
+library(tidytree)
+library(ggplot2)
+library(TDbook)
+```
 
-``` r
+```{r}
 #### tree_anole (phylo object) has 100 tips and 99 internal nodes
 ### df_svl is a data.frame, 100 rows (named like the tips of tree_anole), 1 column ("svl")
 ##  `tree_anole` and `df_svl` are from 'TDbook' package
@@ -47,9 +57,13 @@ p2 <- ggtree(tree, layout='circular', ladderize = FALSE, size=2.8) +
 plot_list(p1, p2, ncol=2, tag_levels="A")    
 ```
 
-![](treeTests_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
-``` r
+
+
+
+```{r ggtree example code}
+
+
 ### ggtree manual http://yulab-smu.top/treedata-book/chapter4.html
 ## treeio https://yulab-smu.top/treedata-book/chapter1.html
 ## tree
@@ -80,22 +94,9 @@ ggtree(tr) +
                    subset = !is.na(as.numeric(label)) & as.numeric(label) > 80))
 ```
 
-    ## Warning in FUN(X[[i]], ...): NAs introduced by coercion
-
-    ## Warning in FUN(X[[i]], ...): NAs introduced by coercion
-
-    ## Warning in FUN(X[[i]], ...): NAs introduced by coercion
-
-    ## Warning in FUN(X[[i]], ...): NAs introduced by coercion
-
-![](treeTests_files/figure-gfm/ggtree%20example%20code-1.png)<!-- -->
-
-``` r
+```{r}
 raxml_file <- system.file("extdata/RAxML", "RAxML_bipartitionsBranchLabels.H3", package="treeio")
 raxml <- read.raxml(raxml_file)
 ggtree(raxml) + geom_text(aes(label=bootstrap/100))
 ```
 
-    ## Warning: Removed 65 rows containing missing values (`geom_text()`).
-
-![](treeTests_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
