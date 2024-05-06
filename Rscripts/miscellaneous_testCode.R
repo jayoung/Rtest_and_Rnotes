@@ -14,7 +14,7 @@ m %>%
     geom_bar()
 
 
-## tribble - a way to manually create small tibbles
+## tribble - a way to manually create small tibbles, row-wise
 tribble(
     ~colA, ~colB,
     "a",   1,
@@ -128,3 +128,35 @@ test_df %>%
 # which translates to this:
 test_df %>%
     select(1, 2, 3)
+
+
+
+#### metadata!   attr - attributes
+
+# I had a use case where I wanted to associate a few bits of info with a tibble of data. The actual example is that my tibble contained genome-wide t-test results, and I wanted to record eaxctly what method I'd used to do the t-tests)
+
+### use attributes
+
+### make example tibble:
+library(tidyverse)
+a <- 1:5
+b <- tibble(a, a * 2)
+
+### add metadata:
+attr(b, "methods") <- "here's some text about the method"
+
+## access the metadata:
+attr(b, "methods")
+# [1] "here's some text about the method"
+
+## show all attributes:
+## (attr and atrributes are different functions)
+attributes(b)
+# $class
+# [1] "tbl_df"     "tbl"        "data.frame"
+# $row.names
+# [1] 1 2 3 4 5
+# $names
+# [1] "a"     "a * 2"
+# $methods
+# [1] "here's some text about the method"

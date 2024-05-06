@@ -13,6 +13,8 @@ Nick Tierney's (mostly) [rstats blog](https://www.njtierney.com)
 
 R For The Rest Of Us [resources](https://rfortherestofus.com/resources)
 
+Advice on [making figures](https://github.com/MichaelClerx/making-figures/tree/main)
+
 ### haven't looked yet: future
 
 [The Elements of Data Analytic Style](https://leanpub.com/datastyle) by Jeff Leek (a Leanpub book)
@@ -77,6 +79,28 @@ myFunc <- function(x) {
 
 
 ## Useful packages
+
+### combining plots
+
+patchwork package is great
+
+### importing images and combining with R plots
+
+here's how you'd combine an imported image (import using magick package) with a ggplot:
+
+```{r}
+library(patchwork)
+library(ggplot2)
+library(magick)
+
+plt1 <- image_read("https://bellard.org/bpg/2.png") %>%
+  image_ggplot()
+plt2 <- iris %>% 
+  ggplot(aes(x=Sepal.Length, y=Sepal.Width)) +
+  geom_point()
+
+plt1 | plt2
+```
 
 ### pretty tables in Rmarkdown (etc)
 

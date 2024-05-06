@@ -1,0 +1,64 @@
+---
+title: "EnhancedVolcano tests"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(EnhancedVolcano)
+library(magrittr)
+
+## some packages we use to make test dataset
+library(airway) 
+library(org.Hs.eg.db)
+library(DESeq2)
+```
+
+Example code from [here](https://github.com/kevinblighe/EnhancedVolcano)
+
+```{r get test data}
+data('airway')
+airway$dex %<>% relevel('untrt')
+
+ens <- rownames(airway)
+
+symbols <- mapIds(org.Hs.eg.db, keys = ens,
+                  column = c('SYMBOL'), keytype = 'ENSEMBL')
+symbols <- symbols[!is.na(symbols)]
+symbols <- symbols[match(rownames(airway), names(symbols))]
+rownames(airway) <- symbols
+keep <- !is.na(rownames(airway))
+airway <- airway[keep,]
+
+# runDEseq
+dds <- DESeqDataSet(airway, design = ~ cell + dex)
+dds <- DESeq(dds, betaPrior=FALSE)
+res <- results(dds,
+               contrast = c('dex','trt','untrt'))
+res <- lfcShrink(dds,
+                 contrast = c('dex','trt','untrt'), res=res, type = 'normal')
+```
+
+
+```{r test plot, fig.height=7,fig.width=7}
+EnhancedVolcano(res,
+                lab = rownames(res),
+                x = 'log2FoldChange',
+                y = 'pvalue')
+```
+
+Setting xlim or ylim so that the dashed lines would not be visible results in warnings. I asked for them to not be emitted, [here](https://github.com/kevinblighe/EnhancedVolcano/issues/129)
+
+```{r}
+# can add this to code chunk to avoid seeing the warning:
+# warning=FALSE
+EnhancedVolcano(res,
+                lab = rownames(res),
+                x = 'log2FoldChange',
+                y = 'pvalue',
+                ylim=c(0,3),
+                xlim=c(-0.5,0.5))
+```

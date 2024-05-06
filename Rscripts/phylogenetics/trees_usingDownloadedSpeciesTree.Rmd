@@ -134,7 +134,7 @@ upham_tree_subset_rename <- upham_tree_subset
 upham_tree_subset_rename$tip.label <- RTL3_alnInfoTable[match(upham_tree_subset$tip.label, RTL3_alnInfoTable$tiplabel),"common_name"] %>% deframe()
 
 ### write tree to a file
-write.tree(upham_tree_subset_rename, file=here("upham_tree_subset_rename.phy"))
+write.tree(upham_tree_subset_rename, file=here("Rscripts/phylogenetics/upham_tree_subset_rename.phy"))
 
 ### plot it
 upham_tree_subset_rename %>% 

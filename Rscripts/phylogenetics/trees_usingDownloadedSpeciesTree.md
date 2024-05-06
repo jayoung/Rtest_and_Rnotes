@@ -2,7 +2,7 @@ trees_usingDownloadedSpeciesTree
 ================
 Janet Young
 
-2024-02-09
+2024-04-29
 
 ``` r
 knitr::opts_chunk$set(echo = TRUE)
@@ -143,7 +143,7 @@ upham_tree_subset_rename <- upham_tree_subset
 upham_tree_subset_rename$tip.label <- RTL3_alnInfoTable[match(upham_tree_subset$tip.label, RTL3_alnInfoTable$tiplabel),"common_name"] %>% deframe()
 
 ### write tree to a file
-write.tree(upham_tree_subset_rename, file=here("upham_tree_subset_rename.phy"))
+write.tree(upham_tree_subset_rename, file=here("Rscripts/phylogenetics/upham_tree_subset_rename.phy"))
 
 ### plot it
 upham_tree_subset_rename %>% 
@@ -164,54 +164,57 @@ show package versions
 sessionInfo()
 ```
 
-    ## R version 4.2.3 (2023-03-15)
-    ## Platform: x86_64-apple-darwin17.0 (64-bit)
-    ## Running under: macOS Big Sur ... 10.16
+    ## R version 4.3.2 (2023-10-31)
+    ## Platform: x86_64-apple-darwin20 (64-bit)
+    ## Running under: macOS Ventura 13.6.6
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
     ## 
     ## locale:
     ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+    ## 
+    ## time zone: America/Los_Angeles
+    ## tzcode source: internal
     ## 
     ## attached base packages:
     ## [1] stats4    stats     graphics  grDevices utils     datasets  methods  
     ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] ggtree_3.4.4        ape_5.7-1           here_1.0.1         
-    ##  [4] taxize_0.9.100      snakecase_0.11.1    Biostrings_2.64.1  
-    ##  [7] GenomeInfoDb_1.32.4 XVector_0.36.0      IRanges_2.30.1     
-    ## [10] S4Vectors_0.34.0    BiocGenerics_0.42.0 lubridate_1.9.3    
+    ##  [1] ggtree_3.10.1       ape_5.8             here_1.0.1         
+    ##  [4] taxize_0.9.100      snakecase_0.11.1    Biostrings_2.70.3  
+    ##  [7] GenomeInfoDb_1.38.8 XVector_0.42.0      IRanges_2.36.0     
+    ## [10] S4Vectors_0.40.2    BiocGenerics_0.48.1 lubridate_1.9.3    
     ## [13] forcats_1.0.0       stringr_1.5.1       dplyr_1.1.4        
-    ## [16] purrr_1.0.2         readr_2.1.4         tidyr_1.3.0        
-    ## [19] tibble_3.2.1        ggplot2_3.4.4       tidyverse_2.0.0    
+    ## [16] purrr_1.0.2         readr_2.1.5         tidyr_1.3.1        
+    ## [19] tibble_3.2.1        ggplot2_3.5.0       tidyverse_2.0.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] nlme_3.1-164           bitops_1.0-7           fs_1.6.3              
-    ##  [4] bold_1.3.0             bit64_4.0.5            rprojroot_2.0.4       
-    ##  [7] tools_4.2.3            utf8_1.2.4             R6_2.5.1              
-    ## [10] lazyeval_0.2.2         colorspace_2.1-0       withr_3.0.0           
-    ## [13] tidyselect_1.2.0       bit_4.0.5              curl_5.2.0            
-    ## [16] compiler_4.2.3         cli_3.6.2              xml2_1.3.6            
-    ## [19] labeling_0.4.3         triebeard_0.4.1        scales_1.3.0          
-    ## [22] digest_0.6.33          yulab.utils_0.1.4      rmarkdown_2.25        
-    ## [25] pkgconfig_2.0.3        htmltools_0.5.7        highr_0.10            
-    ## [28] fastmap_1.1.1          rlang_1.1.2            rstudioapi_0.15.0     
-    ## [31] httpcode_0.3.0         farver_2.1.1           gridGraphics_0.5-1    
-    ## [34] generics_0.1.3         zoo_1.8-12             jsonlite_1.8.8        
-    ## [37] vroom_1.6.5            RCurl_1.98-1.13        magrittr_2.0.3        
-    ## [40] ggplotify_0.1.2        GenomeInfoDbData_1.2.8 patchwork_1.2.0       
-    ## [43] Rcpp_1.0.11            munsell_0.5.0          fansi_1.0.6           
-    ## [46] lifecycle_1.0.4        stringi_1.8.3          yaml_2.3.8            
-    ## [49] zlibbioc_1.42.0        grid_4.2.3             parallel_4.2.3        
-    ## [52] crayon_1.5.2           lattice_0.22-5         conditionz_0.1.0      
-    ## [55] hms_1.1.3              knitr_1.45             pillar_1.9.0          
-    ## [58] uuid_1.1-1             codetools_0.2-19       crul_1.4.0            
-    ## [61] glue_1.6.2             evaluate_0.23          ggfun_0.1.4           
-    ## [64] data.table_1.14.10     urltools_1.7.3         vctrs_0.6.5           
-    ## [67] treeio_1.20.2          tzdb_0.4.0             foreach_1.5.2         
-    ## [70] gtable_0.3.4           cachem_1.0.8           xfun_0.41             
-    ## [73] tidytree_0.4.6         iterators_1.0.14       aplot_0.2.2           
-    ## [76] memoise_2.0.1          timechange_0.2.0
+    ##  [1] tidyselect_1.2.1        farver_2.1.1            urltools_1.7.3         
+    ##  [4] bitops_1.0-7            fastmap_1.1.1           RCurl_1.98-1.14        
+    ##  [7] lazyeval_0.2.2          digest_0.6.35           timechange_0.3.0       
+    ## [10] lifecycle_1.0.4         tidytree_0.4.6          magrittr_2.0.3         
+    ## [13] compiler_4.3.2          rlang_1.1.3             tools_4.3.2            
+    ## [16] utf8_1.2.4              yaml_2.3.8              data.table_1.15.4      
+    ## [19] knitr_1.45              conditionz_0.1.0        labeling_0.4.3         
+    ## [22] bit_4.0.5               curl_5.2.1              xml2_1.3.6             
+    ## [25] aplot_0.2.2             httpcode_0.3.0          withr_3.0.0            
+    ## [28] triebeard_0.4.1         grid_4.3.2              fansi_1.0.6            
+    ## [31] colorspace_2.1-0        scales_1.3.0            iterators_1.0.14       
+    ## [34] crul_1.4.2              cli_3.6.2               rmarkdown_2.26         
+    ## [37] crayon_1.5.2            treeio_1.26.0           generics_0.1.3         
+    ## [40] rstudioapi_0.16.0       tzdb_0.4.0              cachem_1.0.8           
+    ## [43] zlibbioc_1.48.2         parallel_4.3.2          ggplotify_0.1.2        
+    ## [46] vctrs_0.6.5             yulab.utils_0.1.4       jsonlite_1.8.8         
+    ## [49] patchwork_1.2.0         gridGraphics_0.5-1      hms_1.1.3              
+    ## [52] bit64_4.0.5             foreach_1.5.2           glue_1.7.0             
+    ## [55] codetools_0.2-20        stringi_1.8.3           gtable_0.3.4           
+    ## [58] munsell_0.5.1           pillar_1.9.0            htmltools_0.5.8.1      
+    ## [61] GenomeInfoDbData_1.2.11 R6_2.5.1                bold_1.3.0             
+    ## [64] rprojroot_2.0.4         vroom_1.6.5             evaluate_0.23          
+    ## [67] lattice_0.22-6          highr_0.10              memoise_2.0.1          
+    ## [70] ggfun_0.1.4             Rcpp_1.0.12             uuid_1.2-0             
+    ## [73] nlme_3.1-164            xfun_0.43               fs_1.6.3               
+    ## [76] zoo_1.8-12              pkgconfig_2.0.3
