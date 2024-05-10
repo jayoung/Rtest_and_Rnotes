@@ -88,11 +88,11 @@ nwk_tree_with_info %>%
 ```
 
 
-## add heatmap to the right side of a tree
+# add heatmap to the right side of a tree
 
 gheatmap is the function for this
 
-### explore gheatmap demo code from ggtree book
+## explore gheatmap demo code from ggtree book
 
 gheatmap demo code from the [ggtree online book](http://yulab-smu.top/treedata-book/chapter7.html#gheatmap):
 
@@ -160,7 +160,7 @@ gheatmap(p, genotype, offset=8, width=0.6,
                       name="genotype")
 ```
 
-### gheatmap example with my fake tree and fake data
+## gheatmap example with my fake tree and fake data
 
 
 ```{r}

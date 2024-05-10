@@ -70,19 +70,19 @@ tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A           101.  nose           fur            
-    ##  2 B            93.4 tail           scales         
-    ##  3 C           124.  nose           spikes         
-    ##  4 D            90.9 tail           scales         
-    ##  5 E            94.4 teeth          spikes         
-    ##  6 F            90.3 tail           scales         
-    ##  7 G            75.2 nose           spikes         
-    ##  8 H            84.0 teeth          spikes         
-    ##  9 I            83.8 teeth          spikes         
-    ## 10 J            71.2 tail           fur            
-    ## 11 K            46.2 nose           spikes         
-    ## 12 L            95.6 nose           spikes         
-    ## 13 M            66.2 nose           spikes
+    ##  1 A            77.3 tail           scales         
+    ##  2 B            49.1 tail           spikes         
+    ##  3 C            81.8 tail           fur            
+    ##  4 D           143.  teeth          fur            
+    ##  5 E           106.  tail           fur            
+    ##  6 F            95.2 tail           scales         
+    ##  7 G           104.  tail           spikes         
+    ##  8 H            90.2 teeth          scales         
+    ##  9 I            86.8 nose           spikes         
+    ## 10 J           115.  teeth          spikes         
+    ## 11 K           128.  nose           fur            
+    ## 12 L            56.6 teeth          spikes         
+    ## 13 M            77.8 teeth          fur
 
 ## combine tree and tbl
 
@@ -135,16 +135,16 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE        101.  nose           fur            
-    ##  2     2 B     TRUE         93.4 tail           scales         
-    ##  3     3 C     TRUE        124.  nose           spikes         
-    ##  4     4 D     TRUE         90.9 tail           scales         
-    ##  5     5 E     TRUE         94.4 teeth          spikes         
-    ##  6     6 F     TRUE         90.3 tail           scales         
-    ##  7     7 G     TRUE         75.2 nose           spikes         
-    ##  8     8 H     TRUE         84.0 teeth          spikes         
-    ##  9     9 I     TRUE         83.8 teeth          spikes         
-    ## 10    10 J     TRUE         71.2 tail           fur            
+    ##  1     1 A     TRUE         77.3 tail           scales         
+    ##  2     2 B     TRUE         49.1 tail           spikes         
+    ##  3     3 C     TRUE         81.8 tail           fur            
+    ##  4     4 D     TRUE        143.  teeth          fur            
+    ##  5     5 E     TRUE        106.  tail           fur            
+    ##  6     6 F     TRUE         95.2 tail           scales         
+    ##  7     7 G     TRUE        104.  tail           spikes         
+    ##  8     8 H     TRUE         90.2 teeth          scales         
+    ##  9     9 I     TRUE         86.8 nose           spikes         
+    ## 10    10 J     TRUE        115.  teeth          spikes         
     ## # ℹ 15 more rows
 
 ## plot tree with annotations
@@ -161,11 +161,11 @@ nwk_tree_with_info %>%
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-## add heatmap to the right side of a tree
+# add heatmap to the right side of a tree
 
 gheatmap is the function for this
 
-### explore gheatmap demo code from ggtree book
+## explore gheatmap demo code from ggtree book
 
 gheatmap demo code from the [ggtree online
 book](http://yulab-smu.top/treedata-book/chapter7.html#gheatmap):
@@ -250,7 +250,7 @@ gheatmap(p, genotype, offset=8, width=0.6,
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
-### gheatmap example with my fake tree and fake data
+## gheatmap example with my fake tree and fake data
 
 ``` r
 ## imagine we're plotting amino acid changes, like Maria's trying to do
