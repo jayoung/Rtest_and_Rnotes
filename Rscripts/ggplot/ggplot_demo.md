@@ -2,12 +2,13 @@ ggplot_demo
 ================
 Janet Young
 
-2023-12-11
+2024-05-08
 
 Show some examples from the [ggplot2
 cheatsheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html)
 
-Graphical primitives
+These commands set up a few base plots, but they have no geom layer, so
+nothing is actually plotted
 
 ``` r
 ## economics is a 574-row 6-col tibble. colnames:
@@ -25,9 +26,11 @@ b <- ggplot(seals, aes(x=long, y=lat))
 # it's simply a grid in x-y space
 ```
 
+I wanted to explore a bunch of different geoms
+
 ``` r
 # Ensure limits include values across all plots.
-a + geom_blank()
+a + geom_blank() + labs(title="geom_blank")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
@@ -37,7 +40,7 @@ a + geom_blank()
 ```
 
 ``` r
-b + geom_point()
+b + geom_point() + labs(title="geom_point")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
@@ -46,7 +49,8 @@ b + geom_point()
 ## this is a wierd thing to demo
 b + geom_curve(aes(xend = long + 1, 
                    yend = lat + 1), 
-               curvature = 1)
+               curvature = 1) + 
+    labs(title="geom_curve")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
@@ -58,7 +62,9 @@ b + geom_curve(aes(xend = long + 1,
 ```
 
 ``` r
-a + geom_path(lineend = "butt", linejoin = "round", linemitre = 1)
+a + 
+    geom_path(lineend = "butt", linejoin = "round", linemitre = 1) +
+    labs(title="geom_path")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
@@ -74,7 +80,8 @@ data are sorted, the graphs look the same
 ``` r
 a + 
     geom_path(lineend = "butt", linejoin = "round", linemitre = 1) +
-    coord_cartesian(xlim=c(date("1970-01-01"),date("1975-01-01")))
+    coord_cartesian(xlim=c(date("1970-01-01"),date("1975-01-01"))) +
+    labs(title="geom_path")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
@@ -89,7 +96,8 @@ geom_path IS connected left-to-right, just like geom_line)
 ``` r
 a + 
     geom_line(lineend = "butt", linejoin = "round", linemitre = 1) +
-    coord_cartesian(xlim=c(date("1970-01-01"),date("1975-01-01")))
+    coord_cartesian(xlim=c(date("1970-01-01"),date("1975-01-01"))) +
+    labs(title="geom_line")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
@@ -99,7 +107,8 @@ a +
 ```
 
 ``` r
-a + geom_polygon(aes(alpha = 50))
+a + geom_polygon(aes(alpha = 50)) +
+    labs(title="geom_polygon")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
@@ -118,15 +127,18 @@ seals %>%
     slice_sample(n=30) %>% 
     ggplot(aes(xmin = long, ymin = lat, 
                xmax = long + 1, ymax = lat + 1)) + 
-    geom_rect()
+    geom_rect() +
+    labs(title="geom_rect")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
 `geom_ribbon()`
 
 ``` r
 a + geom_ribbon(aes(ymin = unemploy - 900, 
-                    ymax = unemploy + 900))
+                    ymax = unemploy + 900)) +
+    labs(title="geom_ribbon")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
@@ -145,15 +157,74 @@ e <- ggplot(mpg, aes(cty,hwy))
 `geom_point()`
 
 ``` r
-e+geom_point()
+e+geom_point() +
+    labs(title="geom_point")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
-e+geom_point()+geom_smooth()
+e+geom_point()+geom_smooth()+
+    labs(title="geom_point and geom_smooth")
 ```
 
     ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+# shadowtext package
+
+Demo from
+[rfortherestofus](https://rfortherestofus.com/2024/05/shadowtext-ggplot)
+
+Mostly I don’t like the way shadowtext looks, but it could be really
+useful if we’re putting words over the top of some other dense data,
+e.g. words on top of a map benefit from a white shadow
+
+``` r
+### to install missing fonts:
+# library(showtext) # For fonts
+# font_add_google("Source Sans Pro") ## downloads and installs a font, except I don't think it necessarily makes the font available always?  maybe I need to restart the computer before I can use it?
+# grep("Source", system_fonts()$name, value=TRUE)
+# grep("Times", system_fonts()$name, value=TRUE)
+# grep("Arial", system_fonts()$name, value=TRUE)
+```
+
+``` r
+library(shadowtext)
+library(palmerpenguins)
+```
+
+``` r
+## define labelling info
+species_labels_tib <- tibble(
+  species = c('Adelie', 'Gentoo', 'Chinstrap'),
+  x = c(35, 43, 53),
+  y = c(210, 229, 178)
+)
+```
+
+We can use geom_shadowtext() pretty much the same as we’d use
+geom_label, using bg.color to tell it the color of the shadow.
+
+``` r
+## the plot
+penguins |> 
+    drop_na() |>
+  ggplot(
+    aes(bill_length_mm, flipper_length_mm, fill = species)
+  ) +
+  geom_point(shape = 21, size = 4) +
+  geom_shadowtext(
+    data = species_labels_tib,
+    aes(x, y, col = species, label = species),
+    size = 12,
+    fontface = 'bold',
+    family = 'ArialMT',
+    bg.color = 'grey10',
+  )  +
+  theme_minimal(base_size = 16, base_family = 'ArialMT') +
+  theme(legend.position = 'none')
+```
+
+![](ggplot_demo_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->

@@ -1,0 +1,66 @@
+---
+title: "color_testing"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# library(tidyverse)
+```
+
+Show all color names
+
+```{r}
+colors()
+```
+
+
+# use tools from rcolorutils
+```{r}
+# devtools::install_github("smach/rcolorutils", build_vignettes = TRUE)
+library(rcolorutils)
+```
+
+rcolorutils provides:     
+- the `nearRcolor` function to choose a color by looking in the neighborhood of one you know    
+- the `plotCol` function to see those colors    
+
+
+Show names of colors near deepskyblue - the second arg says what color space we're looking in. The dist is euclidean distance in that color space
+
+```{r}
+nearRcolor("deepskyblue", "rgb", dist=50)
+```
+
+Display the output of nearRcolor:
+
+```{r, fig.height=1, fig.width=7}
+plotCol(nearRcolor("deepskyblue", "rgb", dist=50))
+```
+
+Default color space is hsv (with a different dist scale)
+```{r, fig.height=1, fig.width=7}
+plotCol(nearRcolor("deepskyblue", dist=.1))
+```
+
+```{r, fig.height=2, fig.width=7}
+plotCol(nearRcolor("tomato", "hsv", dist=.12), nrow=3)
+```
+
+I wanted a couple of pinks (for the SATAY analysis)
+
+```{r, fig.height=2, fig.width=7}
+plotCol(nearRcolor("pink", dist=0.25), nrow=3)
+```
+
+I wanted a couple of light blues (for the SATAY analysis)
+
+```{r, fig.height=2, fig.width=7}
+plotCol(nearRcolor("lightblue", dist=0.25), nrow=8)
+```
+
+
