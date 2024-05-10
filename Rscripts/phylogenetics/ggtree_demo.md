@@ -6,12 +6,11 @@ Janet Young
 
 # Useful links, general advice
 
-[ggtree manual](http://yulab-smu.top/treedata-book/index.html)
+The [ggtree manual](http://yulab-smu.top/treedata-book/index.html) is
+great (very detailed). - Chapter 1 looks at reading/writing trees. The
+treeio and ape packages both have tree read/write functions).
 
-Chapter 1 looks at reading/writing trees. The treeio and ape packages
-both have tree read/write functions).
-
-## Read a tree and plot it
+# Read a tree and plot it
 
 read in a newick tree file:
 
@@ -53,9 +52,9 @@ nwk_tree %>%
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-## Associate a tree with addtional data
+# Associate a tree with additional data
 
-Make a fake data tibble with info on each of the taxa in nkw_tree
+Make a fake data tibble with info on each of the taxa in nwk_tree
 
 ``` r
 num_taxa <- length(nwk_tree$tip.label)
@@ -71,33 +70,38 @@ tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A           130.  tail           fur            
-    ##  2 B            72.7 teeth          scales         
-    ##  3 C           105.  nose           scales         
-    ##  4 D            82.2 tail           scales         
-    ##  5 E           128.  tail           scales         
-    ##  6 F           129.  nose           fur            
-    ##  7 G           119.  teeth          fur            
-    ##  8 H           109.  nose           scales         
-    ##  9 I           121.  tail           scales         
-    ## 10 J           116.  tail           scales         
-    ## 11 K           129.  teeth          spikes         
-    ## 12 L           131.  teeth          spikes         
-    ## 13 M           141.  tail           spikes
+    ##  1 A           101.  nose           fur            
+    ##  2 B            93.4 tail           scales         
+    ##  3 C           124.  nose           spikes         
+    ##  4 D            90.9 tail           scales         
+    ##  5 E            94.4 teeth          spikes         
+    ##  6 F            90.3 tail           scales         
+    ##  7 G            75.2 nose           spikes         
+    ##  8 H            84.0 teeth          spikes         
+    ##  9 I            83.8 teeth          spikes         
+    ## 10 J            71.2 tail           fur            
+    ## 11 K            46.2 nose           spikes         
+    ## 12 L            95.6 nose           spikes         
+    ## 13 M            66.2 nose           spikes
 
 ## combine tree and tbl
 
-Associate information tbl with the tree - this creates a `treedata`
-object that contains the tree (access it using
-`nwk_tree_with_info@phylo`)
+We associate info tbl with the tree using `left_join` - this creates a
+single `treedata` object that contains info AND tree (we access the tree
+like this `nwk_tree_with_info@phylo`)
 
 Advice:  
-- this joining can be flaky. - BEFORE you combine tree with info tbl: -
-manipulate tree to get as close to the final product as you can
-(e.g. reroot, subset, rotate clades) - manipulate tbl get as close to
-the final product as you can (e.g. join a bunch of info togeter) - CHECK
-taxon labels in tree and the tbl column you plan to join on match up
-OK - CHECK the taxon ID in the join column of tbl is UNIQUE - repeated
+- this joining process can be flaky - there’s not as much error-checking
+built-in as I’d like.  
+- BEFORE you combine tree with info tbl:  
+- you should manipulate tree to get as close to the final product as you
+can (e.g. do any rerooting, subsetting, clade rotation, etc, BEFORE you
+left_join)  
+- manipulate tbl get as close to the final product as you can (e.g. join
+a bunch of info together)  
+- CHECK taxon labels in tree and the tbl column you plan to join on
+match up OK  
+- CHECK the taxon ID in the join column of tbl is UNIQUE - repeated
 values will cause trouble
 
 ``` r
@@ -131,17 +135,22 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE        130.  tail           fur            
-    ##  2     2 B     TRUE         72.7 teeth          scales         
-    ##  3     3 C     TRUE        105.  nose           scales         
-    ##  4     4 D     TRUE         82.2 tail           scales         
-    ##  5     5 E     TRUE        128.  tail           scales         
-    ##  6     6 F     TRUE        129.  nose           fur            
-    ##  7     7 G     TRUE        119.  teeth          fur            
-    ##  8     8 H     TRUE        109.  nose           scales         
-    ##  9     9 I     TRUE        121.  tail           scales         
-    ## 10    10 J     TRUE        116.  tail           scales         
+    ##  1     1 A     TRUE        101.  nose           fur            
+    ##  2     2 B     TRUE         93.4 tail           scales         
+    ##  3     3 C     TRUE        124.  nose           spikes         
+    ##  4     4 D     TRUE         90.9 tail           scales         
+    ##  5     5 E     TRUE         94.4 teeth          spikes         
+    ##  6     6 F     TRUE         90.3 tail           scales         
+    ##  7     7 G     TRUE         75.2 nose           spikes         
+    ##  8     8 H     TRUE         84.0 teeth          spikes         
+    ##  9     9 I     TRUE         83.8 teeth          spikes         
+    ## 10    10 J     TRUE         71.2 tail           fur            
     ## # ℹ 15 more rows
+
+## plot tree with annotations
+
+now we can use ggtree to use column data in the joined treedata object
+for labels, colors, etc, etc
 
 ``` r
 nwk_tree_with_info %>% 
@@ -150,15 +159,18 @@ nwk_tree_with_info %>%
     geom_tippoint(aes(subset= fake_phenotype=="tail"), color="black") # add dots to taxa, using subset
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-6-1.png)<!-- --> \## try
-gheatmap
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-### use demo code from ggtree book
+## add heatmap to the right side of a tree
+
+gheatmap is the function for this
+
+### explore gheatmap demo code from ggtree book
 
 gheatmap demo code from the [ggtree online
 book](http://yulab-smu.top/treedata-book/chapter7.html#gheatmap):
 
-read in their example tree, `beast_tree`:
+first read in their example tree, `beast_tree`:
 
 ``` r
 beast_file <- system.file("examples/MCC_FluA_H3.tree", package="ggtree")
@@ -167,7 +179,7 @@ beast_tree <- read.beast(beast_file)
 
 `beast_tree` is a treedata/tidytree object with 76 tips
 
-read in their example genotype data:
+next read in their example genotype data:
 
 ``` r
 genotype_file <- system.file("examples/Genotype.txt", package="ggtree")
@@ -177,7 +189,7 @@ colnames(genotype) <- sub("\\.$", "", colnames(genotype))
 
 `genotype` is a data.frame with 76 rows and 8 columns
 
-?gheatmap help page says that the heatmap data must be a matrix or
+`?gheatmap` help page says that the heatmap data must be a matrix or
 data.frame (not a tibble). I checked - the rownames of `genotype` are
 identical to the tip labels of the tree, although they’re not in the
 same order
@@ -189,8 +201,7 @@ same order
 # TRUE
 ```
 
-Now we can plot (this also shows how to use a custom color scheme for
-the heatmap):
+Now plot:
 
 ``` r
 ## save a ggtree plot object
@@ -199,20 +210,23 @@ p <- ggtree(beast_tree, mrsd="2013-01-01") +
     geom_tiplab(size=2)
 
 ## add the heatmap to the righthand side. 
-gheatmap(p, genotype, offset=5, width=0.5, font.size=3, 
-         colnames_angle=-45, hjust=0) +
-    scale_fill_manual(breaks=c("HuH3N2", "pdm", "trig"), 
-                      values=c("steelblue", "firebrick", "darkgreen"), 
-                      name="genotype")
+gheatmap(p, genotype, offset=15, width=1.5, font.size=3,
+         colnames_offset_y= -1) + 
+    # scale_y_continuous makes sure we can see the colnames
+    scale_y_continuous(expand=c(0.1, 0.1))
 ```
 
-    ## Scale for fill is already present.
-    ## Adding another scale for fill, which will replace the existing scale.
+    ## Scale for y is already present.
+    ## Adding another scale for y, which will replace the existing scale.
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
-Same thing but add x axis scale bar (and heatmap colnames are less ugly
-now)
+Same thing but also:  
+- add x axis scale bar (and heatmap colnames are less ugly now)  
+- use a custom color scheme for the heatmap via `scale_fill_manual`.
+Default behavior for NAs is that there is no rectangle plotted. If we
+use `scale_fill_manual` the default behavior for NAs is now different -
+they are dark gray
 
 ``` r
 p <- ggtree(beast_tree, mrsd="2013-01-01") + 
@@ -221,17 +235,22 @@ p <- ggtree(beast_tree, mrsd="2013-01-01") +
 gheatmap(p, genotype, offset=8, width=0.6, 
          colnames=FALSE, legend_title="genotype") +
     scale_x_ggtree() + 
-    scale_y_continuous(expand=c(0, 0.3))
+    scale_y_continuous(expand=c(0, 0.3)) +
+    scale_fill_manual(breaks=c("HuH3N2", "pdm", "trig"), 
+                      values=c("steelblue", "firebrick", "darkgreen"), 
+                      name="genotype")
 ```
 
     ## Scale for y is already present.
     ## Adding another scale for y, which will replace the existing scale.
     ## Scale for y is already present.
     ## Adding another scale for y, which will replace the existing scale.
+    ## Scale for fill is already present.
+    ## Adding another scale for fill, which will replace the existing scale.
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
-### simpler example with my fake tree and fake data
+### gheatmap example with my fake tree and fake data
 
 ``` r
 ## imagine we're plotting amino acid changes, like Maria's trying to do
