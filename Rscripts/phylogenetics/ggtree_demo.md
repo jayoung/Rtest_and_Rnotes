@@ -2,7 +2,7 @@ ggtree_demo
 ================
 Janet Young
 
-2024-05-10
+2024-05-13
 
 # Useful links, general advice
 
@@ -70,19 +70,19 @@ tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A            77.3 tail           scales         
-    ##  2 B            49.1 tail           spikes         
-    ##  3 C            81.8 tail           fur            
-    ##  4 D           143.  teeth          fur            
-    ##  5 E           106.  tail           fur            
-    ##  6 F            95.2 tail           scales         
-    ##  7 G           104.  tail           spikes         
-    ##  8 H            90.2 teeth          scales         
-    ##  9 I            86.8 nose           spikes         
-    ## 10 J           115.  teeth          spikes         
-    ## 11 K           128.  nose           fur            
-    ## 12 L            56.6 teeth          spikes         
-    ## 13 M            77.8 teeth          fur
+    ##  1 A           172.  nose           fur            
+    ##  2 B           135.  tail           spikes         
+    ##  3 C           120.  teeth          scales         
+    ##  4 D           103.  teeth          scales         
+    ##  5 E           160.  nose           scales         
+    ##  6 F            59.9 tail           fur            
+    ##  7 G            94.6 nose           fur            
+    ##  8 H           135.  nose           scales         
+    ##  9 I           117.  teeth          spikes         
+    ## 10 J            88.1 tail           spikes         
+    ## 11 K           139.  teeth          scales         
+    ## 12 L           105.  teeth          spikes         
+    ## 13 M            61.2 tail           fur
 
 ## combine tree and tbl
 
@@ -135,16 +135,16 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE         77.3 tail           scales         
-    ##  2     2 B     TRUE         49.1 tail           spikes         
-    ##  3     3 C     TRUE         81.8 tail           fur            
-    ##  4     4 D     TRUE        143.  teeth          fur            
-    ##  5     5 E     TRUE        106.  tail           fur            
-    ##  6     6 F     TRUE         95.2 tail           scales         
-    ##  7     7 G     TRUE        104.  tail           spikes         
-    ##  8     8 H     TRUE         90.2 teeth          scales         
-    ##  9     9 I     TRUE         86.8 nose           spikes         
-    ## 10    10 J     TRUE        115.  teeth          spikes         
+    ##  1     1 A     TRUE        172.  nose           fur            
+    ##  2     2 B     TRUE        135.  tail           spikes         
+    ##  3     3 C     TRUE        120.  teeth          scales         
+    ##  4     4 D     TRUE        103.  teeth          scales         
+    ##  5     5 E     TRUE        160.  nose           scales         
+    ##  6     6 F     TRUE         59.9 tail           fur            
+    ##  7     7 G     TRUE         94.6 nose           fur            
+    ##  8     8 H     TRUE        135.  nose           scales         
+    ##  9     9 I     TRUE        117.  teeth          spikes         
+    ## 10    10 J     TRUE         88.1 tail           spikes         
     ## # ℹ 15 more rows
 
 ## plot tree with annotations
@@ -250,6 +250,29 @@ gheatmap(p, genotype, offset=8, width=0.6,
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
+Show that first plot in circle layout (ignore branch lengths)
+
+``` r
+## save a ggtree plot object
+p <- ggtree(beast_tree, mrsd="2013-01-01", 
+            layout="circular",
+            branch.length="none") 
+
+## add the heatmap 
+gheatmap(p, genotype, 
+         offset=1, 
+         width=1, font.size=2,
+         colnames_offset_y= -1,
+         colnames_angle=270) +
+    # scale_y_continuous makes sure we can see the colnames
+   scale_y_continuous(expand=c(0.01, 0.01))
+```
+
+    ## Scale for y is already present.
+    ## Adding another scale for y, which will replace the existing scale.
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
 ## gheatmap example with my fake tree and fake data
 
 ``` r
@@ -276,7 +299,7 @@ gheatmap(p, tip_dat,
          width=0.25, font.size=3) 
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 Or maybe we turn that into WT/ nonWT
 
@@ -298,7 +321,7 @@ gheatmap(p, tip_dat2,
     ## Scale for fill is already present.
     ## Adding another scale for fill, which will replace the existing scale.
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 It doesn’t work if tip_dat3 is a tibble, although it doesn’t give an
 error, it just doesn’t give us a correct heatmap. Also, setting rownames
@@ -321,4 +344,4 @@ gheatmap(p, tip_dat3,
     ## Scale for fill is already present.
     ## Adding another scale for fill, which will replace the existing scale.
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
