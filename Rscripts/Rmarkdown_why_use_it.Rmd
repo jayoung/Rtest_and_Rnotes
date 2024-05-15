@@ -75,11 +75,27 @@ Displaying a table via kable is a bit prettier.  There are also sorts of ways to
 
 ```{r}
 iris %>% 
+    head() %>% 
     kable() %>% 
     kable_styling()
 ```
 
 You can also use "inline" code, e.g. I might want to say that the iris table has `r dim(iris)[1]` rows and `r dim(iris)[2]` columns, and that the mean of the Sepal.Length column is `r mean(iris[,"Sepal.Length"])`
+
+
+Plots show up nicely.  Use code chunk options (at the top within the `{}`) to control size, etc.
+
+```{r, fig.height=4, fig.width=4}
+plot(iris[,"Sepal.Length"],iris[,"Sepal.Width"])
+```
+
+Here's the same plot using ggplot
+
+```{r, fig.height=4, fig.width=4}
+iris %>% 
+    ggplot(aes(x=Sepal.Length, y=Sepal.Width)) +
+    geom_point()
+```
 
 # Other useful tips
 
