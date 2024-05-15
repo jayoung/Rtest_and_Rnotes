@@ -1,0 +1,12 @@
+---
+title: "Why use Rmarkdown?"
+subtitle: "Rmarkdown_why_use_it.Rmd"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+
+[This](https://intro2r.com/why-use-r-markdown.html#) might help
+

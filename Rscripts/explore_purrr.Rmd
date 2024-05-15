@@ -9,6 +9,7 @@ always_allow_html: true
 ```{r setup, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(patchwork) # for combining plots
 ```
 
 Learning the `purrr` package
@@ -89,8 +90,48 @@ x %>% map_dbl(2)
 # same as sapply(myList, "[[", 2) 
 ```
 
+# using map to make a bunch of plots
 
-21.5.3 Exercises
+Here we make a function that generates a plot and test it on the whole dataset
+
+```{r}
+## make a function that generates a plot
+myPlotFunc <- function(dat) {
+    ggplot(dat,
+           aes(x = Petal.Width, y = Petal.Length)) +
+        geom_point() +
+        ggtitle(unique(dat$Species))
+}
+
+## test it on the whole dataset
+iris %>% myPlotFunc()
+```
+
+Now we try using the tidyverse way to split and apply (=map)
+```{r}
+## group_split then map to plot each (purrr::map)
+temp <- iris %>%
+    group_split(Species) %>%
+    map(myPlotFunc)
+temp[[1]] + temp[[2]] + temp[[3]]
+```
+
+Another way to write that is by using an anonymous function. Note the `~` before tje function, and the use of `.` within the function to denote the data being passed in
+
+```{r}
+temp <- iris %>%
+    group_split(Species) %>%
+    map(~ggplot(.,
+               aes(x = Petal.Width, y = Petal.Length)) +
+            geom_point() +
+            ggtitle(unique(.$Species)))
+temp[[1]] + temp[[2]] + temp[[3]]
+```
+
+
+# Exercises
+
+21.5.3 Exercises (from [here](https://r4ds.had.co.nz/iteration.html))
 
 Write code that uses one of the map functions to:
 

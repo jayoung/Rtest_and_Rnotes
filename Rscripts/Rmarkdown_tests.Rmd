@@ -1,0 +1,54 @@
+---
+title: "Rmarkdown tests"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+# library(tidyverse)
+# library(ggtree)
+# library(treeio)
+# library(tidytree)
+```
+
+# list 1 
+
+I want to test a bulleted list:    
+- one    
+- two     
+    - two-A    
+    - two-B    
+- three 
+
+
+# list 2
+
+Here's my list   
+
+* Another bulleted list:    
+  + one    
+  + two     
+    - two-A       
+    - two-B      
+  + three  
+* Another item    
+  + four    
+  + five    
+  
+  
+
+
+# list 3 
+
+A third bulleted list:    
+* one    
+* two     
+  + two-A       
+  + two-B      
+* three      
+
+
+
+

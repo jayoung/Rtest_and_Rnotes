@@ -1,5 +1,8 @@
 # Rtest_and_Rnotes
+
 my R playground and notes
+
+A lot of this is quite old, and most of it is only for myself, not meant for other people, although there are a few files in here I use for teaching.
 
 rhino location: `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes`
 
@@ -147,7 +150,7 @@ in ~/domesticated_capsid/Rreports/RTL3_frameshift_plots_v2_aln28.Rmd I got a tre
 
 [ggcoverage](https://github.com/showteeth/ggcoverage)
 
-[Gviz](https://www.bioconductor.org/packages/release/bioc/vignettes/Gviz/inst/doc/Gviz.html) (that's what I used for the tetrahymena project, and Michelle's project, and SATAY data)
+[Gviz](https://www.bioconductor.org/packages/release/bioc/vignettes/Gviz/inst/doc/Gviz.html) is what I used for the tetrahymena project, and Michelle's project, and SATAY data. Seems to be maintained and very functional.
 
 [GenVisR](https://bioconductor.org/packages/release/bioc/html/GenVisR.html)
 
@@ -166,7 +169,18 @@ Explored a few options in April 2024 for the SATAY data - see ~/FH_fast_storage/
 
 ### miscellaneous
 
-wordclouds - `wordcloud` and `wordcloud2` packages.  see ``/Volumes/malik_h/user/jayoung/presentations/MalikLab/otherSlides_mine/KennedyHighSchoolVisit_2021_Dec7/Hutch_wordCloud.R`
 
-violin plots - will probably use `ggplot - geom_violin()`. Some other options are vioplot::vioplot(), DescTools::PlotViolin(),  easyGgplot2::ggplot2.violinplot(),  UsingR::violinplot().  I noted a while back that I like PlotViolin better than vioplot, but when I run it on large datasets it is very slow if I allow it to use its default bandwidth selection algorithm.   If I specify the bw="nrd0" option, it is MUCH quicker. See also [here](http://www.sthda.com/english/wiki/ggplot2-violin-plot-easy-function-for-data-visualization-using-ggplot2-and-r-software)
+#### wordclouds
+
+`wordcloud` and `wordcloud2` packages.  see ``/Volumes/malik_h/user/jayoung/presentations/MalikLab/otherSlides_mine/KennedyHighSchoolVisit_2021_Dec7/Hutch_wordCloud.R`
+
+#### violin plots
+
+use `ggplot - geom_violin()`. 
+
+Some other options are vioplot::vioplot(), DescTools::PlotViolin(),  easyGgplot2::ggplot2.violinplot(),  UsingR::violinplot().  
+
+Before the days of ggplot, I noted that I like PlotViolin better than vioplot, but when I run it on large datasets it is very slow if I allow it to use its default bandwidth selection algorithm.   If I specify the bw="nrd0" option, it is MUCH quicker. 
+
+See also [here](http://www.sthda.com/english/wiki/ggplot2-violin-plot-easy-function-for-data-visualization-using-ggplot2-and-r-software)
 

@@ -2,7 +2,7 @@ explore_purrr
 ================
 Janet Young
 
-2024-03-12
+2024-05-15
 
 ``` r
 knitr::opts_chunk$set(echo = TRUE)
@@ -10,15 +10,19 @@ library(tidyverse)
 ```
 
     ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.1.4     ✔ readr     2.1.4
+    ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
     ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-    ## ✔ ggplot2   3.5.0     ✔ tibble    3.2.1
-    ## ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+    ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+    ## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
     ## ✔ purrr     1.0.2     
     ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
     ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+``` r
+library(patchwork) # for combining plots
+```
 
 Learning the `purrr` package
 
@@ -142,7 +146,57 @@ x %>% map_dbl(2)
 # same as sapply(myList, "[[", 2) 
 ```
 
-21.5.3 Exercises
+# using map to make a bunch of plots
+
+Here we make a function that generates a plot and test it on the whole
+dataset
+
+``` r
+## make a function that generates a plot
+myPlotFunc <- function(dat) {
+    ggplot(dat,
+           aes(x = Petal.Width, y = Petal.Length)) +
+        geom_point() +
+        ggtitle(unique(dat$Species))
+}
+
+## test it on the whole dataset
+iris %>% myPlotFunc()
+```
+
+![](explore_purrr_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+Now we try using the tidyverse way to split and apply (=map)
+
+``` r
+## group_split then map to plot each (purrr::map)
+temp <- iris %>%
+    group_split(Species) %>%
+    map(myPlotFunc)
+temp[[1]] + temp[[2]] + temp[[3]]
+```
+
+![](explore_purrr_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+Another way to write that is by using an anonymous function. Note the
+`~` before tje function, and the use of `.` within the function to
+denote the data being passed in
+
+``` r
+temp <- iris %>%
+    group_split(Species) %>%
+    map(~ggplot(.,
+               aes(x = Petal.Width, y = Petal.Length)) +
+            geom_point() +
+            ggtitle(unique(.$Species)))
+temp[[1]] + temp[[2]] + temp[[3]]
+```
+
+![](explore_purrr_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+# Exercises
+
+21.5.3 Exercises (from [here](https://r4ds.had.co.nz/iteration.html))
 
 Write code that uses one of the map functions to:
 
@@ -197,20 +251,20 @@ x %>%
 ```
 
     ## [[1]]
-    ##  [1] -12.139797  -8.287226  -9.923883 -10.941795  -9.604875 -10.209040
-    ##  [7] -10.051077 -10.317529  -9.670361 -10.478419
+    ##  [1]  -8.612911  -9.829510  -9.384454  -7.865214  -9.387599 -10.107558
+    ##  [7]  -8.632158  -9.413214  -9.696169 -11.808642
     ## 
     ## [[2]]
-    ##  [1] -0.7449404  1.4273095  0.3533466  0.8878583 -1.3134172  0.6323871
-    ##  [7] -1.1895847 -0.8027782  0.7875671 -0.4303141
+    ##  [1]  0.1377831  0.4546105 -1.9274010  0.1471632 -0.7228448 -1.0108842
+    ##  [7] -0.6816314 -0.1394412  0.7843508  1.4437430
     ## 
     ## [[3]]
-    ##  [1]  9.125754 11.454407  8.396047  8.921065  8.884403 11.616393  7.358901
-    ##  [8] 10.051747  9.046971  9.792974
+    ##  [1]  8.396713 10.289288  7.004429 11.856915  8.103026 10.890961  9.112319
+    ##  [8] 11.392111  9.882572 10.176432
     ## 
     ## [[4]]
-    ##  [1]  99.15182 100.23667  99.21939  99.83970  98.90266  99.47211  98.53975
-    ##  [8]  99.89172 100.37709  97.24003
+    ##  [1] 100.08852  99.13016  99.26024  98.75003  99.94250  99.69025 100.20559
+    ##  [8] 100.58346 100.90983 101.46869
 
 How can you create a single vector that for each column in a data frame
 indicates whether or not it’s a factor?
@@ -425,9 +479,9 @@ map2(mu, sigma, rnorm, n = 5) %>% str()
 ```
 
     ## List of 3
-    ##  $ : num [1:5] 5.98 4.01 4.97 5.27 3.07
-    ##  $ : num [1:5] 16.73 12.76 3.96 22.14 11.3
-    ##  $ : num [1:5] -10.529 1.462 -0.941 -3.02 -5.928
+    ##  $ : num [1:5] 6.55 5.41 4.79 5.44 5.65
+    ##  $ : num [1:5] 8.59 11.78 8.12 4.95 4.6
+    ##  $ : num [1:5] 6.81 -2.98 1.23 12.66 17.98
 
 `pmap()` is for groups of \>2 args. It’s good practise to name the
 arguments in the list:
@@ -441,9 +495,9 @@ args1 %>%
 ```
 
     ## List of 3
-    ##  $ : num 5.4
-    ##  $ : num [1:3] 15.04 11.28 5.41
-    ##  $ : num [1:5] 0.499 29.471 2.657 -6.987 -11.221
+    ##  $ : num 4.25
+    ##  $ : num [1:3] 7.53 15.71 9.9
+    ##  $ : num [1:5] -19.347 0.321 -6.56 -7.239 -12.577
 
 args for pmap must always have same length, so they can be stored in a
 data frame:
@@ -461,13 +515,13 @@ params %>%
 ```
 
     ## [[1]]
-    ## [1] 4.784384
+    ## [1] 5.262736
     ## 
     ## [[2]]
-    ## [1] 12.34709 13.33136 13.84756
+    ## [1]  6.457767 14.811106  2.154828
     ## 
     ## [[3]]
-    ## [1] -10.975102 -12.469341   6.070411 -11.274430  -5.709827
+    ## [1] -22.8546111  -0.9429102  -6.8124025  -4.1674594  16.1705185
 
 `invoke_map()` is used if you want to vary the function that gets used:
 
@@ -488,9 +542,9 @@ invoke_map(f, param, n = 5) %>% str()
     ## generated.
 
     ## List of 3
-    ##  $ : num [1:5] 0.7957 0.0898 0.8428 -0.1832 0.981
-    ##  $ : num [1:5] 7.616 0.878 2.308 13.403 0.651
-    ##  $ : int [1:5] 4 6 5 15 13
+    ##  $ : num [1:5] 0.5065 -0.0433 -0.71 0.277 0.6273
+    ##  $ : num [1:5] 0.104 3.379 6.094 4.208 2.561
+    ##  $ : int [1:5] 15 11 9 13 11
 
 that works but invoke_map is deprecated
 
@@ -607,7 +661,7 @@ x <- sample(10)
 x
 ```
 
-    ##  [1]  3  5  6  1  2  4  9  7  8 10
+    ##  [1]  6  3  1  8 10  2  9  7  5  4
 
 ``` r
 #  [1]  1  7  4  2  9 10  3  8  5  6
@@ -627,7 +681,7 @@ x %>%
     detect_index(~ . > 5)
 ```
 
-    ## [1] 3
+    ## [1] 1
 
 ``` r
 #> [1] 1
@@ -637,7 +691,7 @@ x %>%
     head_while(~ . > 5)
 ```
 
-    ## integer(0)
+    ## [1] 6
 
 ``` r
 # but this works
@@ -645,14 +699,14 @@ x %>%
     head_while(~ . < 6)
 ```
 
-    ## [1] 3 5
+    ## integer(0)
 
 ``` r
 x %>% 
     tail_while(~ . > 4)
 ```
 
-    ## [1]  9  7  8 10
+    ## integer(0)
 
 purrr:::reduce does a function repeatedly (is this like do.call?)
 
@@ -705,7 +759,7 @@ x <- sample(10)
 x
 ```
 
-    ##  [1]  7  9  4 10  8  6  5  2  3  1
+    ##  [1]  1  4  9  6  7  5 10  8  2  3
 
 ``` r
 #  [1]  4  5  2  9  6  7  8  1  3 10
@@ -714,7 +768,7 @@ x
 x %>% accumulate(`+`)
 ```
 
-    ##  [1]  7 16 20 30 38 44 49 51 54 55
+    ##  [1]  1  5 14 20 27 32 42 50 52 55
 
 ``` r
 ## this is the same as sum(x):
