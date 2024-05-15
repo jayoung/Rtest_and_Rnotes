@@ -7,6 +7,91 @@ output: github_document
 always_allow_html: true
 ---
 
+# What is Rmarkdown?
 
-[This](https://intro2r.com/why-use-r-markdown.html#) might help
+Rmarkdown (Rmd) helps us generate data analysis code that is reproducible and well-documented.
+
+With a Rmd document, we can run the code interactively (in the console).  Or, once our code is working, we can use "knit" to generate a report in the format(s) of our choice - html, word doc, etc.   
+
+We can also easily choose to "restart R and run all chunks". This ensures the code commands are all in an order that makes sense, and that the output will be reproducible in a "clean" environment.  Running code interactively runs the risk we've run code blocks in a different order, or loaded packages or data that we haven't specified in the script, etc.
+
+We control the output report format using the YAML block at the top of the script - I like to use the following output format, because when I sync my project to github, the report displays nicely. I can also find the files for individual plots within the report, in a subdirectory nearby.
+
+```
+output: github_document
+always_allow_html: true
+```
+
+
+# Alternatives to Rmarkdown
+
+Some people like **Jupyter notebooks** - those can run R code (or python)
+
+**Quarto** is similar Rmarkdown - I've only used it briefly. Similar concept to Rmd but formatting might be easier. It looks nice, but I don't know it it's mature enough for regular use. It probably is.  It's available in later versions of Rstudio.
+
+# How to use Rmd
+
+I'm not going to explain the whole thing here - any of these tutorials should help you learn it fairly quickly:    
+
+* Rstudio's [intro to Rmarkdown](https://rmarkdown.rstudio.com/lesson-1.html)    
+* [intro2r chapter 8](https://intro2r.com/rmarkdown_r.html)    
+* detailed [Rmarkdown guide](https://bookdown.org/yihui/rmarkdown/)    
+
+I just want to use this script to point out a few useful features. 
+
+We often start with a code chunk that sets "global" options and loads packages we'll need in the script.  This `echo = TRUE` controls whether your code itself will be visible in your output document. Sometimes it's nice to see it, sometimes you prefer not to.
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+
+## if you want to include code that doesn't need to be run every time, but maybe you want to remind yourself how you did something, comment it out, otherwise it will run every time you run the script, slowing things down. Common example is installing packages
+# install.packages("tidyverse")
+
+library(tidyverse)
+library(kableExtra) # this package helps display tables nicely
+```
+
+Giving each code chunk a short description (e.g. the `setup` in `{r setup}` above) can help you see which code chunks are slow. 
+
+If the script is running too slow for my liking, I sometimes split up my code into a couple of scripts - the first one runs any slow data crunching, and saves the output. The second one loads the saved output and makes plots/tables etc.  
+
+# Example
+
+We'll use R's built-in dataset `iris` just to demo some things.
+
+Stuff that would print onto your R console can print to your report too
+
+```{r}
+iris
+```
+
+
+```{r}
+class(iris)
+dim(iris)
+```
+
+Displaying a table via kable is a bit prettier.  There are also sorts of ways to control formatting here, too - google will help with that
+
+```{r}
+iris %>% 
+    kable() %>% 
+    kable_styling()
+```
+
+You can also use "inline" code, e.g. I might want to say that the iris table has `r dim(iris)[1]` rows and `r dim(iris)[2]` columns, and that the mean of the Sepal.Length column is `r mean(iris[,"Sepal.Length"])`
+
+# Other useful tips
+
+Any time you're copy-pasting multiple lines of code, you probably should be using a function.   Well worth your time to learn how to do that!
+
+Naming your variables - it's very tempting to use anonymous-sounding variable names, like `temp` or `results` or `output`.  But that is likely to cause you trouble in the long run - when you come back and look at your code a year from now, you won't understand it.  Also, you are likely to accidentally have two different things in the same script with the same name - that'll mess up your results.
+
+# Reproducibility
+
+If you're really being strict about code reproducibility, it's nice to see which version of R and which versions of the packages were used to generate a report.  Mostly code runs in a stable way, but once in a while, you update R or certain packages, and it either breaks the code, or you get output that's mysteriously different. In that case it can help to include R and package versions in the report, like this (typically at the end of the report). I don't often do this but maybe I should.
+
+```{r output session info for reproducibility}
+sessionInfo()
+```
 
