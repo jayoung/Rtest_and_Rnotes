@@ -62,7 +62,7 @@ We'll use R's built-in dataset `iris` just to demo some things.
 Stuff that would print onto your R console can print to your report too
 
 ```{r}
-iris
+head(iris)
 ```
 
 
