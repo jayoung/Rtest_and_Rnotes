@@ -2,7 +2,7 @@ color_testing
 ================
 Janet Young
 
-2024-05-08
+2024-05-17
 
 Show all color names
 
@@ -259,8 +259,6 @@ Display the output of nearRcolor:
 plotCol(nearRcolor("deepskyblue", "rgb", dist=50))
 ```
 
-    ## Loading required package: grid
-
 ![](color_testing_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 Default color space is hsv (with a different dist scale)
@@ -292,3 +290,29 @@ plotCol(nearRcolor("lightblue", dist=0.25), nrow=8)
 ```
 
 ![](color_testing_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+I wanted a couple of dark reds (for the SATAY analysis)
+
+``` r
+plotCol(nearRcolor("darkred", dist=0.25), nrow=3)
+```
+
+![](color_testing_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+Alphabetical sorting can help. Default sort is by distance away from the
+query color (not from each other.)
+
+``` r
+plotCol(sort(nearRcolor("green", dist=0.25)), nrow=5,ncol=6)
+```
+
+![](color_testing_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+I wanted a couple of purples (for the SATAY analysis)
+
+``` r
+# 34 colors
+plotCol(nearRcolor("purple", dist=0.25), nrow=5, ncol=7)
+```
+
+![](color_testing_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->

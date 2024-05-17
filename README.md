@@ -18,6 +18,14 @@ R For The Rest Of Us [resources](https://rfortherestofus.com/resources)
 
 Advice on [making figures](https://github.com/MichaelClerx/making-figures/tree/main)
 
+Some notes on [good coding practices](https://r4ds.hadley.nz/workflow-scripts.html) - using Rmarkdown, clean environments, reproducibility, Rprojects
+
+Rmarkdown:
+
+* Rstudio's [intro to Rmarkdown](https://rmarkdown.rstudio.com/lesson-1.html)    
+* [intro2r chapter 8](https://intro2r.com/rmarkdown_r.html)    
+* detailed [Rmarkdown guide](https://bookdown.org/yihui/rmarkdown/)    
+
 ### haven't looked yet: future
 
 [The Elements of Data Analytic Style](https://leanpub.com/datastyle) by Jeff Leek (a Leanpub book)

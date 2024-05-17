@@ -10,6 +10,7 @@ always_allow_html: true
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 # library(tidyverse)
+library(grid)
 ```
 
 Show all color names
@@ -63,4 +64,25 @@ I wanted a couple of light blues (for the SATAY analysis)
 plotCol(nearRcolor("lightblue", dist=0.25), nrow=8)
 ```
 
+I wanted a couple of dark reds (for the SATAY analysis)
+
+```{r, fig.height=2, fig.width=7}
+plotCol(nearRcolor("darkred", dist=0.25), nrow=3)
+```
+
+
+Alphabetical sorting can help. Default sort is by distance away from the query color (not from each other.)
+
+```{r, fig.height=2, fig.width=7}
+plotCol(sort(nearRcolor("green", dist=0.25)), nrow=5,ncol=6)
+```
+
+
+
+I wanted a couple of purples (for the SATAY analysis)
+
+```{r, fig.height=2, fig.width=7}
+# 34 colors
+plotCol(nearRcolor("purple", dist=0.25), nrow=5, ncol=7)
+```
 
