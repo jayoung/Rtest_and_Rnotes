@@ -119,6 +119,8 @@ plt1 | plt2
 
 `flextable` - see [Rscripts/flextable_demo.md](Rscripts/flextable_demo.md) 
 
+[`reactable`](https://glin.github.io/reactable/index.html)
+
 (and I think some others)
 
 ### Volcano plots
