@@ -236,3 +236,7 @@ gheatmap(p, tip_dat3,
                       name="")
 ```
 
+```{r}
+sessionInfo()
+```
+

@@ -22,7 +22,6 @@ I used a mammalian species tree from this paper: Upham, N. S., J. A. Esselstyn, 
 
 first I read tree and metadata I downloaded from [this website](https://data.vertlife.org)
 
-
 metadata file was from [here](https://data.vertlife.org/mammaltree/taxonomy_mamPhy_5911species.csv)
 
 see also notes in `/fh/fast/malik_h/grp/public_databases/trees/Upham_speciesTrees/Upham_speciesTrees_NOTES.txt`
@@ -39,7 +38,7 @@ mammalTreeTaxonomyInfo <- "/Volumes/malik_h/grp/public_databases/trees/Upham_spe
     read_csv(show_col_types = FALSE)
 ```
 
-```{r}
+```{r get example species names}
 ## get example species names I want a tree for. This is long-winded but it should be a working example:
 RTL3_alnFile <- here("Rscripts/phylogenetics/RTL3_aln2022summer_v28.fa")
 
@@ -56,9 +55,7 @@ RTL3_alnInfoTable <- RTL3_alnInfoTable %>%
     mutate(species=str_replace(species, "BetweenORFsRegion", "")) %>% 
     mutate(species=str_to_sentence(to_snake_case(species))) %>% 
     mutate(species=str_replace_all(species,"_"," "))
-```
 
-```{r}
 specNamesToGetTreeFor <- RTL3_alnInfoTable %>% 
     select(species) %>% 
     deframe() %>% 
@@ -67,7 +64,7 @@ specNamesToGetTreeFor <- RTL3_alnInfoTable %>%
 
 look up common names for each species and add to RTL3_alnInfoTable
 
-```{r, message=FALSE, warning=FALSE, results=FALSE}
+```{r look up common names, message=FALSE, warning=FALSE, results=FALSE}
 # sci2comm is from the taxize package. it's a bit slow, and very noisy.
 commonNameLookup <- sci2comm(sci=specNamesToGetTreeFor)
 ## I checked - there was 1 character item found for each and none are NA

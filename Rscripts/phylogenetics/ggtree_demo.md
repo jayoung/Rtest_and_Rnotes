@@ -2,7 +2,7 @@ ggtree_demo
 ================
 Janet Young
 
-2024-05-13
+2024-05-23
 
 # Useful links, general advice
 
@@ -70,19 +70,19 @@ tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A           172.  nose           fur            
-    ##  2 B           135.  tail           spikes         
-    ##  3 C           120.  teeth          scales         
-    ##  4 D           103.  teeth          scales         
-    ##  5 E           160.  nose           scales         
-    ##  6 F            59.9 tail           fur            
-    ##  7 G            94.6 nose           fur            
-    ##  8 H           135.  nose           scales         
-    ##  9 I           117.  teeth          spikes         
-    ## 10 J            88.1 tail           spikes         
-    ## 11 K           139.  teeth          scales         
-    ## 12 L           105.  teeth          spikes         
-    ## 13 M            61.2 tail           fur
+    ##  1 A           112.  nose           fur            
+    ##  2 B            96.5 tail           fur            
+    ##  3 C           101.  teeth          spikes         
+    ##  4 D            46.8 teeth          fur            
+    ##  5 E            90.8 tail           scales         
+    ##  6 F            78.4 teeth          scales         
+    ##  7 G            82.3 nose           spikes         
+    ##  8 H           116.  teeth          spikes         
+    ##  9 I           122.  tail           fur            
+    ## 10 J            95.5 tail           scales         
+    ## 11 K            94.4 tail           scales         
+    ## 12 L           123.  teeth          fur            
+    ## 13 M           153.  nose           scales
 
 ## combine tree and tbl
 
@@ -135,16 +135,16 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE        172.  nose           fur            
-    ##  2     2 B     TRUE        135.  tail           spikes         
-    ##  3     3 C     TRUE        120.  teeth          scales         
-    ##  4     4 D     TRUE        103.  teeth          scales         
-    ##  5     5 E     TRUE        160.  nose           scales         
-    ##  6     6 F     TRUE         59.9 tail           fur            
-    ##  7     7 G     TRUE         94.6 nose           fur            
-    ##  8     8 H     TRUE        135.  nose           scales         
-    ##  9     9 I     TRUE        117.  teeth          spikes         
-    ## 10    10 J     TRUE         88.1 tail           spikes         
+    ##  1     1 A     TRUE        112.  nose           fur            
+    ##  2     2 B     TRUE         96.5 tail           fur            
+    ##  3     3 C     TRUE        101.  teeth          spikes         
+    ##  4     4 D     TRUE         46.8 teeth          fur            
+    ##  5     5 E     TRUE         90.8 tail           scales         
+    ##  6     6 F     TRUE         78.4 teeth          scales         
+    ##  7     7 G     TRUE         82.3 nose           spikes         
+    ##  8     8 H     TRUE        116.  teeth          spikes         
+    ##  9     9 I     TRUE        122.  tail           fur            
+    ## 10    10 J     TRUE         95.5 tail           scales         
     ## # ℹ 15 more rows
 
 ## plot tree with annotations
@@ -345,3 +345,46 @@ gheatmap(p, tip_dat3,
     ## Adding another scale for fill, which will replace the existing scale.
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+``` r
+sessionInfo()
+```
+
+    ## R version 4.4.0 (2024-04-24)
+    ## Platform: x86_64-apple-darwin20
+    ## Running under: macOS Ventura 13.6.7
+    ## 
+    ## Matrix products: default
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+    ## 
+    ## locale:
+    ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+    ## 
+    ## time zone: America/Los_Angeles
+    ## tzcode source: internal
+    ## 
+    ## attached base packages:
+    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
+    ## 
+    ## other attached packages:
+    ##  [1] tidytree_0.4.6  treeio_1.28.0   ggtree_3.12.0   lubridate_1.9.3
+    ##  [5] forcats_1.0.0   stringr_1.5.1   dplyr_1.1.4     purrr_1.0.2    
+    ##  [9] readr_2.1.5     tidyr_1.3.1     tibble_3.2.1    ggplot2_3.5.1  
+    ## [13] tidyverse_2.0.0
+    ## 
+    ## loaded via a namespace (and not attached):
+    ##  [1] yulab.utils_0.1.4  utf8_1.2.4         generics_0.1.3     ggplotify_0.1.2   
+    ##  [5] stringi_1.8.4      lattice_0.22-6     hms_1.1.3          digest_0.6.35     
+    ##  [9] magrittr_2.0.3     evaluate_0.23      grid_4.4.0         timechange_0.3.0  
+    ## [13] fastmap_1.1.1      jsonlite_1.8.8     ape_5.8            aplot_0.2.2       
+    ## [17] fansi_1.0.6        scales_1.3.0       lazyeval_0.2.2     cli_3.6.2         
+    ## [21] rlang_1.1.3        munsell_0.5.1      cachem_1.0.8       withr_3.0.0       
+    ## [25] yaml_2.3.8         tools_4.4.0        parallel_4.4.0     tzdb_0.4.0        
+    ## [29] memoise_2.0.1      colorspace_2.1-0   gridGraphics_0.5-1 vctrs_0.6.5       
+    ## [33] R6_2.5.1           lifecycle_1.0.4    ggfun_0.1.4        fs_1.6.4          
+    ## [37] pkgconfig_2.0.3    pillar_1.9.0       gtable_0.3.5       glue_1.7.0        
+    ## [41] Rcpp_1.0.12        highr_0.10         xfun_0.43          tidyselect_1.2.1  
+    ## [45] rstudioapi_0.16.0  knitr_1.46         farver_2.1.2       patchwork_1.2.0   
+    ## [49] htmltools_0.5.8.1  nlme_3.1-164       labeling_0.4.3     rmarkdown_2.26    
+    ## [53] compiler_4.4.0
