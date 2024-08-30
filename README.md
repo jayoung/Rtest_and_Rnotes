@@ -132,6 +132,8 @@ plt1 | plt2
 
 (and I think some others)
 
+`emphatic` - see [Rscripts/emphatic_demo.md](Rscripts/emphatic_demo.md) 
+
 ### Volcano plots
 
 [EnhancedVolcano](https://bioconductor.org/packages/release/bioc/vignettes/EnhancedVolcano/inst/doc/EnhancedVolcano.html)

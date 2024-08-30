@@ -1,0 +1,75 @@
+---
+title: "emphatic_demo"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(emphatic)
+```
+
+
+[emphatic](https://coolbutuseless.github.io/package/emphatic/) is a package for making pretty tables
+
+use the `h()` function for highlighting:
+
+```{r}
+mtcars |>
+    head(15) |>
+    hl(c('red', 'white', 'blue')) 
+```
+`hl()` enables conditional formatting 
+
+```{r}
+mtcars |>
+    head(15) |>
+    # highlight the row with lowest hp value
+    hl('hotpink', rows = hp == min(hp)) |>
+    # highlight using heatmap type color scale. 
+    hl(
+        palette     = ggplot2::scale_colour_viridis_c(option = 'A'),
+        cols        = mpg,      # Where the colour scale is calculated
+        scale_apply = mpg:disp, # Where the colour scale is applied
+        show_legend = TRUE
+    ) 
+```
+
+## `hl_diff()`
+
+`hl_diff()` to calculate and highlight differences:
+
+```{r}
+x <- "Paris in the the spring?"
+y <- "Not Paris in the spring!"
+hl_diff(x, y)
+```
+
+## `hl_grep()`
+
+```{r}
+txt <- "Among the few possessions he left to his heirs was a set of 
+Encyclopedia Britannica in storage at the Lindbergh Palace Hotel under
+the  names Ari and Uzi Tenenbaum. No-one spoke at the funeral, and 
+Father Petersen's leg had not yet mended, but it was agreed among them 
+that Royal would have found the event to be most satisfactory.
+[Chas, now wearing a black Adidas tracksuit, nods to his sons]"
+
+hl_grep(txt, "event.*satisfactory", coerce = 'character')
+```
+
+```{r}
+objs <- list(
+  hl_grep("hello", "there"),
+  hl_grep("goodbye", "good boy")
+) 
+
+svg <- as_svg_anim(objs, width = 600, height = 300, duration = 2, 
+                   playback = 'infinite', font_size = "2em")
+svg
+```
+
+Can export highlighted tables using `emphatic::write_xlsx()`
