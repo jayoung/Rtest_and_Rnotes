@@ -2,20 +2,25 @@ ggplot_demo
 ================
 Janet Young
 
-2024-05-08
+2024-08-30
 
 Show some examples from the [ggplot2
 cheatsheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html)
 
-These commands set up a few base plots, but they have no geom layer, so
-nothing is actually plotted
+These commands set up the base plots `a` and `b`, but they have no geom
+layer, so nothing is actually plotted
+
+The `economics` dataset is a 574-row 6-col tibble (wide format)
+describing how 5 metrics change over time. Column names are date, pce,
+pop, psavert, uempmed, unemploy
+
+The `seals` dataset is a 1155-row 4-col tibble that describes how some
+animals move. Four columns named lat, long, delta_long, delta_lat
 
 ``` r
-## economics is a 574-row 6-col tibble. colnames:
 # date, pce, pop, psavert, uempmed, unemploy
 a <- ggplot(economics, aes(date,unemploy))
 
-## seals is a 1155-row 4-col tibble. colnames:
 # lat  long delta_long delta_lat
 b <- ggplot(seals, aes(x=long, y=lat))
 # ?seals 
@@ -26,40 +31,40 @@ b <- ggplot(seals, aes(x=long, y=lat))
 # it's simply a grid in x-y space
 ```
 
-I wanted to explore a bunch of different geoms
+I wanted to explore different geoms
+
+geom_blank()
 
 ``` r
-# Ensure limits include values across all plots.
-a + geom_blank() + labs(title="geom_blank")
+a + geom_blank() + labs(title="economics, date/unemploy, geom_blank")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+geom_point()
 
 ``` r
-## they also show + expand_limits()
-```
-
-``` r
-b + geom_point() + labs(title="geom_point")
+b + geom_point() + labs(title="seals, long/lat, geom_point")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+geom_curve() draws a curved line from (x, y) to (xend, yend).
+
+aes() arguments: x, xend, y, yend, alpha, angle, color, curvature,
+linetype, size.
 
 ``` r
-## this is a wierd thing to demo
+## this is a wierd plot
+# x and y already existed in b, and we're adding xend and yend
 b + geom_curve(aes(xend = long + 1, 
                    yend = lat + 1), 
                curvature = 1) + 
-    labs(title="geom_curve")
+    labs(title="seals, long/lat, geom_curve")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+`geom_path()` connects observations in the order they appear.
 
-``` r
-# Draw a curved line from (x, y) to (xend, yend). 
-# aes() arguments: x, xend, y, yend, alpha, angle, color, curvature, linetype, size.
-# x and y already existed in b
-```
+aes() arguments: x, y, alpha, color, group, linetype, size.
 
 ``` r
 a + 
@@ -69,13 +74,10 @@ a +
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-``` r
-# Connect observations in the order they appear. aes() arguments: x, y, alpha, color, group, linetype, size.
-```
-
-`geom_line()` connects points from left to right `geom_path()` is
-similar but connects points in the order they appear in the data so if
-data are sorted, the graphs look the same
+`geom_line()` connects points from left to right. `geom_path()` is
+similar but connects points in the order they appear in the data. If
+data are sorted, geom_line() and geom_path plots look the same,
+otherwise they’re different.
 
 ``` r
 a + 
@@ -93,6 +95,10 @@ a +
 Same thing with geom_line - looks the same (because data are sorted,
 geom_path IS connected left-to-right, just like geom_line)
 
+geom_line() - connect observations in the order they appear. a
+
+geom_line aes() arguments: x, y, alpha, color, group, linetype, size.
+
 ``` r
 a + 
     geom_line(lineend = "butt", linejoin = "round", linemitre = 1) +
@@ -102,9 +108,10 @@ a +
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
-``` r
-# Connect observations in the order they appear. aes() arguments: x, y, alpha, color, group, linetype, size.
-```
+`geom_polygon()` - connect points into polygons
+
+aes() arguments: x, y, alpha, color, fill, group, subgroup, linetype,
+size.
 
 ``` r
 a + geom_polygon(aes(alpha = 50)) +
@@ -113,16 +120,16 @@ a + geom_polygon(aes(alpha = 50)) +
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-``` r
-# Connect points into polygons. aes() arguments: x, y, alpha, color, fill, group, subgroup, linetype, size.
-```
+`geom_rect()` draws a rectangle by connecting four corners (xmin, xmax,
+ymin, ymax).
 
-geom_rect demo
+aes() arguments: xmax, xmin, ymax, ymin, alpha, color, fill, linetype,
+size.
+
+the example given makes it hard to see what’s going on, so I sample 30
+rows at random
 
 ``` r
-## the example given makes it hard to see what's going on , so I sample 30 rows at random
-# b + geom_rect(aes(xmin = long, ymin = lat, xmax = long + 1, ymax = lat + 1))
-# Draw a rectangle by connecting four corners (xmin, xmax, ymin, ymax). aes() arguments: xmax, xmin, ymax, ymin, alpha, color, fill, linetype, size.
 seals %>% 
     slice_sample(n=30) %>% 
     ggplot(aes(xmin = long, ymin = lat, 
@@ -133,7 +140,10 @@ seals %>%
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-`geom_ribbon()`
+`geom_ribbon()` - for each x, plot an interval from ymin to ymax.
+
+aes() arguments: x, ymax, ymin, alpha, color, fill, group, linetype,
+size.
 
 ``` r
 a + geom_ribbon(aes(ymin = unemploy - 900, 
@@ -141,30 +151,30 @@ a + geom_ribbon(aes(ymin = unemploy - 900,
     labs(title="geom_ribbon")
 ```
 
-![](ggplot_demo_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](ggplot_demo_files/figure-gfm/unnamed-chunk-10-1.png)<!-- --> Plots
+using `mpg` dataset - a 234 × 11 tibble, showing data for various car
+types
 
 ``` r
-# For each x, plot an interval from ymin to ymax. aes() arguments: x, ymax, ymin, alpha, color, fill, group, linetype, size.
-```
-
-# two variables
-
-``` r
-# mpg is a 234 × 11 tibble, with various car types
 e <- ggplot(mpg, aes(cty,hwy))
 ```
 
 `geom_point()`
 
 ``` r
-e+geom_point() +
-    labs(title="geom_point")
+e + 
+    geom_point() +
+    labs(title="mpg, geom_point")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
+geom_smooth()
+
 ``` r
-e+geom_point()+geom_smooth()+
+e + 
+    geom_point() + 
+    geom_smooth()+
     labs(title="geom_point and geom_smooth")
 ```
 
@@ -228,3 +238,38 @@ penguins |>
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+# wrapping text in ggplot
+
+`str_wrap()` - you have to figure out width manually, which can be
+tedious
+
+``` r
+penguins |> 
+    count(island) |>
+    ggplot(aes(x=island, y=n)) +
+    geom_col() +
+    labs(title="a short title",
+         subtitle=str_wrap("a really long title. kasjdhf ;isjdghf khg kajsdhf khg alsidgf kjhg ljhags dfj hgkjahsdgfkjhg a  ljhsdgf ljhglsdjhfg", width=50))
+```
+
+![](ggplot_demo_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+Instead use `ggtext` package - the element_textbox_simple will
+automatically wrap text to fit whatever space is available.
+
+``` r
+library(ggtext)
+```
+
+``` r
+penguins |> 
+    count(island) |>
+    ggplot(aes(x=island, y=n)) +
+    geom_col() +
+    labs(title="a short title",
+         subtitle="a really long title. kasjdhf ;isjdghf khg kajsdhf khg alsidgf kjhg ljhags dfj hgkjahsdgfkjhg a  ljhsdgf ljhglsdjhfg") +
+    theme(plot.subtitle = element_textbox_simple())
+```
+
+![](ggplot_demo_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
