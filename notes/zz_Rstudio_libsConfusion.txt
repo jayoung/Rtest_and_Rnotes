@@ -1,0 +1,20 @@
+######
+
+.libPaths()
+
+[1] "/fh/fast/malik_h/grp/malik_lab_shared/linux_gizmo/R_packages/v_fh_4.0.2-foss-2019b"
+[2] "/app/software/fhR/4.0.2-foss-2019b"                                                
+[3] "/app/software/R/4.0.2-foss-2019b/lib/R/library"                                    
+
+[1] "/fh/fast/malik_h/grp/malik_lab_shared/linux_gizmo/R_packages/v_fh_4.0.2-foss-2019b"
+[2] "/app/software/fhR/4.0.2-foss-2019b"                                                
+[3] "/home/jayoung/R/x86_64-pc-linux-gnu-library/4.0"                                   
+[4] "/app/software/R/4.0.2-foss-2019b/lib/R/library"                                    
+
+
+######
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("VariantAnnotation")
+

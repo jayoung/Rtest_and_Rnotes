@@ -34,6 +34,12 @@ Rmarkdown:
 ## Things I've learned
 
 
+### R does rounding weirdly!
+
+See [here](https://psiaims.github.io/CAMIS/R/rounding.html)
+
+"The `round()` function in Base R will round to the nearest whole number and ‘rounding to the even number’ when equidistant, meaning that exactly 12.5 rounds to the integer 12. Note that the janitor package in R contains a function `round_half_up()` that rounds away from zero. in this case it rounds to the nearest whole number and ‘away from zero’ or ‘rounding up’ when equidistant, meaning that exactly 12.5 rounds to the integer 13.""
+
 ### Rstudio tricks
 
 "Reindenting your code only shifts things around horizontally. If you want more powerful code reformatting, try using “Code > Reformat Code” (or use ⌘⇧A on macOS or ctrl + shift + A on Windows). It’s a more aggressive form of reformatting that will add extra line breaks and other things to make the code more readable."
@@ -90,6 +96,9 @@ myFunc <- function(x) {
 
 
 ## Useful packages
+
+On a Mac, R packages go here - `/Library/Frameworks/R.framework/Versions` - in subdirectories by version. After installing new R, can delete old packages to save disk space
+
 
 ### combining plots
 
@@ -194,3 +203,6 @@ Before the days of ggplot, I noted that I like PlotViolin better than vioplot, b
 
 See also [here](http://www.sthda.com/english/wiki/ggplot2-violin-plot-easy-function-for-data-visualization-using-ggplot2-and-r-software)
 
+#### ggplot themes
+
+https://rfortherestofus.com/2019/08/themes-to-improve-your-ggplot-figures/

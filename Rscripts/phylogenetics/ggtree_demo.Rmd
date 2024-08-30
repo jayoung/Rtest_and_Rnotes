@@ -6,6 +6,8 @@ output: github_document
 always_allow_html: true
 ---
 
+(this doesn't work on the fhR 4.2.0 I could run via the Hutch Rstudio server, with the package versions I have there right now.  But fhR 4.4.0 is fine)
+
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(ggtree)

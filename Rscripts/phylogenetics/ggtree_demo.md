@@ -4,6 +4,10 @@ Janet Young
 
 2024-05-23
 
+(this doesn’t work on the fhR 4.2.0 I could run via the Hutch Rstudio
+server, with the package versions I have there right now. But fhR 4.4.0
+is fine)
+
 # Useful links, general advice
 
 The [ggtree manual](http://yulab-smu.top/treedata-book/index.html) is
@@ -70,19 +74,19 @@ tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A           112.  nose           fur            
-    ##  2 B            96.5 tail           fur            
-    ##  3 C           101.  teeth          spikes         
-    ##  4 D            46.8 teeth          fur            
-    ##  5 E            90.8 tail           scales         
-    ##  6 F            78.4 teeth          scales         
-    ##  7 G            82.3 nose           spikes         
-    ##  8 H           116.  teeth          spikes         
-    ##  9 I           122.  tail           fur            
-    ## 10 J            95.5 tail           scales         
-    ## 11 K            94.4 tail           scales         
-    ## 12 L           123.  teeth          fur            
-    ## 13 M           153.  nose           scales
+    ##  1 A           123.  teeth          fur            
+    ##  2 B           164.  tail           scales         
+    ##  3 C           128.  tail           fur            
+    ##  4 D           153.  teeth          scales         
+    ##  5 E           130.  teeth          scales         
+    ##  6 F           121.  teeth          spikes         
+    ##  7 G            92.6 teeth          fur            
+    ##  8 H            57.0 teeth          fur            
+    ##  9 I            95.9 teeth          scales         
+    ## 10 J           138.  teeth          spikes         
+    ## 11 K           115.  teeth          spikes         
+    ## 12 L           144.  tail           spikes         
+    ## 13 M           107.  teeth          fur
 
 ## combine tree and tbl
 
@@ -135,16 +139,16 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE        112.  nose           fur            
-    ##  2     2 B     TRUE         96.5 tail           fur            
-    ##  3     3 C     TRUE        101.  teeth          spikes         
-    ##  4     4 D     TRUE         46.8 teeth          fur            
-    ##  5     5 E     TRUE         90.8 tail           scales         
-    ##  6     6 F     TRUE         78.4 teeth          scales         
-    ##  7     7 G     TRUE         82.3 nose           spikes         
-    ##  8     8 H     TRUE        116.  teeth          spikes         
-    ##  9     9 I     TRUE        122.  tail           fur            
-    ## 10    10 J     TRUE         95.5 tail           scales         
+    ##  1     1 A     TRUE        123.  teeth          fur            
+    ##  2     2 B     TRUE        164.  tail           scales         
+    ##  3     3 C     TRUE        128.  tail           fur            
+    ##  4     4 D     TRUE        153.  teeth          scales         
+    ##  5     5 E     TRUE        130.  teeth          scales         
+    ##  6     6 F     TRUE        121.  teeth          spikes         
+    ##  7     7 G     TRUE         92.6 teeth          fur            
+    ##  8     8 H     TRUE         57.0 teeth          fur            
+    ##  9     9 I     TRUE         95.9 teeth          scales         
+    ## 10    10 J     TRUE        138.  teeth          spikes         
     ## # ℹ 15 more rows
 
 ## plot tree with annotations
@@ -351,18 +355,22 @@ sessionInfo()
 ```
 
     ## R version 4.4.0 (2024-04-24)
-    ## Platform: x86_64-apple-darwin20
-    ## Running under: macOS Ventura 13.6.7
+    ## Platform: x86_64-pc-linux-gnu
+    ## Running under: Ubuntu 18.04.6 LTS
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRblas.0.dylib 
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+    ## BLAS/LAPACK: FlexiBLAS OPENBLAS;  LAPACK version 3.11.0
     ## 
     ## locale:
-    ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+    ##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+    ##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+    ##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+    ##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+    ##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+    ## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
     ## 
     ## time zone: America/Los_Angeles
-    ## tzcode source: internal
+    ## tzcode source: system (glibc)
     ## 
     ## attached base packages:
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
@@ -377,14 +385,14 @@ sessionInfo()
     ##  [1] yulab.utils_0.1.4  utf8_1.2.4         generics_0.1.3     ggplotify_0.1.2   
     ##  [5] stringi_1.8.4      lattice_0.22-6     hms_1.1.3          digest_0.6.35     
     ##  [9] magrittr_2.0.3     evaluate_0.23      grid_4.4.0         timechange_0.3.0  
-    ## [13] fastmap_1.1.1      jsonlite_1.8.8     ape_5.8            aplot_0.2.2       
+    ## [13] fastmap_1.2.0      jsonlite_1.8.8     ape_5.8            aplot_0.2.2       
     ## [17] fansi_1.0.6        scales_1.3.0       lazyeval_0.2.2     cli_3.6.2         
     ## [21] rlang_1.1.3        munsell_0.5.1      cachem_1.0.8       withr_3.0.0       
     ## [25] yaml_2.3.8         tools_4.4.0        parallel_4.4.0     tzdb_0.4.0        
     ## [29] memoise_2.0.1      colorspace_2.1-0   gridGraphics_0.5-1 vctrs_0.6.5       
     ## [33] R6_2.5.1           lifecycle_1.0.4    ggfun_0.1.4        fs_1.6.4          
     ## [37] pkgconfig_2.0.3    pillar_1.9.0       gtable_0.3.5       glue_1.7.0        
-    ## [41] Rcpp_1.0.12        highr_0.10         xfun_0.43          tidyselect_1.2.1  
+    ## [41] Rcpp_1.0.12        highr_0.10         xfun_0.44          tidyselect_1.2.1  
     ## [45] rstudioapi_0.16.0  knitr_1.46         farver_2.1.2       patchwork_1.2.0   
     ## [49] htmltools_0.5.8.1  nlme_3.1-164       labeling_0.4.3     rmarkdown_2.26    
     ## [53] compiler_4.4.0
