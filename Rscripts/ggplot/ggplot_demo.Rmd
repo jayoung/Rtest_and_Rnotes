@@ -232,4 +232,27 @@ penguins |>
     theme(plot.subtitle = element_textbox_simple())
 ```
 
+Maybe we need to wrap facet labels - we can use the label_wrap_gen function
+
+```{r}
+theme_set(theme_bw(16))
+df <- data.frame(measurement = rnorm(20,mean=30), 
+                 group = c(rep('A really long group variable name that needs to be wrapped',10),
+                           rep('group1',10)), 
+                 sex = c(rep(c('M','F'),10)))
+
+df %>%
+  ggplot(aes(sex, measurement, color = sex)) +
+  geom_boxplot() +
+  facet_wrap(~group, labeller = label_wrap_gen(width=24))+
+  theme(legend.position="none")
+```
+
+
+
+```{r}
+name <- function(variables) {
+    
+}
+```
 

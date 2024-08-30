@@ -12,6 +12,8 @@ rhino location: `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes`
 
 ## Resources
 
+[R primers](https://r-primers.andrewheiss.com)
+
 Nick Tierney's (mostly) [rstats blog](https://www.njtierney.com)
 
 R For The Rest Of Us [resources](https://rfortherestofus.com/resources)
@@ -44,6 +46,13 @@ See [here](https://psiaims.github.io/CAMIS/R/rounding.html)
 
 "Reindenting your code only shifts things around horizontally. If you want more powerful code reformatting, try using “Code > Reformat Code” (or use ⌘⇧A on macOS or ctrl + shift + A on Windows). It’s a more aggressive form of reformatting that will add extra line breaks and other things to make the code more readable."
 
+#### Snippets  
+
+Example: type `fun` and press the `tab` key, and R provides the skeleton of a new function
+
+To see all snippets:  Tools - Edit Code Snippets
+
+
 ### Debugging
 
 Three options:    
@@ -52,7 +61,7 @@ Three options:
 - `debugonce()`    
 See (`explore_debugging_functions.R`)[Rscripts/explore_debugging_functions.R] for details.
 
-### Misc 
+### Miscellaneous 
 
 The 'embracing' operator (`{{ }}`), and unquoting using !! and !!! - see [`testCode.R`](Rscripts/testCode.R) for details.
 
@@ -188,9 +197,6 @@ igvR can interact with IGV
 Explored a few options in April 2024 for the SATAY data - see ~/FH_fast_storage/forOtherPeople/forGrantKing/SATAY/janet_Rscripts/ files browser_style_plots_failed_attempts.Rmd and browser_style_plots.Rmd
 
 
-### miscellaneous
-
-
 #### wordclouds
 
 `wordcloud` and `wordcloud2` packages.  see ``/Volumes/malik_h/user/jayoung/presentations/MalikLab/otherSlides_mine/KennedyHighSchoolVisit_2021_Dec7/Hutch_wordCloud.R`
@@ -204,6 +210,12 @@ Some other options are vioplot::vioplot(), DescTools::PlotViolin(),  easyGgplot2
 Before the days of ggplot, I noted that I like PlotViolin better than vioplot, but when I run it on large datasets it is very slow if I allow it to use its default bandwidth selection algorithm.   If I specify the bw="nrd0" option, it is MUCH quicker. 
 
 See also [here](http://www.sthda.com/english/wiki/ggplot2-violin-plot-easy-function-for-data-visualization-using-ggplot2-and-r-software)
+
+### other packages
+
+`flowchart` and `ggflowchart` packages
+
+`ggarrow` and `arrowheadr` packages for nicer looking arrows
 
 #### ggplot themes
 
