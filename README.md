@@ -139,9 +139,13 @@ plt1 | plt2
 
 [`reactable`](https://glin.github.io/reactable/index.html)
 
-(and I think some others)
-
 `emphatic` - see [Rscripts/emphatic_demo.md](Rscripts/emphatic_demo.md) 
+
+[`tinytable`](https://vincentarelbundock.github.io/tinytable/)
+
+`gt` can make [multicolumn tables](https://viz.aweatherman.com/viz/538-caption/plot.html), i.e. can wrap a very long table.  That same [tutorial](https://viz.aweatherman.com/viz/538-caption/plot.html) shows how to make a multicolumn table, how to include little logos withiin each cell, and how to make a nice-looking two-part footnote. 
+
+(and I think some others)
 
 ### Volcano plots
 
