@@ -28,6 +28,8 @@ Rmarkdown:
 * [intro2r chapter 8](https://intro2r.com/rmarkdown_r.html)    
 * detailed [Rmarkdown guide](https://bookdown.org/yihui/rmarkdown/)    
 
+miscellaneous coll-looking R tips from [Luke Pemberton](https://lpembleton.rbind.io/ramblings/R/), like embedding smaller plots as insets on top of bigger ones, including colors in titles, nice axis formatting, etc, etc
+
 ### haven't looked yet: future
 
 [The Elements of Data Analytic Style](https://leanpub.com/datastyle) by Jeff Leek (a Leanpub book)
