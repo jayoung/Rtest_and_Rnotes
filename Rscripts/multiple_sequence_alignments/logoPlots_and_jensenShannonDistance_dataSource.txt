@@ -1,0 +1,22 @@
+## alignment source - from the short H2A project with Antoine
+cd  ~/FH_fast_storage/forOtherPeople/forAntoine/H2As/alignments/logoPlot_alignments/version3_TuesMar21_6pm/HFDonly/translated
+
+## I want to use the file called masterAlignmentPlusProtoH2A.fa.peps.fasta.trim40_123.segmentsJoined
+# it contains 37 seqs
+# but I need to rename the sequences in it
+
+grep '>' masterAlignmentPlusProtoH2A.fa.peps.fasta.trim40_123.segmentsJoined > masterAlignmentPlusProtoH2A.fa.peps.fasta.trim40_123.segmentsJoined.name_lookup.txt
+### and edit that with the help of Excel to get systematic names
+
+changeFastaSeqNames_fromFile.pl masterAlignmentPlusProtoH2A.fa.peps.fasta.trim40_123.segmentsJoined.name_lookup.txt masterAlignmentPlusProtoH2A.fa.peps.fasta.trim40_123.segmentsJoined
+
+## That file is (I think) an combination of the *.peps.fasta files in the same dir:
+# BseqNames.txt.seqs.fasta.degapcodon.trim58_309.peps.fasta
+# H2AnewAln2.fa.trim49_294.peps.fasta
+# LseqNames.txt.seqs.fasta.degapcodon.trim55_300.peps.fasta
+# PseqNames.txt.seqs.fasta.degapcodon.trim55_297.peps.fasta
+# protoH2A.fa.peps.fasta.trim40_123
+
+## 8 for each of H2A, H2A.B, .L, .P, and 5 for .R (the marsupial-only clade)
+cp masterAlignmentPlusProtoH2A.fa.peps.fasta.trim40_123.segmentsJoined.names.fa  ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/Rscripts/multiple_sequence_alignments/exampleProtAln_shortH2As_histoneFoldDomain.fa
+

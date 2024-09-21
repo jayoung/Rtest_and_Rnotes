@@ -213,7 +213,7 @@ penguins |>
     ggplot(aes(x=island, y=n)) +
     geom_col() +
     labs(title="a short title",
-         subtitle=str_wrap("a really long title. kasjdhf ;isjdghf khg kajsdhf khg alsidgf kjhg ljhags dfj hgkjahsdgfkjhg a  ljhsdgf ljhglsdjhfg", width=50))
+         subtitle=str_wrap("a really long title. kasjdhf ;isjdghf khg kajsxdhf khg alsidgf kjhg ljhags dfj hgkjahsdgfkjhg a  ljhsdgf ljhglsdjhfg", width=50))
 ```
 
 Instead use `ggtext` package - the element_textbox_simple will automatically wrap text to fit whatever space is available.
