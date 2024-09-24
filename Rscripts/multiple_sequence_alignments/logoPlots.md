@@ -20,21 +20,21 @@ library(ggmsa)
 # Logo plots
 
 There are many packages that can make logo plots. Some are:  
-- [ggseqlogo](https://omarwagih.github.io/ggseqlogo/) - see demo
+\* [ggseqlogo](https://omarwagih.github.io/ggseqlogo/) - see demo
 below.  
--
+\*
 [DiffLogo](https://bioconductor.org/packages/release/bioc/html/DiffLogo.html) -
 see demo below  
-- [ggmsa](http://yulab-smu.top/ggmsa/) - see demo below  
-- [RWebLogo](https://github.com/WebLogo/weblogo) - see
+\* [ggmsa](http://yulab-smu.top/ggmsa/) - see demo below  
+\* [RWebLogo](https://github.com/WebLogo/weblogo) - see
 [manual](http://weblogo.threeplusone.com/manual.html). Was not available
 for R version 3.4.0 - I haven’t checked more recent versions. Seems more
 a python thing. I think it does regular logos but not difference logos  
--
+\*
 [motifStack](https://bioconductor.org/packages/release/bioc/vignettes/motifStack/inst/doc/motifStack_HTML.html) -
 I don’t think it does difference logos (although there is something
 called affinity logos, for TF affinities)  
--
+\*
 [seqLogo](https://bioconductor.org/packages/release/bioc/vignettes/seqLogo/inst/doc/seqLogo.html) -
 I think this only works with DNAseqs
 
