@@ -1,0 +1,248 @@
+---
+title: "sequence logo plots"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+Goal - show how to make logo plots
+
+
+# Load libraries
+
+```{r setup, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(Biostrings)
+library(ggseqlogo)
+library(DiffLogo)
+library(ggmsa)
+```
+
+
+
+# Logo plots
+
+There are many packages that can make logo plots. Some are:    
+  - [ggseqlogo](https://omarwagih.github.io/ggseqlogo/) - see demo below.     
+  - [DiffLogo](https://bioconductor.org/packages/release/bioc/html/DiffLogo.html) - see demo below     
+  - [ggmsa](http://yulab-smu.top/ggmsa/) - see demo below      
+  - [RWebLogo](https://github.com/WebLogo/weblogo) - see [manual](http://weblogo.threeplusone.com/manual.html). Was not available for R version 3.4.0 - I haven't checked more recent versions. Seems more a python thing. I think it does regular logos but not difference logos       
+  - [motifStack](https://bioconductor.org/packages/release/bioc/vignettes/motifStack/inst/doc/motifStack_HTML.html) - I don't think it does difference logos (although there is something called affinity logos, for TF affinities)    
+  - [seqLogo](https://bioconductor.org/packages/release/bioc/vignettes/seqLogo/inst/doc/seqLogo.html) - I think this only works with DNAseqs       
+
+
+## Define some utility functions
+
+First we define a function called `getAlnCounts()` that takes an alignment and returns a count or frequency matrix
+
+```{r}
+# a tiny function that makes sure all seqs in an alignment are the same length as each other
+checkAlnLengths <- function(aln) {
+    if(length(unique(width(aln))) != 1) {
+        stop("\n\nERROR - you supplied a ragged alignment (seqs not all the same length)\n\n")
+    } else {
+        return(TRUE)
+    } 
+}
+
+## define the letters we want to count
+# AA_STANDARD is defined in the Biostrings package and includes the usual 20 amino acids. I want to add the gap character ("-")
+myAAtoTabulate <- c("-", AA_STANDARD)
+
+## define the function
+getAlnCounts <- function(aln, letters=myAAtoTabulate, as.prob=FALSE) {
+    # check for ragged alns (seqs not all the same length)
+    checkAlnLengths(aln)
+    
+    # get counts
+    countsEachSeq <- lapply(1:length(aln), function(i) {
+        letterFrequencyInSlidingView(aln[[i]], view.width = 1, letters=letters)
+    })
+    
+    # if there were letters in the alignment that are not accounted for in the letters argument, the totals won't be correct.
+    expectedTotals <- width(aln)[1]
+    totalCountsEachSeq <- sapply(countsEachSeq, sum)
+    if ( sum(totalCountsEachSeq != expectedTotals) > 0) {
+        stop("\n\nERROR - the total counts didn't add up correctly. Are there letters in the alignment that are not present in the letters argument you supplied?\n\n")
+    }
+    
+    # get total counts by position - the Reduce function takes a list object and uses the specified function on all the elements
+    countTotals <- Reduce("+", countsEachSeq)
+    
+    # transpose so columns are positions and rows are each letter type
+    countTotals <- t(countTotals)
+    
+    # perhaps get frequencies not counts
+    if(as.prob) {
+        freqs <- countTotals / colSums(countTotals)
+        return(freqs)
+    } else {
+        return(countTotals)
+    }
+}
+```
+
+## Read in example data: short H2A alignment (Antoine)
+
+In this example I have a single alignment of the histone fold domain of various H2A family members. It contains canonical H2A, H2A.B, H2A.L, H2A.P (8 species each) and the marsupial-specific H2A.R (5 sequences) (total of 37 sequences).
+
+I read in the alignment, figure out which H2A variant each sequence is from, and split the single master alignment into 5 individual alignments, one for each H2A variant.
+
+```{r}
+## same code is found in jensenShannonDistance.Rmd
+aln_file <- "exampleProtAln_shortH2As_histoneFoldDomain.fa"
+
+masterAln <- readAAStringSet(aln_file)
+# simplify the sequence names by removing the description
+names(masterAln) <- sapply(strsplit(names(masterAln), " "), "[[", 1)
+
+## figure out which variant each sequence is from
+masterAlnSeqTypes <- sapply(strsplit(names(masterAln), "_"), "[[", 1)
+masterAlnSeqTypes <- gsub("R[12]$","R", masterAlnSeqTypes)
+
+## split the alignment into those categories. We get a list object containing all 5 alignments
+masterAlnSplit <- split(masterAln, masterAlnSeqTypes)
+
+## I add a sixth alignment, which is the combined B, L and P alignment
+masterAlnSplit[["BandLandP"]] <- c(masterAlnSplit[["H2A.B"]], masterAlnSplit[["H2A.L"]], masterAlnSplit[["H2A.P"]])
+
+masterAlnSplit_freqs <- lapply( masterAlnSplit, getAlnCounts, letters=myAAtoTabulate, as.prob=TRUE)
+```
+
+
+
+## ggmsa quick demo 
+
+Makes a basic logo plot above the corresponding alignment.
+
+See [ggmsa documentation](http://yulab-smu.top/ggmsa/). 
+
+Not sure if there's a way to get rid of the alignment.  I don't think there's a way to make the height of each letter stack reflect the entropy.  This is probably too basic for our use.
+
+```{r, fig.height=3, fig.width=9, warning=FALSE}
+ggmsa(masterAlnSplit[["H2A.B"]],
+      # font = NULL,
+      color = "Chemistry_AA") + 
+    geom_seqlogo(adaptive=FALSE)  # adaptive=FALSE makes the logo plot taller, but whether T or F the overall heights of each stack are the same
+```
+
+## ggseqlogo package - quick demo
+
+See [ggseqlogo documentation](https://omarwagih.github.io/ggseqlogo/).
+
+Nice.
+
+Looks like you can make custom color scheme (see `?make_col_scheme`) but I haven't tried it.
+
+You can make 'custom height' logos that allow negative values. This may provide a way to make difference logos, but I think we'd have to do the calculations ourselves about letter heights.
+
+```{r, fig.height=1.5, fig.width=9}
+# ?ggseqlogo
+# ?geom_logo
+# ?list_col_schemes
+# ?make_col_scheme
+ggseqlogo(as.character(masterAlnSplit[["H2A.B"]]),
+          col_scheme="chemistry2") +
+    # turn the x axis labels 90 degrees and change font size
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    # suppress the color scheme legend:
+    guides(fill = "none")  
+```
+
+
+## DiffLogo demo, default color scheme
+
+See [DiffLogo documentation](https://bioconductor.org/packages/release/bioc/html/DiffLogo.html).
+
+I used DiffLogo for Rossana's data, because I was very motivated to make **difference** logos, not just single-alignment logo plots. In Mar 21, 2022 I think some of the code given in the vignette may have been broken  
+
+(it always gives an annoying bonus message, "pwm must be of class matrix or data.frame. Trying to convert", but if there are no other errors we can ignore it)
+```{r, fig.height=3, fig.width=9, echo=FALSE}
+## ASN is an "Alphabet" object defined in the DiffLogo package
+# get a version of the frequency matrices that contain only the 20 amino acids (not the gap)
+masterAlnSplit_freqs_justASN <- lapply(masterAlnSplit_freqs, function(x) {
+    x[ ASN[["chars"]], ]
+})
+
+DiffLogo::seqLogo(pwm=masterAlnSplit_freqs_justASN[["H2A.B"]], alphabet=ASN, drawLines=20) 
+```
+
+## DiffLogo plot, controlling the color scheme
+
+### first, set up a custom color scheme
+
+this color scheme mimics the "chemistry" color scheme from motifStack (defined [here](https://github.com/jianhong/motif
+Stack/blob/5aa80388b44bc8f93738315310cfb56c3495130c/R/publicUtilities.R))
+
+
+```{r set up color scheme}
+# changeColors is a function I wrote that works on objects of class "Alphabet" to change the colors for some amino acids (or nucleotides)
+# myAlphabet is the Alphabet object (the color scheme we're working on)
+# myAA is a vector of the AA (or nuc) we want to change
+# myCol is the new color (e.g. "black")
+changeColors <- function(myAlphabet, myAA, myCol) {
+    # get indices of things we want to change
+    whichChar <- which(myAlphabet$chars %in% myAA)
+    # get existing color scheme
+    tempColors <- myAlphabet$cols
+    # change the ones we selected
+    tempColors[whichChar] <- myCol
+    # add the altered color scheme back to the Alphabet object
+    myAlphabet$cols <- tempColors
+    # done
+    return(myAlphabet)
+}
+
+### ASN is a DiffLogo object (see ?ASN) that defines their default color scheme
+### make custom version of the ASN Alphabet object called FULL_ALPHABET_JYchemistryColors
+ASN_JYchemistryColors <- ASN
+
+ASN_JYchemistryColors <- changeColors(ASN_JYchemistryColors,
+                                      c("A","F","I","L","M","P","V","W"), 
+                                      "black")
+
+ASN_JYchemistryColors <- changeColors(ASN_JYchemistryColors, 
+                                      c("C","G","S","T","Y"), 
+                                      "forest green")
+
+ASN_JYchemistryColors <- changeColors(ASN_JYchemistryColors, 
+                                      c("D","E"), 
+                                      "red3")
+
+ASN_JYchemistryColors <- changeColors(ASN_JYchemistryColors, 
+                                      c("H","K","R"), 
+                                      "blue3")
+
+ASN_JYchemistryColors <- changeColors(ASN_JYchemistryColors, 
+                                      c("N","Q"), 
+                                      "magenta4")
+```
+
+```{r, fig.height=3, fig.width=9}
+DiffLogo::seqLogo(pwm=masterAlnSplit_freqs_justASN[["H2A.B"]], 
+                  alphabet=ASN_JYchemistryColors, 
+                  drawLines=20) 
+```
+
+
+
+# Difference logos (DiffLogo package)
+
+```{r, fig.height=3, fig.width=9}
+diffLogoFromPwm(
+    pwm1 = masterAlnSplit_freqs_justASN[["H2A"]],
+    pwm2 = masterAlnSplit_freqs_justASN[["H2A.B"]],
+    # ymin=0.1, ymax=-0.1,
+    alphabet = ASN_JYchemistryColors)
+```
+
+# Finished
+
+show R version used, and package versions
+
+```{r sessionInfo}
+sessionInfo()
+```
+

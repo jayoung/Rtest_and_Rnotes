@@ -2,7 +2,7 @@ ggmsa_demo
 ================
 Janet Young
 
-2024-04-05
+2024-09-23
 
 # Load libraries
 
@@ -23,10 +23,10 @@ library(here)
 # https://github.com/YuLab-SMU/ggmsa/issues/56
 prot_aln_file <- system.file("extdata", "sample.fasta", package = "ggmsa")
 prot_aln <- readAAStringSet(prot_aln_file)
-dist_matrix <- as.dist(stringDist(prot_aln, method = "hamming")/width(prot_aln)[1])
+dist_matrix <- as.dist(pwalign::stringDist(prot_aln, method = "hamming")/width(prot_aln)[1])
 tree <- bionj(dist_matrix)
 
-dna_aln <- readDNAStringSet(here("Rscripts/mult_seq_alns/ggmsa_tests_example_for_github.fa"))
+dna_aln <- readDNAStringSet(here("Rscripts/multiple_sequence_alignments/ggmsa_tests_example_for_github.fa"))
 ```
 
 # Plot tree+aln using ggmsa::geom_msa
@@ -101,7 +101,7 @@ test_msa_plot <- ggmsa(dna_aln, seq_name = F,
     ## replace the existing one.
 
 ``` r
-ggsave(filename = here("Rscripts/mult_seq_alns/ggmsa_testPlot.pdf"), plot=test_msa_plot, height=3, width=11)
+ggsave(filename = here("Rscripts/multiple_sequence_alignments/ggmsa_testPlot.pdf"), plot=test_msa_plot, height=3, width=11)
 ```
 
     ## Warning: No shared levels found between `names(values)` of the manual scale and the

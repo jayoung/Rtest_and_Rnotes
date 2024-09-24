@@ -25,7 +25,7 @@ library(here)
 # https://github.com/YuLab-SMU/ggmsa/issues/56
 prot_aln_file <- system.file("extdata", "sample.fasta", package = "ggmsa")
 prot_aln <- readAAStringSet(prot_aln_file)
-dist_matrix <- as.dist(stringDist(prot_aln, method = "hamming")/width(prot_aln)[1])
+dist_matrix <- as.dist(pwalign::stringDist(prot_aln, method = "hamming")/width(prot_aln)[1])
 tree <- bionj(dist_matrix)
 
 dna_aln <- readDNAStringSet(here("Rscripts/multiple_sequence_alignments/ggmsa_tests_example_for_github.fa"))
