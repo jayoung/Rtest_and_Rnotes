@@ -138,6 +138,8 @@ Looks like you can make custom color scheme (see `?make_col_scheme`) but I haven
 
 You can make 'custom height' logos that allow negative values. This may provide a way to make difference logos, but I think we'd have to do the calculations ourselves about letter heights.
 
+I think you can also supply frequency or count matrices (but I haven't tried it)
+
 ```{r, fig.height=1.5, fig.width=9}
 # ?ggseqlogo
 # ?geom_logo
@@ -148,6 +150,15 @@ ggseqlogo(as.character(masterAlnSplit[["H2A.B"]]),
     # turn the x axis labels 90 degrees and change font size
     theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
     # suppress the color scheme legend:
+    guides(fill = "none")  
+```
+
+To show several ggseqlogo plots above each other:
+
+```{r, fig.height=9, fig.width=9}
+masterAlnSplit_chars <- lapply(masterAlnSplit, as.character)
+ggseqlogo(masterAlnSplit_chars, ncol=1) +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
     guides(fill = "none")  
 ```
 

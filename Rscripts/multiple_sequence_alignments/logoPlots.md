@@ -154,6 +154,9 @@ You can make ‘custom height’ logos that allow negative values. This may
 provide a way to make difference logos, but I think we’d have to do the
 calculations ourselves about letter heights.
 
+I think you can also supply frequency or count matrices (but I haven’t
+tried it)
+
 ``` r
 # ?ggseqlogo
 # ?geom_logo
@@ -168,6 +171,17 @@ ggseqlogo(as.character(masterAlnSplit[["H2A.B"]]),
 ```
 
 ![](logoPlots_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+To show several ggseqlogo plots above each other:
+
+``` r
+masterAlnSplit_chars <- lapply(masterAlnSplit, as.character)
+ggseqlogo(masterAlnSplit_chars, ncol=1) +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    guides(fill = "none")  
+```
+
+![](logoPlots_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ## DiffLogo demo, default color scheme
 
@@ -184,7 +198,7 @@ can ignore it)
 
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ## DiffLogo plot, controlling the color scheme
 
@@ -245,7 +259,7 @@ DiffLogo::seqLogo(pwm=masterAlnSplit_freqs_justASN[["H2A.B"]],
 
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 # Difference logos (DiffLogo package)
 
@@ -260,7 +274,7 @@ diffLogoFromPwm(
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 # Finished
 
