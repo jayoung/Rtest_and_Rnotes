@@ -20,6 +20,8 @@ R For The Rest Of Us [resources](https://rfortherestofus.com/resources)
 
 Advice on [making figures](https://github.com/MichaelClerx/making-figures/tree/main)
 
+The R graph gallery(https://r-graph-gallery.com) and a [list of packages that extend ggplot](https://r-graph-gallery.com/best-dataviz-packages.html)
+
 Some notes on [good coding practices](https://r4ds.hadley.nz/workflow-scripts.html) - using Rmarkdown, clean environments, reproducibility, Rprojects
 
 Rmarkdown:

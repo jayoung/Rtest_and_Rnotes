@@ -1,0 +1,77 @@
+---
+title: "janitor package tabulation demo"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(kableExtra)
+library(here)
+library(janitor)
+```
+
+
+# janitor tabulation 
+
+https://cran.r-project.org/web/packages/janitor/vignettes/tabyls.html
+
+https://hutchdatascience.org/data_snacks/r_snacks/janitor.html
+
+```{r}
+### read example breakfast cereal data
+cereals_raw <- readr::read_csv(here("Rscripts/janitor_cross_tables_demo_data/cereal.csv"),
+                               show_col_types = FALSE)
+
+
+### clean data
+manu_labels <- c("American Home"="A",
+                 "General Mills"="G",
+                 "Kelloggs"="K",
+                 "Nabisco" = "N",
+                 "Post" = "P",
+                 "Quaker Oats" = "Q", 
+                 "Ralston Purina" = "R")
+
+cereals <- cereals_raw |> 
+    dplyr::rename(manufacturer=mfr) |>
+    janitor::clean_names() |>
+    mutate(shelf = factor(shelf, ordered=TRUE)) |>
+    mutate(type=str_replace(type, "H","hot")) |>
+    mutate(type=str_replace(type, "C","cold")) |>
+    mutate(across(c("manufacturer", "type"), as.factor)) |>
+    mutate(manufacturer = forcats::fct_recode(manufacturer, !!!manu_labels))
+
+head(cereals)
+```
+
+default tabyl gives a column called "percent" that's actually a fraction (out of 1) rather than a percent. Argh.
+
+```{r}
+cereals %>% 
+    tabyl(shelf) %>% 
+    dplyr::rename(fraction=percent)
+```
+But it's easy to reformat that as an actual %
+```{r}
+cereals %>% 
+    tabyl(shelf) %>% 
+      adorn_pct_formatting()
+```
+
+
+more complex example
+
+```{r}
+cereals |>
+    janitor::tabyl(manufacturer, type) |>
+    janitor::adorn_percentages(denominator = "row") |>
+    janitor::adorn_pct_formatting() |>
+    janitor::adorn_ns() %>%
+    knitr::kable() %>% 
+    kable_styling()
+```

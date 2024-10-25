@@ -10,6 +10,7 @@ always_allow_html: true
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(janitor)
 ```
 
 # basic tidyverse
@@ -65,6 +66,8 @@ mtcars %>%
     map(~ lm(mpg ~ wt, data = .x)) %>%
     map_dfr(~ as.data.frame(t(as.matrix(coef(.)))))
 ```
+
+`setNames()` is a way to set names on a list - can be used in a pipe as an alternative to adding a separate `names(x) <- y` after a set of piped commands
 
 # some tidbit for Phoebe's gtf/gff question
 
@@ -181,5 +184,16 @@ attr(b, "methods")
 attributes(b)
 ```
 
+https://github.com/sfirke/packagemetrics?tab=readme-ov-file
 
+```{r}
+# devtools::install_github("sfirke/packagemetrics")
+library("packagemetrics")
+dplyr_and_dt <- package_list_metrics(c("dplyr", "data.table"))
+# data frame
+```
+
+```{r}
+metrics_table(dplyr_and_dt)
+```
 

@@ -2,7 +2,7 @@ miscellaneous_testCode
 ================
 Janet Young
 
-2024-05-08
+2024-10-24
 
 # basic tidyverse
 
@@ -70,44 +70,44 @@ tibble(colA=c("A","B","C"),
 ```
 
     ## [[1]]
-    ##  [1]  0.2863934509  0.0003194143  0.5036530300  1.0499259038  0.3852173151
-    ##  [6]  0.9342642120  1.6209876343 -0.0240488426  1.8295425453  2.3386221530
+    ##  [1]  1.3675113  1.7277559  1.2197515  1.2385978  1.7158086  0.6170572
+    ##  [7]  0.9591685  0.1974981  1.7599008 -2.5328191
     ## 
     ## [[2]]
-    ##  [1] 0.2732099 3.3688349 1.2508843 2.8195332 2.8056767 2.8282587 1.2443090
-    ##  [8] 2.3066104 3.8735786 3.1337018
+    ##  [1] 1.6723304 3.4909170 2.4674111 2.4541835 1.0656303 0.9991537 3.3682911
+    ##  [8] 0.7938045 1.0490553 1.2877373
     ## 
     ## [[3]]
-    ##  [1] 1.743808 3.745484 2.591001 5.115063 3.102968 4.328014 5.420887 2.745653
-    ##  [9] 3.877567 2.303032
+    ##  [1] 3.855963 2.766923 4.198429 4.844597 3.248347 3.130018 3.014173 3.124036
+    ##  [9] 1.044734 2.555878
     ## 
     ## [[4]]
-    ##  [1] 4.926047 3.254853 5.266826 4.430592 3.626081 3.335661 3.691142 4.279810
-    ##  [9] 4.378710 3.607787
+    ##  [1] 2.570264 3.104092 4.960435 4.795026 2.634247 3.431036 2.744862 4.519494
+    ##  [9] 4.679337 3.363718
     ## 
     ## [[5]]
-    ##  [1] 5.586523 3.575123 4.699233 5.690687 3.888095 3.559652 5.815607 5.440398
-    ##  [9] 5.171654 4.467759
+    ##  [1] 4.293316 5.284948 4.428178 4.883492 4.543018 3.989738 5.256036 4.641714
+    ##  [9] 3.326366 3.894331
     ## 
     ## [[6]]
-    ##  [1] 5.643916 6.234045 5.634966 6.590624 5.505803 5.782384 5.122866 3.757380
-    ##  [9] 6.274389 5.062901
+    ##  [1] 4.074849 4.557792 5.870403 4.814594 8.762370 5.244945 6.106749 5.136882
+    ##  [9] 4.921977 6.352757
     ## 
     ## [[7]]
-    ##  [1] 6.512955 5.790712 6.795858 7.628602 5.271772 6.178338 6.018490 6.610359
-    ##  [9] 7.146822 6.474520
+    ##  [1] 7.591354 6.723504 5.875923 6.782765 9.621716 6.756472 6.780931 7.403761
+    ##  [9] 6.644453 7.355384
     ## 
     ## [[8]]
-    ##  [1] 8.267076 9.744602 8.023286 7.522871 8.898164 8.249720 6.880391 7.989959
-    ##  [9] 8.573944 7.160810
+    ##  [1] 6.734067 7.775191 8.191314 7.501943 8.275420 6.549329 6.987847 9.774830
+    ##  [9] 7.576214 8.282886
     ## 
     ## [[9]]
-    ##  [1]  9.634270  8.594348  9.332796  9.580321 10.309411  8.595059  8.719005
-    ##  [8]  8.822991  9.845023  9.513724
+    ##  [1]  6.776016  8.652995  7.862085  8.563511  9.680577 10.817991  8.074243
+    ##  [8]  8.732927  9.233615  8.966438
     ## 
     ## [[10]]
-    ##  [1] 12.023252  8.213301 10.802024 10.452795 10.665514  9.236976 10.577592
-    ##  [8] 10.087780 10.549467 10.138710
+    ##  [1] 11.025289 11.539361 10.809502 10.904747 11.521591  9.431730  9.061578
+    ##  [8]  8.814568 10.811812 11.039821
 
 ``` r
 # do something to each column
@@ -145,6 +145,10 @@ mtcars %>%
     ## 1    39.57120 -5.647025
     ## 2    28.40884 -2.780106
     ## 3    23.86803 -2.192438
+
+`setNames()` is a way to set names on a list - can be used in a pipe as
+an alternative to adding a separate `names(x) <- y` after a set of piped
+commands
 
 # some tidbit for Phoebe’s gtf/gff question
 
@@ -399,3 +403,146 @@ attributes(b)
     ## 
     ## $details
     ## [1] "here's some more detail about the method"
+
+<https://github.com/sfirke/packagemetrics?tab=readme-ov-file>
+
+``` r
+# devtools::install_github("sfirke/packagemetrics")
+library("packagemetrics")
+dplyr_and_dt <- package_list_metrics(c("dplyr", "data.table"))
+# data frame
+```
+
+``` r
+metrics_table(dplyr_and_dt)
+```
+
+    ## Warning in gradient(as.numeric(x), ...): NAs introduced by coercion
+
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+package
+</th>
+<th style="text-align:right;">
+published
+</th>
+<th style="text-align:right;">
+dl_last_month
+</th>
+<th style="text-align:right;">
+stars
+</th>
+<th style="text-align:right;">
+tidyverse_happy
+</th>
+<th style="text-align:right;">
+has_tests
+</th>
+<th style="text-align:right;">
+vignette
+</th>
+<th style="text-align:right;">
+last_commit
+</th>
+<th style="text-align:right;">
+last_issue_closed
+</th>
+<th style="text-align:right;">
+contributors
+</th>
+<th style="text-align:right;">
+depends_count
+</th>
+<th style="text-align:right;">
+reverse_count
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">dplyr </span>
+</td>
+<td style="text-align:right;">
+2023-11-17
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 100.00%">1759397</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">4.8k</span>
+</td>
+<td style="text-align:right;">
+<span style="color: purple"> <i class="glyphicon glyphicon-glass"></i>
+</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green"> <i class="glyphicon glyphicon-ok"></i>
+</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green"> <i class="glyphicon glyphicon-ok"></i>
+</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">11.4</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.1</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">271</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">1</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">4294</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="font-weight: bold">data.table</span>
+</td>
+<td style="text-align:right;">
+2024-10-10
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 52.23%">918913</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">3.6k</span>
+</td>
+<td style="text-align:right;">
+<span style="color: white"> <i class="glyphicon glyphicon-glass"></i>
+</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red"> <i class="glyphicon glyphicon-remove"></i>
+</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green"> <i class="glyphicon glyphicon-ok"></i>
+</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">
+</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.1</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">151</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">1</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">1684</span>
+</td>
+</tr>
+</tbody>
+</table>

@@ -2,7 +2,7 @@ explore_purrr
 ================
 Janet Young
 
-2024-05-15
+2024-10-14
 
 ``` r
 knitr::opts_chunk$set(echo = TRUE)
@@ -93,6 +93,23 @@ mtcars %>%
     ## 2     6        19.7
     ## 3     8        15.1
 
+Using `\` - the backslash is shorthand for `function`:
+
+``` r
+mtcars %>% 
+    split(.$cyl) %>% 
+    map(\(df){ mean(df$mpg) })
+```
+
+    ## $`4`
+    ## [1] 26.66364
+    ## 
+    ## $`6`
+    ## [1] 19.74286
+    ## 
+    ## $`8`
+    ## [1] 15.1
+
 A more complex function: linear modelling using `lm()`. Output of this
 is a list object, each of which is the output of the lm function:
 
@@ -164,7 +181,7 @@ myPlotFunc <- function(dat) {
 iris %>% myPlotFunc()
 ```
 
-![](explore_purrr_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](explore_purrr_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 Now we try using the tidyverse way to split and apply (=map)
 
@@ -176,7 +193,7 @@ temp <- iris %>%
 temp[[1]] + temp[[2]] + temp[[3]]
 ```
 
-![](explore_purrr_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](explore_purrr_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 Another way to write that is by using an anonymous function. Note the
 `~` before tje function, and the use of `.` within the function to
@@ -192,7 +209,7 @@ temp <- iris %>%
 temp[[1]] + temp[[2]] + temp[[3]]
 ```
 
-![](explore_purrr_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](explore_purrr_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 # Exercises
 
@@ -251,20 +268,20 @@ x %>%
 ```
 
     ## [[1]]
-    ##  [1]  -8.612911  -9.829510  -9.384454  -7.865214  -9.387599 -10.107558
-    ##  [7]  -8.632158  -9.413214  -9.696169 -11.808642
+    ##  [1]  -8.133701  -7.741188  -8.506918 -11.327683  -9.176002  -9.025510
+    ##  [7] -12.171965  -9.264232 -10.800395 -11.494063
     ## 
     ## [[2]]
-    ##  [1]  0.1377831  0.4546105 -1.9274010  0.1471632 -0.7228448 -1.0108842
-    ##  [7] -0.6816314 -0.1394412  0.7843508  1.4437430
+    ##  [1] -0.2077772  0.3445319  1.6804160  0.8707911 -2.8521975 -0.4221844
+    ##  [7]  0.1975539  0.6275352  0.1189877 -1.7034314
     ## 
     ## [[3]]
-    ##  [1]  8.396713 10.289288  7.004429 11.856915  8.103026 10.890961  9.112319
-    ##  [8] 11.392111  9.882572 10.176432
+    ##  [1]  9.410119 10.160271  8.915423  9.126339 11.823390 11.307454 11.319056
+    ##  [8] 10.816298 10.211468 10.011844
     ## 
     ## [[4]]
-    ##  [1] 100.08852  99.13016  99.26024  98.75003  99.94250  99.69025 100.20559
-    ##  [8] 100.58346 100.90983 101.46869
+    ##  [1] 100.95024 100.35370  98.91227  99.47583 100.18870 100.59784 100.19664
+    ##  [8] 100.91374  99.12627 100.73089
 
 How can you create a single vector that for each column in a data frame
 indicates whether or not it’s a factor?
@@ -479,9 +496,9 @@ map2(mu, sigma, rnorm, n = 5) %>% str()
 ```
 
     ## List of 3
-    ##  $ : num [1:5] 6.55 5.41 4.79 5.44 5.65
-    ##  $ : num [1:5] 8.59 11.78 8.12 4.95 4.6
-    ##  $ : num [1:5] 6.81 -2.98 1.23 12.66 17.98
+    ##  $ : num [1:5] 6 4.49 5.56 4.68 5.18
+    ##  $ : num [1:5] 11.57 -4.6 15.53 7.63 8.58
+    ##  $ : num [1:5] -4.6345 -0.0426 -0.4663 11.876 9.3922
 
 `pmap()` is for groups of \>2 args. It’s good practise to name the
 arguments in the list:
@@ -495,9 +512,9 @@ args1 %>%
 ```
 
     ## List of 3
-    ##  $ : num 4.25
-    ##  $ : num [1:3] 7.53 15.71 9.9
-    ##  $ : num [1:5] -19.347 0.321 -6.56 -7.239 -12.577
+    ##  $ : num 4.94
+    ##  $ : num [1:3] 8.21 12.88 13.16
+    ##  $ : num [1:5] 6 10.01 4.93 -1.59 2.48
 
 args for pmap must always have same length, so they can be stored in a
 data frame:
@@ -515,13 +532,13 @@ params %>%
 ```
 
     ## [[1]]
-    ## [1] 5.262736
+    ## [1] 6.509365
     ## 
     ## [[2]]
-    ## [1]  6.457767 14.811106  2.154828
+    ## [1] 18.165728  7.231731 15.728593
     ## 
     ## [[3]]
-    ## [1] -22.8546111  -0.9429102  -6.8124025  -4.1674594  16.1705185
+    ## [1]   5.9779018   0.0156234   5.9702562   1.3245102 -21.4066532
 
 `invoke_map()` is used if you want to vary the function that gets used:
 
@@ -542,9 +559,9 @@ invoke_map(f, param, n = 5) %>% str()
     ## generated.
 
     ## List of 3
-    ##  $ : num [1:5] 0.5065 -0.0433 -0.71 0.277 0.6273
-    ##  $ : num [1:5] 0.104 3.379 6.094 4.208 2.561
-    ##  $ : int [1:5] 15 11 9 13 11
+    ##  $ : num [1:5] -0.237 0.4 0.583 0.19 0.277
+    ##  $ : num [1:5] -3.358 -11.69 2.641 -0.818 1.264
+    ##  $ : int [1:5] 7 14 11 11 9
 
 that works but invoke_map is deprecated
 
@@ -661,7 +678,7 @@ x <- sample(10)
 x
 ```
 
-    ##  [1]  6  3  1  8 10  2  9  7  5  4
+    ##  [1]  2  5  8  9  6  7  1  4  3 10
 
 ``` r
 #  [1]  1  7  4  2  9 10  3  8  5  6
@@ -671,7 +688,7 @@ x %>%
     detect(~ . > 5)
 ```
 
-    ## [1] 6
+    ## [1] 8
 
 ``` r
 #> [1] 7
@@ -681,7 +698,7 @@ x %>%
     detect_index(~ . > 5)
 ```
 
-    ## [1] 1
+    ## [1] 3
 
 ``` r
 #> [1] 1
@@ -691,7 +708,7 @@ x %>%
     head_while(~ . > 5)
 ```
 
-    ## [1] 6
+    ## integer(0)
 
 ``` r
 # but this works
@@ -699,14 +716,14 @@ x %>%
     head_while(~ . < 6)
 ```
 
-    ## integer(0)
+    ## [1] 2 5
 
 ``` r
 x %>% 
     tail_while(~ . > 4)
 ```
 
-    ## integer(0)
+    ## [1] 10
 
 purrr:::reduce does a function repeatedly (is this like do.call?)
 
@@ -759,7 +776,7 @@ x <- sample(10)
 x
 ```
 
-    ##  [1]  1  4  9  6  7  5 10  8  2  3
+    ##  [1]  5  2  1  3 10  7  6  4  8  9
 
 ``` r
 #  [1]  4  5  2  9  6  7  8  1  3 10
@@ -768,7 +785,7 @@ x
 x %>% accumulate(`+`)
 ```
 
-    ##  [1]  1  5 14 20 27 32 42 50 52 55
+    ##  [1]  5  7  8 11 21 28 34 38 46 55
 
 ``` r
 ## this is the same as sum(x):

@@ -55,6 +55,13 @@ mtcars %>%
     summarize( mean(mpg) )
 ```
 
+Using `\` - the backslash is shorthand for `function`:
+```{r}
+mtcars %>% 
+    split(.$cyl) %>% 
+    map(\(df){ mean(df$mpg) })
+```
+
 A more complex function:  linear modelling using `lm()`. Output of this is a list object, each of which is the output of the lm function:
 ```{r}
 models <- mtcars %>% 
@@ -62,7 +69,7 @@ models <- mtcars %>%
     map(function(df) lm(mpg ~ wt, data = df))
 ```
 
-purrr has a shortcut to make that syntax less verbose - the `.` refers to the current list element, and this is a "one-sided function"
+The `~` ("lambda expression") is now NOT recommended by purrr but you still often see code that uses it online etc.  For example: purrr has a shortcut to make that syntax less verbose - the `.` refers to the current list element, and this is a "one-sided function".  Or, you should use `.x` to refer to the data (and `.y` if there's >1 element)
 ```{r}
 models <- mtcars %>% 
     split(.$cyl) %>% 
