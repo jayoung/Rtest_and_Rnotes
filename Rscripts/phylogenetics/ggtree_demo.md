@@ -2,7 +2,7 @@ ggtree_demo
 ================
 Janet Young
 
-2024-05-23
+2024-11-22
 
 (this doesn’t work on the fhR 4.2.0 I could run via the Hutch Rstudio
 server, with the package versions I have there right now. But fhR 4.4.0
@@ -74,19 +74,19 @@ tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A           123.  teeth          fur            
-    ##  2 B           164.  tail           scales         
-    ##  3 C           128.  tail           fur            
-    ##  4 D           153.  teeth          scales         
-    ##  5 E           130.  teeth          scales         
-    ##  6 F           121.  teeth          spikes         
-    ##  7 G            92.6 teeth          fur            
-    ##  8 H            57.0 teeth          fur            
-    ##  9 I            95.9 teeth          scales         
-    ## 10 J           138.  teeth          spikes         
-    ## 11 K           115.  teeth          spikes         
-    ## 12 L           144.  tail           spikes         
-    ## 13 M           107.  teeth          fur
+    ##  1 A           120.  nose           fur            
+    ##  2 B            67.1 nose           spikes         
+    ##  3 C           106.  tail           spikes         
+    ##  4 D            55.1 teeth          scales         
+    ##  5 E           128.  tail           spikes         
+    ##  6 F           129.  teeth          scales         
+    ##  7 G           119.  tail           fur            
+    ##  8 H            60.1 nose           spikes         
+    ##  9 I           133.  nose           fur            
+    ## 10 J           113.  nose           fur            
+    ## 11 K           125.  nose           spikes         
+    ## 12 L            67.3 nose           fur            
+    ## 13 M           134.  teeth          scales
 
 ## combine tree and tbl
 
@@ -139,16 +139,16 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE        123.  teeth          fur            
-    ##  2     2 B     TRUE        164.  tail           scales         
-    ##  3     3 C     TRUE        128.  tail           fur            
-    ##  4     4 D     TRUE        153.  teeth          scales         
-    ##  5     5 E     TRUE        130.  teeth          scales         
-    ##  6     6 F     TRUE        121.  teeth          spikes         
-    ##  7     7 G     TRUE         92.6 teeth          fur            
-    ##  8     8 H     TRUE         57.0 teeth          fur            
-    ##  9     9 I     TRUE         95.9 teeth          scales         
-    ## 10    10 J     TRUE        138.  teeth          spikes         
+    ##  1     1 A     TRUE        120.  nose           fur            
+    ##  2     2 B     TRUE         67.1 nose           spikes         
+    ##  3     3 C     TRUE        106.  tail           spikes         
+    ##  4     4 D     TRUE         55.1 teeth          scales         
+    ##  5     5 E     TRUE        128.  tail           spikes         
+    ##  6     6 F     TRUE        129.  teeth          scales         
+    ##  7     7 G     TRUE        119.  tail           fur            
+    ##  8     8 H     TRUE         60.1 nose           spikes         
+    ##  9     9 I     TRUE        133.  nose           fur            
+    ## 10    10 J     TRUE        113.  nose           fur            
     ## # ℹ 15 more rows
 
 ## plot tree with annotations
@@ -327,9 +327,9 @@ gheatmap(p, tip_dat2,
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
-It doesn’t work if tip_dat3 is a tibble, although it doesn’t give an
-error, it just doesn’t give us a correct heatmap. Also, setting rownames
-on a tibble is deprecated.
+Note that it doesn’t work if tip_dat3 is a tibble (see plot below, not
+useful), although it doesn’t give an error, it just doesn’t give us a
+correct heatmap. Also, setting rownames on a tibble is deprecated.
 
 ``` r
 tip_dat3 <- tip_dat2 %>% 
@@ -350,49 +350,84 @@ gheatmap(p, tip_dat3,
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
+# Tree plus data to the right
+
+geom_point to the right
+
+``` r
+tr <- rtree(10)
+dd <- data.frame(id=tr$tip.label, value=abs(rnorm(10)))
+```
+
+``` r
+p <- ggtree(tr) +
+    geom_tiplab() +
+    geom_facet(panel = "Data", data = dd, 
+            geom = geom_point, mapping = aes(x = value)) + 
+    theme_light() +   # need theme_bw or similar to get the x axis scales to show
+    xlim_tree(10) + # alter tree x scale
+    xlim_expand(c(0, 3), "Data") # alter points x scale
+p
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+geom_col to the right
+
+``` r
+p <- ggtree(tr) +
+    geom_tiplab() +
+    geom_facet(panel = "Data", data = dd, 
+            geom = geom_col, mapping = aes(x = value),
+            orientation = "y") + 
+    theme_light() +   # need theme_bw or similar to get the x axis scales to show
+    xlim_tree(10) + # alter tree x scale
+    xlim_expand(c(0, 3), "Data") # alter col x scale
+p
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+# Finished
+
 ``` r
 sessionInfo()
 ```
 
     ## R version 4.4.0 (2024-04-24)
-    ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 18.04.6 LTS
+    ## Platform: x86_64-apple-darwin20
+    ## Running under: macOS Ventura 13.7.1
     ## 
     ## Matrix products: default
-    ## BLAS/LAPACK: FlexiBLAS OPENBLAS;  LAPACK version 3.11.0
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
     ## 
     ## locale:
-    ##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-    ##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-    ##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-    ##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-    ##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-    ## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+    ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
     ## 
     ## time zone: America/Los_Angeles
-    ## tzcode source: system (glibc)
+    ## tzcode source: internal
     ## 
     ## attached base packages:
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] tidytree_0.4.6  treeio_1.28.0   ggtree_3.12.0   lubridate_1.9.3
-    ##  [5] forcats_1.0.0   stringr_1.5.1   dplyr_1.1.4     purrr_1.0.2    
-    ##  [9] readr_2.1.5     tidyr_1.3.1     tibble_3.2.1    ggplot2_3.5.1  
-    ## [13] tidyverse_2.0.0
+    ##  [1] tidytree_0.4.6  treeio_1.28.0   ggtree_3.12.0   ape_5.8        
+    ##  [5] lubridate_1.9.3 forcats_1.0.0   stringr_1.5.1   dplyr_1.1.4    
+    ##  [9] purrr_1.0.2     readr_2.1.5     tidyr_1.3.1     tibble_3.2.1   
+    ## [13] ggplot2_3.5.1   tidyverse_2.0.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] yulab.utils_0.1.4  utf8_1.2.4         generics_0.1.3     ggplotify_0.1.2   
-    ##  [5] stringi_1.8.4      lattice_0.22-6     hms_1.1.3          digest_0.6.35     
-    ##  [9] magrittr_2.0.3     evaluate_0.23      grid_4.4.0         timechange_0.3.0  
-    ## [13] fastmap_1.2.0      jsonlite_1.8.8     ape_5.8            aplot_0.2.2       
-    ## [17] fansi_1.0.6        scales_1.3.0       lazyeval_0.2.2     cli_3.6.2         
-    ## [21] rlang_1.1.3        munsell_0.5.1      cachem_1.0.8       withr_3.0.0       
-    ## [25] yaml_2.3.8         tools_4.4.0        parallel_4.4.0     tzdb_0.4.0        
-    ## [29] memoise_2.0.1      colorspace_2.1-0   gridGraphics_0.5-1 vctrs_0.6.5       
-    ## [33] R6_2.5.1           lifecycle_1.0.4    ggfun_0.1.4        fs_1.6.4          
-    ## [37] pkgconfig_2.0.3    pillar_1.9.0       gtable_0.3.5       glue_1.7.0        
-    ## [41] Rcpp_1.0.12        highr_0.10         xfun_0.44          tidyselect_1.2.1  
-    ## [45] rstudioapi_0.16.0  knitr_1.46         farver_2.1.2       patchwork_1.2.0   
-    ## [49] htmltools_0.5.8.1  nlme_3.1-164       labeling_0.4.3     rmarkdown_2.26    
-    ## [53] compiler_4.4.0
+    ##  [1] yulab.utils_0.1.7  utf8_1.2.4         generics_0.1.3     ggplotify_0.1.2   
+    ##  [5] stringi_1.8.4      lattice_0.22-6     hms_1.1.3          digest_0.6.37     
+    ##  [9] magrittr_2.0.3     evaluate_1.0.1     grid_4.4.0         timechange_0.3.0  
+    ## [13] fastmap_1.2.0      jsonlite_1.8.9     aplot_0.2.3        fansi_1.0.6       
+    ## [17] scales_1.3.0       lazyeval_0.2.2     cli_3.6.3          rlang_1.1.4       
+    ## [21] munsell_0.5.1      withr_3.0.1        yaml_2.3.10        tools_4.4.0       
+    ## [25] parallel_4.4.0     tzdb_0.4.0         colorspace_2.1-1   gridGraphics_0.5-1
+    ## [29] vctrs_0.6.5        R6_2.5.1           lifecycle_1.0.4    ggfun_0.1.6       
+    ## [33] fs_1.6.4           pkgconfig_2.0.3    pillar_1.9.0       gtable_0.3.5      
+    ## [37] glue_1.8.0         Rcpp_1.0.13        highr_0.11         xfun_0.48         
+    ## [41] tidyselect_1.2.1   rstudioapi_0.16.0  knitr_1.48         farver_2.1.2      
+    ## [45] patchwork_1.3.0    htmltools_0.5.8.1  nlme_3.1-166       labeling_0.4.3    
+    ## [49] rmarkdown_2.28     compiler_4.4.0

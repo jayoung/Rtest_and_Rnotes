@@ -7,8 +7,51 @@ A lot of this is quite old, and most of it is only for myself, not meant for oth
 rhino location: `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes`
 
 
-## Current learning
+
+## Current learning to do list
+
 [Tidyverse style guide](https://style.tidyverse.org/syntax.html).  I got up to the end of the 'syntax' section.  Perhaps see also the [Advanced R style guide](http://adv-r.had.co.nz/Style.html).
+
+
+
+R stuff:
+for file lists, check out `dir()`:
+```
+files <- dir(here("data", "participants"), pattern="*.csv")
+```
+for reading multiple files, chech out `purrr::map_df`:
+```
+data <- files %>%
+    map_df(~read_csv(file=here("data", "particants", .x)))
+```
+
+downloading files within R:
+```
+download.file(url, destfile="data-raw/name-of-file.xlsx")
+```
+
+
+there's a package called 'readxl' part of tidyverse, but not core tidyverse. readxl::read_excel(). Has a sheet option
+
+`furrr` R package is like `purrr`, but parallelized 
+
+
+figure out gheatmap in ggtree
+
+
+joins using plyranges R package - different types https://www.bioconductor.org/packages/devel/bioc/vignettes/plyranges/inst/doc/an-introduction.html#9_Learning_more
+
+
+learn about the other R pipe - `|>`
+
+
+writing R packages and documentation - https://style.tidyverse.org/documentation.html
+- R packages that help develop and maintain and test packages are  {devtools}, {testthat}, {usethis} 
+- software design principals - rather than my own single bloated package, think about a universe of smaller packages. Functions and packages both benefit from being as modular as possible. https://milesmcbain.xyz/posts/data-analysis-reuse/
+- R package writing beginners tips https://www.youtube.com/watch?v=F1GJSn9SqTk
+
+R learning - data cleaning: [a primer](https://rfortherestofus.com/2019/12/how-to-clean-messy-data-in-r/), [some tips](https://rfortherestofus.com/2020/02/data-cleaning-tips-in-r/) and [a 15 min video](https://rfortherestofus.com/2020/01/recoding-numeric-values-to-character-values-automatically-in-r/)
+
 
 ## Resources
 
@@ -35,6 +78,8 @@ miscellaneous coll-looking R tips from [Luke Pemberton](https://lpembleton.rbind
 ### haven't looked yet: future
 
 [The Elements of Data Analytic Style](https://leanpub.com/datastyle) by Jeff Leek (a Leanpub book)
+
+Data Science resources [list](https://nrennie.rbind.io/data-science-resources/)
 
 
 ## Things I've learned
@@ -205,11 +250,11 @@ igvR can interact with IGV
 Explored a few options in April 2024 for the SATAY data - see ~/FH_fast_storage/forOtherPeople/forGrantKing/SATAY/janet_Rscripts/ files browser_style_plots_failed_attempts.Rmd and browser_style_plots.Rmd
 
 
-#### wordclouds
+### wordclouds
 
 `wordcloud` and `wordcloud2` packages.  see ``/Volumes/malik_h/user/jayoung/presentations/MalikLab/otherSlides_mine/KennedyHighSchoolVisit_2021_Dec7/Hutch_wordCloud.R`
 
-#### violin plots
+### violin plots
 
 use `ggplot - geom_violin()`. 
 
@@ -224,6 +269,8 @@ See also [here](http://www.sthda.com/english/wiki/ggplot2-violin-plot-easy-funct
 `flowchart` and `ggflowchart` packages
 
 `ggarrow` and `arrowheadr` packages for nicer looking arrows
+
+[`gcplyr` package](https://mikeblazanin.github.io/gcplyr/) for microbial growth curves. Can help read platereader data (with metadata) in and get it in a tidy format. Can model various parameters of growth curves, "like growth rate/doubling time, maximum density (carrying capacity), lag time, area under the curve, diauxic shifts, extinction, and more without fitting an equation for growth to your data."
 
 #### ggplot themes
 

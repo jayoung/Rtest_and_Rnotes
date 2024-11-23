@@ -20,6 +20,8 @@ format: asciidoc
 always_allow_html: true
 ```
 
+note on how to control where rendered quarto output goes: <https://petejon.es/posts/2024-10-14-move-quarto-output/>
+
 ## Running Code
 
 When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:

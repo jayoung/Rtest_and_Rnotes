@@ -10,6 +10,7 @@ always_allow_html: true
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(ape)
 library(ggtree)
 library(treeio)
 library(tidytree)
@@ -222,7 +223,7 @@ gheatmap(p, tip_dat2,
 ```
 
 
-It doesn't work if tip_dat3 is a tibble, although it doesn't give an error, it just doesn't give us a correct heatmap.   Also, setting rownames on a tibble is deprecated.
+Note that it doesn't work if tip_dat3 is a tibble (see plot below, not useful), although it doesn't give an error, it just doesn't give us a correct heatmap.   Also, setting rownames on a tibble is deprecated.
 
 ```{r}
 tip_dat3 <- tip_dat2 %>% 
@@ -237,6 +238,45 @@ gheatmap(p, tip_dat3,
                       values=c("lightgray", "firebrick"), 
                       name="")
 ```
+
+# Tree plus data to the right
+
+
+geom_point to the right
+
+```{r}
+tr <- rtree(10)
+dd <- data.frame(id=tr$tip.label, value=abs(rnorm(10)))
+```
+
+```{r, fig.height=3, fig.width=9}
+p <- ggtree(tr) +
+    geom_tiplab() +
+    geom_facet(panel = "Data", data = dd, 
+            geom = geom_point, mapping = aes(x = value)) + 
+    theme_light() +   # need theme_bw or similar to get the x axis scales to show
+    xlim_tree(10) + # alter tree x scale
+    xlim_expand(c(0, 3), "Data") # alter points x scale
+p
+```
+
+
+geom_col to the right
+
+```{r, fig.height=3, fig.width=9}
+p <- ggtree(tr) +
+    geom_tiplab() +
+    geom_facet(panel = "Data", data = dd, 
+            geom = geom_col, mapping = aes(x = value),
+            orientation = "y") + 
+    theme_light() +   # need theme_bw or similar to get the x axis scales to show
+    xlim_tree(10) + # alter tree x scale
+    xlim_expand(c(0, 3), "Data") # alter col x scale
+p
+```
+
+
+# Finished
 
 ```{r}
 sessionInfo()
