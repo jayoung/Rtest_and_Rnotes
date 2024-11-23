@@ -12,6 +12,7 @@ always_allow_html: true
 library(tidyverse)
 library(ape)
 library(ggtree)
+library(ggtreeExtra)
 library(treeio)
 library(tidytree)
 ```
@@ -19,7 +20,11 @@ library(tidytree)
 # Useful links, general advice
 
 The [ggtree manual](http://yulab-smu.top/treedata-book/index.html) is great (very detailed).
-    - Chapter 1 looks at reading/writing trees.  The treeio and ape packages both have tree read/write functions).
+- Chapter 1 looks at reading/writing trees.  The treeio and ape packages both have tree read/write functions).
+
+There is also a [ggtreeExtra package](https://www.bioconductor.org/packages/release/bioc/vignettes/ggtreeExtra/inst/doc/ggtreeExtra.html) that provides a function, `geom_fruit`, to align graphs to a tree, perhaps more easily than with ggtree.
+
+The [ape package](https://cran.r-project.org/web/packages/ape/) is also useful for phylogenetics
 
 
 # Read a tree and plot it
@@ -66,10 +71,10 @@ We associate info tbl with the tree using `left_join` - this creates a single `t
 Advice:    
 - this joining process can be flaky - there's not as much error-checking built-in as I'd like.    
 - BEFORE you combine tree with info tbl:   
-    - you should manipulate tree to get as close to the final product as you can (e.g. do any rerooting, subsetting, clade rotation, etc, BEFORE you left_join)      
-    - manipulate tbl get as close to the final product as you can (e.g. join a bunch of info together)      
-    - CHECK taxon labels in tree and the tbl column you plan to join on match up OK    
-    - CHECK the taxon ID in the join column of tbl is UNIQUE - repeated values will cause trouble    
+- you should manipulate tree to get as close to the final product as you can (e.g. do any rerooting, subsetting, clade rotation, etc, BEFORE you left_join)      
+- manipulate tbl get as close to the final product as you can (e.g. join a bunch of info together)      
+- CHECK taxon labels in tree and the tbl column you plan to join on match up OK    
+- CHECK the taxon ID in the join column of tbl is UNIQUE - repeated values will cause trouble    
 
 
 ```{r}
@@ -176,7 +181,7 @@ gheatmap(p, genotype,
          colnames_offset_y= -1,
          colnames_angle=270) +
     # scale_y_continuous makes sure we can see the colnames
-   scale_y_continuous(expand=c(0.01, 0.01))
+    scale_y_continuous(expand=c(0.01, 0.01))
 ```
 
 ## gheatmap example with my fake tree and fake data
@@ -246,17 +251,19 @@ geom_point to the right
 
 ```{r}
 tr <- rtree(10)
-dd <- data.frame(id=tr$tip.label, value=abs(rnorm(10)))
+dd <- tibble(id=tr$tip.label) %>% 
+    mutate(value=as.integer(str_remove(id, "t")))
 ```
 
 ```{r, fig.height=3, fig.width=9}
 p <- ggtree(tr) +
     geom_tiplab() +
-    geom_facet(panel = "Data", data = dd, 
-            geom = geom_point, mapping = aes(x = value)) + 
+    geom_facet(panel = "Data", 
+               data = dd,  ## the first column of dd, no matter what it's called, is where ggtree looks for the taxon labels
+               geom = geom_point, mapping = aes(x = value)) + 
     theme_light() +   # need theme_bw or similar to get the x axis scales to show
     xlim_tree(10) + # alter tree x scale
-    xlim_expand(c(0, 3), "Data") # alter points x scale
+    xlim_expand(c(0, 13), "Data") # alter points x scale
 p
 ```
 
@@ -267,13 +274,65 @@ geom_col to the right
 p <- ggtree(tr) +
     geom_tiplab() +
     geom_facet(panel = "Data", data = dd, 
-            geom = geom_col, mapping = aes(x = value),
-            orientation = "y") + 
+               geom = geom_col, mapping = aes(x = value),
+               orientation = "y") + 
     theme_light() +   # need theme_bw or similar to get the x axis scales to show
     xlim_tree(10) + # alter tree x scale
     xlim_expand(c(0, 3), "Data") # alter col x scale
 p
 ```
+
+It CAN handle missing data:
+
+```{r, fig.height=3, fig.width=9}
+dd_slice <- slice_head(dd, n=5)
+
+ggtree(tr) +
+    geom_tiplab() +
+    geom_facet(panel = "Data", data = dd_slice, 
+               geom = geom_col, mapping = aes(x = value),
+               orientation = "y") + 
+    theme_light() +   # need theme_bw or similar to get the x axis scales to show
+    xlim_tree(10) + # alter tree x scale
+    xlim_expand(c(0, 3), "Data") # alter col x scale
+
+```
+
+Simple geom_fruit demo:
+
+```{r, fig.height=3, fig.width=9}
+ggtree(tr) +
+    geom_tiplab() +
+    geom_fruit(
+        data=dd, 
+        geom=geom_col, 
+        mapping=aes(x=value, y=id)
+    ) 
+```
+
+
+Now control how it looks more
+
+```{r, fig.height=3, fig.width=9}
+ggtree(tr) +
+    geom_tiplab() +
+    geom_fruit(
+        data=dd, 
+        geom=geom_col, 
+        mapping=aes(x=value, y=id),
+        pwidth=0.8, ## pwidth affects width of the geom_col plot, relative to tree width (default is 0.2)
+        offset=0.1, ## add some space between tree and plot
+        axis.params = list(
+            axis = "x",
+            text.size = 4,
+            vjust = 1, hjust = 0.5,
+            limits = c(0, 10),
+            line.size=0.5, line.color = "black",
+            title="value", title.size=6
+        )
+    ) 
+```
+
 
 
 # Finished

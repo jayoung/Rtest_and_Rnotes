@@ -74,19 +74,19 @@ tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A           120.  nose           fur            
-    ##  2 B            67.1 nose           spikes         
-    ##  3 C           106.  tail           spikes         
-    ##  4 D            55.1 teeth          scales         
-    ##  5 E           128.  tail           spikes         
-    ##  6 F           129.  teeth          scales         
-    ##  7 G           119.  tail           fur            
-    ##  8 H            60.1 nose           spikes         
-    ##  9 I           133.  nose           fur            
-    ## 10 J           113.  nose           fur            
-    ## 11 K           125.  nose           spikes         
-    ## 12 L            67.3 nose           fur            
-    ## 13 M           134.  teeth          scales
+    ##  1 A           108.  nose           spikes         
+    ##  2 B            71.8 tail           scales         
+    ##  3 C           117.  tail           scales         
+    ##  4 D            76.5 tail           fur            
+    ##  5 E           121.  nose           spikes         
+    ##  6 F            82.3 teeth          scales         
+    ##  7 G            92.4 teeth          fur            
+    ##  8 H            59.9 nose           fur            
+    ##  9 I            80.1 tail           fur            
+    ## 10 J           102.  teeth          spikes         
+    ## 11 K           124.  tail           spikes         
+    ## 12 L           100.  teeth          spikes         
+    ## 13 M           170.  teeth          scales
 
 ## combine tree and tbl
 
@@ -139,16 +139,16 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE        120.  nose           fur            
-    ##  2     2 B     TRUE         67.1 nose           spikes         
-    ##  3     3 C     TRUE        106.  tail           spikes         
-    ##  4     4 D     TRUE         55.1 teeth          scales         
-    ##  5     5 E     TRUE        128.  tail           spikes         
-    ##  6     6 F     TRUE        129.  teeth          scales         
-    ##  7     7 G     TRUE        119.  tail           fur            
-    ##  8     8 H     TRUE         60.1 nose           spikes         
-    ##  9     9 I     TRUE        133.  nose           fur            
-    ## 10    10 J     TRUE        113.  nose           fur            
+    ##  1     1 A     TRUE        108.  nose           spikes         
+    ##  2     2 B     TRUE         71.8 tail           scales         
+    ##  3     3 C     TRUE        117.  tail           scales         
+    ##  4     4 D     TRUE         76.5 tail           fur            
+    ##  5     5 E     TRUE        121.  nose           spikes         
+    ##  6     6 F     TRUE         82.3 teeth          scales         
+    ##  7     7 G     TRUE         92.4 teeth          fur            
+    ##  8     8 H     TRUE         59.9 nose           fur            
+    ##  9     9 I     TRUE         80.1 tail           fur            
+    ## 10    10 J     TRUE        102.  teeth          spikes         
     ## # ℹ 15 more rows
 
 ## plot tree with annotations
@@ -269,7 +269,7 @@ gheatmap(p, genotype,
          colnames_offset_y= -1,
          colnames_angle=270) +
     # scale_y_continuous makes sure we can see the colnames
-   scale_y_continuous(expand=c(0.01, 0.01))
+    scale_y_continuous(expand=c(0.01, 0.01))
 ```
 
     ## Scale for y is already present.
@@ -356,17 +356,19 @@ geom_point to the right
 
 ``` r
 tr <- rtree(10)
-dd <- data.frame(id=tr$tip.label, value=abs(rnorm(10)))
+dd <- tibble(id=tr$tip.label) %>% 
+    mutate(value=as.integer(str_remove(id, "t")))
 ```
 
 ``` r
 p <- ggtree(tr) +
     geom_tiplab() +
-    geom_facet(panel = "Data", data = dd, 
-            geom = geom_point, mapping = aes(x = value)) + 
+    geom_facet(panel = "Data", 
+               data = dd,  ## the first column of dd, no matter what it's called, is where ggtree looks for the taxon labels
+               geom = geom_point, mapping = aes(x = value)) + 
     theme_light() +   # need theme_bw or similar to get the x axis scales to show
     xlim_tree(10) + # alter tree x scale
-    xlim_expand(c(0, 3), "Data") # alter points x scale
+    xlim_expand(c(0, 13), "Data") # alter points x scale
 p
 ```
 
@@ -378,8 +380,8 @@ geom_col to the right
 p <- ggtree(tr) +
     geom_tiplab() +
     geom_facet(panel = "Data", data = dd, 
-            geom = geom_col, mapping = aes(x = value),
-            orientation = "y") + 
+               geom = geom_col, mapping = aes(x = value),
+               orientation = "y") + 
     theme_light() +   # need theme_bw or similar to get the x axis scales to show
     xlim_tree(10) + # alter tree x scale
     xlim_expand(c(0, 3), "Data") # alter col x scale
@@ -387,6 +389,66 @@ p
 ```
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+It CAN handle missing data:
+
+``` r
+dd_slice <- slice_head(dd, n=5)
+
+ggtree(tr) +
+    geom_tiplab() +
+    geom_facet(panel = "Data", data = dd_slice, 
+               geom = geom_col, mapping = aes(x = value),
+               orientation = "y") + 
+    theme_light() +   # need theme_bw or similar to get the x axis scales to show
+    xlim_tree(10) + # alter tree x scale
+    xlim_expand(c(0, 3), "Data") # alter col x scale
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+There is also a [ggtreeExtra
+package](https://www.bioconductor.org/packages/release/bioc/vignettes/ggtreeExtra/inst/doc/ggtreeExtra.html)
+that provides a function, `geom_fruit`, to align graphs to a tree. This
+seems easier than the geom_facet way
+
+Simple geom_fruit demo:
+
+``` r
+ggtree(tr) +
+    geom_tiplab() +
+    geom_fruit(
+        data=dd, 
+        geom=geom_col, 
+        mapping=aes(x=value, y=id)
+    ) 
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+Now control how it looks more
+
+``` r
+ggtree(tr) +
+    geom_tiplab() +
+    geom_fruit(
+        data=dd, 
+        geom=geom_col, 
+        mapping=aes(x=value, y=id),
+        pwidth=0.8, ## pwidth affects width of the geom_col plot, relative to tree width (default is 0.2)
+        offset=0.1, ## add some space between tree and plot
+        axis.params = list(
+            axis = "x",
+            text.size = 4,
+            vjust = 1, hjust = 0.5,
+            limits = c(0, 10),
+            line.size=0.5, line.color = "black",
+            title="value", title.size=6
+        )
+    ) 
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 # Finished
 
@@ -412,22 +474,22 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] tidytree_0.4.6  treeio_1.28.0   ggtree_3.12.0   ape_5.8        
-    ##  [5] lubridate_1.9.3 forcats_1.0.0   stringr_1.5.1   dplyr_1.1.4    
-    ##  [9] purrr_1.0.2     readr_2.1.5     tidyr_1.3.1     tibble_3.2.1   
-    ## [13] ggplot2_3.5.1   tidyverse_2.0.0
+    ##  [1] tidytree_0.4.6     treeio_1.28.0      ggtreeExtra_1.14.0 ggtree_3.12.0     
+    ##  [5] ape_5.8            lubridate_1.9.3    forcats_1.0.0      stringr_1.5.1     
+    ##  [9] dplyr_1.1.4        purrr_1.0.2        readr_2.1.5        tidyr_1.3.1       
+    ## [13] tibble_3.2.1       ggplot2_3.5.1      tidyverse_2.0.0   
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] yulab.utils_0.1.7  utf8_1.2.4         generics_0.1.3     ggplotify_0.1.2   
     ##  [5] stringi_1.8.4      lattice_0.22-6     hms_1.1.3          digest_0.6.37     
     ##  [9] magrittr_2.0.3     evaluate_1.0.1     grid_4.4.0         timechange_0.3.0  
-    ## [13] fastmap_1.2.0      jsonlite_1.8.9     aplot_0.2.3        fansi_1.0.6       
-    ## [17] scales_1.3.0       lazyeval_0.2.2     cli_3.6.3          rlang_1.1.4       
-    ## [21] munsell_0.5.1      withr_3.0.1        yaml_2.3.10        tools_4.4.0       
-    ## [25] parallel_4.4.0     tzdb_0.4.0         colorspace_2.1-1   gridGraphics_0.5-1
-    ## [29] vctrs_0.6.5        R6_2.5.1           lifecycle_1.0.4    ggfun_0.1.6       
-    ## [33] fs_1.6.4           pkgconfig_2.0.3    pillar_1.9.0       gtable_0.3.5      
-    ## [37] glue_1.8.0         Rcpp_1.0.13        highr_0.11         xfun_0.48         
-    ## [41] tidyselect_1.2.1   rstudioapi_0.16.0  knitr_1.48         farver_2.1.2      
-    ## [45] patchwork_1.3.0    htmltools_0.5.8.1  nlme_3.1-166       labeling_0.4.3    
-    ## [49] rmarkdown_2.28     compiler_4.4.0
+    ## [13] fastmap_1.2.0      jsonlite_1.8.9     ggnewscale_0.5.0   aplot_0.2.3       
+    ## [17] fansi_1.0.6        scales_1.3.0       lazyeval_0.2.2     cli_3.6.3         
+    ## [21] rlang_1.1.4        munsell_0.5.1      withr_3.0.1        yaml_2.3.10       
+    ## [25] tools_4.4.0        parallel_4.4.0     tzdb_0.4.0         colorspace_2.1-1  
+    ## [29] gridGraphics_0.5-1 vctrs_0.6.5        R6_2.5.1           lifecycle_1.0.4   
+    ## [33] ggfun_0.1.6        fs_1.6.4           pkgconfig_2.0.3    pillar_1.9.0      
+    ## [37] gtable_0.3.5       glue_1.8.0         Rcpp_1.0.13        highr_0.11        
+    ## [41] xfun_0.48          tidyselect_1.2.1   rstudioapi_0.16.0  knitr_1.48        
+    ## [45] farver_2.1.2       patchwork_1.3.0    htmltools_0.5.8.1  nlme_3.1-166      
+    ## [49] labeling_0.4.3     rmarkdown_2.28     compiler_4.4.0
