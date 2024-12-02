@@ -162,6 +162,10 @@ On a Mac, R packages go here - `/Library/Frameworks/R.framework/Versions` - in s
 
 patchwork package is great
 
+### more control over axes and legends
+
+[legendry](https://teunbrand.github.io/legendry/articles/keys.html) looks useful
+
 ### importing images and combining with R plots
 
 here's how you'd combine an imported image (import using magick package) with a ggplot:
