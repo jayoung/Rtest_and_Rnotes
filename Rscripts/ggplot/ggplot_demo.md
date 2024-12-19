@@ -2,7 +2,7 @@ ggplot_demo
 ================
 Janet Young
 
-2024-08-30
+2024-12-18
 
 Show some examples from the [ggplot2
 cheatsheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html)
@@ -250,7 +250,7 @@ penguins |>
     ggplot(aes(x=island, y=n)) +
     geom_col() +
     labs(title="a short title",
-         subtitle=str_wrap("a really long title. kasjdhf ;isjdghf khg kajsdhf khg alsidgf kjhg ljhags dfj hgkjahsdgfkjhg a  ljhsdgf ljhglsdjhfg", width=50))
+         subtitle=str_wrap("a really long title. kasjdhf ;isjdghf khg kajsxdhf khg alsidgf kjhg ljhags dfj hgkjahsdgfkjhg a  ljhsdgf ljhglsdjhfg", width=50))
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
@@ -292,3 +292,45 @@ df %>%
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+
+# discontinuous axes using `ggbreak` package
+
+`ggbreak` package
+[vignette](https://cran.r-project.org/web/packages/ggbreak/vignettes/ggbreak.html)
+
+``` r
+library(ggbreak) 
+```
+
+    ## ggbreak v0.1.2
+    ## 
+    ## If you use ggbreak in published research, please cite the following
+    ## paper:
+    ## 
+    ## S Xu, M Chen, T Feng, L Zhan, L Zhou, G Yu. Use ggbreak to effectively
+    ## utilize plotting space to deal with large datasets and outliers.
+    ## Frontiers in Genetics. 2021, 12:774846. doi: 10.3389/fgene.2021.774846
+
+``` r
+library(patchwork)
+```
+
+there is a blank plot below, as well as the intended plots, but it
+doesn’t appear when you knit to html or github_document
+
+``` r
+set.seed(2019-01-19)
+d <- data.frame(x = 1:20,
+   y = c(rnorm(5) + 4, rnorm(5) + 20, rnorm(5) + 5, rnorm(5) + 22)
+)
+ 
+p1 <- ggplot(d, aes(y, x)) + geom_col(orientation="y")
+d2 <- data.frame(x = c(2, 18), y = c(7, 26), label = c("hello", "world"))
+p2 <- p1 + scale_x_break(c(7, 17)) + 
+  geom_text(aes(y, x, label=label), data=d2, hjust=1, colour = 'firebrick')  + 
+  xlab(NULL) + ylab(NULL) + theme_minimal()
+
+p1 + p2
+```
+
+![](ggplot_demo_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->

@@ -1,7 +1,6 @@
 ---
 title: "ggbreaks"
-output: github_document
-always_allow_html: true
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -16,7 +15,6 @@ library(patchwork)
 ```
 
 ```{r}
-# there is a blank plot below, as well as the intended plots, but it doesn't appear when knit to html rendering
 set.seed(2019-01-19)
 d <- data.frame(x = 1:20,
    y = c(rnorm(5) + 4, rnorm(5) + 20, rnorm(5) + 5, rnorm(5) + 22)

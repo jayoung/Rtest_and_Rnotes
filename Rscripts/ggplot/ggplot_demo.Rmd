@@ -254,14 +254,14 @@ df %>%
 
 `ggbreak` package [vignette](https://cran.r-project.org/web/packages/ggbreak/vignettes/ggbreak.html)
 
-
 ```{r}
 library(ggbreak) 
 library(patchwork)
 ```
 
+there is a blank plot below, as well as the intended plots, but it doesn't appear when you knit to html or github_document
+
 ```{r}
-# there is a blank plot below, as well as the intended plots, but it doesn't appear when knit to html rendering
 set.seed(2019-01-19)
 d <- data.frame(x = 1:20,
    y = c(rnorm(5) + 4, rnorm(5) + 20, rnorm(5) + 5, rnorm(5) + 22)
