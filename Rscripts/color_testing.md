@@ -2,7 +2,7 @@ color_testing
 ================
 Janet Young
 
-2024-05-17
+2024-12-27
 
 Show all color names
 
@@ -230,7 +230,108 @@ colors()
     ## [652] "yellow"               "yellow1"              "yellow2"             
     ## [655] "yellow3"              "yellow4"              "yellowgreen"
 
-# use tools from rcolorutils
+# color schemes
+
+color schemes can be:  
+- directional or not.  
+- ‘even’ - matched in saturation/brightness or not.  
+- R’s schemes typically have 7 colors, for a good reason: hard to
+perceive more than that.  
+- ‘chroma’ is a word that describes the ‘amount of colorfullness’ (sort
+of). Viridis color scheme has a lot, maybe too much.
+
+``` r
+## test data
+dat <- tibble(x=rep(LETTERS[1:9], each=10),
+       y=rnorm(n=90)) 
+```
+
+## default ggplot colors
+
+``` r
+p1 <- dat %>% 
+    ggplot(aes(x=x, y=y, fill=x)) + 
+    geom_boxplot() +
+    theme_modern() +
+    scale_fill_discrete() +
+    labs(title="ggplot default colors") +
+    coord_cartesian(ylim=c(-1.5, 1.5))
+p1
+```
+
+![](color_testing_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+## viridis is nice
+
+``` r
+p2 <- dat %>% 
+    ggplot(aes(x=x, y=y, fill=x)) + 
+    geom_boxplot() +
+    theme_modern() +
+    scale_fill_viridis(discrete=TRUE) +
+    labs(title="viridis colors")+
+    coord_cartesian(ylim=c(-1.5, 1.5))
+p2
+```
+
+![](color_testing_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+## Okabe and Ito scheme is supposed to be color-blind friendly
+
+I think `scale_fill_oi` and `scale_fill_okabeito` are the same (?)
+
+``` r
+p3 <- dat %>% 
+    ggplot(aes(x=x, y=y, fill=x)) + 
+    geom_boxplot() +
+    theme_modern() +
+    # scale_fill_oi(palette = "black_first") +
+    scale_fill_oi() +
+    labs(title="okabe ito colors")+
+    coord_cartesian(ylim=c(-1.5, 1.5))
+p3
+```
+
+![](color_testing_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+## RColorBrewer Dark2 (recommended by Claus Wilke)
+
+``` r
+## Dark2 has only 8 colors
+dat %>% 
+    filter(x!="H") %>% 
+    ggplot(aes(x=x, y=y, fill=x)) + 
+    geom_boxplot() +
+    theme_modern() +
+    scale_fill_brewer(palette="Dark2") +
+    labs(title="Rcolorbrewer Dark2 palette")+
+    coord_cartesian(ylim=c(-1.5, 1.5))
+```
+
+![](color_testing_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+``` r
+dat %>% 
+    ggplot(aes(x=x, y=y, fill=x)) + 
+    geom_boxplot() +
+    theme_modern() +
+    scale_fill_brewer(palette="Set1") +
+    labs(title="Rcolorbrewer Set1 palette")+
+    coord_cartesian(ylim=c(-1.5, 1.5))
+```
+
+![](color_testing_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+## all Rcolorbrewer schemes
+
+``` r
+par(mar=c(3,4,2,2))
+display.brewer.all()
+```
+
+![](color_testing_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+# rcolorutils::nearRcolor to identify colors
 
 ``` r
 # devtools::install_github("smach/rcolorutils", build_vignettes = TRUE)
@@ -259,7 +360,7 @@ Display the output of nearRcolor:
 plotCol(nearRcolor("deepskyblue", "rgb", dist=50))
 ```
 
-![](color_testing_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](color_testing_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 Default color space is hsv (with a different dist scale)
 
@@ -267,13 +368,13 @@ Default color space is hsv (with a different dist scale)
 plotCol(nearRcolor("deepskyblue", dist=.1))
 ```
 
-![](color_testing_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](color_testing_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ``` r
 plotCol(nearRcolor("tomato", "hsv", dist=.12), nrow=3)
 ```
 
-![](color_testing_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](color_testing_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 I wanted a couple of pinks (for the SATAY analysis)
 
@@ -281,7 +382,7 @@ I wanted a couple of pinks (for the SATAY analysis)
 plotCol(nearRcolor("pink", dist=0.25), nrow=3)
 ```
 
-![](color_testing_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](color_testing_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 I wanted a couple of light blues (for the SATAY analysis)
 
@@ -289,7 +390,7 @@ I wanted a couple of light blues (for the SATAY analysis)
 plotCol(nearRcolor("lightblue", dist=0.25), nrow=8)
 ```
 
-![](color_testing_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](color_testing_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 I wanted a couple of dark reds (for the SATAY analysis)
 
@@ -297,7 +398,7 @@ I wanted a couple of dark reds (for the SATAY analysis)
 plotCol(nearRcolor("darkred", dist=0.25), nrow=3)
 ```
 
-![](color_testing_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](color_testing_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 Alphabetical sorting can help. Default sort is by distance away from the
 query color (not from each other.)
@@ -306,7 +407,7 @@ query color (not from each other.)
 plotCol(sort(nearRcolor("green", dist=0.25)), nrow=5,ncol=6)
 ```
 
-![](color_testing_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](color_testing_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 I wanted a couple of purples (for the SATAY analysis)
 
@@ -315,4 +416,4 @@ I wanted a couple of purples (for the SATAY analysis)
 plotCol(nearRcolor("purple", dist=0.25), nrow=5, ncol=7)
 ```
 
-![](color_testing_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](color_testing_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->

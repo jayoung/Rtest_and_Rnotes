@@ -9,8 +9,12 @@ always_allow_html: true
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-# library(tidyverse)
+library(tidyverse)
+library(patchwork)
 library(grid)
+library(viridis) ## color scheme
+library(see) ## for okabe-ito color scheme. Also includes theme_modern
+library(RColorBrewer)
 ```
 
 Show all color names
@@ -19,8 +23,105 @@ Show all color names
 colors()
 ```
 
+# color schemes
 
-# use tools from rcolorutils
+color schemes can be:    
+- directional or not.   
+- 'even' - matched in saturation/brightness or not.   
+- R's schemes typically have 7 colors, for a good reason: hard to perceive more than that.   
+- 'chroma' is a word that describes the 'amount of colorfullness' (sort of). Viridis color scheme has a lot, maybe too much.   
+
+```{r}
+## test data
+dat <- tibble(x=rep(LETTERS[1:9], each=10),
+       y=rnorm(n=90)) 
+```
+
+## default ggplot colors
+```{r, fig.height=4, fig.width=9}
+p1 <- dat %>% 
+    ggplot(aes(x=x, y=y, fill=x)) + 
+    geom_boxplot() +
+    theme_modern() +
+    scale_fill_discrete() +
+    labs(title="ggplot default colors") +
+    coord_cartesian(ylim=c(-1.5, 1.5))
+p1
+```
+
+## viridis is nice
+
+
+```{r, fig.height=4, fig.width=9}
+p2 <- dat %>% 
+    ggplot(aes(x=x, y=y, fill=x)) + 
+    geom_boxplot() +
+    theme_modern() +
+    scale_fill_viridis(discrete=TRUE) +
+    labs(title="viridis colors")+
+    coord_cartesian(ylim=c(-1.5, 1.5))
+p2
+```
+
+## Okabe and Ito scheme is supposed to be color-blind friendly
+
+I think `scale_fill_oi` and `scale_fill_okabeito` are the same (?)
+
+```{r}
+```
+
+
+
+
+```{r, fig.height=4, fig.width=9}
+p3 <- dat %>% 
+    ggplot(aes(x=x, y=y, fill=x)) + 
+    geom_boxplot() +
+    theme_modern() +
+    # scale_fill_oi(palette = "black_first") +
+    scale_fill_oi() +
+    labs(title="okabe ito colors")+
+    coord_cartesian(ylim=c(-1.5, 1.5))
+p3
+```
+
+
+## RColorBrewer Dark2 (recommended by Claus Wilke)
+
+```{r}
+## Dark2 has only 8 colors
+dat %>% 
+    filter(x!="H") %>% 
+    ggplot(aes(x=x, y=y, fill=x)) + 
+    geom_boxplot() +
+    theme_modern() +
+    scale_fill_brewer(palette="Dark2") +
+    labs(title="Rcolorbrewer Dark2 palette")+
+    coord_cartesian(ylim=c(-1.5, 1.5))
+```
+
+
+```{r}
+dat %>% 
+    ggplot(aes(x=x, y=y, fill=x)) + 
+    geom_boxplot() +
+    theme_modern() +
+    scale_fill_brewer(palette="Set1") +
+    labs(title="Rcolorbrewer Set1 palette")+
+    coord_cartesian(ylim=c(-1.5, 1.5))
+```
+
+## all Rcolorbrewer schemes
+
+```{r, fig.height=9, fig.width=9}
+par(mar=c(3,4,2,2))
+display.brewer.all()
+```
+
+
+
+# rcolorutils::nearRcolor to identify colors
+
 ```{r}
 # devtools::install_github("smach/rcolorutils", build_vignettes = TRUE)
 library(rcolorutils)
