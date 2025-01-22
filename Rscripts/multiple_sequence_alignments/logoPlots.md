@@ -2,7 +2,7 @@ sequence logo plots
 ================
 Janet Young
 
-2024-09-23
+2025-01-21
 
 Goal - show how to make logo plots
 
@@ -103,7 +103,7 @@ alignments, one for each H2A variant.
 
 ``` r
 ## same code is found in jensenShannonDistance.Rmd
-aln_file <- "exampleProtAln_shortH2As_histoneFoldDomain.fa"
+aln_file <- "example_alignment_files/exampleProtAln_shortH2As_histoneFoldDomain.fa"
 
 masterAln <- readAAStringSet(aln_file)
 # simplify the sequence names by removing the description
@@ -284,13 +284,13 @@ show R version used, and package versions
 sessionInfo()
 ```
 
-    ## R version 4.4.0 (2024-04-24)
-    ## Platform: x86_64-apple-darwin20
-    ## Running under: macOS Ventura 13.7
+    ## R version 4.4.2 (2024-10-31)
+    ## Platform: aarch64-apple-darwin20
+    ## Running under: macOS Sequoia 15.2
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRblas.0.dylib 
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
     ## 
     ## locale:
     ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -303,10 +303,10 @@ sessionInfo()
     ## [8] methods   base     
     ## 
     ## other attached packages:
-    ##  [1] ggmsa_1.10.0        DiffLogo_2.28.0     cba_0.2-25         
-    ##  [4] proxy_0.4-27        ggseqlogo_0.2       Biostrings_2.72.1  
-    ##  [7] GenomeInfoDb_1.40.1 XVector_0.44.0      IRanges_2.38.0     
-    ## [10] S4Vectors_0.42.0    BiocGenerics_0.50.0 lubridate_1.9.3    
+    ##  [1] ggmsa_1.12.0        DiffLogo_2.30.0     cba_0.2-25         
+    ##  [4] proxy_0.4-27        ggseqlogo_0.2       Biostrings_2.74.1  
+    ##  [7] GenomeInfoDb_1.42.1 XVector_0.46.0      IRanges_2.40.1     
+    ## [10] S4Vectors_0.44.0    BiocGenerics_0.52.0 lubridate_1.9.4    
     ## [13] forcats_1.0.0       stringr_1.5.1       dplyr_1.1.4        
     ## [16] purrr_1.0.2         readr_2.1.5         tidyr_1.3.1        
     ## [19] tibble_3.2.1        ggplot2_3.5.1       tidyverse_2.0.0    
@@ -314,26 +314,25 @@ sessionInfo()
     ## loaded via a namespace (and not attached):
     ##  [1] tidyselect_1.2.1        farver_2.1.2            lazyeval_0.2.2         
     ##  [4] fastmap_1.2.0           ash_1.0-15              tweenr_2.0.3           
-    ##  [7] digest_0.6.36           R4RNA_1.32.0            timechange_0.3.0       
+    ##  [7] digest_0.6.37           R4RNA_1.34.0            timechange_0.3.0       
     ## [10] lifecycle_1.0.4         tidytree_0.4.6          magrittr_2.0.3         
-    ## [13] compiler_4.4.0          rlang_1.1.4             tools_4.4.0            
-    ## [16] utf8_1.2.4              yaml_2.3.8              knitr_1.47             
-    ## [19] labeling_0.4.3          RColorBrewer_1.1-3      aplot_0.2.3            
-    ## [22] KernSmooth_2.23-24      withr_3.0.0             polyclip_1.10-7        
-    ## [25] proj4_1.0-14            fansi_1.0.6             colorspace_2.1-0       
-    ## [28] extrafontdb_1.0         seqmagick_0.1.7         scales_1.3.0           
-    ## [31] MASS_7.3-61             cli_3.6.3               rmarkdown_2.27         
-    ## [34] crayon_1.5.3            treeio_1.28.0           generics_0.1.3         
-    ## [37] rstudioapi_0.16.0       ggtree_3.12.0           httr_1.4.7             
-    ## [40] tzdb_0.4.0              ape_5.8                 cachem_1.1.0           
-    ## [43] ggforce_0.4.2           zlibbioc_1.50.0         maps_3.4.2             
-    ## [46] parallel_4.4.0          ggalt_0.4.0             ggplotify_0.1.2        
-    ## [49] yulab.utils_0.1.4       vctrs_0.6.5             jsonlite_1.8.8         
-    ## [52] gridGraphics_0.5-1      hms_1.1.3               patchwork_1.2.0        
-    ## [55] glue_1.7.0              stringi_1.8.4           gtable_0.3.5           
-    ## [58] UCSC.utils_1.0.0        extrafont_0.19          munsell_0.5.1          
-    ## [61] pillar_1.9.0            htmltools_0.5.8.1       GenomeInfoDbData_1.2.12
-    ## [64] R6_2.5.1                lattice_0.22-6          evaluate_0.24.0        
-    ## [67] highr_0.11              memoise_2.0.1           ggfun_0.1.5            
-    ## [70] Rcpp_1.0.12             nlme_3.1-165            Rttf2pt1_1.3.12        
-    ## [73] xfun_0.45               fs_1.6.4                pkgconfig_2.0.3
+    ## [13] compiler_4.4.2          rlang_1.1.4             tools_4.4.2            
+    ## [16] yaml_2.3.10             knitr_1.49              labeling_0.4.3         
+    ## [19] RColorBrewer_1.1-3      aplot_0.2.4             KernSmooth_2.23-26     
+    ## [22] withr_3.0.2             polyclip_1.10-7         proj4_1.0-14           
+    ## [25] colorspace_2.1-1        extrafontdb_1.0         seqmagick_0.1.7        
+    ## [28] scales_1.3.0            MASS_7.3-64             cli_3.6.3              
+    ## [31] rmarkdown_2.29          crayon_1.5.3            treeio_1.30.0          
+    ## [34] generics_0.1.3          rstudioapi_0.17.1       ggtree_3.14.0          
+    ## [37] httr_1.4.7              tzdb_0.4.0              ape_5.8-1              
+    ## [40] ggforce_0.4.2           zlibbioc_1.52.0         maps_3.4.2.1           
+    ## [43] ggalt_0.4.0             parallel_4.4.2          ggplotify_0.1.2        
+    ## [46] yulab.utils_0.1.9       vctrs_0.6.5             jsonlite_1.8.9         
+    ## [49] gridGraphics_0.5-1      hms_1.1.3               patchwork_1.3.0        
+    ## [52] glue_1.8.0              stringi_1.8.4           gtable_0.3.6           
+    ## [55] UCSC.utils_1.2.0        extrafont_0.19          munsell_0.5.1          
+    ## [58] pillar_1.10.1           htmltools_0.5.8.1       GenomeInfoDbData_1.2.13
+    ## [61] R6_2.5.1                evaluate_1.0.3          lattice_0.22-6         
+    ## [64] ggfun_0.1.8             Rcpp_1.0.14             nlme_3.1-166           
+    ## [67] Rttf2pt1_1.3.12         xfun_0.50               fs_1.6.5               
+    ## [70] pkgconfig_2.0.3

@@ -2,7 +2,10 @@ ggmsa_demo
 ================
 Janet Young
 
-2024-09-23
+2025-01-21
+
+[ggmsa](https://www.bioconductor.org/packages/release/bioc/vignettes/ggmsa/inst/doc/ggmsa.html)
+is a package designed to plot multiple sequence alignments.
 
 # Load libraries
 
@@ -26,7 +29,7 @@ prot_aln <- readAAStringSet(prot_aln_file)
 dist_matrix <- as.dist(pwalign::stringDist(prot_aln, method = "hamming")/width(prot_aln)[1])
 tree <- bionj(dist_matrix)
 
-dna_aln <- readDNAStringSet(here("Rscripts/multiple_sequence_alignments/ggmsa_tests_example_for_github.fa"))
+dna_aln <- readDNAStringSet(here("Rscripts/multiple_sequence_alignments/example_alignment_files/ggmsa_tests_example_for_github.fa"))
 ```
 
 # Plot tree+aln using ggmsa::geom_msa

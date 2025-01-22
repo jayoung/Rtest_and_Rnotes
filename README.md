@@ -218,6 +218,7 @@ a [list of tools](https://cmdcolin.github.io/awesome-genome-visualization/?lates
 
 viewing MSA alongside a tree: try ggtree() with option msaplot(). also "ggtreeExtra() has a different way to do it which is probably more flexible"
 
+Maybe try [msa package](https://bioconductor.org/packages/devel/bioc/vignettes/msa/inst/doc/msa.pdf)
 
 ### phylogenetics
 
@@ -228,6 +229,8 @@ ape
 [ggtreeExtra](https://bioconductor.org/packages/devel/bioc/vignettes/ggtreeExtra/inst/doc/ggtreeExtra.html).  ggtree can use geom_facet to align associated graphs to the tree but it only works with rectangular, roundrect, ellipse and slanted layouts. ggtreeExtra allows graphs on a tree in rectangular, circular, fan and radial layouts
 
 in ~/domesticated_capsid/Rreports/RTL3_frameshift_plots_v2_aln28.Rmd I got a tree of >5000 mammal species from Upham publication, and extracted the species I want
+
+Perhaps the RERconverge package "for associating evolutionary rates with convergent traits"
 
 ### plotting genes etc:
 

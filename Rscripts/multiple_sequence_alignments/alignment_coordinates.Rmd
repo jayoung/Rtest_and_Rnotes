@@ -1,0 +1,133 @@
+---
+title: "alignment_coordinates"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+Goal - given coordinates of one or more features in a reference sequence, figure out what the coordinates are in an alignment that contains the reference sequence
+
+
+# Load libraries
+
+```{r setup, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(Biostrings)
+library(tidyverse)
+library(here)
+```
+
+# Read example alignment:
+
+```{r}
+aln <- readDNAStringSet("example_alignment_files/cenH3_aln8.nt.fa")
+# get rid of descriptions
+names(aln) <- sapply( strsplit(names(aln), " "), "[[", 1)
+```
+
+Define which sequence is our reference - the sequence to which coordinates refer
+
+```{r}
+ref_name <- grep("human_", names(aln), value=TRUE)
+ref_name
+```
+
+
+
+Make up some example feature coordinates in the reference sequence
+
+```{r}
+human_features <- tibble(
+    name=c("region1","region2","region3"),
+    start=c(1, 101, 331),
+    end=c(90,140,400)
+) 
+human_features
+```
+
+
+Set up a couple of functions
+
+`getUngappedPosOneSeq` takes a single gapped sequence (i.e. a sequence in the alignment), and gets a tibble of position in each sequence versus position in alignment. We use cumulative sum of non-gap bases.
+
+`makeLookupTibble` is a bigger function that applies the `getUngappedPosOneSeq` to every sequence in an alignment and returns a tibble
+
+
+```{r}
+
+
+## in getUngappedPosOneSeq, myGappedSeq is a DNAString (or AAString/BString, etc)
+getUngappedPosOneSeq <- function(myGappedSeq) {
+    mySeq <- strsplit(as.character(myGappedSeq),"")[[1]]
+    myCounts <- cumsum(mySeq != "-")
+    myCounts[which(mySeq=="-")] <- NA
+    return(myCounts)
+}
+
+makeLookupTibble <- function(alignment) {
+    output <- tibble(aln_pos=1:width(alignment)[1])
+    each_seq_lookup <- sapply( names(alignment), function(each_seq_name) {
+        getUngappedPosOneSeq( alignment[[each_seq_name]] )
+    } ) 
+    output <- bind_cols(output, each_seq_lookup)
+    return(output)
+}
+```
+
+Make a position lookup tibble for our alignment, considering just the reference sequence that our features are defined in.  Show the last few rows of the tibble.
+
+```{r}
+alnPos_lookup_table <- makeLookupTibble( aln[ref_name] )
+
+alnPos_lookup_table %>% 
+    tail()
+```
+
+
+Set up another function called `addAlnCoords` that will use the lookup table to convert start and end coordinates in the reference sequence to start and end coordinates in the alignment
+
+```{r}
+addAlnCoords <- function(feature_tbl,
+                         lookup_tbl, 
+                         refseq_name) {
+    ## check the ref sequence is present in the lookup tbl
+    if(! refseq_name %in% colnames(lookup_tbl)) {
+        stop("\n\nERROR - could not find refseq called ",
+             refseq_name, "in the lookup_tbl colnames\n\n")
+    }
+    
+    ## get lookup tbl in a useful format
+    lookup_tbl <- lookup_tbl %>% 
+        select(aln_pos, ref_pos=matches(refseq_name))
+    
+    # look up start aln_pos
+    feature_tbl <- left_join(feature_tbl,
+                             lookup_tbl,
+                             by=c("start"="ref_pos") ) %>% 
+        rename(start_aln=aln_pos)
+    # look up end aln_pos
+    feature_tbl <- left_join(feature_tbl,
+                             lookup_tbl,
+                             by=c("end"="ref_pos") ) %>% 
+        rename(end_aln=aln_pos)
+    return(feature_tbl)
+}
+```
+
+Use `addAlnCoords` with our lookup table to convert coordinates in the example features tibble (`human_features`)
+
+```{r}
+addAlnCoords( feature_tbl=human_features, 
+              lookup_tbl=alnPos_lookup_table, 
+              refseq_name=ref_name )
+```
+
+
+# Finished
+
+```{r}
+sessionInfo()
+```
+
+

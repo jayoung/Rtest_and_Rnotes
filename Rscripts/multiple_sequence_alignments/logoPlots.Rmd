@@ -92,7 +92,7 @@ I read in the alignment, figure out which H2A variant each sequence is from, and
 
 ```{r}
 ## same code is found in jensenShannonDistance.Rmd
-aln_file <- "exampleProtAln_shortH2As_histoneFoldDomain.fa"
+aln_file <- "example_alignment_files/exampleProtAln_shortH2As_histoneFoldDomain.fa"
 
 masterAln <- readAAStringSet(aln_file)
 # simplify the sequence names by removing the description
