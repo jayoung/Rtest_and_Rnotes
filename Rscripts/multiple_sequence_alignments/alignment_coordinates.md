@@ -2,7 +2,7 @@ alignment_coordinates
 ================
 Janet Young
 
-2025-01-21
+2025-01-22
 
 Goal - given coordinates of one or more features in a reference
 sequence, figure out what the coordinates are in an alignment that
@@ -41,17 +41,18 @@ Make up some example feature coordinates in the reference sequence
 human_features <- tibble(
     name=c("region1","region2","region3"),
     start=c(1, 101, 331),
-    end=c(90,140,400)
+    end=c(90,140,400),
+    strand="+"
 ) 
 human_features
 ```
 
-    ## # A tibble: 3 × 3
-    ##   name    start   end
-    ##   <chr>   <dbl> <dbl>
-    ## 1 region1     1    90
-    ## 2 region2   101   140
-    ## 3 region3   331   400
+    ## # A tibble: 3 × 4
+    ##   name    start   end strand
+    ##   <chr>   <dbl> <dbl> <chr> 
+    ## 1 region1     1    90 +     
+    ## 2 region2   101   140 +     
+    ## 3 region3   331   400 +
 
 Set up a couple of functions
 
@@ -64,6 +65,8 @@ position in alignment. We use cumulative sum of non-gap bases.
 tibble
 
 ``` r
+myGappedSeq <- aln[[ref_name]]
+
 ## in getUngappedPosOneSeq, myGappedSeq is a DNAString (or AAString/BString, etc)
 getUngappedPosOneSeq <- function(myGappedSeq) {
     mySeq <- strsplit(as.character(myGappedSeq),"")[[1]]
@@ -139,17 +142,71 @@ Use `addAlnCoords` with our lookup table to convert coordinates in the
 example features tibble (`human_features`)
 
 ``` r
-addAlnCoords( feature_tbl=human_features, 
-              lookup_tbl=alnPos_lookup_table, 
-              refseq_name=ref_name )
+human_features <- addAlnCoords( feature_tbl=human_features, 
+                                lookup_tbl=alnPos_lookup_table, 
+                                refseq_name=ref_name )
 ```
 
-    ## # A tibble: 3 × 5
-    ##   name    start   end start_aln end_aln
-    ##   <chr>   <dbl> <dbl>     <int>   <int>
-    ## 1 region1     1    90       106     267
-    ## 2 region2   101   140       278     320
-    ## 3 region3   331   400       511     580
+Get those three regions from the alignment
+
+``` r
+human_feature_alns <- lapply(1:nrow(human_features), 
+                             function(i) {
+    narrow(aln, 
+           start=human_features$start_aln[i],
+           end=human_features$end_aln[i] )
+})
+```
+
+We can use the `xscat` function to join those alignment pieces together.
+
+Here’s the simplest way to use `xscat`.
+
+``` r
+xscat(human_feature_alns[[1]],
+      human_feature_alns[[2]],
+      human_feature_alns[[3]])
+```
+
+    ## DNAStringSet object of length 35:
+    ##      width seq
+    ##  [1]   275 ATG---------------------GGCCCGCGT...CCAAAGACATTCAGTTGACCAGGAGAATCCGAG
+    ##  [2]   275 ATGGTCGGGCGCCGCAAGCCAGGGACCCCGAGG...CCAAAGATGTGCAGCTAGCCAGGAGGATCCGAG
+    ##  [3]   275 ATG---------------------GGCCCGCGC...CCAAGGACATACAGCTCACCAGGAGGATCCGAG
+    ##  [4]   275 ATG---------------------GGCCCGCGC...CGAAGGATGTGCAGCTGGCCAGGAGGATCCGAG
+    ##  [5]   275 ATG---------------------GGCCCGCGC...CGAAGGATGTGCAGTTGGCCAGGAGGATCCGAG
+    ##  ...   ... ...
+    ## [31]   275 ATG---------------------GGCCCGCGC...CAAAGGATGTGCAACTGGCCCGGAGGATCCGGG
+    ## [32]   275 ATG---------------------GGCCCGCGC...CAAAGGATGTGCAACTGGCCCGGAGGATCCGGG
+    ## [33]   275 ATG---------------------GGCCCGCGC...CAAAGGATGTGCAACTGGCCCGGAGGATCCGGG
+    ## [34]   275 ATG---------------------GGCCCGCGC...CAAAGGATGTGCAACTGGCCCGGAGGATCCGGG
+    ## [35]   275 ATG---------------------GGCCCGCGC...CAAAGGATGTGCAACTGGCCCGGAGGATCCGGG
+
+However, using `xscat` that way is not very generalizable, e.g. if we
+have a large list, or if we don’t know head of time how long our list
+is:
+
+A better way, perhaps is to wrap `xscat` inside the `do.call` function -
+it is a function that I think of as “unpacking” a list and running a
+function on all the elements together:
+
+``` r
+do.call("xscat", human_feature_alns)
+```
+
+    ## DNAStringSet object of length 35:
+    ##      width seq
+    ##  [1]   275 ATG---------------------GGCCCGCGT...CCAAAGACATTCAGTTGACCAGGAGAATCCGAG
+    ##  [2]   275 ATGGTCGGGCGCCGCAAGCCAGGGACCCCGAGG...CCAAAGATGTGCAGCTAGCCAGGAGGATCCGAG
+    ##  [3]   275 ATG---------------------GGCCCGCGC...CCAAGGACATACAGCTCACCAGGAGGATCCGAG
+    ##  [4]   275 ATG---------------------GGCCCGCGC...CGAAGGATGTGCAGCTGGCCAGGAGGATCCGAG
+    ##  [5]   275 ATG---------------------GGCCCGCGC...CGAAGGATGTGCAGTTGGCCAGGAGGATCCGAG
+    ##  ...   ... ...
+    ## [31]   275 ATG---------------------GGCCCGCGC...CAAAGGATGTGCAACTGGCCCGGAGGATCCGGG
+    ## [32]   275 ATG---------------------GGCCCGCGC...CAAAGGATGTGCAACTGGCCCGGAGGATCCGGG
+    ## [33]   275 ATG---------------------GGCCCGCGC...CAAAGGATGTGCAACTGGCCCGGAGGATCCGGG
+    ## [34]   275 ATG---------------------GGCCCGCGC...CAAAGGATGTGCAACTGGCCCGGAGGATCCGGG
+    ## [35]   275 ATG---------------------GGCCCGCGC...CAAAGGATGTGCAACTGGCCCGGAGGATCCGGG
 
 # Finished
 
@@ -157,44 +214,48 @@ addAlnCoords( feature_tbl=human_features,
 sessionInfo()
 ```
 
-    ## R version 4.4.2 (2024-10-31)
-    ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Sequoia 15.2
+    ## R version 4.4.0 (2024-04-24)
+    ## Platform: x86_64-pc-linux-gnu
+    ## Running under: Ubuntu 18.04.6 LTS
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+    ## BLAS/LAPACK: FlexiBLAS OPENBLAS;  LAPACK version 3.11.0
     ## 
     ## locale:
-    ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+    ##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+    ##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+    ##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+    ##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+    ##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+    ## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
     ## 
     ## time zone: America/Los_Angeles
-    ## tzcode source: internal
+    ## tzcode source: system (glibc)
     ## 
     ## attached base packages:
     ## [1] stats4    stats     graphics  grDevices utils     datasets  methods  
     ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] here_1.0.1          lubridate_1.9.4     forcats_1.0.0      
+    ##  [1] here_1.0.1          lubridate_1.9.3     forcats_1.0.0      
     ##  [4] stringr_1.5.1       dplyr_1.1.4         purrr_1.0.2        
     ##  [7] readr_2.1.5         tidyr_1.3.1         tibble_3.2.1       
-    ## [10] ggplot2_3.5.1       tidyverse_2.0.0     Biostrings_2.74.1  
-    ## [13] GenomeInfoDb_1.42.1 XVector_0.46.0      IRanges_2.40.1     
-    ## [16] S4Vectors_0.44.0    BiocGenerics_0.52.0
+    ## [10] ggplot2_3.5.1       tidyverse_2.0.0     Biostrings_2.72.0  
+    ## [13] GenomeInfoDb_1.40.0 XVector_0.44.0      IRanges_2.38.0     
+    ## [16] S4Vectors_0.42.0    BiocGenerics_0.50.0
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] utf8_1.2.4              generics_0.1.3          stringi_1.8.4          
-    ##  [4] hms_1.1.3               digest_0.6.37           magrittr_2.0.3         
-    ##  [7] evaluate_1.0.3          grid_4.4.2              timechange_0.3.0       
-    ## [10] fastmap_1.2.0           rprojroot_2.0.4         jsonlite_1.8.9         
-    ## [13] httr_1.4.7              UCSC.utils_1.2.0        scales_1.3.0           
-    ## [16] cli_3.6.3               rlang_1.1.4             crayon_1.5.3           
-    ## [19] munsell_0.5.1           withr_3.0.2             yaml_2.3.10            
-    ## [22] tools_4.4.2             tzdb_0.4.0              colorspace_2.1-1       
-    ## [25] GenomeInfoDbData_1.2.13 vctrs_0.6.5             R6_2.5.1               
-    ## [28] lifecycle_1.0.4         zlibbioc_1.52.0         pkgconfig_2.0.3        
-    ## [31] pillar_1.10.1           gtable_0.3.6            glue_1.8.0             
-    ## [34] xfun_0.50               tidyselect_1.2.1        rstudioapi_0.17.1      
-    ## [37] knitr_1.49              htmltools_0.5.8.1       rmarkdown_2.29         
-    ## [40] compiler_4.4.2
+    ##  [4] hms_1.1.3               digest_0.6.35           magrittr_2.0.3         
+    ##  [7] timechange_0.3.0        evaluate_0.23           grid_4.4.0             
+    ## [10] fastmap_1.2.0           rprojroot_2.0.4         jsonlite_1.8.8         
+    ## [13] httr_1.4.7              fansi_1.0.6             UCSC.utils_1.0.0       
+    ## [16] scales_1.3.0            cli_3.6.2               rlang_1.1.4            
+    ## [19] crayon_1.5.2            munsell_0.5.1           withr_3.0.0            
+    ## [22] yaml_2.3.8              tools_4.4.0             tzdb_0.4.0             
+    ## [25] colorspace_2.1-0        GenomeInfoDbData_1.2.12 vctrs_0.6.5            
+    ## [28] R6_2.5.1                lifecycle_1.0.4         zlibbioc_1.50.0        
+    ## [31] pkgconfig_2.0.3         pillar_1.9.0            gtable_0.3.5           
+    ## [34] glue_1.7.0              xfun_0.44               tidyselect_1.2.1       
+    ## [37] rstudioapi_0.16.0       knitr_1.46              htmltools_0.5.8.1      
+    ## [40] rmarkdown_2.26          compiler_4.4.0

@@ -41,7 +41,8 @@ Make up some example feature coordinates in the reference sequence
 human_features <- tibble(
     name=c("region1","region2","region3"),
     start=c(1, 101, 331),
-    end=c(90,140,400)
+    end=c(90,140,400),
+    strand="+"
 ) 
 human_features
 ```
@@ -55,7 +56,7 @@ Set up a couple of functions
 
 
 ```{r}
-
+myGappedSeq <- aln[[ref_name]]
 
 ## in getUngappedPosOneSeq, myGappedSeq is a DNAString (or AAString/BString, etc)
 getUngappedPosOneSeq <- function(myGappedSeq) {
@@ -118,11 +119,40 @@ addAlnCoords <- function(feature_tbl,
 Use `addAlnCoords` with our lookup table to convert coordinates in the example features tibble (`human_features`)
 
 ```{r}
-addAlnCoords( feature_tbl=human_features, 
-              lookup_tbl=alnPos_lookup_table, 
-              refseq_name=ref_name )
+human_features <- addAlnCoords( feature_tbl=human_features, 
+                                lookup_tbl=alnPos_lookup_table, 
+                                refseq_name=ref_name )
 ```
 
+Get those three regions from the alignment
+
+```{r}
+human_feature_alns <- lapply(1:nrow(human_features), 
+                             function(i) {
+    narrow(aln, 
+           start=human_features$start_aln[i],
+           end=human_features$end_aln[i] )
+})
+```
+
+
+We can use the `xscat` function to join those alignment pieces together.
+
+Here's the simplest way to use `xscat`.  
+
+```{r}
+xscat(human_feature_alns[[1]],
+      human_feature_alns[[2]],
+      human_feature_alns[[3]])
+```
+
+However, using `xscat` that way is not very generalizable, e.g. if we have a large list, or if we don't know head of time how long our list is:
+
+A better way, perhaps is to wrap `xscat` inside the `do.call` function - it is a function that I think of as "unpacking" a list and running a function on all the elements together:
+
+```{r}
+do.call("xscat", human_feature_alns)
+```
 
 # Finished
 
