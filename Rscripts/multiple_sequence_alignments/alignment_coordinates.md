@@ -65,8 +65,6 @@ position in alignment. We use cumulative sum of non-gap bases.
 tibble
 
 ``` r
-myGappedSeq <- aln[[ref_name]]
-
 ## in getUngappedPosOneSeq, myGappedSeq is a DNAString (or AAString/BString, etc)
 getUngappedPosOneSeq <- function(myGappedSeq) {
     mySeq <- strsplit(as.character(myGappedSeq),"")[[1]]
