@@ -108,7 +108,7 @@ To see all snippets:  Tools - Edit Code Snippets
 
 Three options:    
 - `browser()` (place inside a function, temporarily)    
-- `debug(myFunction)` plus `undebug(myFunction)`    
+- `debug(myFunction)` plus `undebug(myFunction)` (the Rstudio console window has a 'stop' button to exit debugging)   
 - `debugonce()`    
 See (`explore_debugging_functions.R`)[Rscripts/explore_debugging_functions.R] for details.
 
@@ -268,7 +268,6 @@ Explored a few options in April 2024 for the SATAY data - see ~/FH_fast_storage/
 use `ggplot - geom_violin()`. 
 
 Some other options are vioplot::vioplot(), DescTools::PlotViolin(),  easyGgplot2::ggplot2.violinplot(),  UsingR::violinplot().  
-
 Before the days of ggplot, I noted that I like PlotViolin better than vioplot, but when I run it on large datasets it is very slow if I allow it to use its default bandwidth selection algorithm.   If I specify the bw="nrd0" option, it is MUCH quicker. 
 
 See also [here](http://www.sthda.com/english/wiki/ggplot2-violin-plot-easy-function-for-data-visualization-using-ggplot2-and-r-software)
