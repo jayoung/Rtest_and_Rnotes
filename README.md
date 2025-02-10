@@ -281,6 +281,12 @@ See also [here](http://www.sthda.com/english/wiki/ggplot2-violin-plot-easy-funct
 
 [`gcplyr` package](https://mikeblazanin.github.io/gcplyr/) for microbial growth curves. Can help read platereader data (with metadata) in and get it in a tidy format. Can model various parameters of growth curves, "like growth rate/doubling time, maximum density (carrying capacity), lag time, area under the curve, diauxic shifts, extinction, and more without fitting an equation for growth to your data."
 
-#### ggplot themes
+### ggplot themes
 
 https://rfortherestofus.com/2019/08/themes-to-improve-your-ggplot-figures/
+
+
+### dumbbell plots
+
+[A nice alternative](https://albert-rapp.de/posts/ggplot2-tips/15_alternative_paired_bars/15_alternative_paired_bars) to paired bar charts. That tutorial shows other alternatives too: arrow plots, slope plots. 
+
