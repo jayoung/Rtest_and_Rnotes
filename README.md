@@ -261,7 +261,7 @@ Explored a few options in April 2024 for the SATAY data - see ~/FH_fast_storage/
 
 ### wordclouds
 
-`wordcloud` and `wordcloud2` packages.  see ``/Volumes/malik_h/user/jayoung/presentations/MalikLab/otherSlides_mine/KennedyHighSchoolVisit_2021_Dec7/Hutch_wordCloud.R`
+`wordcloud` and `wordcloud2` packages.  see `/fh/fast/malik_h/user/jayoung/presentations/MalikLab/otherSlides_mine/KennedyHighSchoolVisit_2021_Dec7/Hutch_wordCloud.R`
 
 ### violin plots
 
