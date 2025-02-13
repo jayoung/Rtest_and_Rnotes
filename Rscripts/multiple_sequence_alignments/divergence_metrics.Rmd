@@ -1,0 +1,161 @@
+---
+title: "divergence_metrics"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+Goal - play with code to look at divergence metrics in a multiple sequence alignment 
+
+
+Load libraries
+
+```{r setup, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(Biostrings)
+library(pwalign)
+library(here)
+```
+
+Set up a couple of utility functions to degap alignments
+
+```{r}
+#### degapNucAln - function to remove columns that are entirely gap (or can use fractionOfSeqsWithGap to relax requirements of how many seqs have gap)
+degapNucAln <- function(myAln, fractionOfSeqsWithGap=1) {
+    maskedAln <- myAln %>% 
+        DNAMultipleAlignment() %>% 
+        maskGaps(min.fraction=fractionOfSeqsWithGap, 
+                 min.block.width=1) %>% 
+        DNAStringSet()
+    return(maskedAln)
+}
+
+
+#### degapAAaln - function to remove columns that are entirely gap (or can use fractionOfSeqsWithGap to relax requirements of how many seqs have gap)
+### this is how I can see maskGaps uses >= for the fractionOfSeqsWithGap threshold:
+# selectMethod("maskGaps", "AAMultipleAlignment")
+# newmask <- (m["-", ]/colSums(m)) >= min.fraction
+degapAAaln <- function(myAln, fractionOfSeqsWithGap=1) {
+    maskedAln <- myAln %>% 
+        AAMultipleAlignment() %>% 
+        maskGaps(min.fraction=fractionOfSeqsWithGap, 
+                 min.block.width=1) %>% 
+        AAStringSet()
+    return(maskedAln)
+}
+```
+
+Read example alignments (DNA and protein)
+
+```{r}
+aa_aln_histone <- here("Rscripts/multiple_sequence_alignments/example_alignment_files/exampleProtAln_shortH2As_histoneFoldDomain.fa") %>% 
+    readAAStringSet()
+
+names(aa_aln_histone) <- sapply(strsplit(names(aa_aln_histone), " "), "[[", 1)
+
+aa_aln_histone
+```
+
+```{r}
+## get a smaller alignment
+aa_aln_h2a_l <- aa_aln_histone[ grep("H2A.L", names(aa_aln_histone)) ] %>% 
+    degapAAaln()
+
+aa_aln_h2a_l_firstBit <- aa_aln_h2a_l %>% 
+    narrow(start=1, end=12)
+aa_aln_h2a_l_firstBit <- aa_aln_h2a_l_firstBit[1:4]
+
+aa_aln_h2a_l_firstBit
+```
+
+`stringDist()` counts number of changes between all pairs of sequences.  (I checked - hamming and levenshtein give the same result for this particular alignment.)
+
+
+```{r}
+aa_aln_h2a_l_firstBit %>% 
+    stringDist(diag=TRUE, upper=TRUE, method="hamming")
+```
+
+To understand how gaps are counted, I make a very tiny alignment. I can see that a gap-to-AA mismatch is counted as distance 1. 
+
+```{r}
+aa_aln_h2a_l_firstBit_tiny <- aa_aln_h2a_l_firstBit[2:3] %>% 
+    narrow(start=8, end=11)
+aa_aln_h2a_l_firstBit_tiny
+```
+```{r}
+aa_aln_h2a_l_firstBit_tiny %>% 
+    stringDist(diag=TRUE, upper=TRUE, method="hamming")
+```
+
+
+Just double-checking - gap-to-gap is counted as distance 0:
+
+```{r}
+aa_aln_h2a_l_firstBit_tiny_fakeAln <- aa_aln_h2a_l_firstBit_tiny[c(2,2)]
+aa_aln_h2a_l_firstBit_tiny_fakeAln
+```
+```{r}
+aa_aln_h2a_l_firstBit_tiny_fakeAln %>% 
+    stringDist(diag=TRUE, upper=TRUE, method="hamming")
+```
+
+```{r}
+# dna_aln_cenH3 <- here("Rscripts/multiple_sequence_alignments/example_alignment_files/cenH3_aln8.nt.fa") %>% 
+#     readDNAStringSet()
+# dna_aln_cenH3
+```
+
+# Hamming versus Levenshtein distances
+
+
+This [wikipedia page](https://en.wikipedia.org/wiki/Levenshtein_distance) explains the difference between hamming and Levenshtein distances.  Levenshtein distance essentially allows indels.
+
+Example - lawn versus flaw:
+```{r}
+y <- c("lawn","flaw")
+x <- BStringSet(y)
+names(x) <- y
+x
+```
+
+```{r}
+x %>% stringDist(diag=TRUE, upper=TRUE, method="hamming")
+```
+
+
+```{r}
+x %>% stringDist(diag=TRUE, upper=TRUE, method="levenshtein")
+```
+
+
+xxxx
+
+Play with more pwalign package functions - see [documentation](https://bioconductor.org/packages/release/bioc/vignettes/pwalign/inst/doc/PairwiseAlignments.pdf)
+
+
+
+```{r}
+temp <- aa_aln_h2a_l_firstBit[1:2]
+temp2 <- temp %>% PairwiseAlignmentsSingleSubject()
+nmatch(temp2)
+nmismatch(temp2)
+# mismatchTable(temp2)
+deletion(temp2)
+insertion(temp2)
+indel(temp2)
+nchar(temp2)
+pid(temp2)
+```
+
+
+# Finished
+
+```{r}
+sessionInfo()
+```
+
+
+
