@@ -29,6 +29,8 @@ Rules for numbered lists:
 Without the blank line before the list, you might be able to make it work somehow, but you need lots of extra spaces at the end of pretty much every line
 
 
+Note - Rstudio's command-I reindent option messes up bulleted lists (at least in early 2025). It's a bug, reported [here](https://github.com/rstudio/rstudio/issues/13211)
+
 Here's a bulleted list WITHOUT the empty line and WITHOUT extra spaces - it looks really bad:
 * there should be an EMPTY LINE before the list starts
 * top-level list items start with an `*`, `-`, or `+` and don't need an indent. I think I'll use `*` to keep things uniform.
