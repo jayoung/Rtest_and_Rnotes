@@ -5,6 +5,63 @@
 
 
 
+########  codon_range_to_nuc_range - given a codon position range, return the equivalent nucleotide position range to take. This function is for simple pairs of coordinates. 
+codon_range_to_nuc_range <- function(codon_start, codon_end=codon_start) {
+    if(codon_start>codon_end) {
+        stop("\n\nERROR - start is after end\n\n")
+    }
+    nuc_start <- (codon_start-1)*3 + 1
+    nuc_end <- (codon_end-1)*3 + 3
+    return(c(nuc_start, nuc_end))
+}
+## a version for GRanges
+codon_range_to_nuc_range_gr <- function(gr) {
+    if(class(gr) != "GRanges") {
+        stop("\n\nERROR - this function is designed for GRanges objects\n\n")
+    }
+    nuc_starts <- (start(gr)-1)*3 + 1
+    nuc_ends <- (end(gr)-1)*3 + 3
+    new_gr <- gr
+    ranges(new_gr) <- IRanges(start=nuc_starts, end=nuc_ends)
+    return(new_gr)
+}
+
+
+########  nuc_range_to_codon_range - given a nucleotide position range, return the equivalent amino acid position range to take.
+nuc_range_to_codon_range <- function(nuc_start, nuc_end=nuc_start) {
+    if(nuc_start>nuc_end) {
+        stop("\n\nERROR - start is after end\n\n")
+    }
+    if((nuc_end+1-nuc_start) %% 3 != 0) {
+        stop("\n\nERROR - range is not an even multiple of 3\n\n")
+    }
+    codon_start <- ceiling(nuc_start/3)
+    codon_end <- ceiling(nuc_end/3)
+    return(c(codon_start, codon_end))
+}
+
+## a version for GRanges
+nuc_range_to_codon_range_gr <- function(gr) {
+    if(class(gr) != "GRanges") {
+        stop("\n\nERROR - this function is designed for GRanges objects\n\n")
+    }
+    testWidths <- width(gr) %% 3
+    if (sum(testWidths != 0) > 0) {
+        problemRanges <- which(testWidths != 0)
+        problemRanges <- gr[problemRanges]
+        cat("\n### problems!\n")
+        print(problemRanges)
+        stop("\n\nERROR - there are ranges that are not an even multiple of 3 wide\n\n")
+    }
+    codon_start <- ceiling(start(gr)/3)
+    codon_end <- ceiling(end(gr)/3)
+    
+    new_gr <- gr
+    ranges(new_gr) <- IRanges(start=codon_start, end=codon_end)
+    return(new_gr)
+}
+
+
 ####### translateGappedAln:  translate() does not deal with gap characters yet (should later - see https://github.com/Bioconductor/Biostrings/issues/30). So I made my own translateGappedAln function.
 
 ## getCodons - splits alignment into constituent codons. Utility function for translateGappedAln
