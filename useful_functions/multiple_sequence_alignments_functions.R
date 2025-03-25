@@ -81,8 +81,12 @@ getCodons <- function(myAln) {
 
 ## translateCodons - takes a character vector of codons as input, outputs the corresponding amino acids. Utility function for translateGappedAln
 translateCodons <- function(myCodons, 
+                            seqname=NULL,
                             unknownCodonTranslatesTo="-", 
+                            # ambiguousNucHandling="warn",
                             quiet=FALSE) {
+    
+    
     ## make new genetic code
     gapCodon <- "-"
     names(gapCodon) <- "---"
@@ -94,7 +98,13 @@ translateCodons <- function(myCodons,
     ## check for codons that were not possible to translate, e.g. frameshift codons
     if (sum(is.na(pep))>0) {
         if(!quiet) {
-            message("\nWarning - there were codons I could not translate. Using this character: ", unknownCodonTranslatesTo, "\n")
+            myError <- paste0("\nWarning - there were codons I could not translate. Using this character: ", unknownCodonTranslatesTo, "\n")
+            if(!is.null(seqname)) {
+                myError <- gsub("Warning - there were",
+                                paste0("Warning in seq ",seqname," - there were"),
+                                myError)
+            }
+            message(myError)
             unknownCodons <- unique(myCodons[ which(is.na(pep))])
             message("The codons in question were: ",
                     paste(unknownCodons, collapse=","),
@@ -108,19 +118,77 @@ translateCodons <- function(myCodons,
     return(pep)
 }
 
-## wrap the getCodons and translateCodons functions together into one:
+##### translateGappedAln - wrap the getCodons and translateCodons functions together into one:
+# ambiguousNucHandling - this is for codons containing N/Y/etc
+#    none:   replaces with unknownCodonTranslatesTo
+#    warn:   replaces with unknownCodonTranslatesTo and emits warning
+#    gap:    replaces with a gap codon
+#    stop:   throws an error
 translateGappedAln <- function(myAln, 
                                unknownCodonTranslatesTo="-", 
+                               ambiguousNucHandling="warn",
                                quiet=FALSE) {
+    ### some upfront checks
+    if(!ambiguousNucHandling %in% c("none", "warn", "stop", "gap")) {
+        stop("\n\nthe ambiguousNucHandling option must be either none, warn or stop\n\n")
+    }
+    if(length(names(myAln)) != length(unique(names(myAln)))) {
+        duplicatedNames <- names(myAln)
+        duplicatedNames <- duplicatedNames[which(duplicated(duplicatedNames))]
+        duplicatedNames <- unique(duplicatedNames)
+        duplicatedNames <- paste(duplicatedNames, collapse=",")
+        stop("\n\nERROR - the alignment does not have unique names: the duplicates are: ",
+             duplicatedNames,"\n\n")
+    }
+    
+    ### split seqs into codons (list of character vectors)
     myCodons <- getCodons(myAln)
-    myAAaln <- AAStringSet(unlist(lapply(
-        myCodons, 
-        translateCodons, 
-        unknownCodonTranslatesTo=unknownCodonTranslatesTo, 
-        quiet=quiet)))
+
+    ### deal with codons containing ambiguities
+    if(ambiguousNucHandling != "none") {
+        ambiguityNucsPattern <- paste(setdiff(names(IUPAC_CODE_MAP), DNA_BASES), 
+                                      collapse ="|")
+        myCodons <- lapply(names(myCodons), function(x) {
+            theseCodons <- myCodons[[x]]
+            hasAmbig <- grepl(ambiguityNucsPattern, theseCodons)
+            if(sum(hasAmbig)==0) { return(theseCodons) }
+            ## figure out warning about amiguous codons
+            ambigs <- theseCodons[which(hasAmbig)]
+            ambigPositions <- which(hasAmbig)
+            ambigMessage <- paste(ambigPositions, ambigs, sep="_")
+            ambigMessage <- paste(ambigMessage, collapse=",")
+            ambigMessage <- paste("\n\nERROR - seq ",x," contains ambiguous codons:",ambigMessage,"\n\n", sep="")
+            
+            if(ambiguousNucHandling == "warn") {
+                warning(ambigMessage) 
+            }
+            if(ambiguousNucHandling == "stop") {
+                ambigMessage <- gsub("\n\n$",
+                                     " (and maybe other seqs, don't know)\n\n",
+                                     ambigMessage)
+                stop(ambigMessage) 
+            }
+            if(ambiguousNucHandling == "gap") {
+                theseCodons[which(hasAmbig)] <- "---"
+            }
+            return(theseCodons)
+        }) %>% 
+            set_names(names(myCodons))
+    }
+
+    ### translate those codons
+    myAAaln <- lapply(names(myCodons), function(x) {
+        translateCodons(myCodons=myCodons[[x]], 
+                        seqname=x,
+                        unknownCodonTranslatesTo=unknownCodonTranslatesTo, 
+                        quiet=quiet)
+    }) %>% 
+        set_names(names(myCodons)) %>% 
+        unlist() %>% 
+        AAStringSet()
+    
     return(myAAaln)
 }
-
 
 ########### alnToTibble - converts an alignment into a tibble, one row per alignment position, one column per aligned seq
 ## if we supply refSeqName, it'll also get the ungapped position in that refseq
@@ -248,5 +316,6 @@ convertCoordsToOrigCoords <- function(gr) {
         dplyr::rename_with( ~ str_remove_all(.x, "orig_")) %>% 
         GRanges()
 }
+
 
 

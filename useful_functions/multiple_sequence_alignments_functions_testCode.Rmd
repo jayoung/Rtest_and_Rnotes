@@ -1,0 +1,45 @@
+---
+title: "multiple_sequence_alignments_functions_testCode.Rmd"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(magrittr)
+library(Biostrings)
+source(here("useful_functions/multiple_sequence_alignments_functions.R"))
+```
+
+A test alignment and code to work on how to treat alignments with gaps and ambiguities
+
+```{r}
+testAln <- DNAStringSet(c(seq1="ATGGACAAT",
+                          seq2="ATNGANGGT",
+                          seq3="ATG-ACGGT"))
+translateGappedAln(testAln,
+                   unknownCodonTranslatesTo="X", 
+                   ambiguousNucHandling="gap",
+                   quiet=TRUE)
+
+```
+
+
+```{r}
+source(here("useful_functions/multiple_sequence_alignments_functions.R"))
+
+tempCodons <- getCodons(testAln)
+
+lapply( names(tempCodons), function(x) {
+    translateCodons( myCodons=tempCodons[[x]],
+                     seqname=x,
+                     unknownCodonTranslatesTo="-", 
+                     quiet=FALSE)
+}) %>% 
+    set_names(names(tempCodons)) %>% 
+    unlist() %>% 
+    AAStringSet()
+```
+
