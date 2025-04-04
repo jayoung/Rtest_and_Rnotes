@@ -43,3 +43,4 @@ lapply( names(tempCodons), function(x) {
     AAStringSet()
 ```
 
+

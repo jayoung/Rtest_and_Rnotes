@@ -3,7 +3,28 @@
 # if (Sys.info()[["sysname"]]=="Darwin") { malik_h_dir <- "/Volumes/malik_h/" }
 # source( paste0(malik_h_dir, "user/jayoung/git_more_repos/Rtest_and_Rnotes/useful_functions/multiple_sequence_alignments_functions.R") )
 
-
+### degapAln - wrapper around maskGaps. Degaps alignment by columns
+degapAln <- function(myAln, fractionOfSeqsWithGap=1) {
+    maskedAln <- NULL
+    if(class(myAln)=="AAStringSet") {
+        maskedAln <- myAln %>% 
+            AAMultipleAlignment() %>% 
+            maskGaps(min.fraction=fractionOfSeqsWithGap, 
+                     min.block.width=1) %>% 
+            AAStringSet()
+    }
+    if(class(myAln)=="DNAStringSet") {
+        maskedAln <- myAln %>% 
+            DNAMultipleAlignment() %>% 
+            maskGaps(min.fraction=fractionOfSeqsWithGap, 
+                     min.block.width=1) %>% 
+            DNAStringSet()
+    }
+    if(is.null(maskedAln)) {
+        stop("\n\nERROR - input alignment is an object of a class that the function is not set up to handle\n\n")
+    }
+    return(maskedAln)
+}
 
 ########  codon_range_to_nuc_range - given a codon position range, return the equivalent nucleotide position range to take. This function is for simple pairs of coordinates. 
 codon_range_to_nuc_range <- function(codon_start, codon_end=codon_start) {

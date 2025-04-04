@@ -77,6 +77,8 @@ Rmarkdown:
 
 miscellaneous coll-looking R tips from [Luke Pemberton](https://lpembleton.rbind.io/ramblings/R/), like embedding smaller plots as insets on top of bigger ones, including colors in titles, nice axis formatting, etc, etc
 
+Blog post on working with [regular expressions](https://blog.djnavarro.net/posts/2024-12-16_regex-backreferences/)
+
 ### haven't looked yet: future
 
 [The Elements of Data Analytic Style](https://leanpub.com/datastyle) by Jeff Leek (a Leanpub book)
