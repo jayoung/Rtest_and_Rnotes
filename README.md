@@ -99,6 +99,18 @@ See [here](https://psiaims.github.io/CAMIS/R/rounding.html)
 
 "Reindenting your code only shifts things around horizontally. If you want more powerful code reformatting, try using “Code > Reformat Code” (or use ⌘⇧A on macOS or ctrl + shift + A on Windows). It’s a more aggressive form of reformatting that will add extra line breaks and other things to make the code more readable."
 
+In settings, there's an option to turn on rainbow parentheses to help see pairings.
+
+#### Keyboard shortcuts
+
+highlight a function, press function-F1, and it brings up the help page
+
+shift-command-M types a pipe (there's a setting for whether you want that to be `%>%` or `|>`)
+
+tab adds an indent to one or more selected lines of code, whift+tab removes one indent
+
+(see tips [here](https://rfortherestofus.com/2023/11/rstudio-hotkeys))
+
 #### Snippets  
 
 Example: type `fun` and press the `tab` key, and R provides the skeleton of a new function
@@ -235,6 +247,12 @@ ape
 in ~/domesticated_capsid/Rreports/RTL3_frameshift_plots_v2_aln28.Rmd I got a tree of >5000 mammal species from Upham publication, and extracted the species I want
 
 Perhaps the RERconverge package "for associating evolutionary rates with convergent traits"
+
+### orthology
+
+[Orthology.eg.db](https://bioconductor.org/packages/release/data/annotation/html/Orthology.eg.db.html). Uses NCBI orthology data. Tested it a bit April 2025. Not useful for human-mosquito (Aedes aegypti) but probably OK for human-mouse. See `~/FH_fast_storage/paml_screen/Priya_Shah_YFV/Rreports/orthology_test.Rmd`
+
+Inparanoid downloads
 
 ### plotting genes etc:
 
