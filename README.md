@@ -168,6 +168,7 @@ myFunc <- function(x) {
 }
 ```
 
+`unz()` function lets you read files within a zip file without even unpacking it. See also `gzfile()` and `bzfile()`
 
 ## Useful packages
 
