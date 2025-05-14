@@ -2,7 +2,7 @@ compare_two_genomes_dotplot_demo
 ================
 Janet Young
 
-2024-10-03
+2025-05-14
 
 # Overview
 
@@ -12,6 +12,10 @@ minimap2 comparisons of one **query** genome against a second **target**
 genome.
 
 I tried this in the worm_mitoNuc project.
+
+Perhaps also try the [SVbyEye](https://github.com/daewoooo/SVbyEye) tool
+from Evan Eichler’s group, used for great ape genomes. More docs
+[here](https://htmlpreview.github.io/?https://github.com/daewoooo/SVbyEye/blob/master/man/doc/SVbyEye.html)
 
 # Resources
 
@@ -282,13 +286,13 @@ show R version used, and package versions
 sessionInfo()
 ```
 
-    ## R version 4.4.0 (2024-04-24)
-    ## Platform: x86_64-apple-darwin20
-    ## Running under: macOS Ventura 13.7
+    ## R version 4.4.2 (2024-10-31)
+    ## Platform: aarch64-apple-darwin20
+    ## Running under: macOS Sequoia 15.4.1
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRblas.0.dylib 
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
     ## 
     ## locale:
     ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -300,26 +304,25 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] pafr_0.0.2       patchwork_1.2.0  kableExtra_1.4.0 lubridate_1.9.3 
+    ##  [1] pafr_0.0.2       patchwork_1.3.0  kableExtra_1.4.0 lubridate_1.9.4 
     ##  [5] forcats_1.0.0    stringr_1.5.1    dplyr_1.1.4      purrr_1.0.2     
     ##  [9] readr_2.1.5      tidyr_1.3.1      tibble_3.2.1     ggplot2_3.5.1   
     ## [13] tidyverse_2.0.0  here_1.0.1      
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.5       xfun_0.45          htmlwidgets_1.6.4  devtools_2.4.5    
-    ##  [5] remotes_2.5.0      tzdb_0.4.0         vctrs_0.6.5        tools_4.4.0       
-    ##  [9] generics_0.1.3     curl_5.2.1         fansi_1.0.6        highr_0.11        
-    ## [13] pkgconfig_2.0.3    RColorBrewer_1.1-3 lifecycle_1.0.4    farver_2.1.2      
-    ## [17] compiler_4.4.0     munsell_0.5.1      httpuv_1.6.15      usethis_2.2.3     
-    ## [21] htmltools_0.5.8.1  yaml_2.3.8         urlchecker_1.0.1   pillar_1.9.0      
-    ## [25] later_1.3.2        ellipsis_0.3.2     cachem_1.1.0       sessioninfo_1.2.2 
-    ## [29] mime_0.12          tidyselect_1.2.1   digest_0.6.36      stringi_1.8.4     
-    ## [33] labeling_0.4.3     rprojroot_2.0.4    fastmap_1.2.0      grid_4.4.0        
-    ## [37] colorspace_2.1-1   cli_3.6.3          magrittr_2.0.3     pkgbuild_1.4.4    
-    ## [41] utf8_1.2.4         withr_3.0.1        scales_1.3.0       promises_1.3.0    
-    ## [45] timechange_0.3.0   rmarkdown_2.27     hms_1.1.3          memoise_2.0.1     
-    ## [49] shiny_1.8.1.1      evaluate_0.24.0    knitr_1.47         miniUI_0.1.1.1    
-    ## [53] viridisLite_0.4.2  profvis_0.3.8      rlang_1.1.4        Rcpp_1.0.12       
-    ## [57] xtable_1.8-4       glue_1.8.0         xml2_1.3.6         pkgload_1.3.4     
-    ## [61] svglite_2.1.3      rstudioapi_0.16.0  R6_2.5.1           systemfonts_1.1.0 
-    ## [65] fs_1.6.4
+    ##  [1] gtable_0.3.6       xfun_0.50          htmlwidgets_1.6.4  devtools_2.4.5    
+    ##  [5] remotes_2.5.0      tzdb_0.4.0         vctrs_0.6.5        tools_4.4.2       
+    ##  [9] generics_0.1.3     curl_6.1.0         pkgconfig_2.0.3    RColorBrewer_1.1-3
+    ## [13] lifecycle_1.0.4    compiler_4.4.2     farver_2.1.2       munsell_0.5.1     
+    ## [17] httpuv_1.6.15      usethis_3.1.0      htmltools_0.5.8.1  yaml_2.3.10       
+    ## [21] urlchecker_1.0.1   pillar_1.10.1      later_1.4.1        ellipsis_0.3.2    
+    ## [25] cachem_1.1.0       sessioninfo_1.2.2  mime_0.12          tidyselect_1.2.1  
+    ## [29] digest_0.6.37      stringi_1.8.4      labeling_0.4.3     rprojroot_2.0.4   
+    ## [33] fastmap_1.2.0      grid_4.4.2         colorspace_2.1-1   cli_3.6.3         
+    ## [37] magrittr_2.0.3     utf8_1.2.4         pkgbuild_1.4.6     withr_3.0.2       
+    ## [41] scales_1.3.0       promises_1.3.2     timechange_0.3.0   rmarkdown_2.29    
+    ## [45] hms_1.1.3          memoise_2.0.1      shiny_1.10.0       evaluate_1.0.3    
+    ## [49] knitr_1.49         miniUI_0.1.1.1     viridisLite_0.4.2  profvis_0.4.0     
+    ## [53] rlang_1.1.4        Rcpp_1.0.14        xtable_1.8-4       glue_1.8.0        
+    ## [57] xml2_1.3.6         pkgload_1.4.0      svglite_2.1.3      rstudioapi_0.17.1 
+    ## [61] R6_2.5.1           systemfonts_1.2.0  fs_1.6.5

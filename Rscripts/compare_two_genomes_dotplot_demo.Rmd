@@ -24,6 +24,10 @@ The `pafr` package looks very nice for generating whole-genome dotplots from paf
 
 I tried this in the worm_mitoNuc project.
 
+Perhaps also try the [SVbyEye](https://github.com/daewoooo/SVbyEye) tool from Evan Eichler's group, used for great ape genomes. More docs [here](https://htmlpreview.github.io/?https://github.com/daewoooo/SVbyEye/blob/master/man/doc/SVbyEye.html)
+
+
+
 # Resources
 
 `pafr` package [github project page](https://dwinter.github.io/pafr/) and [documentation website](https://dwinter.github.io/pafr/index.html) are useful.
