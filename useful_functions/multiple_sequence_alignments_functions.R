@@ -178,10 +178,10 @@ translateGappedAln <- function(myAln,
             ambigPositions <- which(hasAmbig)
             ambigMessage <- paste(ambigPositions, ambigs, sep="_")
             ambigMessage <- paste(ambigMessage, collapse=",")
-            ambigMessage <- paste("\n\nERROR - seq ",x," contains ambiguous codons:",ambigMessage,"\n\n", sep="")
+            ambigMessage <- paste("\n\nWARNING - seq ",x," contains ambiguous codons:",ambigMessage,"\n\n", sep="")
             
             if(ambiguousNucHandling == "warn") {
-                warning(ambigMessage) 
+                if(!quiet) {warning(ambigMessage)}
             }
             if(ambiguousNucHandling == "stop") {
                 ambigMessage <- gsub("\n\n$",

@@ -1,0 +1,47 @@
+---
+title: "Mann-Whitney_Wilcox_checks"
+output: html_document
+---
+
+Some thought experiments about non-parametric statistical tests.  Phoebe and I were trying to think about how to deal with her MIC data (antibiotic resistance).
+
+MIC data is discrete data, and censored.  Mann-Whitney is too conservative because it doesn't account for the extent of change.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+What's the power of a test of n=3 versus n=3?
+
+Three (tied) values versus three other (tied values)
+
+```{r}
+x1 <- c(3,3,3)
+y1 <- c(10,10,10)
+wilcox.test(x1,y1)
+```
+
+It makes no difference to the p-value what the magnitude of the effect is:
+
+```{r}
+z1 <- c(100,100,100)
+wilcox.test(x1,z1)
+```
+
+Reducing the ties changes the p-values:
+
+```{r}
+x1a <- c(3,3,4)
+y1a <- c(10,10,10)
+wilcox.test(x1a,y1a)
+```
+
+Increase power by going from n=3 to n=4
+
+```{r}
+x2 <- c(3,3,3,3)
+y2 <- c(10,10,10,10)
+wilcox.test(x2,y2)
+```
+
