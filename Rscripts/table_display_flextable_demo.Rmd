@@ -1,5 +1,5 @@
 ---
-title: "flextable_demo"
+title: "table_display_flextable_demo"
 author: "Janet Young\n"
 date: "`r Sys.Date()`\n"
 output: github_document
@@ -129,7 +129,7 @@ ft
 Exporting formatted tables: `save_as_docx`, `save_as_pptx`, `save_as_image`
 
 ```{r}
-save_as_docx(myft, path=here("Rscripts/flextable_demo_fig1.docx"))
+save_as_docx(myft, path=here("Rscripts/table_display_flextable_demo_fig1.docx"))
 ```
 
 Wow - you can put a these lines at the top of a doc, and then any time you print a dataframe, it will be a flextable formatted using the defaults:

@@ -205,7 +205,7 @@ plt1 | plt2
 
 `kable/kableExtra`
 
-`flextable` - see [Rscripts/flextable_demo.md](Rscripts/flextable_demo.md) 
+`flextable` - see [Rscripts/table_display_flextable_demo.md](Rscripts/table_display_flextable_demo.md) 
 
 [`reactable`](https://glin.github.io/reactable/index.html)
 
@@ -213,7 +213,7 @@ plt1 | plt2
 
 [`tinytable`](https://vincentarelbundock.github.io/tinytable/)
 
-`gt` can make [multicolumn tables](https://viz.aweatherman.com/viz/538-caption/plot.html), i.e. can wrap a very long table.  That same [tutorial](https://viz.aweatherman.com/viz/538-caption/plot.html) shows how to make a multicolumn table, how to include little logos withiin each cell, and how to make a nice-looking two-part footnote. 
+`gt` - see [Rscripts/table_display_gt_demo.md](Rscripts/table_display_gt_demo.md). It can make [multicolumn tables](https://viz.aweatherman.com/viz/538-caption/plot.html), i.e. can wrap a very long table.  That same [tutorial](https://viz.aweatherman.com/viz/538-caption/plot.html) shows how to make a multicolumn table, how to include little logos withiin each cell, and how to make a nice-looking two-part footnote.    
 
 (and I think some others)
 

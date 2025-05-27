@@ -1,0 +1,90 @@
+---
+title: "table_display_gt_demo"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(gt)
+```
+
+
+```{r}
+# Define the start and end dates for the data range
+start_date <- "2010-06-07"
+end_date <- "2010-06-14"
+
+# Create a gt table based on preprocessed
+# `sp500` table data
+sp500 |>
+    dplyr::filter(date >= start_date & date <= end_date) |>
+    dplyr::select(-adj_close) |>
+    gt() |>
+    tab_header(
+        title = "S&P 500",
+        subtitle = glue::glue("{start_date} to {end_date}")
+    ) |>
+    fmt_currency() |>
+    fmt_date(columns = date, date_style = "wd_m_day_year") |>
+    fmt_number(columns = volume, suffixing = TRUE)
+```
+
+Show sequence alignment as a table - play around with this as an (alternative to ggmsa:
+
+```{r}
+## this is actually a slice of Orf9b prot seq from SARS-CoV2 and other viruses
+seq_slice <- c("FQLT",
+               "FQLI",
+               "FQLT",
+               "FRLT",
+               "FRLI",
+               "FRLT",
+               "FRLT",
+               "FQLT",
+               "FQST",
+               "FQST")
+seq_slice_tbl <- seq_slice %>% 
+    strsplit("") %>% 
+    as.data.frame() %>% 
+    set_names(nm=paste0("seq", 1:10)) %>%
+    t() %>% 
+    as.data.frame() %>%
+    set_names(nm=paste0("pos", 1:4)) %>%
+    as_tibble(rownames="id")
+```
+
+
+
+
+
+```{r}
+seq_slice_tbl %>% 
+    ## gt alone makes a decent-looking table
+    gt() %>% 
+    ## a bunch of formatting things:
+    cols_align(align = "center", columns=-id) %>% 
+    opt_table_font(font = list(google_font(name = "Courier"))) %>% 
+    rm_header() %>% 
+    tab_options(column_labels.hidden = TRUE,
+                table_body.border.bottom.style = "hidden",
+                table_body.hlines.style = "hidden",
+                data_row.padding=0,
+                data_row.padding.horizontal=2,
+                ## row striping not visible until I knit. Options don't seem to work. Might be an Rstudio bug
+                row.striping.include_table_body = FALSE,
+                row.striping.include_stub=FALSE) %>% 
+    ## px is number of pixels
+    cols_width(id ~ px(75)) 
+
+```
+
+# Finished
+
+```{r}
+sessionInfo()
+```
