@@ -65,6 +65,8 @@ Advice on [making figures](https://github.com/MichaelClerx/making-figures/tree/m
 
 The R graph gallery(https://r-graph-gallery.com) and a [list of packages that extend ggplot](https://r-graph-gallery.com/best-dataviz-packages.html)
 
+[r-packages.io](https://r-packages.io/) - searchable documentation of all CRAN packages
+
 [Tutorial](https://www.jumpingrivers.com/blog/intro-to-theme-ggplot2-r/) on using `theme()` to change ggplot appearance/aesthetics.
 
 Some notes on [good coding practices](https://r4ds.hadley.nz/workflow-scripts.html) - using Rmarkdown, clean environments, reproducibility, Rprojects
