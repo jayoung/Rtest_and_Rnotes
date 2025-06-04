@@ -215,7 +215,11 @@ plt1 | plt2
 
 [`tinytable`](https://vincentarelbundock.github.io/tinytable/)
 
-`gt` - see [Rscripts/table_display_gt_demo.md](Rscripts/table_display_gt_demo.md). It can make [multicolumn tables](https://viz.aweatherman.com/viz/538-caption/plot.html), i.e. can wrap a very long table.  That same [tutorial](https://viz.aweatherman.com/viz/538-caption/plot.html) shows how to make a multicolumn table, how to include little logos withiin each cell, and how to make a nice-looking two-part footnote.    
+`gt` - see [Rscripts/table_display_gt_demo.md](Rscripts/table_display_gt_demo.md). 
+
+- It can make [multicolumn tables](https://viz.aweatherman.com/viz/538-caption/plot.html), i.e. can wrap a very long table.  
+- That same [tutorial](https://viz.aweatherman.com/viz/538-caption/plot.html) shows how to make a multicolumn table, how to include little logos within each cell, and how to make a nice-looking two-part footnote.    
+- And [here](https://rfortherestofus.com/2023/10/ggplots-in-gt-tables) is a tutorial to show how to use `gt` to put little graphs in some cells of a table
 
 (and I think some others)
 
