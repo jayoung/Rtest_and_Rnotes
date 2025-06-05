@@ -6,6 +6,7 @@ output: github_document
 always_allow_html: true
 ---
 
+Filed bug report - https://github.com/yonicd/ggedit/issues/31
 
 Load packages 
 

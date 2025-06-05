@@ -19,7 +19,7 @@ for file lists, check out `dir()`:
 ```
 files <- dir(here("data", "participants"), pattern="*.csv")
 ```
-for reading multiple files, chech out `purrr::map_df`:
+for reading multiple files, check out `purrr::map_df`:
 ```
 data <- files %>%
     map_df(~read_csv(file=here("data", "particants", .x)))
@@ -180,6 +180,7 @@ On a Mac, R packages go here - `/Library/Frameworks/R.framework/Versions` - in s
 ### combining plots
 
 patchwork package is great
+
 
 ### more control over axes and legends
 

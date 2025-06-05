@@ -1,0 +1,61 @@
+---
+title: "patchwork_package_demo_and_tips"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+# Load packages 
+knitr::opts_chunk$set(echo = TRUE)
+library("tidyverse")
+library("patchwork")
+```
+
+First we make some fake data and plots
+
+```{r make plot objects}
+dat <- tibble(x=1:100, y=1:100, type=rep(c("A","B","C","D"), each=25))
+p1 <- dat %>% 
+    ggplot(aes(x=x, y=y)) +
+    geom_point() + 
+    labs(title="p1")
+p2 <- p1 + labs(title="p2")
+p3 <- p1 + labs(title="p3")
+```
+
+
+Show plots in a specific layout:
+
+- use `/` to put plots above each other
+- use `|` to put plots side by side
+- use `()` to treat plots as a group
+
+```{r}
+(p1 / p2) | p3
+```
+
+Change widths - note that we NEED the parentheses around the whole plot layout, otherwise the `plot_layout()` function only applies to `p3`, not the whole layout
+
+
+```{r}
+((p1 / p2) | p3) + plot_layout(widths=c(1,3))
+```
+
+
+
+We can also combine plots using `+` but it's harder to control the layout precisely (we don't always care)
+
+```{r}
+p1 + p2 + p3 + plot_layout(ncol=2)
+```
+
+
+Show `sessionInfo()`
+
+```{r}
+sessionInfo()
+```
+
+
