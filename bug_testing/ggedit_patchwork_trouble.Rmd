@@ -1,0 +1,80 @@
+---
+title: "ggedit_patchwork_trouble"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+
+Load packages 
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+library("tidyverse")
+library("patchwork")
+```
+
+Make some plots
+
+```{r make plot objects}
+dat <- tibble(x=1:100, y=1:100, type=rep(c("A","B","C","D"), each=25))
+
+p1 <- dat %>% 
+    ggplot(aes(x=x, y=y)) +
+    geom_point() + 
+    labs(title="p1")
+
+p2 <- p1 + 
+    labs(title="p2")
+
+p3 <- p1 +
+    labs(title="p3")
+```
+
+Show plots in desired layout - works fine with only tidyverse and patchwork loaded
+
+
+```{r}
+(p1 / p2) | p3  
+```
+
+Use `+` not `|` and we get a different layout (no error)
+
+```{r}
+(p1 / p2) + p3  
+```
+
+Now we load ggedit package (but don't edit the plots at all)
+
+```{r}
+library("ggedit") 
+```
+
+Now patchwork fails when we use `|` rather than `+`
+
+
+```{r,  error = TRUE}
+(p1 / p2) | p3 # , fig.height=5, fig.width=9
+```
+It works if we replace `|` with `+` this isn't the layout we want
+
+```{r}
+(p1 / p2) + p3
+```
+
+If we try using plot_layout (patchwork) we get a different error (even though we're still using | not +)
+
+```{r,  error = TRUE}
+(p1 / p2) | p3 + plot_layout(widths=c(1,2))
+```
+
+
+
+Show `sessionInfo()`
+
+```{r}
+sessionInfo()
+```
+
+

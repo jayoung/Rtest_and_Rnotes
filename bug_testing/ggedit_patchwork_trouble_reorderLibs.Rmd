@@ -1,0 +1,34 @@
+---
+title: "patchwork_trouble"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library("ggedit") ## for remove_geom
+library("tidyverse")
+library("patchwork")
+```
+
+```{r, fig.height=5, fig.width=9}
+# how to get desired plot layout
+dat <- tibble(x=1:100, y=1:100, type=rep(c("A","B","C","D"), each=25))
+
+p1 <- dat %>% 
+  ggplot(aes(x=x, y=y, color=type)) +
+  geom_point() + 
+  labs(title="p1")
+
+p2 <- p1 + 
+  labs(title="p2")
+
+p3 <- p1 +
+  facet_wrap(vars(type), scales="free") + 
+  labs(title="p3")
+
+## works fine with only tidyverse and patchwork loaded
+(p1 / p2) | p3 + plot_layout(ncol=2)
+```
+
+
