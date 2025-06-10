@@ -49,12 +49,10 @@ p1 + p2 + p3 + plot_layout(ncol=2)
 
 We can change themes of the patchwork, not just the individual plots.
 
-If we want to modify everything, we use `&`.
+If we want to modify everything, we use `&`. If we want to modify only
+the current ‘nesting level’ of plots, we use `*`.
 
-If we want to modify only the current ‘nesting level’ of plots, we use
-`*`.
-
-Examples:
+Example with `&`:
 
 ``` r
 (p1 + p2 + p3 & theme_minimal()) + plot_layout(ncol=2) 
@@ -62,7 +60,7 @@ Examples:
 
 ![](patchwork_package_demo_and_tips_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
-Using `*`:
+Example with `*`:
 
 ``` r
 (p1 + p2 + p3 * theme_minimal()) + plot_layout(ncol=2)

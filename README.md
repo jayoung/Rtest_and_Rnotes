@@ -179,7 +179,7 @@ On a Mac, R packages go here - `/Library/Frameworks/R.framework/Versions` - in s
 
 ### combining plots
 
-patchwork package is great
+patchwork package is great. See xxx
 
 
 ### more control over axes and legends
