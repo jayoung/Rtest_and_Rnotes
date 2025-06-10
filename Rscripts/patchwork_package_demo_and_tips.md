@@ -2,7 +2,7 @@ patchwork_package_demo_and_tips
 ================
 Janet Young
 
-2025-06-05
+2025-06-10
 
 First we make some fake data and plots
 
@@ -46,6 +46,29 @@ p1 + p2 + p3 + plot_layout(ncol=2)
 ```
 
 ![](patchwork_package_demo_and_tips_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+We can change themes of the patchwork, not just the individual plots.
+
+If we want to modify everything, we use `&`.
+
+If we want to modify only the current ‘nesting level’ of plots, we use
+`*`.
+
+Examples:
+
+``` r
+(p1 + p2 + p3 & theme_minimal()) + plot_layout(ncol=2) 
+```
+
+![](patchwork_package_demo_and_tips_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+Using `*`:
+
+``` r
+(p1 + p2 + p3 * theme_minimal()) + plot_layout(ncol=2)
+```
+
+![](patchwork_package_demo_and_tips_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 Show `sessionInfo()`
 
