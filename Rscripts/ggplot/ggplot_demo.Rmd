@@ -7,12 +7,13 @@ always_allow_html: true
 ---
 
 
-Show some examples from the [ggplot2 cheatsheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html)
-
-
-```{r setup, include=FALSE}
+```{r setup, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+## the above is a good chunk header for chunks that load libraries
 library(tidyverse)
 ```
+
+
+# Example data and base plots
 
 These commands set up the base plots `a` and `b`, but they have no geom layer, so nothing is actually plotted
 
@@ -35,7 +36,11 @@ b <- ggplot(seals, aes(x=long, y=lat))
 # it's simply a grid in x-y space
 ```
 
-I wanted to explore different geoms
+
+# Explore ggplot geoms
+
+Show some examples from the [ggplot2 cheatsheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html)
+
 
 geom_blank()
 
@@ -44,14 +49,14 @@ a + geom_blank() + labs(title="economics, date/unemploy, geom_blank")
 ```
 geom_point()
 
-```{r}
-b + geom_point() + labs(title="seals, long/lat, geom_point")
+```{r, fig.height=3, fig.width=5}
+b + geom_point(size=0.5) + labs(title="seals, long/lat, geom_point")
 ```
 geom_curve() draws a curved line from (x, y) to (xend, yend). 
 
 aes() arguments: x, xend, y, yend, alpha, angle, color, curvature, linetype, size.
 
-```{r}
+```{r, fig.height=3.5, fig.width=5}
 ## this is a wierd plot
 # x and y already existed in b, and we're adding xend and yend
 b + geom_curve(aes(xend = long + 1, 
@@ -64,7 +69,7 @@ b + geom_curve(aes(xend = long + 1,
 aes() arguments: x, y, alpha, color, group, linetype, size.
 
 
-```{r}
+```{r, fig.height=2, fig.width=5}
 a + 
     geom_path(lineend = "butt", linejoin = "round", linemitre = 1) +
     labs(title="geom_path")
@@ -72,7 +77,7 @@ a +
 
 `geom_line()` connects points from left to right. `geom_path()` is similar but connects points in the order they appear in the data. If data are sorted, geom_line() and geom_path plots look the same, otherwise they're different.
 
-```{r}
+```{r, fig.height=2, fig.width=5}
 a + 
     geom_path(lineend = "butt", linejoin = "round", linemitre = 1) +
     coord_cartesian(xlim=c(date("1970-01-01"),date("1975-01-01"))) +
@@ -85,7 +90,7 @@ Same thing with geom_line - looks the same (because data are sorted, geom_path I
 geom_line() - connect observations in the order they appear. a
 
 geom_line aes() arguments: x, y, alpha, color, group, linetype, size.
-```{r}
+```{r, fig.height=2, fig.width=5}
 a + 
     geom_line(lineend = "butt", linejoin = "round", linemitre = 1) +
     coord_cartesian(xlim=c(date("1970-01-01"),date("1975-01-01"))) +
@@ -96,7 +101,7 @@ a +
 
 aes() arguments: x, y, alpha, color, fill, group, subgroup, linetype, size.
 
-```{r}
+```{r, fig.height=2, fig.width=5}
 a + geom_polygon(aes(alpha = 50)) +
     labs(title="geom_polygon")
 ```
@@ -107,7 +112,7 @@ aes() arguments: xmax, xmin, ymax, ymin, alpha, color, fill, linetype, size.
 
 the example given makes it hard to see what's going on, so I sample 30 rows at random
 
-```{r}
+```{r, fig.height=2, fig.width=5}
 seals %>% 
     slice_sample(n=30) %>% 
     ggplot(aes(xmin = long, ymin = lat, 
@@ -121,7 +126,7 @@ seals %>%
 aes() arguments: x, ymax, ymin, alpha, color, fill, group, linetype, size.
 
 
-```{r}
+```{r, fig.height=2, fig.width=5}
 a + geom_ribbon(aes(ymin = unemploy - 900, 
                     ymax = unemploy + 900)) +
     labs(title="geom_ribbon")
@@ -134,19 +139,76 @@ e <- ggplot(mpg, aes(cty,hwy))
 
 `geom_point()`
 
-```{r}
+```{r, fig.height=3, fig.width=5}
 e + 
-    geom_point() +
+    geom_point(size=0.5) +
     labs(title="mpg, geom_point")
 ```
 
 geom_smooth()
 
-```{r}
+```{r, fig.height=3, fig.width=5}
 e + 
-    geom_point() + 
-    geom_smooth()+
+    geom_point(size=0.5) + 
+    geom_smooth() +
     labs(title="geom_point and geom_smooth")
+```
+
+
+# `annotate()` versus `geom_text()`
+
+annotate() is better than geom_text() for some uses. 
+
+Demo based on [rfortherestofus](https://rfortherestofus.com/2023/10/annotate-vs-geoms)
+
+- use geom_text if the data itself should drive text labels
+- use annotate if you're manually adding labels
+
+Example where annotate is better
+
+```{r, fig.height=5, fig.width=5}
+scatterplot <- palmerpenguins::penguins |> 
+    select(bill_length_mm, flipper_length_mm, species) |> 
+    drop_na()|> 
+    ggplot(aes(bill_length_mm, flipper_length_mm, col = species)) +
+    geom_point(size = 2.5) +
+    labs(
+        x = 'Bill length (in mm)',
+        y = 'Flipper length (in mm)',
+        col = 'Species',
+        title = 'Measurements of different Penguin Species'
+    ) +
+    theme_minimal(base_size = 16) +
+    theme(legend.position = 'top')
+```
+
+
+Here we use `geom_text()` and it looks bad, because it is still drawing stuff (color) from the data passed in, and that's not what we want
+
+```{r, fig.height=5, fig.width=5}
+scatterplot +
+  geom_text(
+    x = 35,
+    y = 217.5,
+    label = 'Important penguins',
+    fontface = 'bold', # makes text bold
+    size = 4.5 # font size
+  )
+```
+
+Here we use `annotate()` instead and it ignores the data
+
+```{r, fig.height=5, fig.width=5}
+scatterplot +
+  annotate(
+    'text',
+    x = 35,
+    y = 217.5,
+    label = 'Important penguins',
+    fontface = 'bold', 
+    size = 4.5
+  )
+
 ```
 
 
@@ -156,7 +218,7 @@ Demo from [rfortherestofus](https://rfortherestofus.com/2024/05/shadowtext-ggplo
 
 Mostly I don't like the way shadowtext looks, but it could be really useful if we're putting words over the top of some other dense data, e.g. words on top of a map benefit from a white shadow
 
-```{r}
+```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
 ### to install missing fonts:
 # library(showtext) # For fonts
 # font_add_google("Source Sans Pro") ## downloads and installs a font, except I don't think it necessarily makes the font available always?  maybe I need to restart the computer before I can use it?
@@ -165,49 +227,49 @@ Mostly I don't like the way shadowtext looks, but it could be really useful if w
 # grep("Arial", system_fonts()$name, value=TRUE)
 ```
 
-```{r}
+```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
 library(shadowtext)
 library(palmerpenguins)
 ```
 
 
 
-```{r}
+```{r, fig.height=2, fig.width=5}
 ## define labelling info
 species_labels_tib <- tibble(
-  species = c('Adelie', 'Gentoo', 'Chinstrap'),
-  x = c(35, 43, 53),
-  y = c(210, 229, 178)
+    species = c('Adelie', 'Gentoo', 'Chinstrap'),
+    x = c(35, 43, 53),
+    y = c(210, 229, 178)
 )
 ```
 
 We can use geom_shadowtext() pretty much the same as we'd use geom_label, using bg.color to tell it the color of the shadow. 
 
-```{r}
+```{r, fig.height=4, fig.width=5}
 ## the plot
 penguins |> 
     drop_na() |>
-  ggplot(
-    aes(bill_length_mm, flipper_length_mm, fill = species)
-  ) +
-  geom_point(shape = 21, size = 4) +
-  geom_shadowtext(
-    data = species_labels_tib,
-    aes(x, y, col = species, label = species),
-    size = 12,
-    fontface = 'bold',
-    family = 'ArialMT',
-    bg.color = 'grey10',
-  )  +
-  theme_minimal(base_size = 16, base_family = 'ArialMT') +
-  theme(legend.position = 'none')
+    ggplot(
+        aes(bill_length_mm, flipper_length_mm, fill = species)
+    ) +
+    geom_point(shape = 21, size = 2) +
+    geom_shadowtext(
+        data = species_labels_tib,
+        aes(x, y, col = species, label = species),
+        size = 6,
+        fontface = 'bold',
+        family = 'ArialMT',
+        bg.color = 'grey10',
+    )  +
+    theme_minimal(base_size = 16, base_family = 'ArialMT') +
+    theme(legend.position = 'none')
 ```
 
 # wrapping text in ggplot
 
 `str_wrap()` - you have to figure out width manually, which can be tedious
 
-```{r}
+```{r, fig.height=3, fig.width=5}
 penguins |> 
     count(island) |>
     ggplot(aes(x=island, y=n)) +
@@ -218,11 +280,11 @@ penguins |>
 
 Instead use `ggtext` package - the element_textbox_simple will automatically wrap text to fit whatever space is available.
 
-```{r}
+```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
 library(ggtext)
 ```
 
-```{r}
+```{r, fig.height=3, fig.width=5}
 penguins |> 
     count(island) |>
     ggplot(aes(x=island, y=n)) +
@@ -234,7 +296,7 @@ penguins |>
 
 Maybe we need to wrap facet labels - we can use the label_wrap_gen function
 
-```{r}
+```{r, fig.height=3, fig.width=5}
 theme_set(theme_bw(16))
 df <- data.frame(measurement = rnorm(20,mean=30), 
                  group = c(rep('A really long group variable name that needs to be wrapped',10),
@@ -242,10 +304,10 @@ df <- data.frame(measurement = rnorm(20,mean=30),
                  sex = c(rep(c('M','F'),10)))
 
 df %>%
-  ggplot(aes(sex, measurement, color = sex)) +
-  geom_boxplot() +
-  facet_wrap(~group, labeller = label_wrap_gen(width=24))+
-  theme(legend.position="none")
+    ggplot(aes(sex, measurement, color = sex)) +
+    geom_boxplot() +
+    facet_wrap(~group, labeller = label_wrap_gen(width=24))+
+    theme(legend.position="none")
 ```
 
 
@@ -254,26 +316,36 @@ df %>%
 
 `ggbreak` package [vignette](https://cran.r-project.org/web/packages/ggbreak/vignettes/ggbreak.html)
 
-```{r}
+```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
 library(ggbreak) 
 library(patchwork)
 ```
 
 there is a blank plot below, as well as the intended plots, but it doesn't appear when you knit to html or github_document
 
-```{r}
+```{r, fig.height=4, fig.width=7}
 set.seed(2019-01-19)
 d <- data.frame(x = 1:20,
-   y = c(rnorm(5) + 4, rnorm(5) + 20, rnorm(5) + 5, rnorm(5) + 22)
+                y = c(rnorm(5) + 4, rnorm(5) + 20, rnorm(5) + 5, rnorm(5) + 22)
 )
- 
-p1 <- ggplot(d, aes(y, x)) + geom_col(orientation="y")
-d2 <- data.frame(x = c(2, 18), y = c(7, 26), label = c("hello", "world"))
-p2 <- p1 + scale_x_break(c(7, 17)) + 
-  geom_text(aes(y, x, label=label), data=d2, hjust=1, colour = 'firebrick')  + 
-  xlab(NULL) + ylab(NULL) + theme_minimal()
+
+p1 <- ggplot(d, aes(y, x)) + 
+    geom_col(orientation="y") +
+    theme_minimal() +
+    labs(title="ordinary x-axis")
+p2 <- p1 + 
+    scale_x_break(c(7, 17)) + # from ggbreak
+    labs(title="broken x-axis")
+
 
 p1 + p2
+```
+
+
+# Finished
+
+```{r}
+sessionInfo()
 ```
 
 

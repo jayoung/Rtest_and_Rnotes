@@ -1,11 +1,12 @@
 ---
-title: "Rmarkdown bulleted lists"
+title: "Rmarkdown tips and tricks"
 author: "Janet Young\n"
 date: "`r Sys.Date()`\n"
 output: github_document
 always_allow_html: true
 ---
 
+# Bulleted lists
 
 Rules for bulleted lists:
 
@@ -45,4 +46,23 @@ Here's a bulleted list WITHOUT the empty line but WITH extra spaces. It still lo
   + next-level list items are indented. Can also start with `*`, `-`, or `+` but I think I'll use `+` to keep things uniform.    
     - third-level indent.   
 * you can add more items.   
+
+# Controlling chunk output
+
+If we are showing code in an Rmd document, this is a good header to use for chunks that load libraries, to suppress any output but still show the code:
+
+` ```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE``` `
+
+And here's a chunk where I use that header:
+
+```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+library(tidyverse)
+```
+
+
+# Finished
+
+```{r}
+sessionInfo()
+```
 

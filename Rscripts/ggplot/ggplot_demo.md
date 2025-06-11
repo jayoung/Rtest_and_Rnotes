@@ -2,10 +2,14 @@ ggplot_demo
 ================
 Janet Young
 
-2024-12-18
+2025-06-11
 
-Show some examples from the [ggplot2
-cheatsheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html)
+``` r
+## the above is a good chunk header for chunks that load libraries
+library(tidyverse)
+```
+
+# Example data and base plots
 
 These commands set up the base plots `a` and `b`, but they have no geom
 layer, so nothing is actually plotted
@@ -31,7 +35,10 @@ b <- ggplot(seals, aes(x=long, y=lat))
 # it's simply a grid in x-y space
 ```
 
-I wanted to explore different geoms
+# Explore ggplot geoms
+
+Show some examples from the [ggplot2
+cheatsheet](https://rstudio.github.io/cheatsheets/html/data-visualization.html)
 
 geom_blank()
 
@@ -43,7 +50,7 @@ a + geom_blank() + labs(title="economics, date/unemploy, geom_blank")
 geom_point()
 
 ``` r
-b + geom_point() + labs(title="seals, long/lat, geom_point")
+b + geom_point(size=0.5) + labs(title="seals, long/lat, geom_point")
 ```
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
@@ -163,7 +170,7 @@ e <- ggplot(mpg, aes(cty,hwy))
 
 ``` r
 e + 
-    geom_point() +
+    geom_point(size=0.5) +
     labs(title="mpg, geom_point")
 ```
 
@@ -173,14 +180,74 @@ geom_smooth()
 
 ``` r
 e + 
-    geom_point() + 
-    geom_smooth()+
+    geom_point(size=0.5) + 
+    geom_smooth() +
     labs(title="geom_point and geom_smooth")
 ```
 
     ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
 ![](ggplot_demo_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+# `annotate()` versus `geom_text()`
+
+annotate() is better than geom_text() for some uses.
+
+Demo based on
+[rfortherestofus](https://rfortherestofus.com/2023/10/annotate-vs-geoms)
+
+- use geom_text if the data itself should drive text labels
+- use annotate if you’re manually adding labels
+
+Example where annotate is better
+
+``` r
+scatterplot <- palmerpenguins::penguins |> 
+    select(bill_length_mm, flipper_length_mm, species) |> 
+    drop_na()|> 
+    ggplot(aes(bill_length_mm, flipper_length_mm, col = species)) +
+    geom_point(size = 2.5) +
+    labs(
+        x = 'Bill length (in mm)',
+        y = 'Flipper length (in mm)',
+        col = 'Species',
+        title = 'Measurements of different Penguin Species'
+    ) +
+    theme_minimal(base_size = 16) +
+    theme(legend.position = 'top')
+```
+
+Here we use `geom_text()` and it looks bad, because it is still drawing
+stuff (color) from the data passed in, and that’s not what we want
+
+``` r
+scatterplot +
+  geom_text(
+    x = 35,
+    y = 217.5,
+    label = 'Important penguins',
+    fontface = 'bold', # makes text bold
+    size = 4.5 # font size
+  )
+```
+
+![](ggplot_demo_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+Here we use `annotate()` instead and it ignores the data
+
+``` r
+scatterplot +
+  annotate(
+    'text',
+    x = 35,
+    y = 217.5,
+    label = 'Important penguins',
+    fontface = 'bold', 
+    size = 4.5
+  )
+```
+
+![](ggplot_demo_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 # shadowtext package
 
@@ -208,9 +275,9 @@ library(palmerpenguins)
 ``` r
 ## define labelling info
 species_labels_tib <- tibble(
-  species = c('Adelie', 'Gentoo', 'Chinstrap'),
-  x = c(35, 43, 53),
-  y = c(210, 229, 178)
+    species = c('Adelie', 'Gentoo', 'Chinstrap'),
+    x = c(35, 43, 53),
+    y = c(210, 229, 178)
 )
 ```
 
@@ -221,23 +288,23 @@ geom_label, using bg.color to tell it the color of the shadow.
 ## the plot
 penguins |> 
     drop_na() |>
-  ggplot(
-    aes(bill_length_mm, flipper_length_mm, fill = species)
-  ) +
-  geom_point(shape = 21, size = 4) +
-  geom_shadowtext(
-    data = species_labels_tib,
-    aes(x, y, col = species, label = species),
-    size = 12,
-    fontface = 'bold',
-    family = 'ArialMT',
-    bg.color = 'grey10',
-  )  +
-  theme_minimal(base_size = 16, base_family = 'ArialMT') +
-  theme(legend.position = 'none')
+    ggplot(
+        aes(bill_length_mm, flipper_length_mm, fill = species)
+    ) +
+    geom_point(shape = 21, size = 2) +
+    geom_shadowtext(
+        data = species_labels_tib,
+        aes(x, y, col = species, label = species),
+        size = 6,
+        fontface = 'bold',
+        family = 'ArialMT',
+        bg.color = 'grey10',
+    )  +
+    theme_minimal(base_size = 16, base_family = 'ArialMT') +
+    theme(legend.position = 'none')
 ```
 
-![](ggplot_demo_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](ggplot_demo_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 # wrapping text in ggplot
 
@@ -253,7 +320,7 @@ penguins |>
          subtitle=str_wrap("a really long title. kasjdhf ;isjdghf khg kajsxdhf khg alsidgf kjhg ljhags dfj hgkjahsdgfkjhg a  ljhsdgf ljhglsdjhfg", width=50))
 ```
 
-![](ggplot_demo_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](ggplot_demo_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 Instead use `ggtext` package - the element_textbox_simple will
 automatically wrap text to fit whatever space is available.
@@ -272,7 +339,7 @@ penguins |>
     theme(plot.subtitle = element_textbox_simple())
 ```
 
-![](ggplot_demo_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](ggplot_demo_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 Maybe we need to wrap facet labels - we can use the label_wrap_gen
 function
@@ -285,13 +352,13 @@ df <- data.frame(measurement = rnorm(20,mean=30),
                  sex = c(rep(c('M','F'),10)))
 
 df %>%
-  ggplot(aes(sex, measurement, color = sex)) +
-  geom_boxplot() +
-  facet_wrap(~group, labeller = label_wrap_gen(width=24))+
-  theme(legend.position="none")
+    ggplot(aes(sex, measurement, color = sex)) +
+    geom_boxplot() +
+    facet_wrap(~group, labeller = label_wrap_gen(width=24))+
+    theme(legend.position="none")
 ```
 
-![](ggplot_demo_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](ggplot_demo_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 # discontinuous axes using `ggbreak` package
 
@@ -300,18 +367,6 @@ df %>%
 
 ``` r
 library(ggbreak) 
-```
-
-    ## ggbreak v0.1.2
-    ## 
-    ## If you use ggbreak in published research, please cite the following
-    ## paper:
-    ## 
-    ## S Xu, M Chen, T Feng, L Zhan, L Zhou, G Yu. Use ggbreak to effectively
-    ## utilize plotting space to deal with large datasets and outliers.
-    ## Frontiers in Genetics. 2021, 12:774846. doi: 10.3389/fgene.2021.774846
-
-``` r
 library(patchwork)
 ```
 
@@ -321,16 +376,64 @@ doesn’t appear when you knit to html or github_document
 ``` r
 set.seed(2019-01-19)
 d <- data.frame(x = 1:20,
-   y = c(rnorm(5) + 4, rnorm(5) + 20, rnorm(5) + 5, rnorm(5) + 22)
+                y = c(rnorm(5) + 4, rnorm(5) + 20, rnorm(5) + 5, rnorm(5) + 22)
 )
- 
-p1 <- ggplot(d, aes(y, x)) + geom_col(orientation="y")
-d2 <- data.frame(x = c(2, 18), y = c(7, 26), label = c("hello", "world"))
-p2 <- p1 + scale_x_break(c(7, 17)) + 
-  geom_text(aes(y, x, label=label), data=d2, hjust=1, colour = 'firebrick')  + 
-  xlab(NULL) + ylab(NULL) + theme_minimal()
+
+p1 <- ggplot(d, aes(y, x)) + 
+    geom_col(orientation="y") +
+    theme_minimal() +
+    labs(title="ordinary x-axis")
+p2 <- p1 + 
+    scale_x_break(c(7, 17)) + # from ggbreak
+    labs(title="broken x-axis")
+
 
 p1 + p2
 ```
 
-![](ggplot_demo_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](ggplot_demo_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+
+# Finished
+
+``` r
+sessionInfo()
+```
+
+    ## R version 4.5.0 (2025-04-11)
+    ## Platform: aarch64-apple-darwin20
+    ## Running under: macOS Sequoia 15.5
+    ## 
+    ## Matrix products: default
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+    ## 
+    ## locale:
+    ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+    ## 
+    ## time zone: America/Los_Angeles
+    ## tzcode source: internal
+    ## 
+    ## attached base packages:
+    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
+    ## 
+    ## other attached packages:
+    ##  [1] patchwork_1.3.0      ggbreak_0.1.4        ggtext_0.1.2        
+    ##  [4] palmerpenguins_0.1.1 shadowtext_0.1.4     lubridate_1.9.4     
+    ##  [7] forcats_1.0.0        stringr_1.5.1        dplyr_1.1.4         
+    ## [10] purrr_1.0.4          readr_2.1.5          tidyr_1.3.1         
+    ## [13] tibble_3.2.1         ggplot2_3.5.2        tidyverse_2.0.0     
+    ## 
+    ## loaded via a namespace (and not attached):
+    ##  [1] yulab.utils_0.2.0  generics_0.1.4     ggplotify_0.1.2    xml2_1.3.8        
+    ##  [5] stringi_1.8.7      lattice_0.22-6     hms_1.1.3          digest_0.6.37     
+    ##  [9] magrittr_2.0.3     evaluate_1.0.3     grid_4.5.0         timechange_0.3.0  
+    ## [13] RColorBrewer_1.1-3 fastmap_1.2.0      Matrix_1.7-3       mgcv_1.9-1        
+    ## [17] aplot_0.2.5        scales_1.4.0       cli_3.6.5          rlang_1.1.6       
+    ## [21] litedown_0.7       commonmark_1.9.5   splines_4.5.0      withr_3.0.2       
+    ## [25] yaml_2.3.10        tools_4.5.0        tzdb_0.5.0         gridGraphics_0.5-1
+    ## [29] vctrs_0.6.5        R6_2.6.1           lifecycle_1.0.4    ggfun_0.1.8       
+    ## [33] fs_1.6.6           pkgconfig_2.0.3    pillar_1.10.2      gtable_0.3.6      
+    ## [37] glue_1.8.0         Rcpp_1.0.14        xfun_0.52          tidyselect_1.2.1  
+    ## [41] rstudioapi_0.17.1  knitr_1.50         farver_2.1.2       htmltools_0.5.8.1 
+    ## [45] nlme_3.1-168       rmarkdown_2.29     labeling_0.4.3     compiler_4.5.0    
+    ## [49] markdown_2.0       gridtext_0.1.5
