@@ -10,6 +10,8 @@ rhino location: `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes`
 
 ## Current learning to do list
 
+see another list [here](https://github.com/jayoung/thoughts/blob/main/learning_to_do.md#r-learning-and-statistics)
+
 [Tidyverse style guide](https://style.tidyverse.org/syntax.html).  I got up to the end of the 'syntax' section.  Perhaps see also the [Advanced R style guide](http://adv-r.had.co.nz/Style.html).
 
 

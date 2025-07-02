@@ -17,7 +17,8 @@ addInfoToTree <- function(tree, info, colnameForTaxonLabels="taxon") {
     missingTaxa <- setdiff(tree$tip.label, tipLabelsInInfoTable)
     if(length(missingTaxa)>0) {
         stop("\n\nERROR - there are taxon labels in the tree that are not in the info table: ",
-             missingTaxa,"\n\n")
+             paste(missingTaxa, collapse=","),
+             "\n\n")
     }
     # now get info
     desiredRows <- match(tree$tip.label, tipLabelsInInfoTable)
