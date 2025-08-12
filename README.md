@@ -54,6 +54,7 @@ writing R packages and documentation - https://style.tidyverse.org/documentation
 
 R learning - data cleaning: [a primer](https://rfortherestofus.com/2019/12/how-to-clean-messy-data-in-r/), [some tips](https://rfortherestofus.com/2020/02/data-cleaning-tips-in-r/) and [a 15 min video](https://rfortherestofus.com/2020/01/recoding-numeric-values-to-character-values-automatically-in-r/)
 
+check out these two packages for making interactive graphs: ggiraph and plotly. video tutorial https://rfortherestofus.com/2021/03/interactive-graphs-in-r/
 
 ## Resources
 

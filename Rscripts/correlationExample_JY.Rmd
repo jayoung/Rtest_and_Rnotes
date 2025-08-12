@@ -1,0 +1,173 @@
+---
+title: "correlationExample_JY"
+author: "Janet Young"
+date: "`r Sys.Date()`"
+output: github_document
+always_allow_html: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(patchwork)
+library(GGally)
+```
+
+# First, some example data to demonstrate that R-squareds can be over-interpreted
+
+Imagine a group of 100 mice, and we measure their blood iron content (or some other arbitrary metric). We measure the blood iron twice using two different machines, each of which has some error level which is identical and normally distributed (mean 0, sd=25).
+
+In group A, there are 5 different types of mice (20 mice in each group), with five different blood iron levels
+
+In group B, all 100 mice have exactly the same blood iron level.
+
+
+```{r}
+dat <- tibble(A = rep(c(400,450,500,550,600), 20),
+              B = rep(500, 100) ) %>% 
+    mutate(A_noise1 = A + rnorm(100, sd=25),
+           A_noise2 = A + rnorm(100, sd=25),
+           B_noise1 = B + rnorm(100, sd=25),
+           B_noise2 = B + rnorm(100, sd=25))
+```
+
+```{r}
+dat <- tibble(A = rep(c(400,450,500,550,600), 20),
+              B = rep(500, 100) ) %>% 
+    pivot_longer(cols=everything(),
+                 names_to="group", values_to="iron") %>% 
+    arrange(group) %>% 
+    mutate(iron_rep1 = iron + rnorm(200, sd=25)) %>% 
+    mutate(iron_rep2 = iron + rnorm(200, sd=25))
+# for convenience:
+datA <- dat %>% filter(group=="A") 
+datB <- dat %>% filter(group=="B") 
+
+# dat
+```
+
+```{r, fig.height=4, fig.width=6}
+dat %>% 
+    ggplot(aes(x=iron)) +
+    geom_histogram(binwidth=50, fill="gray", color="black") +
+    facet_wrap(vars(group)) +
+    theme_classic() +
+    labs(title="Distribution of true iron levels")
+```
+
+```{r, fig.height=4, fig.width=6}
+dat %>% 
+    ggplot(aes(x=iron_rep1, iron_rep2)) +
+    geom_point() +
+    facet_wrap(vars(group)) +
+    theme_classic() +
+    labs(title="Compare measurement 1 with measurement 2")
+```
+
+The replicated measurements of group A show very good correlation (Pearson = `r cor(datA$iron_rep1, datA$iron_rep2)` for this sampling)
+
+
+The replicated measurements of group B show very poor correlation (`r cor(datB$iron_rep1, datB$iron_rep2)` for this sampling), but it doesn't mean this experiment is any worse than the other experiment, it's just there isn't any spread in the true data, so the noise overwhelms the signal (there is no signal)
+
+
+# Experiment with ggpairs (GGally package)
+
+
+Make a dataset that includes groups that are 
+
+- well-correlated (positively)
+- not correlated 
+- well-correlated (negatively)
+
+```{r}
+
+noise <- 20
+
+dat2 <- tibble(
+    x = rnorm(100, mean=50, sd=50),
+    x1 = x + rnorm(100, sd=noise),
+    x2 = x + rnorm(100, sd=noise),
+    y = (100 - x) + rnorm(100, sd=noise),
+    z = rep(50, 100) + rnorm(100, sd=noise)
+)
+```
+
+
+Show default ggpairs plot
+
+```{r}
+dat2 %>% 
+    select(-x) %>% 
+    ggpairs(progress=FALSE)
+```
+
+By default for continuous variables, ggpairs uses the `cor()` function for the upper plots. This (by default) returns the Pearson R (i.e. not R-squared).
+
+In this dataset, x1 and y are correlated with R=`r cor(dat2$x1, dat2$y) ` (and therefore R-squared of `r `cor(dat2$x1, dat2$y)^2`)
+
+Here's a way to use a custom function to show R-squared rather than R:
+
+Now try to get R^2 and slope together
+
+```{r}
+### code modified from here
+# https://stackoverflow.com/questions/65360849/how-to-get-r2-with-ggpairs
+r2_fun <- function(data, mapping, ndp=2, ...){
+    
+    # Extract the relevant columns as data
+    x <- eval_data_col(data, mapping$x)
+    y <- eval_data_col(data, mapping$y)
+    
+    ## default for cor is pearson method
+    r2 <- cor(x, y, use="complete.obs")  ^ 2
+    my_text <- paste("r^2: ", 
+                     round(r2, digits=ndp) )
+    
+    # Write out label which is centered at x&y position
+    ggplot(data=data, mapping=mapping) + 
+        annotate("text", 
+                 x=mean(x, na.rm=TRUE), 
+                 y=mean(y, na.rm=TRUE),
+                 label=my_text, 
+                 parse=TRUE,
+                 ...)  +
+        theme(panel.grid = element_blank(),
+              panel.background = element_rect(fill = "white", color="lightgray")) 
+}
+
+dat2 %>% 
+    select(-x) %>% 
+    ggpairs(upper=list(continuous=r2_fun), 
+            progress=FALSE)
+
+```
+
+
+Maybe I want to use a different geom for the data plots, e.g. hexbin
+
+```{r}
+
+## modified code from here  https://stackoverflow.com/questions/20872133/using-stat-binhex-with-ggpairs
+ggally_hexbin <- function (data, mapping, ...)  {
+    p <- ggplot(data = data, mapping = mapping) + 
+        geom_hex(...)
+    p
+}
+
+dat2 %>% 
+    select(-x) %>% 
+    ggpairs(lower= list(continuous = "hexbin"),
+            upper=list(continuous=r2_fun), 
+            progress=FALSE)
+
+```
+
+
+
+# Finished
+
+```{r}
+sessionInfo()
+```
+
