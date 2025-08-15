@@ -1,0 +1,61 @@
+---
+title: "t-tests"
+author: "Janet Young"
+date: "`r Sys.Date()`"
+output: github_document
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(kableExtra)
+```
+
+xxx here I could put some notes about situations where t-tests fail (e.g. when neither dataset contains variance)
+
+## Weighted t-tests (weights package)
+
+```{r}
+library(weights)
+```
+
+```{r}
+dat <- tibble(x = c(1,1,1,1,1,1,2,2,2,3,3,3,4,4),
+              wt = c(.5,.5,.5,.5,.5,1,1,1,1,2,2,2,2,2) ) %>% 
+  mutate(y=rev(x)+1) %>% 
+  relocate(y, .after=x) 
+dat %>% 
+    kable() %>% 
+    kable_styling(full_width = FALSE)
+```
+
+
+```{r, fig.height=3.5, fig.width=3.5}
+ dat %>% 
+  pivot_longer(cols=-wt, names_to="class", values_to="value") %>% 
+  ggplot(aes(x=class, y=value)) +
+  geom_boxplot() +
+  labs(x="") +
+  theme_classic()
+```
+
+
+Ordinary t-test
+```{r}
+t.test(dat$x, dat$y)
+```
+
+
+```{r}
+wtd.t.test(dat$x, dat$y)
+```
+
+```{r}
+wtd.t.test(dat$x, dat$y, dat$wt)
+```
+
+```{r}
+wtd.t.test(dat$x, dat$y, dat$wt, bootse=TRUE)
+```
+
