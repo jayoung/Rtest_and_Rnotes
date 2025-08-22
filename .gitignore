@@ -3,6 +3,7 @@ extdata
 StudentGWAS
 *RData
 .vscode
+temp
 
 # wierd mac files:
 ._*

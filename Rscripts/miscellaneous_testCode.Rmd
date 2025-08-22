@@ -14,6 +14,7 @@ library(janitor)
 ```
 
 # basic tidyverse
+
 ```{r}
 m <- mtcars %>% as_tibble()
 
@@ -22,7 +23,41 @@ m %>%
     count(cyl)
 ```
 
+## separate_longer trick (for list-like columns), and str_replace_all trick (multiple find-replaces)
+
+From [here](https://rfortherestofus.com/2024/04/seperate-fcts)
+
+```{r}
+
+details <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-25/details.csv",
+                           show_col_types = FALSE)
+board_games <- details |>
+    select(id, name = primary, boardgamecategory)
+
+board_games %>% 
+    head(3)
+```
+
+```{r}
+board_games |>
+    separate_longer_delim(cols = boardgamecategory, delim = ", ") |>
+    mutate(
+        boardgamecategory = str_replace_all(
+            boardgamecategory,
+            c(
+                # pattern_to_replace = replacement
+                # We have to wrap the names in backticks because all of the things we want to replace are special characters and R doesn’t like them in vector names if they’re not in backticks
+                `[` = "",
+                `]` = "",
+                `"` = "",
+                `'` = ""
+            ) |> 
+                coll() ## coll() tells str_replace_all() that we explicitly do not want to use regular expressions.
+        ))
+```
+
 ## barplots of counts in each category
+
 ```{r}
 m %>% 
     ggplot(aes(x=cyl)) +
@@ -30,6 +65,7 @@ m %>%
 ```
 
 ## tribble - a way to manually create small tibbles, row-wise
+
 ```{r}
 tribble(
     ~colA, ~colB,
@@ -43,6 +79,7 @@ tibble(colA=c("A","B","C"),
 ```
 
 ## the purrr::map functions are a bit like lapply / apply
+
 ```{r}
 1:10 %>%
     map(rnorm, n = 10)
@@ -69,12 +106,6 @@ mtcars %>%
 
 `setNames()` is a way to set names on a list - can be used in a pipe as an alternative to adding a separate `names(x) <- y` after a set of piped commands
 
-# some tidbit for Phoebe's gtf/gff question
-
-```{r}
-library(rtracklayer)
-?GFFFile
-```
 
 # variable names - using variables
 
@@ -187,7 +218,7 @@ attributes(b)
 https://github.com/sfirke/packagemetrics?tab=readme-ov-file
 
 ```{r}
-# devtools::install_github("sfirke/packagemetrics")
+devtools::install_github("sfirke/packagemetrics")
 library("packagemetrics")
 dplyr_and_dt <- package_list_metrics(c("dplyr", "data.table"))
 # data frame

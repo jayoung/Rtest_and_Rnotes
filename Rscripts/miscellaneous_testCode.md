@@ -2,7 +2,7 @@ miscellaneous_testCode
 ================
 Janet Young
 
-2024-10-24
+2025-08-22
 
 # basic tidyverse
 
@@ -21,6 +21,60 @@ m %>%
     ## 2     6     7
     ## 3     8    14
 
+## separate_longer trick (for list-like columns), and str_replace_all trick (multiple find-replaces)
+
+From [here](https://rfortherestofus.com/2024/04/seperate-fcts)
+
+``` r
+details <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-25/details.csv",
+                           show_col_types = FALSE)
+board_games <- details |>
+    select(id, name = primary, boardgamecategory)
+
+board_games %>% 
+    head(3)
+```
+
+    ## # A tibble: 3 × 3
+    ##      id name        boardgamecategory                                  
+    ##   <dbl> <chr>       <chr>                                              
+    ## 1 30549 Pandemic    ['Medical']                                        
+    ## 2   822 Carcassonne ['City Building', 'Medieval', 'Territory Building']
+    ## 3    13 Catan       ['Economic', 'Negotiation']
+
+``` r
+board_games |>
+    separate_longer_delim(cols = boardgamecategory, delim = ", ") |>
+    mutate(
+        boardgamecategory = str_replace_all(
+            boardgamecategory,
+            c(
+                # pattern_to_replace = replacement
+                # We have to wrap the names in backticks because all of the things we want to replace are special characters and R doesn’t like them in vector names if they’re not in backticks
+                `[` = "",
+                `]` = "",
+                `"` = "",
+                `'` = ""
+            ) |> 
+                coll() ## coll() tells str_replace_all() that we explicitly do not want to use regular expressions.
+        ))
+```
+
+    ## # A tibble: 56,915 × 3
+    ##       id name        boardgamecategory 
+    ##    <dbl> <chr>       <chr>             
+    ##  1 30549 Pandemic    Medical           
+    ##  2   822 Carcassonne City Building     
+    ##  3   822 Carcassonne Medieval          
+    ##  4   822 Carcassonne Territory Building
+    ##  5    13 Catan       Economic          
+    ##  6    13 Catan       Negotiation       
+    ##  7 68448 7 Wonders   Ancient           
+    ##  8 68448 7 Wonders   Card Game         
+    ##  9 68448 7 Wonders   City Building     
+    ## 10 68448 7 Wonders   Civilization      
+    ## # ℹ 56,905 more rows
+
 ## barplots of counts in each category
 
 ``` r
@@ -29,7 +83,7 @@ m %>%
     geom_bar()
 ```
 
-![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ## tribble - a way to manually create small tibbles, row-wise
 
@@ -70,44 +124,44 @@ tibble(colA=c("A","B","C"),
 ```
 
     ## [[1]]
-    ##  [1]  1.3675113  1.7277559  1.2197515  1.2385978  1.7158086  0.6170572
-    ##  [7]  0.9591685  0.1974981  1.7599008 -2.5328191
+    ##  [1]  1.3603895 -1.4114722 -1.0326192  1.2545541  1.3357514  0.0215660
+    ##  [7] -0.4046363 -0.8406554  0.3354220 -1.3492406
     ## 
     ## [[2]]
-    ##  [1] 1.6723304 3.4909170 2.4674111 2.4541835 1.0656303 0.9991537 3.3682911
-    ##  [8] 0.7938045 1.0490553 1.2877373
+    ##  [1] 2.164291 3.102322 1.562906 2.301881 3.624128 1.099051 4.085332 2.602163
+    ##  [9] 1.281087 1.131071
     ## 
     ## [[3]]
-    ##  [1] 3.855963 2.766923 4.198429 4.844597 3.248347 3.130018 3.014173 3.124036
-    ##  [9] 1.044734 2.555878
+    ##  [1] 2.374676 2.851518 3.192542 3.756049 2.779175 4.756329 3.603554 2.468738
+    ##  [9] 3.760330 4.457496
     ## 
     ## [[4]]
-    ##  [1] 2.570264 3.104092 4.960435 4.795026 2.634247 3.431036 2.744862 4.519494
-    ##  [9] 4.679337 3.363718
+    ##  [1] 3.967028 5.176950 4.572501 3.101835 4.800949 3.863271 4.918282 3.395852
+    ##  [9] 4.658805 4.439076
     ## 
     ## [[5]]
-    ##  [1] 4.293316 5.284948 4.428178 4.883492 4.543018 3.989738 5.256036 4.641714
-    ##  [9] 3.326366 3.894331
+    ##  [1] 4.424805 4.316911 4.696888 5.511118 5.626091 5.101665 5.191551 5.336532
+    ##  [9] 5.883760 5.616675
     ## 
     ## [[6]]
-    ##  [1] 4.074849 4.557792 5.870403 4.814594 8.762370 5.244945 6.106749 5.136882
-    ##  [9] 4.921977 6.352757
+    ##  [1] 6.503958 6.170519 5.857271 5.479236 5.982719 4.050278 4.480401 6.318529
+    ##  [9] 6.058498 6.383746
     ## 
     ## [[7]]
-    ##  [1] 7.591354 6.723504 5.875923 6.782765 9.621716 6.756472 6.780931 7.403761
-    ##  [9] 6.644453 7.355384
+    ##  [1] 7.871752 5.106919 9.122487 7.108571 9.814153 7.334294 6.854749 6.888949
+    ##  [9] 7.705922 7.304566
     ## 
     ## [[8]]
-    ##  [1] 6.734067 7.775191 8.191314 7.501943 8.275420 6.549329 6.987847 9.774830
-    ##  [9] 7.576214 8.282886
+    ##  [1] 7.315753 9.581842 8.256553 8.612141 7.281892 8.788097 7.879163 7.977126
+    ##  [9] 8.482422 9.303036
     ## 
     ## [[9]]
-    ##  [1]  6.776016  8.652995  7.862085  8.563511  9.680577 10.817991  8.074243
-    ##  [8]  8.732927  9.233615  8.966438
+    ##  [1]  8.671588  8.636743  8.768620 10.070894  8.759060  7.809230  8.248732
+    ##  [8]  7.975862  8.868676  8.062077
     ## 
     ## [[10]]
-    ##  [1] 11.025289 11.539361 10.809502 10.904747 11.521591  9.431730  9.061578
-    ##  [8]  8.814568 10.811812 11.039821
+    ##  [1]  9.621413  9.115014 10.345091 10.842908 11.192355 10.015732  9.781999
+    ##  [8] 11.130238 11.751150  9.672034
 
 ``` r
 # do something to each column
@@ -149,90 +203,6 @@ mtcars %>%
 `setNames()` is a way to set names on a list - can be used in a pipe as
 an alternative to adding a separate `names(x) <- y` after a set of piped
 commands
-
-# some tidbit for Phoebe’s gtf/gff question
-
-``` r
-library(rtracklayer)
-```
-
-    ## Loading required package: GenomicRanges
-
-    ## Loading required package: stats4
-
-    ## Loading required package: BiocGenerics
-
-    ## 
-    ## Attaching package: 'BiocGenerics'
-
-    ## The following objects are masked from 'package:lubridate':
-    ## 
-    ##     intersect, setdiff, union
-
-    ## The following objects are masked from 'package:dplyr':
-    ## 
-    ##     combine, intersect, setdiff, union
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     IQR, mad, sd, var, xtabs
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     anyDuplicated, aperm, append, as.data.frame, basename, cbind,
-    ##     colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
-    ##     get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
-    ##     match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
-    ##     Position, rank, rbind, Reduce, rownames, sapply, setdiff, table,
-    ##     tapply, union, unique, unsplit, which.max, which.min
-
-    ## Loading required package: S4Vectors
-
-    ## 
-    ## Attaching package: 'S4Vectors'
-
-    ## The following objects are masked from 'package:lubridate':
-    ## 
-    ##     second, second<-
-
-    ## The following objects are masked from 'package:dplyr':
-    ## 
-    ##     first, rename
-
-    ## The following object is masked from 'package:tidyr':
-    ## 
-    ##     expand
-
-    ## The following object is masked from 'package:utils':
-    ## 
-    ##     findMatches
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     expand.grid, I, unname
-
-    ## Loading required package: IRanges
-
-    ## 
-    ## Attaching package: 'IRanges'
-
-    ## The following object is masked from 'package:lubridate':
-    ## 
-    ##     %within%
-
-    ## The following objects are masked from 'package:dplyr':
-    ## 
-    ##     collapse, desc, slice
-
-    ## The following object is masked from 'package:purrr':
-    ## 
-    ##     reduce
-
-    ## Loading required package: GenomeInfoDb
-
-``` r
-?GFFFile
-```
 
 # variable names - using variables
 
@@ -407,7 +377,15 @@ attributes(b)
 <https://github.com/sfirke/packagemetrics?tab=readme-ov-file>
 
 ``` r
-# devtools::install_github("sfirke/packagemetrics")
+devtools::install_github("sfirke/packagemetrics")
+```
+
+    ## Using GitHub PAT from the git credential store.
+
+    ## Skipping install of 'packagemetrics' from a github remote, the SHA1 (431cd4f7) has not changed since last install.
+    ##   Use `force = TRUE` to force installation
+
+``` r
 library("packagemetrics")
 dplyr_and_dt <- package_list_metrics(c("dplyr", "data.table"))
 # data frame
@@ -420,129 +398,212 @@ metrics_table(dplyr_and_dt)
     ## Warning in gradient(as.numeric(x), ...): NAs introduced by coercion
 
 <table class="table table-condensed">
+
 <thead>
+
 <tr>
+
 <th style="text-align:right;">
+
 package
 </th>
+
 <th style="text-align:right;">
+
 published
 </th>
+
 <th style="text-align:right;">
+
 dl_last_month
 </th>
+
 <th style="text-align:right;">
+
 stars
 </th>
+
 <th style="text-align:right;">
+
 tidyverse_happy
 </th>
+
 <th style="text-align:right;">
+
 has_tests
 </th>
+
 <th style="text-align:right;">
+
 vignette
 </th>
+
 <th style="text-align:right;">
+
 last_commit
 </th>
+
 <th style="text-align:right;">
+
 last_issue_closed
 </th>
+
 <th style="text-align:right;">
+
 contributors
 </th>
+
 <th style="text-align:right;">
+
 depends_count
 </th>
+
 <th style="text-align:right;">
+
 reverse_count
 </th>
+
 </tr>
+
 </thead>
+
 <tbody>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="font-weight: bold">dplyr </span>
 </td>
+
 <td style="text-align:right;">
+
 2023-11-17
 </td>
+
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 100.00%">1759397</span>
+
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 100.00%">1346628</span>
 </td>
+
 <td style="text-align:right;">
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">4.8k</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">4.9k</span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="color: purple"> <i class="glyphicon glyphicon-glass"></i>
 </span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="color: green"> <i class="glyphicon glyphicon-ok"></i>
 </span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="color: green"> <i class="glyphicon glyphicon-ok"></i>
 </span>
 </td>
+
 <td style="text-align:right;">
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">11.4</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">21.5</span>
 </td>
+
 <td style="text-align:right;">
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.1</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f06b13"></span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">271</span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">1</span>
 </td>
+
 <td style="text-align:right;">
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">4294</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">4845</span>
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="font-weight: bold">data.table</span>
 </td>
+
 <td style="text-align:right;">
-2024-10-10
+
+2025-07-10
 </td>
+
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 52.23%">918913</span>
+
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 52.20%">702982</span>
 </td>
+
 <td style="text-align:right;">
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">3.6k</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">3.8k</span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="color: white"> <i class="glyphicon glyphicon-glass"></i>
 </span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="color: red"> <i class="glyphicon glyphicon-remove"></i>
 </span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="color: green"> <i class="glyphicon glyphicon-ok"></i>
 </span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">
 </span>
 </td>
+
 <td style="text-align:right;">
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.1</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f06b13"></span>
 </td>
+
 <td style="text-align:right;">
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">151</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">167</span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">1</span>
 </td>
+
 <td style="text-align:right;">
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">1684</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">1783</span>
 </td>
+
 </tr>
+
 </tbody>
+
 </table>
