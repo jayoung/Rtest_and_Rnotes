@@ -24,7 +24,7 @@ library(here)
 library(Biostrings)
 ```
 
-# Read example alignment:
+# Read example alignment
 
 ```{r}
 ## readDNAStringSet is a Biostrings function that reads a multi-sequence fasta file
@@ -209,6 +209,7 @@ Use `addAlnCoords` with our lookup table to convert coordinates in the example f
 human_features <- addAlnCoords( feature_tbl=human_features, 
                                 lookup_tbl=alnPos_lookup_table, 
                                 refseq_name=ref_name )
+human_features
 ```
 
 
@@ -226,6 +227,7 @@ human_feature_alns <- lapply(1:nrow(human_features),
            start=human_features$start_aln[i],
            end=human_features$end_aln[i] )
 })
+human_feature_alns
 ```
 
 
@@ -239,7 +241,7 @@ xscat(human_feature_alns[[1]],
       human_feature_alns[[3]])
 ```
 
-However, using `xscat` that way is not very generalizable, e.g. if we have a large list, or if we don't know head of time how long our list is:
+However, using `xscat` that way is not very generalizable, e.g. if we have a large list, or if we don't know ahead of time how long our list is:
 
 A better way, perhaps is to wrap `xscat` inside the `do.call` function - it is a function that I think of as "unpacking" a list and running a function on all the elements together:
 

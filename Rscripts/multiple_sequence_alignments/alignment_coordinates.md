@@ -23,7 +23,7 @@ library(here)
 library(Biostrings)
 ```
 
-# Read example alignment:
+# Read example alignment
 
 ``` r
 ## readDNAStringSet is a Biostrings function that reads a multi-sequence fasta file
@@ -310,7 +310,15 @@ example features tibble (`human_features`)
 human_features <- addAlnCoords( feature_tbl=human_features, 
                                 lookup_tbl=alnPos_lookup_table, 
                                 refseq_name=ref_name )
+human_features
 ```
+
+    ## # A tibble: 3 × 6
+    ##   name    start   end strand start_aln end_aln
+    ##   <chr>   <dbl> <dbl> <chr>      <int>   <int>
+    ## 1 region1     1    90 +              1     156
+    ## 2 region2   101   140 +            167     209
+    ## 3 region3   331   400 +            400     469
 
 ## Extract aligned regions
 
@@ -324,7 +332,53 @@ human_feature_alns <- lapply(1:nrow(human_features),
            start=human_features$start_aln[i],
            end=human_features$end_aln[i] )
 })
+human_feature_alns
 ```
+
+    ## [[1]]
+    ## DNAStringSet object of length 34:
+    ##      width seq                                              names               
+    ##  [1]   156 ATG--------------------...----GGACCCTCGCGACAGAGC mouse_Cenpa_ORF
+    ##  [2]   156 ATGGTCGGGCGCCGCAAGCCAGG...----GGACCCTCGCGACGGAGC rat_Cenpa_ORF
+    ##  [3]   156 ATG--------------------...----GGACCCTCGCGACGCAGC Chinese_hamster_C...
+    ##  [4]   156 ATG--------------------...----AGCCCCCCCCGGCGGGGC leopard_CENPA_ORF
+    ##  [5]   156 ATG--------------------...----AGCCCTCCCCGGCGGGGC panda_cenH3_ORF_A...
+    ##  ...   ... ...
+    ## [30]   156 ATG--------------------...----GGCCCCTCCCGGCGGGGC crab-eating_macaq...
+    ## [31]   156 ATG--------------------...----GGCCCCTCCCGGCGGGGC Rhesus_monkey_CEN...
+    ## [32]   156 ATG--------------------...----GGCCCCTCCCGGCGGGGC gelada_CENPA_ORF
+    ## [33]   156 ATG--------------------...----GGCCCCTCCCGGCGGGGC olive_baboon_CENP...
+    ## [34]   156 ATG--------------------...----GGCCCCTCCCGGCGGGGC green_monkey_CENP...
+    ## 
+    ## [[2]]
+    ## DNAStringSet object of length 34:
+    ##      width seq                                              names               
+    ##  [1]    43 GCTCTCAGACACTGCGCAGAAGA---CAGAAATTC---ATGTG      mouse_Cenpa_ORF
+    ##  [2]    43 GCCCTCAGGCACTACACAGAAGA---CGGAGATTC---CTGTG      rat_Cenpa_ORF
+    ##  [3]    43 GTAAGAGG------------------CGGAAATTT---CTGTG      Chinese_hamster_C...
+    ##  [4]    43 GCGCTTCCTCCCGTCAGCGTGGTCCCCGGAGAAGT---CGGGT      leopard_CENPA_ORF
+    ##  [5]    43 GCGCTCCCTCCCGTCAGCGTCGTCCCCGGAGACAT---CGGGT      panda_cenH3_ORF_A...
+    ##  ...   ... ...
+    ## [30]    43 GCCCTTCCTCCCGTCAACATGGTCGGCGGAGACAA---GCTTG      crab-eating_macaq...
+    ## [31]    43 GCCCTTCCTCCCGTCAACATGGTCGGCGGAGACAA---GCTTG      Rhesus_monkey_CEN...
+    ## [32]    43 GCCCTTCCTCCCGTCAACATGGTCGGCGGAGACAA---GCTTG      gelada_CENPA_ORF
+    ## [33]    43 GCCCTTCCTCCCGTCAACATGGTCGGCGGAGACAA---GCTTG      olive_baboon_CENP...
+    ## [34]    43 GCCCTTCCTCCCATCAACATGGTCGGCGGAGACAA---GCTTG      green_monkey_CENP...
+    ## 
+    ## [[3]]
+    ## DNAStringSet object of length 34:
+    ##      width seq                                              names               
+    ##  [1]    70 CTCCTCTCCTTACATGCTGGTCG...CAGTTGACCAGGAGAATCCGAG mouse_Cenpa_ORF
+    ##  [2]    70 CTCCTCTCCTTACATGCTGGCCG...CAGCTAGCCAGGAGGATCCGAG rat_Cenpa_ORF
+    ##  [3]    70 CTCCTCACCTTACATGCCGGCAG...CAGCTCACCAGGAGGATCCGAG Chinese_hamster_C...
+    ##  [4]    70 CTTCTCTCCTTACATGCCGGCCG...CAGCTGGCCAGGAGGATCCGAG leopard_CENPA_ORF
+    ##  [5]    70 CTCCTGTCCTTACATGCCGGCCG...CAGTTGGCCAGGAGGATCCGAG panda_cenH3_ORF_A...
+    ##  ...   ... ...
+    ## [30]    70 CTCCTCGCCTTACATGCCGGCCG...CAACTGGCCCGGAGGATCCGGG crab-eating_macaq...
+    ## [31]    70 CTCCTCGCCTTACATGCCGGCCG...CAACTGGCCCGGAGGATCCGGG Rhesus_monkey_CEN...
+    ## [32]    70 CTCCTCACCTTACATGCCGGCCG...CAACTGGCCCGGAGGATCCGGG gelada_CENPA_ORF
+    ## [33]    70 CTCCTCACCTTACATGCCGGCCG...CAACTGGCCCGGAGGATCCGGG olive_baboon_CENP...
+    ## [34]    70 CTCCTCACCTTACATGCCGGCCG...CAACTGGCCCGGAGGATCCGGG green_monkey_CENP...
 
 We can use the `xscat` function to join those alignment pieces together.
 
@@ -351,7 +405,7 @@ xscat(human_feature_alns[[1]],
     ## [34]   269 ATG---------------------GGCCCGCGC...CAAAGGATGTGCAACTGGCCCGGAGGATCCGGG
 
 However, using `xscat` that way is not very generalizable, e.g. if we
-have a large list, or if we don’t know head of time how long our list
+have a large list, or if we don’t know ahead of time how long our list
 is:
 
 A better way, perhaps is to wrap `xscat` inside the `do.call` function -
