@@ -56,8 +56,8 @@ aln
     ## [33]   492 ATG--------------------...CATTGAGGCGGGACTCGGCTGA olive_baboon_CENP...
     ## [34]   492 ATG--------------------...CATTGAGGCGGGACTCGGCTGA green_monkey_CENP...
 
-Define which sequence is our reference - the sequence to which
-coordinates refer
+Figure out the name of our reference sequence (human) - the sequence
+which we want coordinates to refer to:
 
 ``` r
 ref_name <- grep("human_", names(aln), value=TRUE)
@@ -100,9 +100,8 @@ makeLookupTibble <- function(alignment) {
 }
 ```
 
-Make a position lookup tibble for our alignment, considering only the
-reference sequence that our features are defined in. Show the last few
-rows of the tibble.
+Make a position lookup tibble for our alignment, just the reference
+sequence. Show the last few rows of the tibble.
 
 ``` r
 alnPos_lookup_table <- makeLookupTibble( aln[ref_name] )
@@ -120,67 +119,6 @@ alnPos_lookup_table %>%
     ## 4     490             421
     ## 5     491             422
     ## 6     492             423
-
-Generate example features, with coordinates in the reference sequence
-
-``` r
-human_features <- tibble(
-    name=c("region1","region2","region3"),
-    start=c(1, 101, 331),
-    end=c(90,140,400),
-    strand="+"
-) 
-human_features
-```
-
-    ## # A tibble: 3 × 4
-    ##   name    start   end strand
-    ##   <chr>   <dbl> <dbl> <chr> 
-    ## 1 region1     1    90 +     
-    ## 2 region2   101   140 +     
-    ## 3 region3   331   400 +
-
-Set up another function called `addAlnCoords` that will use the lookup
-table, and the feature table, and will convert coordinates in the
-reference sequence into coordinates in the alignment
-
-``` r
-addAlnCoords <- function(feature_tbl,
-                         lookup_tbl, 
-                         refseq_name) {
-    ## check the ref sequence is present in the lookup tbl
-    if(! refseq_name %in% colnames(lookup_tbl)) {
-        stop("\n\nERROR - could not find refseq called ",
-             refseq_name, "in the lookup_tbl colnames\n\n")
-    }
-    
-    ## get lookup tbl in a useful format
-    lookup_tbl <- lookup_tbl %>% 
-        select(aln_pos, ref_pos=matches(refseq_name))
-
-    # look up start aln_pos
-    feature_tbl <- left_join(feature_tbl,
-                             lookup_tbl,
-                             by=c("start"="ref_pos") ) %>% 
-        ## the rename column is weird and misbehaves when certain Bioconductor packages are loaded, unless I specify that I want to use the rename function from the dplyr package, like this:
-        dplyr::rename(start_aln=aln_pos)
-    # look up end aln_pos
-    feature_tbl <- left_join(feature_tbl,
-                             lookup_tbl,
-                             by=c("end"="ref_pos") ) %>% 
-        dplyr::rename(end_aln=aln_pos)
-    return(feature_tbl)
-}
-```
-
-Use `addAlnCoords` with our lookup table to convert coordinates in the
-example features tibble (`human_features`)
-
-``` r
-human_features <- addAlnCoords( feature_tbl=human_features, 
-                                lookup_tbl=alnPos_lookup_table, 
-                                refseq_name=ref_name )
-```
 
 # Tabulate every position in the alignment
 
@@ -311,7 +249,70 @@ aln_counts
     ## 10      31        10 C             1    33     0     0     0
     ## # ℹ 413 more rows
 
-## Extracting aligned regions
+# Look at regions of interest
+
+Generate example features, with coordinates in the reference sequence
+
+``` r
+human_features <- tibble(
+    name=c("region1","region2","region3"),
+    start=c(1, 101, 331),
+    end=c(90,140,400),
+    strand="+"
+) 
+human_features
+```
+
+    ## # A tibble: 3 × 4
+    ##   name    start   end strand
+    ##   <chr>   <dbl> <dbl> <chr> 
+    ## 1 region1     1    90 +     
+    ## 2 region2   101   140 +     
+    ## 3 region3   331   400 +
+
+Set up another function called `addAlnCoords` that will use the lookup
+table, and the feature table, and will convert coordinates in the
+reference sequence into coordinates in the alignment
+
+``` r
+addAlnCoords <- function(feature_tbl,
+                         lookup_tbl, 
+                         refseq_name) {
+    ## check the ref sequence is present in the lookup tbl
+    if(! refseq_name %in% colnames(lookup_tbl)) {
+        stop("\n\nERROR - could not find refseq called ",
+             refseq_name, "in the lookup_tbl colnames\n\n")
+    }
+    
+    ## get lookup tbl in a useful format
+    lookup_tbl <- lookup_tbl %>% 
+        select(aln_pos, ref_pos=matches(refseq_name))
+
+    # look up start aln_pos
+    feature_tbl <- left_join(feature_tbl,
+                             lookup_tbl,
+                             by=c("start"="ref_pos") ) %>% 
+        ## the rename column is weird and misbehaves when certain Bioconductor packages are loaded, unless I specify that I want to use the rename function from the dplyr package, like this:
+        dplyr::rename(start_aln=aln_pos)
+    # look up end aln_pos
+    feature_tbl <- left_join(feature_tbl,
+                             lookup_tbl,
+                             by=c("end"="ref_pos") ) %>% 
+        dplyr::rename(end_aln=aln_pos)
+    return(feature_tbl)
+}
+```
+
+Use `addAlnCoords` with our lookup table to convert coordinates in the
+example features tibble (`human_features`)
+
+``` r
+human_features <- addAlnCoords( feature_tbl=human_features, 
+                                lookup_tbl=alnPos_lookup_table, 
+                                refseq_name=ref_name )
+```
+
+## Extract aligned regions
 
 Get those three regions from the alignment - we use the `narrow`
 function
