@@ -86,47 +86,20 @@ getAlnCounts <- function(aln, letters=myAAtoTabulate, as.prob=FALSE) {
 
 ## Read in example data: short H2A alignment (Antoine)
 
-In this example I have a single alignment of the histone fold domain of various H2A family members. It contains canonical H2A, H2A.B, H2A.L, H2A.P (8 species each) and the marsupial-specific H2A.R (5 sequences) (total of 37 sequences).
+In this example I have a single alignment of the histone fold domain of various H2A family members. 
 
-I read in the alignment, figure out which H2A variant each sequence is from, and split the single master alignment into 5 individual alignments, one for each H2A variant.
+I read in the alignment
 
 ```{r}
 ## same code is found in jensenShannonDistance.Rmd
 aln_file <- "example_alignment_files/exampleProtAln_shortH2As_histoneFoldDomain.fa"
 
-masterAln <- readAAStringSet(aln_file)
+shortH2Aaln <- readAAStringSet(aln_file)
 # simplify the sequence names by removing the description
-names(masterAln) <- sapply(strsplit(names(masterAln), " "), "[[", 1)
-
-## figure out which variant each sequence is from
-masterAlnSeqTypes <- sapply(strsplit(names(masterAln), "_"), "[[", 1)
-masterAlnSeqTypes <- gsub("R[12]$","R", masterAlnSeqTypes)
-
-## split the alignment into those categories. We get a list object containing all 5 alignments
-masterAlnSplit <- split(masterAln, masterAlnSeqTypes)
-
-## I add a sixth alignment, which is the combined B, L and P alignment
-masterAlnSplit[["BandLandP"]] <- c(masterAlnSplit[["H2A.B"]], masterAlnSplit[["H2A.L"]], masterAlnSplit[["H2A.P"]])
-
-masterAlnSplit_freqs <- lapply( masterAlnSplit, getAlnCounts, letters=myAAtoTabulate, as.prob=TRUE)
+names(shortH2Aaln) <- sapply(strsplit(names(shortH2Aaln), " "), "[[", 1)
 ```
 
 
-
-## ggmsa quick demo 
-
-Makes a basic logo plot above the corresponding alignment.
-
-See [ggmsa documentation](http://yulab-smu.top/ggmsa/). 
-
-Not sure if there's a way to get rid of the alignment.  I don't think there's a way to make the height of each letter stack reflect the entropy.  This is probably too basic for our use.
-
-```{r, fig.height=3, fig.width=9, warning=FALSE}
-ggmsa(masterAlnSplit[["H2A.B"]],
-      # font = NULL,
-      color = "Chemistry_AA") + 
-    geom_seqlogo(adaptive=FALSE)  # adaptive=FALSE makes the logo plot taller, but whether T or F the overall heights of each stack are the same
-```
 
 ## ggseqlogo package - quick demo
 
@@ -145,7 +118,7 @@ I think you can also supply frequency or count matrices (but I haven't tried it)
 # ?geom_logo
 # ?list_col_schemes
 # ?make_col_scheme
-ggseqlogo(as.character(masterAlnSplit[["H2A.B"]]),
+ggseqlogo(as.character(shortH2Aaln),
           col_scheme="chemistry2") +
     # turn the x axis labels 90 degrees and change font size
     theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
@@ -153,17 +126,58 @@ ggseqlogo(as.character(masterAlnSplit[["H2A.B"]]),
     guides(fill = "none")  
 ```
 
+## ggmsa quick demo 
+
+Makes a basic logo plot above the corresponding alignment.
+
+See [ggmsa documentation](http://yulab-smu.top/ggmsa/). 
+
+Not sure if there's a way to get rid of the alignment.  I don't think there's a way to make the height of each letter stack reflect the entropy.  This is probably too basic for our use.
+
+```{r, fig.height=8, fig.width=9, warning=FALSE}
+ggmsa(shortH2Aaln,
+      # font = NULL,
+      color = "Chemistry_AA") + 
+    geom_seqlogo(adaptive=FALSE)  # adaptive=FALSE makes the logo plot taller, but whether T or F the overall heights of each stack are the same
+```
+
+
+## Comparing several alignments
+
+To get example data, I'll first split the short H2A alignment into groups.
+
+It contains canonical H2A, H2A.B, H2A.L, H2A.P (8 species each) and the marsupial-specific H2A.R (5 sequences) (total of 37 sequences).
+
+Here I figure out which H2A variant each sequence is from and split the single master alignment into 5 individual alignments accordingly.
+
+```{r}
+## figure out which variant each sequence is from
+shortH2AalnSeqTypes <- sapply(strsplit(names(shortH2Aaln), "_"), "[[", 1)
+shortH2AalnSeqTypes <- gsub("R[12]$","R", shortH2AalnSeqTypes)
+
+## split the alignment into those categories. We get a list object containing all 5 alignments
+shortH2AalnSplit <- split(shortH2Aaln, shortH2AalnSeqTypes)
+
+## I add a sixth alignment, which is the combined B, L and P alignment
+shortH2AalnSplit[["BandLandP"]] <- c(shortH2AalnSplit[["H2A.B"]], shortH2AalnSplit[["H2A.L"]], shortH2AalnSplit[["H2A.P"]])
+
+shortH2AalnSplit_freqs <- lapply( shortH2AalnSplit, getAlnCounts, letters=myAAtoTabulate, as.prob=TRUE)
+```
+
+
 To show several ggseqlogo plots above each other:
 
 ```{r, fig.height=9, fig.width=9}
-masterAlnSplit_chars <- lapply(masterAlnSplit, as.character)
-ggseqlogo(masterAlnSplit_chars, ncol=1) +
+shortH2AalnSplit_chars <- lapply(shortH2AalnSplit, as.character)
+
+ggseqlogo(shortH2AalnSplit_chars, ncol=1) +
     theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
     guides(fill = "none")  
 ```
 
-
 ## DiffLogo demo, default color scheme
+
+
 
 See [DiffLogo documentation](https://bioconductor.org/packages/release/bioc/html/DiffLogo.html).
 
@@ -173,11 +187,11 @@ I used DiffLogo for Rossana's data, because I was very motivated to make **diffe
 ```{r, fig.height=3, fig.width=9, echo=FALSE}
 ## ASN is an "Alphabet" object defined in the DiffLogo package
 # get a version of the frequency matrices that contain only the 20 amino acids (not the gap)
-masterAlnSplit_freqs_justASN <- lapply(masterAlnSplit_freqs, function(x) {
+shortH2AalnSplit_freqs_justASN <- lapply(shortH2AalnSplit_freqs, function(x) {
     x[ ASN[["chars"]], ]
 })
 
-DiffLogo::seqLogo(pwm=masterAlnSplit_freqs_justASN[["H2A.B"]], alphabet=ASN, drawLines=20) 
+DiffLogo::seqLogo(pwm=shortH2AalnSplit_freqs_justASN[["H2A.B"]], alphabet=ASN, drawLines=20) 
 ```
 
 ## DiffLogo plot, controlling the color scheme
@@ -232,7 +246,7 @@ ASN_JYchemistryColors <- changeColors(ASN_JYchemistryColors,
 ```
 
 ```{r, fig.height=3, fig.width=9}
-DiffLogo::seqLogo(pwm=masterAlnSplit_freqs_justASN[["H2A.B"]], 
+DiffLogo::seqLogo(pwm=shortH2AalnSplit_freqs_justASN[["H2A.B"]], 
                   alphabet=ASN_JYchemistryColors, 
                   drawLines=20) 
 ```
@@ -243,8 +257,8 @@ DiffLogo::seqLogo(pwm=masterAlnSplit_freqs_justASN[["H2A.B"]],
 
 ```{r, fig.height=3, fig.width=9}
 diffLogoFromPwm(
-    pwm1 = masterAlnSplit_freqs_justASN[["H2A"]],
-    pwm2 = masterAlnSplit_freqs_justASN[["H2A.B"]],
+    pwm1 = shortH2AalnSplit_freqs_justASN[["H2A"]],
+    pwm2 = shortH2AalnSplit_freqs_justASN[["H2A.B"]],
     # ymin=0.1, ymax=-0.1,
     alphabet = ASN_JYchemistryColors)
 ```

@@ -2,7 +2,7 @@ sequence logo plots
 ================
 Janet Young
 
-2025-01-21
+2025-08-29
 
 Goal - show how to make logo plots
 
@@ -93,53 +93,18 @@ getAlnCounts <- function(aln, letters=myAAtoTabulate, as.prob=FALSE) {
 ## Read in example data: short H2A alignment (Antoine)
 
 In this example I have a single alignment of the histone fold domain of
-various H2A family members. It contains canonical H2A, H2A.B, H2A.L,
-H2A.P (8 species each) and the marsupial-specific H2A.R (5 sequences)
-(total of 37 sequences).
+various H2A family members.
 
-I read in the alignment, figure out which H2A variant each sequence is
-from, and split the single master alignment into 5 individual
-alignments, one for each H2A variant.
+I read in the alignment
 
 ``` r
 ## same code is found in jensenShannonDistance.Rmd
 aln_file <- "example_alignment_files/exampleProtAln_shortH2As_histoneFoldDomain.fa"
 
-masterAln <- readAAStringSet(aln_file)
+shortH2Aaln <- readAAStringSet(aln_file)
 # simplify the sequence names by removing the description
-names(masterAln) <- sapply(strsplit(names(masterAln), " "), "[[", 1)
-
-## figure out which variant each sequence is from
-masterAlnSeqTypes <- sapply(strsplit(names(masterAln), "_"), "[[", 1)
-masterAlnSeqTypes <- gsub("R[12]$","R", masterAlnSeqTypes)
-
-## split the alignment into those categories. We get a list object containing all 5 alignments
-masterAlnSplit <- split(masterAln, masterAlnSeqTypes)
-
-## I add a sixth alignment, which is the combined B, L and P alignment
-masterAlnSplit[["BandLandP"]] <- c(masterAlnSplit[["H2A.B"]], masterAlnSplit[["H2A.L"]], masterAlnSplit[["H2A.P"]])
-
-masterAlnSplit_freqs <- lapply( masterAlnSplit, getAlnCounts, letters=myAAtoTabulate, as.prob=TRUE)
+names(shortH2Aaln) <- sapply(strsplit(names(shortH2Aaln), " "), "[[", 1)
 ```
-
-## ggmsa quick demo
-
-Makes a basic logo plot above the corresponding alignment.
-
-See [ggmsa documentation](http://yulab-smu.top/ggmsa/).
-
-Not sure if there’s a way to get rid of the alignment. I don’t think
-there’s a way to make the height of each letter stack reflect the
-entropy. This is probably too basic for our use.
-
-``` r
-ggmsa(masterAlnSplit[["H2A.B"]],
-      # font = NULL,
-      color = "Chemistry_AA") + 
-    geom_seqlogo(adaptive=FALSE)  # adaptive=FALSE makes the logo plot taller, but whether T or F the overall heights of each stack are the same
-```
-
-![](logoPlots_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ## ggseqlogo package - quick demo
 
@@ -162,7 +127,7 @@ tried it)
 # ?geom_logo
 # ?list_col_schemes
 # ?make_col_scheme
-ggseqlogo(as.character(masterAlnSplit[["H2A.B"]]),
+ggseqlogo(as.character(shortH2Aaln),
           col_scheme="chemistry2") +
     # turn the x axis labels 90 degrees and change font size
     theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
@@ -170,18 +135,63 @@ ggseqlogo(as.character(masterAlnSplit[["H2A.B"]]),
     guides(fill = "none")  
 ```
 
+![](logoPlots_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+## ggmsa quick demo
+
+Makes a basic logo plot above the corresponding alignment.
+
+See [ggmsa documentation](http://yulab-smu.top/ggmsa/).
+
+Not sure if there’s a way to get rid of the alignment. I don’t think
+there’s a way to make the height of each letter stack reflect the
+entropy. This is probably too basic for our use.
+
+``` r
+ggmsa(shortH2Aaln,
+      # font = NULL,
+      color = "Chemistry_AA") + 
+    geom_seqlogo(adaptive=FALSE)  # adaptive=FALSE makes the logo plot taller, but whether T or F the overall heights of each stack are the same
+```
+
 ![](logoPlots_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+## Comparing several alignments
+
+To get example data, I’ll first split the short H2A alignment into
+groups.
+
+It contains canonical H2A, H2A.B, H2A.L, H2A.P (8 species each) and the
+marsupial-specific H2A.R (5 sequences) (total of 37 sequences).
+
+Here I figure out which H2A variant each sequence is from and split the
+single master alignment into 5 individual alignments accordingly.
+
+``` r
+## figure out which variant each sequence is from
+shortH2AalnSeqTypes <- sapply(strsplit(names(shortH2Aaln), "_"), "[[", 1)
+shortH2AalnSeqTypes <- gsub("R[12]$","R", shortH2AalnSeqTypes)
+
+## split the alignment into those categories. We get a list object containing all 5 alignments
+shortH2AalnSplit <- split(shortH2Aaln, shortH2AalnSeqTypes)
+
+## I add a sixth alignment, which is the combined B, L and P alignment
+shortH2AalnSplit[["BandLandP"]] <- c(shortH2AalnSplit[["H2A.B"]], shortH2AalnSplit[["H2A.L"]], shortH2AalnSplit[["H2A.P"]])
+
+shortH2AalnSplit_freqs <- lapply( shortH2AalnSplit, getAlnCounts, letters=myAAtoTabulate, as.prob=TRUE)
+```
 
 To show several ggseqlogo plots above each other:
 
 ``` r
-masterAlnSplit_chars <- lapply(masterAlnSplit, as.character)
-ggseqlogo(masterAlnSplit_chars, ncol=1) +
+shortH2AalnSplit_chars <- lapply(shortH2AalnSplit, as.character)
+
+ggseqlogo(shortH2AalnSplit_chars, ncol=1) +
     theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
     guides(fill = "none")  
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ## DiffLogo demo, default color scheme
 
@@ -198,7 +208,7 @@ can ignore it)
 
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ## DiffLogo plot, controlling the color scheme
 
@@ -252,21 +262,21 @@ ASN_JYchemistryColors <- changeColors(ASN_JYchemistryColors,
 ```
 
 ``` r
-DiffLogo::seqLogo(pwm=masterAlnSplit_freqs_justASN[["H2A.B"]], 
+DiffLogo::seqLogo(pwm=shortH2AalnSplit_freqs_justASN[["H2A.B"]], 
                   alphabet=ASN_JYchemistryColors, 
                   drawLines=20) 
 ```
 
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 # Difference logos (DiffLogo package)
 
 ``` r
 diffLogoFromPwm(
-    pwm1 = masterAlnSplit_freqs_justASN[["H2A"]],
-    pwm2 = masterAlnSplit_freqs_justASN[["H2A.B"]],
+    pwm1 = shortH2AalnSplit_freqs_justASN[["H2A"]],
+    pwm2 = shortH2AalnSplit_freqs_justASN[["H2A.B"]],
     # ymin=0.1, ymax=-0.1,
     alphabet = ASN_JYchemistryColors)
 ```
@@ -274,7 +284,7 @@ diffLogoFromPwm(
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 # Finished
 
@@ -284,13 +294,13 @@ show R version used, and package versions
 sessionInfo()
 ```
 
-    ## R version 4.4.2 (2024-10-31)
+    ## R version 4.5.1 (2025-06-13)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Sequoia 15.2
+    ## Running under: macOS Sequoia 15.6.1
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     ## 
     ## locale:
     ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -303,36 +313,33 @@ sessionInfo()
     ## [8] methods   base     
     ## 
     ## other attached packages:
-    ##  [1] ggmsa_1.12.0        DiffLogo_2.30.0     cba_0.2-25         
-    ##  [4] proxy_0.4-27        ggseqlogo_0.2       Biostrings_2.74.1  
-    ##  [7] GenomeInfoDb_1.42.1 XVector_0.46.0      IRanges_2.40.1     
-    ## [10] S4Vectors_0.44.0    BiocGenerics_0.52.0 lubridate_1.9.4    
-    ## [13] forcats_1.0.0       stringr_1.5.1       dplyr_1.1.4        
-    ## [16] purrr_1.0.2         readr_2.1.5         tidyr_1.3.1        
-    ## [19] tibble_3.2.1        ggplot2_3.5.1       tidyverse_2.0.0    
+    ##  [1] ggmsa_1.14.1        DiffLogo_2.32.0     cba_0.2-25         
+    ##  [4] proxy_0.4-27        ggseqlogo_0.2       Biostrings_2.76.0  
+    ##  [7] GenomeInfoDb_1.44.1 XVector_0.48.0      IRanges_2.42.0     
+    ## [10] S4Vectors_0.46.0    BiocGenerics_0.54.0 generics_0.1.4     
+    ## [13] lubridate_1.9.4     forcats_1.0.0       stringr_1.5.1      
+    ## [16] dplyr_1.1.4         purrr_1.1.0         readr_2.1.5        
+    ## [19] tidyr_1.3.1         tibble_3.3.0        ggplot2_3.5.2      
+    ## [22] tidyverse_2.0.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] tidyselect_1.2.1        farver_2.1.2            lazyeval_0.2.2         
-    ##  [4] fastmap_1.2.0           ash_1.0-15              tweenr_2.0.3           
-    ##  [7] digest_0.6.37           R4RNA_1.34.0            timechange_0.3.0       
-    ## [10] lifecycle_1.0.4         tidytree_0.4.6          magrittr_2.0.3         
-    ## [13] compiler_4.4.2          rlang_1.1.4             tools_4.4.2            
-    ## [16] yaml_2.3.10             knitr_1.49              labeling_0.4.3         
-    ## [19] RColorBrewer_1.1-3      aplot_0.2.4             KernSmooth_2.23-26     
-    ## [22] withr_3.0.2             polyclip_1.10-7         proj4_1.0-14           
-    ## [25] colorspace_2.1-1        extrafontdb_1.0         seqmagick_0.1.7        
-    ## [28] scales_1.3.0            MASS_7.3-64             cli_3.6.3              
-    ## [31] rmarkdown_2.29          crayon_1.5.3            treeio_1.30.0          
-    ## [34] generics_0.1.3          rstudioapi_0.17.1       ggtree_3.14.0          
-    ## [37] httr_1.4.7              tzdb_0.4.0              ape_5.8-1              
-    ## [40] ggforce_0.4.2           zlibbioc_1.52.0         maps_3.4.2.1           
-    ## [43] ggalt_0.4.0             parallel_4.4.2          ggplotify_0.1.2        
-    ## [46] yulab.utils_0.1.9       vctrs_0.6.5             jsonlite_1.8.9         
-    ## [49] gridGraphics_0.5-1      hms_1.1.3               patchwork_1.3.0        
-    ## [52] glue_1.8.0              stringi_1.8.4           gtable_0.3.6           
-    ## [55] UCSC.utils_1.2.0        extrafont_0.19          munsell_0.5.1          
-    ## [58] pillar_1.10.1           htmltools_0.5.8.1       GenomeInfoDbData_1.2.13
-    ## [61] R6_2.5.1                evaluate_1.0.3          lattice_0.22-6         
-    ## [64] ggfun_0.1.8             Rcpp_1.0.14             nlme_3.1-166           
-    ## [67] Rttf2pt1_1.3.12         xfun_0.50               fs_1.6.5               
-    ## [70] pkgconfig_2.0.3
+    ##  [1] gtable_0.3.6            xfun_0.52               lattice_0.22-7         
+    ##  [4] tzdb_0.5.0              vctrs_0.6.5             tools_4.5.1            
+    ##  [7] yulab.utils_0.2.0       parallel_4.5.1          pkgconfig_2.0.3        
+    ## [10] ggplotify_0.1.2         RColorBrewer_1.1-3      lifecycle_1.0.4        
+    ## [13] GenomeInfoDbData_1.2.14 compiler_4.5.1          farver_2.1.2           
+    ## [16] treeio_1.32.0           ggforce_0.5.0           ggtree_3.16.3          
+    ## [19] ggfun_0.2.0             htmltools_0.5.8.1       lazyeval_0.2.2         
+    ## [22] yaml_2.3.10             pillar_1.11.0           crayon_1.5.3           
+    ## [25] MASS_7.3-65             seqmagick_0.1.7         nlme_3.1-168           
+    ## [28] tidyselect_1.2.1        aplot_0.2.8             digest_0.6.37          
+    ## [31] stringi_1.8.7           labeling_0.4.3          polyclip_1.10-7        
+    ## [34] fastmap_1.2.0           cli_3.6.5               magrittr_2.0.3         
+    ## [37] patchwork_1.3.1         ape_5.8-1               withr_3.0.2            
+    ## [40] scales_1.4.0            UCSC.utils_1.4.0        timechange_0.3.0       
+    ## [43] rmarkdown_2.29          httr_1.4.7              hms_1.1.3              
+    ## [46] evaluate_1.0.4          knitr_1.50              gridGraphics_0.5-1     
+    ## [49] rlang_1.1.6             Rcpp_1.1.0              tidytree_0.4.6         
+    ## [52] glue_1.8.0              R4RNA_1.36.0            tweenr_2.0.3           
+    ## [55] rstudioapi_0.17.1       jsonlite_2.0.0          R6_2.6.1               
+    ## [58] fs_1.6.6
