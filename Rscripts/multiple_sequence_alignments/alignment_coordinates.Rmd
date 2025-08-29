@@ -123,20 +123,22 @@ addAlnCoords <- function(feature_tbl,
     ## get lookup tbl in a useful format
     lookup_tbl <- lookup_tbl %>% 
         select(aln_pos, ref_pos=matches(refseq_name))
-    
+
     # look up start aln_pos
     feature_tbl <- left_join(feature_tbl,
                              lookup_tbl,
                              by=c("start"="ref_pos") ) %>% 
-        rename(start_aln=aln_pos)
+        ## the rename column is weird and misbehaves when certain Bioconductor packages are loaded, unless I specify that I want to use the rename function from the dplyr package, like this:
+        dplyr::rename(start_aln=aln_pos)
     # look up end aln_pos
     feature_tbl <- left_join(feature_tbl,
                              lookup_tbl,
                              by=c("end"="ref_pos") ) %>% 
-        rename(end_aln=aln_pos)
+        dplyr::rename(end_aln=aln_pos)
     return(feature_tbl)
 }
 ```
+
 
 Use `addAlnCoords` with our lookup table to convert coordinates in the example features tibble (`human_features`)
 
