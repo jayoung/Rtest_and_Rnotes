@@ -38,58 +38,6 @@ called affinity logos, for TF affinities)
 [seqLogo](https://bioconductor.org/packages/release/bioc/vignettes/seqLogo/inst/doc/seqLogo.html) -
 I think this only works with DNAseqs
 
-## Define some utility functions
-
-First we define a function called `getAlnCounts()` that takes an
-alignment and returns a count or frequency matrix
-
-``` r
-# a tiny function that makes sure all seqs in an alignment are the same length as each other
-checkAlnLengths <- function(aln) {
-    if(length(unique(width(aln))) != 1) {
-        stop("\n\nERROR - you supplied a ragged alignment (seqs not all the same length)\n\n")
-    } else {
-        return(TRUE)
-    } 
-}
-
-## define the letters we want to count
-# AA_STANDARD is defined in the Biostrings package and includes the usual 20 amino acids. I want to add the gap character ("-")
-myAAtoTabulate <- c("-", AA_STANDARD)
-
-## define the function
-getAlnCounts <- function(aln, letters=myAAtoTabulate, as.prob=FALSE) {
-    # check for ragged alns (seqs not all the same length)
-    checkAlnLengths(aln)
-    
-    # get counts
-    countsEachSeq <- lapply(1:length(aln), function(i) {
-        letterFrequencyInSlidingView(aln[[i]], view.width = 1, letters=letters)
-    })
-    
-    # if there were letters in the alignment that are not accounted for in the letters argument, the totals won't be correct.
-    expectedTotals <- width(aln)[1]
-    totalCountsEachSeq <- sapply(countsEachSeq, sum)
-    if ( sum(totalCountsEachSeq != expectedTotals) > 0) {
-        stop("\n\nERROR - the total counts didn't add up correctly. Are there letters in the alignment that are not present in the letters argument you supplied?\n\n")
-    }
-    
-    # get total counts by position - the Reduce function takes a list object and uses the specified function on all the elements
-    countTotals <- Reduce("+", countsEachSeq)
-    
-    # transpose so columns are positions and rows are each letter type
-    countTotals <- t(countTotals)
-    
-    # perhaps get frequencies not counts
-    if(as.prob) {
-        freqs <- countTotals / colSums(countTotals)
-        return(freqs)
-    } else {
-        return(countTotals)
-    }
-}
-```
-
 ## Read in example data: short H2A alignment (Antoine)
 
 In this example I have a single alignment of the histone fold domain of
@@ -135,7 +83,7 @@ ggseqlogo(as.character(shortH2Aaln),
     guides(fill = "none")  
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 ## ggmsa quick demo
 
@@ -154,7 +102,7 @@ ggmsa(shortH2Aaln,
     geom_seqlogo(adaptive=FALSE)  # adaptive=FALSE makes the logo plot taller, but whether T or F the overall heights of each stack are the same
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ## Comparing several alignments
 
@@ -177,8 +125,6 @@ shortH2AalnSplit <- split(shortH2Aaln, shortH2AalnSeqTypes)
 
 ## I add a sixth alignment, which is the combined B, L and P alignment
 shortH2AalnSplit[["BandLandP"]] <- c(shortH2AalnSplit[["H2A.B"]], shortH2AalnSplit[["H2A.L"]], shortH2AalnSplit[["H2A.P"]])
-
-shortH2AalnSplit_freqs <- lapply( shortH2AalnSplit, getAlnCounts, letters=myAAtoTabulate, as.prob=TRUE)
 ```
 
 To show several ggseqlogo plots above each other:
@@ -191,9 +137,73 @@ ggseqlogo(shortH2AalnSplit_chars, ncol=1) +
     guides(fill = "none")  
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ## DiffLogo demo, default color scheme
+
+Difflogo is helpful in looking at frequency differences between groups,
+but it wants the data in frequency matrix format, rather than as
+sequence alignments.
+
+So first we define a function called `getAlnCounts()` that takes an
+alignment and returns a count or frequency matrix
+
+``` r
+# checkAlnLengths is a tiny function that makes sure all seqs in an alignment are the same length as each other
+checkAlnLengths <- function(aln) {
+    if(length(unique(width(aln))) != 1) {
+        stop("\n\nERROR - you supplied a ragged alignment (seqs not all the same length)\n\n")
+    } else {
+        return(TRUE)
+    } 
+}
+
+## define the letters we want to count
+# AA_STANDARD is defined in the Biostrings package and includes the usual 20 amino acids. I want to add the gap character ("-")
+myAAtoTabulate <- c("-", AA_STANDARD)
+
+## define the function
+getAlnCounts <- function(aln, letters=myAAtoTabulate, as.prob=FALSE) {
+    # check for ragged alns (seqs not all the same length)
+    checkAlnLengths(aln)
+    
+    # get counts
+    countsEachSeq <- lapply(1:length(aln), function(i) {
+        letterFrequencyInSlidingView(aln[[i]], view.width = 1, letters=letters)
+    })
+    
+    # if there were letters in the alignment that are not accounted for in the letters argument, the totals won't be correct.
+    expectedTotals <- width(aln)[1]
+    totalCountsEachSeq <- sapply(countsEachSeq, sum)
+    if ( sum(totalCountsEachSeq != expectedTotals) > 0) {
+        stop("\n\nERROR - the total counts didn't add up correctly. Are there letters in the alignment that are not present in the letters argument you supplied?\n\n")
+    }
+    
+    # get total counts by position - the Reduce function takes a list object and uses the specified function on all the elements
+    countTotals <- Reduce("+", countsEachSeq)
+    
+    # transpose so columns are positions and rows are each letter type
+    countTotals <- t(countTotals)
+    
+    # perhaps get frequencies not counts
+    if(as.prob) {
+        freqs <- countTotals / colSums(countTotals)
+        return(freqs)
+    } else {
+        return(countTotals)
+    }
+}
+```
+
+Now use the `getAlnCounts()` function on each of our alignments to get
+frequency matrices:
+
+``` r
+shortH2AalnSplit_freqs <- lapply( shortH2AalnSplit, 
+                                  getAlnCounts, 
+                                  letters=myAAtoTabulate, 
+                                  as.prob=TRUE)
+```
 
 See [DiffLogo
 documentation](https://bioconductor.org/packages/release/bioc/html/DiffLogo.html).
@@ -206,9 +216,11 @@ I used DiffLogo for Rossana’s data, because I was very motivated to make
 or data.frame. Trying to convert”, but if there are no other errors we
 can ignore it)
 
+First try a simple seqLogo plot for the H2A.B alignment
+
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ## DiffLogo plot, controlling the color scheme
 
@@ -269,9 +281,9 @@ DiffLogo::seqLogo(pwm=shortH2AalnSplit_freqs_justASN[["H2A.B"]],
 
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-# Difference logos (DiffLogo package)
+# Now show difference logos
 
 ``` r
 diffLogoFromPwm(
@@ -284,7 +296,7 @@ diffLogoFromPwm(
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 # Finished
 
