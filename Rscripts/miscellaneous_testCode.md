@@ -2,7 +2,7 @@ miscellaneous_testCode
 ================
 Janet Young
 
-2025-08-22
+2025-09-03
 
 # basic tidyverse
 
@@ -20,6 +20,125 @@ m %>%
     ## 1     4    11
     ## 2     6     7
     ## 3     8    14
+
+## pivot_longer with multiple columns
+
+Example data from
+[stackoverflow](https://stackoverflow.com/questions/61367186/pivot-longer-into-multiple-columns)
+
+``` r
+dat <- tribble(
+    ~group,  ~BP,  ~HS,  ~BB, ~lowerBP, ~upperBP, ~lowerHS, ~upperHS, ~lowerBB, ~upperBB,
+    "1", 0.51, 0.15, 0.05,     0.16,     0.18,      0.5,     0.52,     0.14,     0.16,
+    "2.1", 0.67, 0.09, 0.06,     0.09,     0.11,     0.66,     0.68,     0.08,      0.1,
+    "2.2", 0.36, 0.13, 0.07,     0.12,     0.15,     0.34,     0.38,     0.12,     0.14,
+    "2.3", 0.09, 0.17, 0.09,     0.13,     0.16,     0.08,     0.11,     0.15,     0.18,
+    "2.4", 0.68, 0.12, 0.07,     0.12,     0.14,     0.66,     0.69,     0.11,     0.13,
+    "3", 0.53, 0.15, 0.06,     0.14,     0.16,     0.52,     0.53,     0.15,     0.16)
+
+dat
+```
+
+    ## # A tibble: 6 × 10
+    ##   group    BP    HS    BB lowerBP upperBP lowerHS upperHS lowerBB upperBB
+    ##   <chr> <dbl> <dbl> <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+    ## 1 1      0.51  0.15  0.05    0.16    0.18    0.5     0.52    0.14    0.16
+    ## 2 2.1    0.67  0.09  0.06    0.09    0.11    0.66    0.68    0.08    0.1 
+    ## 3 2.2    0.36  0.13  0.07    0.12    0.15    0.34    0.38    0.12    0.14
+    ## 4 2.3    0.09  0.17  0.09    0.13    0.16    0.08    0.11    0.15    0.18
+    ## 5 2.4    0.68  0.12  0.07    0.12    0.14    0.66    0.69    0.11    0.13
+    ## 6 3      0.53  0.15  0.06    0.14    0.16    0.52    0.53    0.15    0.16
+
+First we pivot_longer using names_pattern argument
+
+``` r
+longer <- dat %>% 
+    pivot_longer(cols=-group, 
+                 names_pattern = "(.*)(..)$", 
+                 names_to = c("limit", "name")) %>% 
+    mutate(limit=ifelse(limit=="", "value", limit))
+longer
+```
+
+    ## # A tibble: 54 × 4
+    ##    group limit name  value
+    ##    <chr> <chr> <chr> <dbl>
+    ##  1 1     value BP     0.51
+    ##  2 1     value HS     0.15
+    ##  3 1     value BB     0.05
+    ##  4 1     lower BP     0.16
+    ##  5 1     upper BP     0.18
+    ##  6 1     lower HS     0.5 
+    ##  7 1     upper HS     0.52
+    ##  8 1     lower BB     0.14
+    ##  9 1     upper BB     0.16
+    ## 10 2.1   value BP     0.67
+    ## # ℹ 44 more rows
+
+Then we pivot wider to get the data how we really want it to look:
+
+``` r
+answer <- longer %>% 
+    pivot_wider(id_cols = c(group, name), 
+                names_from = limit, values_from = value, 
+                names_repair = "check_unique")
+answer
+```
+
+    ## # A tibble: 18 × 5
+    ##    group name  value lower upper
+    ##    <chr> <chr> <dbl> <dbl> <dbl>
+    ##  1 1     BP     0.51  0.16  0.18
+    ##  2 1     HS     0.15  0.5   0.52
+    ##  3 1     BB     0.05  0.14  0.16
+    ##  4 2.1   BP     0.67  0.09  0.11
+    ##  5 2.1   HS     0.09  0.66  0.68
+    ##  6 2.1   BB     0.06  0.08  0.1 
+    ##  7 2.2   BP     0.36  0.12  0.15
+    ##  8 2.2   HS     0.13  0.34  0.38
+    ##  9 2.2   BB     0.07  0.12  0.14
+    ## 10 2.3   BP     0.09  0.13  0.16
+    ## 11 2.3   HS     0.17  0.08  0.11
+    ## 12 2.3   BB     0.09  0.15  0.18
+    ## 13 2.4   BP     0.68  0.12  0.14
+    ## 14 2.4   HS     0.12  0.66  0.69
+    ## 15 2.4   BB     0.07  0.11  0.13
+    ## 16 3     BP     0.53  0.14  0.16
+    ## 17 3     HS     0.15  0.52  0.53
+    ## 18 3     BB     0.06  0.15  0.16
+
+Alternative in one step, using the special `.value` tag for the
+`names_to` argument:
+
+``` r
+dat %>% 
+  rename_with(~sub("^(BP|HS|BB)$", "values\\1", .)) %>%     # add prefix values
+  pivot_longer(cols= -1,
+               names_pattern = "(.*)(BP|HS|BB)$",
+               names_to = c(".value", "names")) 
+```
+
+    ## # A tibble: 18 × 5
+    ##    group names values lower upper
+    ##    <chr> <chr>  <dbl> <dbl> <dbl>
+    ##  1 1     BP      0.51  0.16  0.18
+    ##  2 1     HS      0.15  0.5   0.52
+    ##  3 1     BB      0.05  0.14  0.16
+    ##  4 2.1   BP      0.67  0.09  0.11
+    ##  5 2.1   HS      0.09  0.66  0.68
+    ##  6 2.1   BB      0.06  0.08  0.1 
+    ##  7 2.2   BP      0.36  0.12  0.15
+    ##  8 2.2   HS      0.13  0.34  0.38
+    ##  9 2.2   BB      0.07  0.12  0.14
+    ## 10 2.3   BP      0.09  0.13  0.16
+    ## 11 2.3   HS      0.17  0.08  0.11
+    ## 12 2.3   BB      0.09  0.15  0.18
+    ## 13 2.4   BP      0.68  0.12  0.14
+    ## 14 2.4   HS      0.12  0.66  0.69
+    ## 15 2.4   BB      0.07  0.11  0.13
+    ## 16 3     BP      0.53  0.14  0.16
+    ## 17 3     HS      0.15  0.52  0.53
+    ## 18 3     BB      0.06  0.15  0.16
 
 ## separate_longer trick (for list-like columns), and str_replace_all trick (multiple find-replaces)
 
@@ -83,7 +202,7 @@ m %>%
     geom_bar()
 ```
 
-![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ## tribble - a way to manually create small tibbles, row-wise
 
@@ -124,44 +243,44 @@ tibble(colA=c("A","B","C"),
 ```
 
     ## [[1]]
-    ##  [1]  1.3603895 -1.4114722 -1.0326192  1.2545541  1.3357514  0.0215660
-    ##  [7] -0.4046363 -0.8406554  0.3354220 -1.3492406
+    ##  [1]  2.5337105 -0.5037058 -0.3420550 -0.8294836 -0.5762657  2.1862860
+    ##  [7]  0.3887390 -0.3616929  1.0885171  1.7103650
     ## 
     ## [[2]]
-    ##  [1] 2.164291 3.102322 1.562906 2.301881 3.624128 1.099051 4.085332 2.602163
-    ##  [9] 1.281087 1.131071
+    ##  [1]  3.2906783  2.0541506  0.5566394  1.0686723  2.8352151  2.0097662
+    ##  [7]  2.4973458  2.4568271 -1.2143522  3.1387133
     ## 
     ## [[3]]
-    ##  [1] 2.374676 2.851518 3.192542 3.756049 2.779175 4.756329 3.603554 2.468738
-    ##  [9] 3.760330 4.457496
+    ##  [1] 3.177782 3.950517 3.493693 3.526557 5.034674 2.233856 1.669345 3.465932
+    ##  [9] 1.799782 4.527092
     ## 
     ## [[4]]
-    ##  [1] 3.967028 5.176950 4.572501 3.101835 4.800949 3.863271 4.918282 3.395852
-    ##  [9] 4.658805 4.439076
+    ##  [1] 3.118913 5.925571 3.263825 3.827908 5.094115 4.135069 5.455722 4.045229
+    ##  [9] 2.658769 3.979380
     ## 
     ## [[5]]
-    ##  [1] 4.424805 4.316911 4.696888 5.511118 5.626091 5.101665 5.191551 5.336532
-    ##  [9] 5.883760 5.616675
+    ##  [1] 7.233092 4.942127 7.567994 3.441534 5.333716 3.470762 6.319699 5.247824
+    ##  [9] 6.421729 6.339656
     ## 
     ## [[6]]
-    ##  [1] 6.503958 6.170519 5.857271 5.479236 5.982719 4.050278 4.480401 6.318529
-    ##  [9] 6.058498 6.383746
+    ##  [1] 4.431782 5.929645 5.202675 5.628224 4.906965 6.270532 5.516729 4.665826
+    ##  [9] 6.198512 5.493117
     ## 
     ## [[7]]
-    ##  [1] 7.871752 5.106919 9.122487 7.108571 9.814153 7.334294 6.854749 6.888949
-    ##  [9] 7.705922 7.304566
+    ##  [1] 6.976693 7.189711 5.917902 7.362036 6.415899 7.301861 7.089937 5.280018
+    ##  [9] 6.071834 5.331667
     ## 
     ## [[8]]
-    ##  [1] 7.315753 9.581842 8.256553 8.612141 7.281892 8.788097 7.879163 7.977126
-    ##  [9] 8.482422 9.303036
+    ##  [1] 7.497170 7.713415 8.768254 8.496322 7.978923 5.838653 6.989892 9.474653
+    ##  [9] 6.122191 6.952462
     ## 
     ## [[9]]
-    ##  [1]  8.671588  8.636743  8.768620 10.070894  8.759060  7.809230  8.248732
-    ##  [8]  7.975862  8.868676  8.062077
+    ##  [1]  9.410924  9.395712  9.654187  9.312494 10.082496  7.624376  7.370507
+    ##  [8]  9.026808  8.210636 10.668327
     ## 
     ## [[10]]
-    ##  [1]  9.621413  9.115014 10.345091 10.842908 11.192355 10.015732  9.781999
-    ##  [8] 11.130238 11.751150  9.672034
+    ##  [1]  9.959637  9.275934  8.998246  9.374215  8.604762 11.045926  9.878936
+    ##  [8] 10.796314  9.303442 11.325997
 
 ``` r
 # do something to each column
@@ -377,15 +496,7 @@ attributes(b)
 <https://github.com/sfirke/packagemetrics?tab=readme-ov-file>
 
 ``` r
-devtools::install_github("sfirke/packagemetrics")
-```
-
-    ## Using GitHub PAT from the git credential store.
-
-    ## Skipping install of 'packagemetrics' from a github remote, the SHA1 (431cd4f7) has not changed since last install.
-    ##   Use `force = TRUE` to force installation
-
-``` r
+# devtools::install_github("sfirke/packagemetrics")
 library("packagemetrics")
 dplyr_and_dt <- package_list_metrics(c("dplyr", "data.table"))
 # data frame
@@ -483,7 +594,7 @@ reverse_count
 
 <td style="text-align:right;">
 
-<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 100.00%">1346628</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 100.00%">1554374</span>
 </td>
 
 <td style="text-align:right;">
@@ -511,7 +622,7 @@ reverse_count
 
 <td style="text-align:right;">
 
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">21.5</span>
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">21.9</span>
 </td>
 
 <td style="text-align:right;">
@@ -531,7 +642,7 @@ reverse_count
 
 <td style="text-align:right;">
 
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">4845</span>
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">4885</span>
 </td>
 
 </tr>
@@ -550,7 +661,7 @@ reverse_count
 
 <td style="text-align:right;">
 
-<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 52.20%">702982</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 54.22%">842742</span>
 </td>
 
 <td style="text-align:right;">
@@ -589,7 +700,7 @@ reverse_count
 
 <td style="text-align:right;">
 
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">167</span>
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">168</span>
 </td>
 
 <td style="text-align:right;">
@@ -599,7 +710,7 @@ reverse_count
 
 <td style="text-align:right;">
 
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">1783</span>
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">1787</span>
 </td>
 
 </tr>
