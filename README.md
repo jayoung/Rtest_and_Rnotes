@@ -106,6 +106,13 @@ See [here](https://psiaims.github.io/CAMIS/R/rounding.html)
 
 In settings, there's an option to turn on rainbow parentheses to help see pairings.
 
+[Snippets](https://rfortherestofus.com/2024/04/snippets-rstudio):
+
+- e.g. the `fun` snippet:  within a code chunk, type `fun` and press tab - the skeleton of a function appears
+- press tab again and you move within the snippet to the next piece you might fill in. Shift-tab also does something (not sure exactly what)
+- `Tools menu - Edit code snippets` shows what snippets are available
+- Markdown snippets are also useful (e.g. place an image). Here we need to do `shift-tab` to activate.  E.g. `r-shift-tab` inserts an R code chunk, if we do it from within a markdown area (i.e. outside an existing R code chunk)
+
 #### Keyboard shortcuts
 
 highlight a function, press function-F1, and it brings up the help page
