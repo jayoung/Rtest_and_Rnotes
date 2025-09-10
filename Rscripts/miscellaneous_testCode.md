@@ -2,7 +2,7 @@ miscellaneous_testCode
 ================
 Janet Young
 
-2025-09-03
+2025-09-10
 
 # basic tidyverse
 
@@ -112,10 +112,10 @@ Alternative in one step, using the special `.value` tag for the
 
 ``` r
 dat %>% 
-  rename_with(~sub("^(BP|HS|BB)$", "values\\1", .)) %>%     # add prefix values
-  pivot_longer(cols= -1,
-               names_pattern = "(.*)(BP|HS|BB)$",
-               names_to = c(".value", "names")) 
+    rename_with(~sub("^(BP|HS|BB)$", "values\\1", .)) %>%     # add prefix values
+    pivot_longer(cols= -1,
+                 names_pattern = "(.*)(BP|HS|BB)$",
+                 names_to = c(".value", "names")) 
 ```
 
     ## # A tibble: 18 × 5
@@ -198,11 +198,75 @@ board_games |>
 
 ``` r
 m %>% 
-    ggplot(aes(x=cyl)) +
+    ggplot(aes(x=as.factor(cyl))) +
     geom_bar()
 ```
 
 ![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+## adding number of observations (or other statistical summaries) to faceted plot
+
+### Example 1 - geom_point, with n= labels in each facet
+
+Here the statistical summary applies to all observations in the facet
+together.
+
+``` r
+## calculate the summary stats separately.
+# note that the facetting variable (Species) is a column in the summary 
+iris_summary <- iris %>% 
+    group_by(Species) %>% 
+    summarize(label = dplyr::n()) %>% 
+    mutate(label=paste0("n = ", label)) %>% 
+    ## use the entire dataset (not grouped) to get x and y coords for the n= labels
+    mutate(x=min(iris$Sepal.Length)*1.1) %>% 
+    mutate(y=max(iris$Petal.Length)*1.1)
+
+## then make the plot
+iris %>% 
+    ggplot(aes(x=Sepal.Length, y=Petal.Length, color=Species)) +
+    geom_point() +
+    geom_text(data=iris_summary, 
+              aes(label=label, y=y, x=x)) +
+    facet_wrap(vars(Species)) +
+    theme_classic() +
+    guides(color="none")
+```
+
+![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+### Example 2
+
+Each facet is a geom_boxplot.
+
+Here the statistical summary applies to each group within each facet.
+
+``` r
+## get example data in long format
+iris_long <- iris %>% 
+    pivot_longer(cols=-Species, names_to="variable", values_to="value")
+
+## make a function to produce the labels we want
+stat_box_data <- function(y) {
+    ## weirdly this works fine if I return a data.frame, but if I make it a tibble the count and mean are both wrong
+    # data_summary <- tibble(
+    data_summary <- data.frame(
+        y = 0.5+1.1*max(y),  # may need to modify this depending on your data
+        label = paste('count =', length(y), '\n',
+                      'mean =', round(mean(y), 1), '\n') )
+    return(data_summary)
+}
+
+ggplot(data = iris_long, aes(x=Species, y=value)) + 
+    geom_boxplot(aes(fill=Species)) +
+    stat_summary(
+        fun.data = stat_box_data, 
+        geom = "text", 
+        hjust = 0.5,  vjust = 0.9 ) + 
+    facet_wrap( ~ variable, scales="free")
+```
+
+![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ## tribble - a way to manually create small tibbles, row-wise
 
@@ -243,44 +307,44 @@ tibble(colA=c("A","B","C"),
 ```
 
     ## [[1]]
-    ##  [1]  2.5337105 -0.5037058 -0.3420550 -0.8294836 -0.5762657  2.1862860
-    ##  [7]  0.3887390 -0.3616929  1.0885171  1.7103650
+    ##  [1]  1.0226865  1.0911333  1.1047205 -0.3360370  1.2966848  0.2877406
+    ##  [7]  1.7987976 -0.1216510 -0.1922810  2.0950448
     ## 
     ## [[2]]
-    ##  [1]  3.2906783  2.0541506  0.5566394  1.0686723  2.8352151  2.0097662
-    ##  [7]  2.4973458  2.4568271 -1.2143522  3.1387133
+    ##  [1]  1.53729341  2.45908163  2.03350849  0.06278845 -0.37595216  2.18645246
+    ##  [7]  2.34875016  2.38328965  2.17834000  0.42526899
     ## 
     ## [[3]]
-    ##  [1] 3.177782 3.950517 3.493693 3.526557 5.034674 2.233856 1.669345 3.465932
-    ##  [9] 1.799782 4.527092
+    ##  [1] 2.570311 2.673257 2.174009 4.589707 2.505917 2.398547 1.979656 3.434112
+    ##  [9] 3.785936 3.622541
     ## 
     ## [[4]]
-    ##  [1] 3.118913 5.925571 3.263825 3.827908 5.094115 4.135069 5.455722 4.045229
-    ##  [9] 2.658769 3.979380
+    ##  [1] 5.470581 4.374080 2.721470 4.183991 3.864575 4.116249 3.863149 2.885119
+    ##  [9] 2.300264 4.487123
     ## 
     ## [[5]]
-    ##  [1] 7.233092 4.942127 7.567994 3.441534 5.333716 3.470762 6.319699 5.247824
-    ##  [9] 6.421729 6.339656
+    ##  [1] 4.406460 4.113938 7.659399 4.698848 4.174037 6.115743 4.196657 5.692601
+    ##  [9] 5.682310 6.615184
     ## 
     ## [[6]]
-    ##  [1] 4.431782 5.929645 5.202675 5.628224 4.906965 6.270532 5.516729 4.665826
-    ##  [9] 6.198512 5.493117
+    ##  [1] 6.399557 7.430474 6.756498 6.308314 7.124686 7.682659 3.950169 6.215587
+    ##  [9] 6.226614 6.710660
     ## 
     ## [[7]]
-    ##  [1] 6.976693 7.189711 5.917902 7.362036 6.415899 7.301861 7.089937 5.280018
-    ##  [9] 6.071834 5.331667
+    ##  [1] 6.859117 8.318021 6.197292 9.306018 7.347522 5.628162 8.846919 6.833403
+    ##  [9] 7.182282 6.778534
     ## 
     ## [[8]]
-    ##  [1] 7.497170 7.713415 8.768254 8.496322 7.978923 5.838653 6.989892 9.474653
-    ##  [9] 6.122191 6.952462
+    ##  [1] 8.853657 7.948428 7.716096 9.123192 8.863158 7.160108 7.253434 6.954583
+    ##  [9] 6.949928 5.161311
     ## 
     ## [[9]]
-    ##  [1]  9.410924  9.395712  9.654187  9.312494 10.082496  7.624376  7.370507
-    ##  [8]  9.026808  8.210636 10.668327
+    ##  [1]  8.382735  8.630428  9.636523 10.472318  8.005073  6.855917  8.894602
+    ##  [8]  8.927563  7.690670  8.849851
     ## 
     ## [[10]]
-    ##  [1]  9.959637  9.275934  8.998246  9.374215  8.604762 11.045926  9.878936
-    ##  [8] 10.796314  9.303442 11.325997
+    ##  [1]  9.682566 10.153291  9.453153 10.114614  9.127852 10.168679  8.614307
+    ##  [8] 11.746862  9.843680  9.862189
 
 ``` r
 # do something to each column
@@ -453,7 +517,7 @@ test_df %>%
 
 I had a use case where I wanted to associate a few bits of info with a
 tibble of data. The actual example is that my tibble contained
-genome-wide t-test results, and I wanted to record eaxctly what method
+genome-wide t-test results, and I wanted to record exactly what method
 I’d used to do the t-tests)
 
 Note that `attr()` and `atrributes()` are different functions
@@ -594,7 +658,7 @@ reverse_count
 
 <td style="text-align:right;">
 
-<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 100.00%">1554374</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 100.00%">1455230</span>
 </td>
 
 <td style="text-align:right;">
@@ -622,7 +686,7 @@ reverse_count
 
 <td style="text-align:right;">
 
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">21.9</span>
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">22.1</span>
 </td>
 
 <td style="text-align:right;">
@@ -642,7 +706,7 @@ reverse_count
 
 <td style="text-align:right;">
 
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">4885</span>
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">4890</span>
 </td>
 
 </tr>
@@ -661,7 +725,7 @@ reverse_count
 
 <td style="text-align:right;">
 
-<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 54.22%">842742</span>
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 56.76%">825921</span>
 </td>
 
 <td style="text-align:right;">
@@ -710,7 +774,7 @@ reverse_count
 
 <td style="text-align:right;">
 
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">1787</span>
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">1788</span>
 </td>
 
 </tr>

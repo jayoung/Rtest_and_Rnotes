@@ -69,10 +69,10 @@ Alternative in one step, using the special `.value` tag for the `names_to` argum
 
 ```{r}
 dat %>% 
-  rename_with(~sub("^(BP|HS|BB)$", "values\\1", .)) %>%     # add prefix values
-  pivot_longer(cols= -1,
-               names_pattern = "(.*)(BP|HS|BB)$",
-               names_to = c(".value", "names")) 
+    rename_with(~sub("^(BP|HS|BB)$", "values\\1", .)) %>%     # add prefix values
+    pivot_longer(cols= -1,
+                 names_pattern = "(.*)(BP|HS|BB)$",
+                 names_to = c(".value", "names")) 
 ```
 
 
@@ -113,8 +113,69 @@ board_games |>
 
 ```{r}
 m %>% 
-    ggplot(aes(x=cyl)) +
+    ggplot(aes(x=as.factor(cyl))) +
     geom_bar()
+```
+
+## adding number of observations (or other statistical summaries) to faceted plot
+
+
+### Example 1 - geom_point, with n= labels in each facet
+
+Here the statistical summary applies to all observations in the facet together.
+
+```{r, fig.height=3.5, fig.width=6}
+## calculate the summary stats separately.
+# note that the facetting variable (Species) is a column in the summary 
+iris_summary <- iris %>% 
+    group_by(Species) %>% 
+    summarize(label = dplyr::n()) %>% 
+    mutate(label=paste0("n = ", label)) %>% 
+    ## use the entire dataset (not grouped) to get x and y coords for the n= labels
+    mutate(x=min(iris$Sepal.Length)*1.1) %>% 
+    mutate(y=max(iris$Petal.Length)*1.1)
+
+## then make the plot
+iris %>% 
+    ggplot(aes(x=Sepal.Length, y=Petal.Length, color=Species)) +
+    geom_point() +
+    geom_text(data=iris_summary, 
+              aes(label=label, y=y, x=x)) +
+    facet_wrap(vars(Species)) +
+    theme_classic() +
+    guides(color="none")
+```
+
+### Example 2
+
+Each facet is a geom_boxplot.
+
+Here the statistical summary applies to each group within each facet.
+
+
+```{r}
+## get example data in long format
+iris_long <- iris %>% 
+    pivot_longer(cols=-Species, names_to="variable", values_to="value")
+
+## make a function to produce the labels we want
+stat_box_data <- function(y) {
+    ## weirdly this works fine if I return a data.frame, but if I make it a tibble the count and mean are both wrong
+    # data_summary <- tibble(
+    data_summary <- data.frame(
+        y = 0.5+1.1*max(y),  # may need to modify this depending on your data
+        label = paste('count =', length(y), '\n',
+                      'mean =', round(mean(y), 1), '\n') )
+    return(data_summary)
+}
+
+ggplot(data = iris_long, aes(x=Species, y=value)) + 
+    geom_boxplot(aes(fill=Species)) +
+    stat_summary(
+        fun.data = stat_box_data, 
+        geom = "text", 
+        hjust = 0.5,  vjust = 0.9 ) + 
+    facet_wrap( ~ variable, scales="free")
 ```
 
 ## tribble - a way to manually create small tibbles, row-wise
@@ -245,7 +306,7 @@ test_df %>%
 
 # adding metadata / attributes
 
-I had a use case where I wanted to associate a few bits of info with a tibble of data. The actual example is that my tibble contained genome-wide t-test results, and I wanted to record eaxctly what method I'd used to do the t-tests)
+I had a use case where I wanted to associate a few bits of info with a tibble of data. The actual example is that my tibble contained genome-wide t-test results, and I wanted to record exactly what method I'd used to do the t-tests)
 
 Note that `attr()` and `atrributes()` are different functions
 
