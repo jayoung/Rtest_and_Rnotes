@@ -138,6 +138,53 @@ Three options:
 - `debugonce()`    
 See (`explore_debugging_functions.R`)[Rscripts/explore_debugging_functions.R] for details.
 
+### Knit an Rmd doc from the linux command line
+
+On my mac:
+```
+cd /Volumes/malik_h/user/jayoung/git_more_repos/Rtest_and_Rnotes
+
+## I end up with TWO output files: .html AND .md - not sure why
+## outputs go in the same dir as the input script
+
+Rscript -e 'rmarkdown::render("Rscripts/miscellaneous_testCode.Rmd", output_format="github_document", clean=TRUE)'
+```
+
+On gizmo/rhino, from the command line without sbatch:
+```
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes
+
+module load fhR/4.4.1-foss-2023b-R-4.4.1
+module load Pandoc/2.13
+
+## again we get TWO output files
+Rscript -e 'rmarkdown::render("Rscripts/miscellaneous_testCode.Rmd", output_format="github_document", clean=TRUE)'
+
+## note: running R this way, I do not have /home/jayoung/R/x86_64-pc-linux-gnu-library/4.4 in .libPaths(), whereas when I run it from Hutch RStudio-server I do.
+## I don't know where that comes from - I suspect something to do with Rstudio server setup 
+Rscript -e '.libPaths()'
+
+module purge
+```
+
+
+On gizmo/rhino, using sbatch and a shell script, and run it like this: `cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes ; sbatch example_knit_batch_script.sh` - the script looks like this:
+```
+#!/bin/bash
+source /app/lmod/lmod/init/profile
+module load fhR/4.4.1-foss-2023b-R-4.4.1
+module load Pandoc/2.13
+Rscript -e 'rmarkdown::render("Rscripts/miscellaneous_testCode.Rmd", output_format="github_document", clean=TRUE)'
+module purge
+```
+
+
+On gizmo/rhino, it can also be done with sbatch --wrap  but it is annoying due to all the quote and escapes:
+```
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes
+sbatch  --cpus-per-task=1 --wrap="/bin/bash -c \"source /app/lmod/lmod/init/profile ; module load fhR/4.4.1-foss-2023b-R-4.4.1 ; module load Pandoc/2.13 ; Rscript -e 'rmarkdown::render(\\\"Rscripts/miscellaneous_testCode.Rmd\\\", output_format=\\\"github_document\\\", clean=TRUE)' ; module purge\""
+```
+
 ### Miscellaneous 
 
 The 'embracing' operator (`{{ }}`), and unquoting using !! and !!! - see [`testCode.R`](Rscripts/testCode.R) for details.

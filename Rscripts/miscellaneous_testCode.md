@@ -1,4 +1,4 @@
-miscellaneous_testCode
+miscellaneous\_testCode
 ================
 Janet Young
 
@@ -21,7 +21,7 @@ m %>%
     ## 2     6     7
     ## 3     8    14
 
-## pivot_longer with multiple columns
+## pivot\_longer with multiple columns
 
 Example data from
 [stackoverflow](https://stackoverflow.com/questions/61367186/pivot-longer-into-multiple-columns)
@@ -49,7 +49,7 @@ dat
     ## 5 2.4    0.68  0.12  0.07    0.12    0.14    0.66    0.69    0.11    0.13
     ## 6 3      0.53  0.15  0.06    0.14    0.16    0.52    0.53    0.15    0.16
 
-First we pivot_longer using names_pattern argument
+First we pivot\_longer using names\_pattern argument
 
 ``` r
 longer <- dat %>% 
@@ -140,7 +140,7 @@ dat %>%
     ## 17 3     HS      0.15  0.52  0.53
     ## 18 3     BB      0.06  0.15  0.16
 
-## separate_longer trick (for list-like columns), and str_replace_all trick (multiple find-replaces)
+## separate\_longer trick (for list-like columns), and str\_replace\_all trick (multiple find-replaces)
 
 From [here](https://rfortherestofus.com/2024/04/seperate-fcts)
 
@@ -202,11 +202,11 @@ m %>%
     geom_bar()
 ```
 
-![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-8-1.svg)<!-- -->
 
 ## adding number of observations (or other statistical summaries) to faceted plot
 
-### Example 1 - geom_point, with n= labels in each facet
+### Example 1 - geom\_point, with n= labels in each facet
 
 Here the statistical summary applies to all observations in the facet
 together.
@@ -233,11 +233,11 @@ iris %>%
     guides(color="none")
 ```
 
-![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-9-1.svg)<!-- -->
 
 ### Example 2
 
-Each facet is a geom_boxplot.
+Each facet is a geom\_boxplot.
 
 Here the statistical summary applies to each group within each facet.
 
@@ -266,7 +266,7 @@ ggplot(data = iris_long, aes(x=Species, y=value)) +
     facet_wrap( ~ variable, scales="free")
 ```
 
-![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-10-1.svg)<!-- -->
 
 ## tribble - a way to manually create small tibbles, row-wise
 
@@ -307,44 +307,44 @@ tibble(colA=c("A","B","C"),
 ```
 
     ## [[1]]
-    ##  [1] 3.4853928 1.9783365 0.6785807 0.5893522 0.2522234 1.0185171 0.8996011
-    ##  [8] 1.1655648 1.6157495 1.3575981
+    ##  [1]  0.06916781  0.84063848  1.16523603  1.40305332  0.59519463  1.89919650
+    ##  [7]  1.66342792 -0.12473207  0.82896176 -0.10750237
     ## 
     ## [[2]]
-    ##  [1] 0.138512 3.006857 2.268658 1.845732 1.253901 1.875646 2.734491 1.234595
-    ##  [9] 2.467035 1.251427
+    ##  [1] 2.3426372 3.4564581 0.8578897 2.1490401 3.1403864 2.6812963 1.3585803
+    ##  [8] 1.8454583 1.3508569 2.9241022
     ## 
     ## [[3]]
-    ##  [1] 3.167639 1.603677 2.799472 1.494740 1.912808 3.775895 2.939275 3.037502
-    ##  [9] 3.976356 1.856292
+    ##  [1] 3.173810 3.273224 4.023902 4.318892 1.763039 3.123063 3.689551 3.883981
+    ##  [9] 2.680781 3.795367
     ## 
     ## [[4]]
-    ##  [1] 1.415169 2.748475 3.425320 5.143127 4.438932 3.025121 5.363607 5.697080
-    ##  [9] 3.757961 3.987324
+    ##  [1] 2.249219 3.294961 2.821286 3.018379 4.724585 3.293080 5.187937 3.307465
+    ##  [9] 5.348714 4.538733
     ## 
     ## [[5]]
-    ##  [1] 5.355852 4.268441 4.983503 5.282502 5.109813 4.920880 5.772695 4.818465
-    ##  [9] 4.380599 5.474838
+    ##  [1] 4.905867 5.192149 6.210878 3.128084 6.989553 5.190800 4.134479 7.882558
+    ##  [9] 6.641480 4.157532
     ## 
     ## [[6]]
-    ##  [1] 3.920618 6.462483 7.119515 6.865911 5.891231 4.649985 6.358297 6.070781
-    ##  [9] 5.821929 5.100222
+    ##  [1] 6.529870 5.818488 7.867849 6.400012 5.516089 5.546762 7.246536 5.019734
+    ##  [9] 7.339030 7.266452
     ## 
     ## [[7]]
-    ##  [1] 6.048404 8.116580 5.951528 6.401678 7.570034 6.581865 6.022419 8.711187
-    ##  [9] 6.014300 7.665551
+    ##  [1] 7.414958 6.900953 7.506862 6.769325 6.387925 6.913441 7.532141 6.605658
+    ##  [9] 7.906738 7.775166
     ## 
     ## [[8]]
-    ##  [1] 7.306659 8.767518 7.883952 8.836399 8.719110 7.829971 8.307515 7.385308
-    ##  [9] 8.498881 8.471263
+    ##  [1] 7.741363 6.835099 7.695655 7.906638 7.777361 8.316996 8.042185 6.275717
+    ##  [9] 7.060477 7.297579
     ## 
     ## [[9]]
-    ##  [1]  8.982570  9.765324  8.411114  7.644715  9.262908  8.318272 11.449412
-    ##  [8] 10.138491  9.679644  8.824781
+    ##  [1]  9.034772  9.202096 10.036199  7.850133  7.717795  8.357704 10.661768
+    ##  [8]  9.725726  7.941275  8.223133
     ## 
     ## [[10]]
-    ##  [1] 10.956706  8.865625 10.703220  8.570894 11.054537 10.456604 10.606683
-    ##  [8]  9.383044  9.211855  9.651073
+    ##  [1] 11.034247  9.299198  9.972858 11.131652 10.240040 10.588059  9.680768
+    ##  [8]  9.191525 10.433398  9.927204
 
 ``` r
 # do something to each column
@@ -573,212 +573,143 @@ metrics_table(dplyr_and_dt)
     ## Warning in gradient(as.numeric(x), ...): NAs introduced by coercion
 
 <table class="table table-condensed">
-
 <thead>
-
 <tr>
-
 <th style="text-align:right;">
-
 package
 </th>
-
 <th style="text-align:right;">
-
 published
 </th>
-
 <th style="text-align:right;">
-
-dl_last_month
+dl\_last\_month
 </th>
-
 <th style="text-align:right;">
-
 stars
 </th>
-
 <th style="text-align:right;">
-
-tidyverse_happy
+tidyverse\_happy
 </th>
-
 <th style="text-align:right;">
-
-has_tests
+has\_tests
 </th>
-
 <th style="text-align:right;">
-
 vignette
 </th>
-
 <th style="text-align:right;">
-
-last_commit
+last\_commit
 </th>
-
 <th style="text-align:right;">
-
-last_issue_closed
+last\_issue\_closed
 </th>
-
 <th style="text-align:right;">
-
 contributors
 </th>
-
 <th style="text-align:right;">
-
-depends_count
+depends\_count
 </th>
-
 <th style="text-align:right;">
-
-reverse_count
+reverse\_count
 </th>
-
 </tr>
-
 </thead>
-
 <tbody>
-
 <tr>
-
 <td style="text-align:right;">
-
 <span style="font-weight: bold">dplyr </span>
 </td>
-
 <td style="text-align:right;">
-
 2023-11-17
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 100.00%">1563017</span>
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 100.00%">1563017</span>
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">4.9k</span>
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">4.9k</span>
 </td>
-
 <td style="text-align:right;">
-
 <span style="color: purple"> <i class="glyphicon glyphicon-glass"></i>
 </span>
 </td>
-
 <td style="text-align:right;">
-
 <span style="color: green"> <i class="glyphicon glyphicon-ok"></i>
 </span>
 </td>
-
 <td style="text-align:right;">
-
 <span style="color: green"> <i class="glyphicon glyphicon-ok"></i>
 </span>
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">22.3</span>
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">22.3</span>
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f06b13"></span>
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f06b13"></span>
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">271</span>
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">271</span>
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">1</span>
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">1</span>
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">4907</span>
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">4907</span>
 </td>
-
 </tr>
-
 <tr>
-
 <td style="text-align:right;">
-
 <span style="font-weight: bold">data.table</span>
 </td>
-
 <td style="text-align:right;">
-
 2025-07-10
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 59.11%">923903</span>
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 59.11%">923903</span>
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">3.8k</span>
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">3.8k</span>
 </td>
-
 <td style="text-align:right;">
-
 <span style="color: white"> <i class="glyphicon glyphicon-glass"></i>
 </span>
 </td>
-
 <td style="text-align:right;">
-
 <span style="color: red"> <i class="glyphicon glyphicon-remove"></i>
 </span>
 </td>
-
 <td style="text-align:right;">
-
 <span style="color: green"> <i class="glyphicon glyphicon-ok"></i>
 </span>
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">
 </span>
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f06b13"></span>
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f06b13"></span>
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">168</span>
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">168</span>
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">1</span>
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">1</span>
 </td>
-
 <td style="text-align:right;">
-
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">1788</span>
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">1788</span>
 </td>
-
 </tr>
-
 </tbody>
-
 </table>
