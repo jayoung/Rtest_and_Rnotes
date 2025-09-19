@@ -9,6 +9,7 @@ always_allow_html: true
 ```{r setup, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(here)
 library(gt)
 ```
 
@@ -121,16 +122,30 @@ seq_slice_gt_add_colors <- seq_slice_gt |>
     tab_style(style = cell_text(color = "red"),
               locations = cells_body(columns = pos4, rows = pos4 == "T") ) 
 seq_slice_gt_add_colors
-
 ```
 
 Now display it with as_raw_html
 
 ```{r}
 seq_slice_gt_add_colors |>
-    as_raw_html(inline_css=FALSE)
+    as_raw_html(inline_css=TRUE)
 ```
 
+Try saving it then embedding the image
+
+```{r}
+temp <- gtsave(seq_slice_gt_add_colors, 
+       filename=here("Rscripts/table_display_temp_table.png"))
+```
+
+try to include image using mac path (this won't work on github):
+
+![](/Volumes/malik_h/user/jayoung/git_more_repos/Rtest_and_Rnotes/Rscripts/table_display_temp_table.png)
+
+
+try to include image without path:
+
+![](table_display_temp_table.png)
 
 # Finished
 

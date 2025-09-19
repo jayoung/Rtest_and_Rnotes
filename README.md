@@ -138,6 +138,25 @@ Three options:
 - `debugonce()`    
 See (`explore_debugging_functions.R`)[Rscripts/explore_debugging_functions.R] for details.
 
+### Insert an image into an Rmd document
+
+(or any md document, I think)
+
+A simple image:
+```
+![Caption for the picture.](/path/to/image.png)
+```
+
+Modify size (specify pixels, probably)
+```
+![Caption for the picture.](/path/to/image.png){#id .class width=30 height=20px}
+```
+
+Modify size by simple scaling
+```
+![Caption for the picture.](/path/to/image.png){#id .class width=50% height=50%}
+```
+
 ### Knit an Rmd doc from the linux command line
 
 On my mac:
