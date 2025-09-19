@@ -6,10 +6,9 @@ output: github_document
 always_allow_html: true
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(here)
 library(gt)
 ```
 
@@ -109,10 +108,10 @@ seq_slice_gt |>
 
 
 
-Maybe I want to use conditional formatting to color certain cells in red ()
+Maybe I want to use conditional formatting to color certain cells in red. First display it without as_raw_html
 
 ```{r}
-seq_slice_gt |>
+seq_slice_gt_add_colors <- seq_slice_gt |>
     tab_style(style = cell_text(color = "red"),
               locations = cells_body(columns = pos1, rows = pos1 == "F") ) |>
     tab_style(style = cell_text(color = "red"),
@@ -120,7 +119,15 @@ seq_slice_gt |>
     tab_style(style = cell_text(color = "red"),
               locations = cells_body(columns = pos3, rows = pos3 == "L") ) |>
     tab_style(style = cell_text(color = "red"),
-              locations = cells_body(columns = pos4, rows = pos4 == "T") ) |>
+              locations = cells_body(columns = pos4, rows = pos4 == "T") ) 
+seq_slice_gt_add_colors
+
+```
+
+Now display it with as_raw_html
+
+```{r}
+seq_slice_gt_add_colors |>
     as_raw_html(inline_css=FALSE)
 ```
 
