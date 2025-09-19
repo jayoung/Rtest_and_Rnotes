@@ -88,7 +88,7 @@ Use gt to format that nicely:
 ``` r
 seq_slice_gt <- seq_slice_tbl %>% 
     ## gt alone makes a decent-looking table
-    gt() %>% 
+    gt(caption="My sequence alignment") %>% 
     ## a bunch of formatting things:
     cols_align(align = "center", columns=-id) %>% 
     opt_table_font(font = list(google_font(name = "Courier"))) %>% 
