@@ -6,21 +6,32 @@ output: github_document
 always_allow_html: true
 ---
 
-```{r setup, include=TRUE}
+```{r setup, include=TRUE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
 library(gt)
 ```
 
-Show without adding as_raw_html()
+gt seems great. There's a wrinkle when using github.com to display our knitted Rmd docs though:
+
+- If we just use `gt()`, some of the table formatting is wrong/missing, and we get a bunch of raw html stuff showing above the table
+- If we pipe the `gt` object through `as_raw_html()`, that removes the extra raw html stuff, but the formatting isn't quite right.
+- A cheat that seems to work is to save our pretty table to an image file (e.g. png) and then embed that in the Rmd document, perhaps (e.g. `![](temp.png)`, or with resizing: `![](temp.png){#id .class width=20% height=20%}`)
+
+In the code below I use that cheat.
+
+## S&P example
+
+Create a gt table based on preprocessed `sp500` table data
+
 
 ```{r}
 # Define the start and end dates for the data range
 start_date <- "2010-06-07"
 end_date <- "2010-06-14"
 
-# Create a gt table based on preprocessed `sp500` table data
+# make gt table
 sp500_gt <- sp500 |>
     dplyr::filter(date >= start_date & date <= end_date) |>
     dplyr::select(-adj_close) |>
@@ -32,21 +43,18 @@ sp500_gt <- sp500 |>
     fmt_currency() |>
     fmt_date(columns = date, date_style = "wd_m_day_year") |>
     fmt_number(columns = volume, suffixing = TRUE) 
-sp500_gt
 
+# save it as png
+suppressMessages( gtsave(sp500_gt, 
+                         filename=here("Rscripts/table_display_temp_tables/temp_table_1.png")) )
 ```
 
-Show including as_raw_html()
+![](table_display_temp_tables/temp_table_1.png){#id .class width=60% height=60%}
 
-```{r}
-sp500_gt |>
-    ## if I don't include as_raw_html(), when I render and display as a github page I get a lot of extra stuff above the table
-    as_raw_html()
-```
+## Sequence alignment example
 
-Show sequence alignment as a table - play around with this as an (alternative to ggmsa):
+Show sequence alignment as a table - play around with this as an alternative to ggmsa:
 
-This is a slice of SARS-CoV2's Orf9b prot sequence aligned to related viruses' Orf9b
 
 ```{r}
 seq_slice <- c("FQLT",
@@ -90,29 +98,8 @@ seq_slice_gt <- seq_slice_tbl %>%
                 row.striping.include_table_body = FALSE,
                 row.striping.include_stub=FALSE) %>% 
     ## px is number of pixels
-    cols_width(id ~ px(75)) 
-
-seq_slice_gt
-
-
-```
-
-
-
-Now add as_raw_html() function
-
-```{r}
-seq_slice_gt |>
-    ## if I don't include as_raw_html(), when I render and display as a github page I get a lot of extra stuff above the table
-    as_raw_html()
-```
-
-
-
-Maybe I want to use conditional formatting to color certain cells in red. First display it without as_raw_html
-
-```{r}
-seq_slice_gt_add_colors <- seq_slice_gt |>
+    cols_width(id ~ px(75)) %>% 
+    ## conditional formatting
     tab_style(style = cell_text(color = "red"),
               locations = cells_body(columns = pos1, rows = pos1 == "F") ) |>
     tab_style(style = cell_text(color = "red"),
@@ -121,31 +108,14 @@ seq_slice_gt_add_colors <- seq_slice_gt |>
               locations = cells_body(columns = pos3, rows = pos3 == "L") ) |>
     tab_style(style = cell_text(color = "red"),
               locations = cells_body(columns = pos4, rows = pos4 == "T") ) 
-seq_slice_gt_add_colors
+
+suppressMessages( gtsave(seq_slice_gt, 
+                         filename=here("Rscripts/table_display_temp_tables/temp_table_2.png")) )
 ```
 
-Now display it with as_raw_html
 
-```{r}
-seq_slice_gt_add_colors |>
-    as_raw_html(inline_css=TRUE)
-```
+![](table_display_temp_tables/temp_table_2.png){#id .class width=20% height=20%}
 
-Try saving it then embedding the image
-
-```{r}
-temp <- gtsave(seq_slice_gt_add_colors, 
-       filename=here("Rscripts/table_display_temp_table.png"))
-```
-
-try to include image using mac path (this won't work on github):
-
-![](/Volumes/malik_h/user/jayoung/git_more_repos/Rtest_and_Rnotes/Rscripts/table_display_temp_table.png)
-
-
-try to include image without path:
-
-![](table_display_temp_table.png)
 
 # Finished
 
