@@ -19,8 +19,7 @@ library(gt)
 start_date <- "2010-06-07"
 end_date <- "2010-06-14"
 
-# Create a gt table based on preprocessed
-# `sp500` table data
+# Create a gt table based on preprocessed `sp500` table data
 sp500 |>
     dplyr::filter(date >= start_date & date <= end_date) |>
     dplyr::select(-adj_close) |>
@@ -31,7 +30,9 @@ sp500 |>
     ) |>
     fmt_currency() |>
     fmt_date(columns = date, date_style = "wd_m_day_year") |>
-    fmt_number(columns = volume, suffixing = TRUE)
+    fmt_number(columns = volume, suffixing = TRUE) |>
+    ## if I don't include as_raw_html(), when I render and display as a github page I get a lot of extra stuff above the table
+    as_raw_html()
 ```
 
 Show sequence alignment as a table - play around with this as an (alternative to ggmsa:
@@ -55,7 +56,9 @@ seq_slice_tbl <- seq_slice %>%
     t() %>% 
     as.data.frame() %>%
     set_names(nm=paste0("pos", 1:4)) %>%
-    as_tibble(rownames="id")
+    as_tibble(rownames="id") |>
+    ## if I don't include as_raw_html(), when I render and display as a github page I get a lot of extra stuff above the table
+    as_raw_html()
 ```
 
 
@@ -79,7 +82,9 @@ seq_slice_tbl %>%
                 row.striping.include_table_body = FALSE,
                 row.striping.include_stub=FALSE) %>% 
     ## px is number of pixels
-    cols_width(id ~ px(75)) 
+    cols_width(id ~ px(75))  |>
+    ## if I don't include as_raw_html(), when I render and display as a github page I get a lot of extra stuff above the table
+    as_raw_html()
 
 ```
 

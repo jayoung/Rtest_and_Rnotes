@@ -167,6 +167,8 @@ Rscript -e '.libPaths()'
 module purge
 ```
 
+On gizmo/rhino, `~/bin/render_Rmd_report.pl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each.
+
 
 On gizmo/rhino, using sbatch and a shell script, and run it like this: `cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes ; sbatch example_knit_batch_script.sh` - the script looks like this:
 ```
@@ -179,11 +181,14 @@ module purge
 ```
 
 
-On gizmo/rhino, it can also be done with sbatch --wrap  but it is annoying due to all the quote and escapes:
+
+On gizmo/rhino, it can also be done with `sbatch --wrap` but it is annoying due to all the quote and escapes:
 ```
 cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes
-sbatch  --cpus-per-task=1 --wrap="/bin/bash -c \"source /app/lmod/lmod/init/profile ; module load fhR/4.4.1-foss-2023b-R-4.4.1 ; module load Pandoc/2.13 ; Rscript -e 'rmarkdown::render(\\\"Rscripts/miscellaneous_testCode.Rmd\\\", output_format=\\\"github_document\\\", clean=TRUE)' ; module purge\""
+sbatch --cpus-per-task=1 --wrap="/bin/bash -c \"source /app/lmod/lmod/init/profile ; module load fhR/4.4.1-foss-2023b-R-4.4.1 ; module load Pandoc/2.13 ; Rscript -e 'rmarkdown::render(\\\"Rscripts/miscellaneous_testCode.Rmd\\\", output_format=\\\"github_document\\\", clean=TRUE)' ; module purge\""
 ```
+
+For Tamanash's DMS data, I wrote an R wrapper script called [`DMS_remakeReport_standaloneScript.R`](https://github.com/jayoung/DMSanalysis/blob/main/Rscripts/DMS_remakeReport_standaloneScript.R) that generated reports for multiple data sets by (1) loading the Rdata file (2) rendering the Rmd script (which runs with that loaded data in the environment). I further wrote a perl script called [`remakeReport_wrapper.pl`](https://github.com/jayoung/DMSanalysis/blob/main/bin/remakeReport_wrapper.pl) that calls `DMS_remakeReport_standaloneScript.R` on various Rdata files and makes a shell script to run each in a separate sbatch job.
 
 ### Miscellaneous 
 
