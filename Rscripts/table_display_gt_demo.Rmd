@@ -35,10 +35,11 @@ sp500 |>
     as_raw_html()
 ```
 
-Show sequence alignment as a table - play around with this as an (alternative to ggmsa:
+Show sequence alignment as a table - play around with this as an (alternative to ggmsa):
+
+This is a slice of SARS-CoV2's Orf9b prot sequence aligned to related viruses' Orf9b
 
 ```{r}
-## this is actually a slice of Orf9b prot seq from SARS-CoV2 and other viruses
 seq_slice <- c("FQLT",
                "FQLI",
                "FQLT",
@@ -56,17 +57,15 @@ seq_slice_tbl <- seq_slice %>%
     t() %>% 
     as.data.frame() %>%
     set_names(nm=paste0("pos", 1:4)) %>%
-    as_tibble(rownames="id") |>
-    ## if I don't include as_raw_html(), when I render and display as a github page I get a lot of extra stuff above the table
-    as_raw_html()
+    as_tibble(rownames="id") 
 ```
 
 
-
+Show as a gt table, without using the as_raw_html() function
 
 
 ```{r}
-seq_slice_tbl %>% 
+seq_slice_gt <- seq_slice_tbl %>% 
     ## gt alone makes a decent-looking table
     gt() %>% 
     ## a bunch of formatting things:
@@ -82,10 +81,21 @@ seq_slice_tbl %>%
                 row.striping.include_table_body = FALSE,
                 row.striping.include_stub=FALSE) %>% 
     ## px is number of pixels
-    cols_width(id ~ px(75))  |>
+    cols_width(id ~ px(75)) 
+
+seq_slice_gt
+
+
+```
+
+
+
+Now add as_raw_html() function
+
+```{r}
+seq_slice_gt |>
     ## if I don't include as_raw_html(), when I render and display as a github page I get a lot of extra stuff above the table
     as_raw_html()
-
 ```
 
 # Finished
