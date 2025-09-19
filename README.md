@@ -397,3 +397,23 @@ https://rfortherestofus.com/2019/08/themes-to-improve-your-ggplot-figures/
 
 [A nice alternative](https://albert-rapp.de/posts/ggplot2-tips/15_alternative_paired_bars/15_alternative_paired_bars) to paired bar charts. That tutorial shows other alternatives too: arrow plots, slope plots. 
 
+
+## Package installation note
+
+There are some packages that won't install within an rhino/gizmo Rstudio-server session, because we need to load additional modules first, e.g. flextable and gdtools require the cairo module.
+
+Here's what I'm trying, from a gizmo command line session
+```
+module purge
+module load cairo/1.18.0-GCCcore-13.3.0
+module load fhR/4.4.0-foss-2023b
+
+R
+
+install.package("gdtools")
+install.package("flextable")
+q(save="no")
+
+module purge
+```
+Seems like that worked, and I can load those libraries within Rstudio-server without needing to load the cairo module.

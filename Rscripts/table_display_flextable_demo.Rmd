@@ -25,9 +25,9 @@ df <- airquality[ sample.int(10),]
 flextable(df)
 ```
 
-qflextable does a bit more formatting, including autofit on the columns
+flextable does a bit more formatting, including autofit on the columns
 ```{r}
-qflextable(df)
+flextable(df)
 ```
 
 Fancier

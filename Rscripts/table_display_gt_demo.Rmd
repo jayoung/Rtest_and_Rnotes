@@ -19,6 +19,8 @@ gt seems great. There's a wrinkle when using github.com to display our knitted R
 - If we pipe the `gt` object through `as_raw_html()`, that removes the extra raw html stuff, but the formatting isn't quite right.
 - A cheat that seems to work is to save our pretty table to an image file (e.g. png) and then embed that in the Rmd document, perhaps (e.g. `![](temp.png)`, or with resizing: `![](temp.png){#id .class width=20% height=20%}`)
 
+BUT that cheat doesn't work on rhino/gizmo Rstudio-server, because gtsave fails with this error: `Error in initialize(...) : Invalid path to Chrome`
+
 In the code below I use that cheat.
 
 ## S&P example
