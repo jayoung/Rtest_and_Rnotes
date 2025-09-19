@@ -109,7 +109,7 @@ seq_slice_gt |>
 
 
 
-Maybe I want to color certain cells in red:
+Maybe I want to use conditional formatting to color certain cells in red:
 
 ```{r}
 seq_slice_gt |>
