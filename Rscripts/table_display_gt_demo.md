@@ -58,7 +58,9 @@ class="class" style="width:60.0%;height:60.0%" />
 ## Sequence alignment example
 
 Show sequence alignment as a table - play around with this as an
-alternative to ggmsa:
+alternative to ggmsa.
+
+First we make an example alignment tibble:
 
 ``` r
 seq_slice <- c("FQLT",
@@ -81,7 +83,7 @@ seq_slice_tbl <- seq_slice %>%
     as_tibble(rownames="id") 
 ```
 
-Show as a gt table, without using the as_raw_html() function
+Use gt to format that nicely:
 
 ``` r
 seq_slice_gt <- seq_slice_tbl %>% 

@@ -53,7 +53,9 @@ suppressMessages( gtsave(sp500_gt,
 
 ## Sequence alignment example
 
-Show sequence alignment as a table - play around with this as an alternative to ggmsa:
+Show sequence alignment as a table - play around with this as an alternative to ggmsa. 
+
+First we make an example alignment tibble:
 
 
 ```{r}
@@ -78,7 +80,7 @@ seq_slice_tbl <- seq_slice %>%
 ```
 
 
-Show as a gt table, without using the as_raw_html() function
+Use gt to format that nicely:
 
 
 ```{r}
