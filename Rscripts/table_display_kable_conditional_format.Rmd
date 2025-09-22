@@ -21,10 +21,32 @@ Problem - it shows up nicely in the Rstudio interface and in the knit window tha
 
 ## mtcars example
 
+
+Without conditional formatting:
+
 ```{r}
-mtcars %>% 
+# very simple data
+my_dat <- mtcars %>% 
     slice_head(n=6) %>% 
-    select(am, carb, gear, mpg, drat) %>% 
+    select(am, carb, gear, mpg, drat)
+```
+
+Without conditional formatting:
+
+```{r}
+my_dat %>% 
+    kable("html",
+        # format = "latex", 
+        # booktabs = TRUE,
+          caption="Example kable table", escape = FALSE) %>% 
+    kable_styling(full_width = FALSE)
+```
+
+
+Wit conditional formatting:
+
+```{r}
+my_dat %>% 
     mutate(drat = cell_spec(drat, 
                             format = "html", 
                             background=ifelse(drat > 3, "red", "green"))) %>% 
@@ -34,7 +56,6 @@ mtcars %>%
           caption="Example kable table", escape = FALSE) %>% 
     kable_styling(full_width = FALSE)
 ```
-
 ## kableExtra cookbook example
 
 Example from here https://sharlagelfand.github.io/kableExtra-cookbook/how-to.html#

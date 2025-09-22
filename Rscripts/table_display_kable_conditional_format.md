@@ -14,10 +14,284 @@ window that pops up, but not when we render it on the github site.
 
 ## mtcars example
 
+Without conditional formatting:
+
 ``` r
-mtcars %>% 
+# very simple data
+my_dat <- mtcars %>% 
     slice_head(n=6) %>% 
-    select(am, carb, gear, mpg, drat) %>% 
+    select(am, carb, gear, mpg, drat)
+```
+
+Without conditional formatting:
+
+``` r
+my_dat %>% 
+    kable("html",
+        # format = "latex", 
+        # booktabs = TRUE,
+          caption="Example kable table", escape = FALSE) %>% 
+    kable_styling(full_width = FALSE)
+```
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+
+<caption>
+
+Example kable table
+</caption>
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+</th>
+
+<th style="text-align:right;">
+
+am
+</th>
+
+<th style="text-align:right;">
+
+carb
+</th>
+
+<th style="text-align:right;">
+
+gear
+</th>
+
+<th style="text-align:right;">
+
+mpg
+</th>
+
+<th style="text-align:right;">
+
+drat
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+Mazda RX4
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+21.0
+</td>
+
+<td style="text-align:right;">
+
+3.90
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Mazda RX4 Wag
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+21.0
+</td>
+
+<td style="text-align:right;">
+
+3.90
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Datsun 710
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+22.8
+</td>
+
+<td style="text-align:right;">
+
+3.85
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Hornet 4 Drive
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:right;">
+
+21.4
+</td>
+
+<td style="text-align:right;">
+
+3.08
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Hornet Sportabout
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+2
+</td>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:right;">
+
+18.7
+</td>
+
+<td style="text-align:right;">
+
+3.15
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Valiant
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:right;">
+
+18.1
+</td>
+
+<td style="text-align:right;">
+
+2.76
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+Wit conditional formatting:
+
+``` r
+my_dat %>% 
     mutate(drat = cell_spec(drat, 
                             format = "html", 
                             background=ifelse(drat > 3, "red", "green"))) %>% 
