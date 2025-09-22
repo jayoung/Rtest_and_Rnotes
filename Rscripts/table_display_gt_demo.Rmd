@@ -120,7 +120,6 @@ suppressMessages( gtsave(seq_slice_gt,
 
 ![](table_display_temp_tables/temp_table_2.png){#id .class width=20% height=20%}
 
-
 # Finished
 
 ```{r}

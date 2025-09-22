@@ -55,6 +55,21 @@ my_flextable <- flextable(head(mtcars),
 my_flextable
 ```
 
+
+Try a save-table-as-image cheat (see https://github.com/davidgohel/flextable/issues/532)
+
+```{r}
+knitr::opts_chunk$set(dev = "ragg_png")
+```
+
+```{r}
+temp <- save_as_image(my_flextable, 
+              path=here("Rscripts/table_display_temp_tables/temp_flextable_3.png")) # suppressMessages( )
+```
+
+![](table_display_temp_tables/temp_flextable_3.png){#id .class width=20% height=20%}
+
+
 # More code examples
 
 Code comes from the [flextable "book" website](https://ardata-fr.github.io/flextable-book/index.html).

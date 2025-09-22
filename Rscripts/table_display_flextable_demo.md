@@ -46,6 +46,21 @@ my_flextable
 
 <img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-1-1.png" width="750" />
 
+Try a save-table-as-image cheat (see
+<https://github.com/davidgohel/flextable/issues/532>)
+
+``` r
+knitr::opts_chunk$set(dev = "ragg_png")
+```
+
+``` r
+temp <- save_as_image(my_flextable, 
+              path=here("Rscripts/table_display_temp_tables/temp_flextable_3.png")) # suppressMessages( )
+```
+
+<img src="table_display_temp_tables/temp_flextable_3.png" id="id"
+class="class" style="width:20.0%;height:20.0%" />
+
 # More code examples
 
 Code comes from the [flextable “book”
@@ -62,7 +77,7 @@ df <- airquality[ sample.int(10),]
 flextable(df)
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-2-1.png" width="900" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-4-1.png" width="900" />
 
 Fancier
 
@@ -85,7 +100,7 @@ ft <- align(ft,
 ft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-3-1.png" width="900" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-5-1.png" width="900" />
 
 Use `set_flextable_defaults` to change the default display settings:
 
@@ -98,7 +113,7 @@ set_flextable_defaults(
 flextable(df)
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-4-1.png" width="900" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-6-1.png" width="900" />
 
 Use col_keys to select some columns
 
@@ -108,7 +123,7 @@ myft <- flextable(head(mtcars),
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-5-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-7-1.png" width="750" />
 
 Formatting certain cells/columns  
 - use j to specify certain column(s) by index - can use conditional
@@ -121,7 +136,7 @@ myft <- bold(myft, ~ drat > 3.5, ~ drat, bold = TRUE)
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-6-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-8-1.png" width="750" />
 
 Adding header rows that span \>1 column:
 
@@ -133,7 +148,7 @@ myft <- align(myft, i = 1, part = "header", align = "center")
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-7-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-9-1.png" width="750" />
 
 Aligning within the parent document:
 
@@ -142,7 +157,7 @@ myft <- set_table_properties(myft, align = "right", layout = "autofit")
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-8-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-10-1.png" width="750" />
 
 Ask to display non-existent columns if we want to separate groups of
 columns a bit - here we ask for the `col1` column. Also `empty_blanks()`
@@ -157,7 +172,7 @@ myft <- flextable(
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-9-1.png" width="610" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-11-1.png" width="610" />
 
 Cute table that includes tiny plots:
 
@@ -192,7 +207,7 @@ ft
     ## Warning in (function (img_data, width = NULL, height = NULL) : package 'magick'
     ## is required to read image files
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-10-1.png" width="741" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-12-1.png" width="741" />
 
 Exporting formatted tables: `save_as_docx`, `save_as_pptx`,
 `save_as_image`
@@ -234,21 +249,22 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] magrittr_2.0.3    data.table_1.17.8 here_1.0.1        flextable_0.9.10 
+    ## [1] magrittr_2.0.4    data.table_1.17.8 here_1.0.2        flextable_0.9.10 
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] gtable_0.3.6            dplyr_1.1.4             compiler_4.5.1         
     ##  [4] tidyselect_1.2.1        Rcpp_1.1.0              zip_2.3.3              
-    ##  [7] xml2_1.3.8              fontquiver_0.2.1        systemfonts_1.2.3      
-    ## [10] scales_1.4.0            textshaping_1.0.1       png_0.1-8              
+    ##  [7] xml2_1.4.0              fontquiver_0.2.1        systemfonts_1.2.3      
+    ## [10] scales_1.4.0            textshaping_1.0.3       png_0.1-8              
     ## [13] uuid_1.2-1              yaml_2.3.10             fastmap_1.2.0          
-    ## [16] ggplot2_3.5.2           R6_2.6.1                generics_0.1.4         
+    ## [16] ggplot2_4.0.0           R6_2.6.1                generics_0.1.4         
     ## [19] gdtools_0.4.3           knitr_1.50              tibble_3.3.0           
-    ## [22] rprojroot_2.1.0         openssl_2.3.3           pillar_1.11.0          
-    ## [25] RColorBrewer_1.1-3      rlang_1.1.6             xfun_0.52              
-    ## [28] cli_3.6.5               digest_0.6.37           grid_4.5.1             
-    ## [31] rstudioapi_0.17.1       askpass_1.2.1           lifecycle_1.0.4        
-    ## [34] vctrs_0.6.5             evaluate_1.0.4          glue_1.8.0             
-    ## [37] farver_2.1.2            fontLiberation_0.1.0    officer_0.7.0          
-    ## [40] ragg_1.4.0              fontBitstreamVera_0.1.1 rmarkdown_2.29         
-    ## [43] pkgconfig_2.0.3         tools_4.5.1             htmltools_0.5.8.1
+    ## [22] rprojroot_2.1.1         openssl_2.3.3           pillar_1.11.1          
+    ## [25] RColorBrewer_1.1-3      rlang_1.1.6             xfun_0.53              
+    ## [28] S7_0.2.0                cli_3.6.5               digest_0.6.37          
+    ## [31] grid_4.5.1              rstudioapi_0.17.1       askpass_1.2.1          
+    ## [34] lifecycle_1.0.4         vctrs_0.6.5             evaluate_1.0.5         
+    ## [37] glue_1.8.0              farver_2.1.2            fontLiberation_0.1.0   
+    ## [40] officer_0.7.0           ragg_1.5.0              fontBitstreamVera_0.1.1
+    ## [43] rmarkdown_2.29          pkgconfig_2.0.3         tools_4.5.1            
+    ## [46] htmltools_0.5.8.1
