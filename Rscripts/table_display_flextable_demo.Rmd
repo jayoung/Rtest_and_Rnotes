@@ -14,44 +14,85 @@ library(data.table)
 library(magrittr)
 ```
 
-Checking out the `flextable` package, using code from the [flextable "book" website](https://ardata-fr.github.io/flextable-book/index.html).
+Checking out the `flextable` package
+
+
+# Summary of features I might want to use
+
+```{r}
+## , tab.width=0.1
+## make sure the package defaults are in place 
+init_flextable_defaults()
+## set some of my own defaults
+set_flextable_defaults(text.align = "center", 
+                       font.size = 6,
+                       layout = "autofit") # text.align here doesn't seem to work
+my_flextable <- flextable(head(mtcars), 
+                  col_keys = c("am", "carb", "gear", "mpg", "drat" ))  %>% 
+    align(align = "center", part = "all") %>%
+    border_inner_h(officer::fp_border(color = "lightgrey", width=0.25), part="all") %>% 
+    border_inner_v(officer::fp_border(color = "lightgrey", width=0.25), part="all") %>% 
+    ## above and below the header:
+    border(border.top=officer::fp_border(color = "darkgrey", width=0.5), 
+           border.bottom=officer::fp_border(color = "darkgrey", width=0.5), 
+           part="header") %>%
+    hline_bottom(border = officer::fp_border(color = "darkgrey", width=0.5), part = "body") %>% 
+    ## conditional formatting
+    ## add red to just the drat column, based on drat column value
+    color(i=  ~ drat > 3.5, j = ~ drat , color = "red") %>% 
+    ## bold every cell in the row, based on drat column value
+    bold(i = ~ drat > 3.5, j = NULL, bold = TRUE) %>% 
+    # width(width=0.4) ## width of the table in inches
+    set_table_properties(layout = "autofit", width = .2) %>% 
+    set_caption(caption =  as_paragraph( as_chunk("Example flextable",
+                                                  props = fp_text_default() )))
+
+my_flextable
+```
+
+# More code examples
+
+Code comes from the [flextable "book" website](https://ardata-fr.github.io/flextable-book/index.html).
 
 More examples in the [flextable gallery](https://ardata.fr/en/flextable-gallery/)
 
-Simple table display
+Simple table display (flextable does a bit of formatting, including autofit on the columns)
 
 ```{r}
 df <- airquality[ sample.int(10),]
 flextable(df)
 ```
 
-flextable does a bit more formatting, including autofit on the columns
-```{r}
-flextable(df)
-```
 
 Fancier
 
 ```{r}
 ft <- flextable(df)
 ft <- add_header_row(ft,
-  colwidths = c(4, 2),
-  values = c("Air quality", "Time")
+                     colwidths = c(4, 2),
+                     values = c("Air quality", "Time")
 )
+
 ft <- theme_vanilla(ft)
 ft <- add_footer_lines(ft, "Daily air quality measurements in New York, May to September 1973.")
 ft <- color(ft, part = "footer", color = "#666666")
 ft <- set_caption(ft, caption = "New York Air Quality Measurements")
+# center the header row labels
+ft <- align(ft,
+            i = 1, j = NULL,
+            align = "center", part = "header")
+
 ft
 ```
 
-Using default display settings:
+Use `set_flextable_defaults` to change the default display settings:
 
 ```{r}
 set_flextable_defaults(
-  font.size = 10, theme_fun = theme_vanilla,
-  padding = 6,
-  background.color = "#EFEFEF")
+    font.size = 10, 
+    theme_fun = theme_vanilla,
+    padding = 6,
+    background.color = "#EFEFEF")
 flextable(df)
 ```
 
@@ -59,7 +100,7 @@ Use col_keys to select some columns
 
 ```{r}
 myft <- flextable(head(mtcars), 
-  col_keys = c("am", "carb", "gear", "mpg", "drat" ))
+                  col_keys = c("am", "carb", "gear", "mpg", "drat" ))
 myft
 ```
 
@@ -78,8 +119,8 @@ Adding header rows that span >1 column:
 
 ```{r}
 myft <- add_header_row(
-  x = myft, values = c("some measures", "other measures"),
-  colwidths = c(3, 2))
+    x = myft, values = c("some measures", "other measures"),
+    colwidths = c(3, 2))
 myft <- align(myft, i = 1, part = "header", align = "center")
 myft
 ```
@@ -97,10 +138,10 @@ Ask to display non-existent columns if we want to separate groups of columns a b
 
 ```{r}
 myft <- flextable(
-  data = head(airquality), 
-  col_keys = c("Ozone", "Solar.R", "col1", "Month", "Day")) |> 
-  width(j = "col1", width = .2) |>
-  empty_blanks()
+    data = head(airquality), 
+    col_keys = c("Ozone", "Solar.R", "col1", "Month", "Day")) |> 
+    width(j = "col1", width = .2) |>
+    empty_blanks()
 myft
 ```
 
@@ -111,18 +152,18 @@ Cute table that includes tiny plots:
 z <- as.data.table(ggplot2::diamonds)
 
 z <- z[, list(
-  price = mean(price, na.rm = TRUE),
-  list_col = list(.SD$x)
+    price = mean(price, na.rm = TRUE),
+    list_col = list(.SD$x)
 ), by = "cut"]
 
 # flextable ----
 ft <- flextable(data = z) %>%
-  mk_par(j = "list_col", value = as_paragraph(
-    plot_chunk(value = list_col, type = "dens", col = "#ec11c2", 
-               width = 1.5, height = .4, free_scale = TRUE)
-  )) %>%
-  colformat_double(big.mark = " ", suffix = " $") %>% 
-  autofit()
+    mk_par(j = "list_col", value = as_paragraph(
+        plot_chunk(value = list_col, type = "dens", col = "#ec11c2", 
+                   width = 1.5, height = .4, free_scale = TRUE)
+    )) %>%
+    colformat_double(big.mark = " ", suffix = " $") %>% 
+    autofit()
 ft
 ```
 
@@ -139,4 +180,10 @@ set_flextable_defaults(font.size = 11, padding = 3)
 use_df_printer()
 ```
 
+
+# Finished
+
+```{r}
+sessionInfo()
+```
 
