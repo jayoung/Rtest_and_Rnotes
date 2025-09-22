@@ -37,9 +37,9 @@ my_flextable <- flextable(head(mtcars),
     ## bold every cell in the row, based on drat column value
     bold(i = ~ drat > 3.5, j = NULL, bold = TRUE) %>% 
     # width(width=0.4) ## width of the table in inches
-    set_table_properties(layout = "autofit", width = .2) %>% 
-    set_caption(caption =  as_paragraph( as_chunk("Example flextable",
-                                                  props = fp_text_default() )))
+    set_table_properties(layout = "autofit", width = .2) #%>% 
+    # set_caption(caption =  as_paragraph( as_chunk("Example flextable",
+    #                                               props = fp_text_default() )))
 
 my_flextable
 ```

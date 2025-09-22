@@ -24,7 +24,7 @@ The caption displays within my Rstudio session but not when I knit the doc or sy
 
 Table width also doesn't seem to be carried through when I knit
 
-```{r, tab.width=0.1}
+```{r, tab.width=10, tab.cap="hello", tab.topcaption=TRUE}
 ## 
 ## make sure the package defaults are in place 
 init_flextable_defaults()
@@ -48,9 +48,9 @@ my_flextable <- flextable(head(mtcars),
     ## bold every cell in the row, based on drat column value
     bold(i = ~ drat > 3.5, j = NULL, bold = TRUE) %>% 
     # width(width=0.4) ## width of the table in inches
-    set_table_properties(layout = "autofit", width = .2) %>% 
-    set_caption(caption =  as_paragraph( as_chunk("Example flextable",
-                                                  props = fp_text_default() )))
+    set_table_properties(layout = "autofit", width = .2) #%>% 
+    # set_caption(caption =  as_paragraph( as_chunk("Example flextable",
+    #                                               props = fp_text_default() )))
 
 my_flextable
 ```
