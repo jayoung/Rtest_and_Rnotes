@@ -21,12 +21,266 @@ mtcars %>%
     mutate(drat = cell_spec(drat, 
                             format = "html", 
                             background=ifelse(drat > 3, "red", "green"))) %>% 
-    kable(# "html",
-        format = "latex", 
+    kable("html",
+        # format = "latex", 
         # booktabs = TRUE,
           caption="Example kable table", escape = FALSE) %>% 
     kable_styling(full_width = FALSE)
 ```
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+
+<caption>
+
+Example kable table
+</caption>
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+</th>
+
+<th style="text-align:right;">
+
+am
+</th>
+
+<th style="text-align:right;">
+
+carb
+</th>
+
+<th style="text-align:right;">
+
+gear
+</th>
+
+<th style="text-align:right;">
+
+mpg
+</th>
+
+<th style="text-align:left;">
+
+drat
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+Mazda RX4
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+21.0
+</td>
+
+<td style="text-align:left;">
+
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: red !important;">3.9</span>
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Mazda RX4 Wag
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+21.0
+</td>
+
+<td style="text-align:left;">
+
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: red !important;">3.9</span>
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Datsun 710
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+22.8
+</td>
+
+<td style="text-align:left;">
+
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: red !important;">3.85</span>
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Hornet 4 Drive
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:right;">
+
+21.4
+</td>
+
+<td style="text-align:left;">
+
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: red !important;">3.08</span>
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Hornet Sportabout
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+2
+</td>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:right;">
+
+18.7
+</td>
+
+<td style="text-align:left;">
+
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: red !important;">3.15</span>
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Valiant
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:right;">
+
+18.1
+</td>
+
+<td style="text-align:left;">
+
+<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: green !important;">2.76</span>
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 ## kableExtra cookbook example
 

@@ -28,8 +28,8 @@ mtcars %>%
     mutate(drat = cell_spec(drat, 
                             format = "html", 
                             background=ifelse(drat > 3, "red", "green"))) %>% 
-    kable(# "html",
-        format = "latex", 
+    kable("html",
+        # format = "latex", 
         # booktabs = TRUE,
           caption="Example kable table", escape = FALSE) %>% 
     kable_styling(full_width = FALSE)
