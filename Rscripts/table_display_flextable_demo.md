@@ -46,6 +46,15 @@ my_flextable
 
 <img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-1-1.png" width="400" />
 
+Try wrapping in plot
+
+``` r
+## we lose the caption
+plot(my_flextable) 
+```
+
+![](table_display_flextable_demo_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
 Try a save-table-as-image cheat (see
 <https://github.com/davidgohel/flextable/issues/532>)
 
@@ -75,7 +84,7 @@ df <- airquality[ sample.int(10),]
 flextable(df)
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-3-1.png" width="900" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-4-1.png" width="900" />
 
 Fancier
 
@@ -98,7 +107,7 @@ ft <- align(ft,
 ft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-4-1.png" width="900" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-5-1.png" width="900" />
 
 Use `set_flextable_defaults` to change the default display settings:
 
@@ -111,7 +120,7 @@ set_flextable_defaults(
 flextable(df)
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-5-1.png" width="900" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-6-1.png" width="900" />
 
 Use col_keys to select some columns
 
@@ -121,7 +130,7 @@ myft <- flextable(head(mtcars),
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-6-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-7-1.png" width="750" />
 
 Formatting certain cells/columns  
 - use j to specify certain column(s) by index - can use conditional
@@ -134,7 +143,7 @@ myft <- bold(myft, ~ drat > 3.5, ~ drat, bold = TRUE)
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-7-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-8-1.png" width="750" />
 
 Adding header rows that span \>1 column:
 
@@ -146,7 +155,7 @@ myft <- align(myft, i = 1, part = "header", align = "center")
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-8-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-9-1.png" width="750" />
 
 Aligning within the parent document:
 
@@ -155,7 +164,7 @@ myft <- set_table_properties(myft, align = "right", layout = "autofit")
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-9-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-10-1.png" width="750" />
 
 Ask to display non-existent columns if we want to separate groups of
 columns a bit - here we ask for the `col1` column. Also `empty_blanks()`
@@ -170,7 +179,7 @@ myft <- flextable(
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-10-1.png" width="610" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-11-1.png" width="610" />
 
 Cute table that includes tiny plots:
 
@@ -205,7 +214,7 @@ ft
     ## Warning in (function (img_data, width = NULL, height = NULL) : package 'magick'
     ## is required to read image files
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-11-1.png" width="741" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-12-1.png" width="741" />
 
 Exporting formatted tables: `save_as_docx`, `save_as_pptx`,
 `save_as_image`

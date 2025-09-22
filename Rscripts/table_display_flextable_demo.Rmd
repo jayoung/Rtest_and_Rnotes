@@ -55,6 +55,11 @@ my_flextable <- flextable(head(mtcars),
 my_flextable
 ```
 
+Try wrapping in plot
+```{r, fig.height=2, fig.width=2}
+## we lose the caption
+plot(my_flextable) 
+```
 
 Try a save-table-as-image cheat (see https://github.com/davidgohel/flextable/issues/532)
 

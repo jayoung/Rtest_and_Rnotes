@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
 library(gt)
+library(chromote)
 ```
 
 gt seems great. There's a wrinkle when using github.com to display our knitted Rmd docs though:
@@ -21,7 +22,7 @@ gt seems great. There's a wrinkle when using github.com to display our knitted R
 
 BUT that cheat doesn't work on rhino/gizmo Rstudio-server, because gtsave fails with this error: `Error in initialize(...) : Invalid path to Chrome`
 
-In the code below I use that cheat.
+In the code below I use that cheat and render the Rmd to md on my Mac.
 
 ## S&P example
 

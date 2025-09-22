@@ -2,13 +2,14 @@ table_display_gt_demo
 ================
 Janet Young
 
-2025-09-18
+2025-09-22
 
 ``` r
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
 library(gt)
+library(chromote)
 ```
 
 gt seems great. There’s a wrinkle when using github.com to display our
@@ -23,7 +24,11 @@ knitted Rmd docs though:
   (e.g. `![](temp.png)`, or with resizing:
   `![](temp.png){#id .class width=20% height=20%}`)
 
-In the code below I use that cheat.
+BUT that cheat doesn’t work on rhino/gizmo Rstudio-server, because
+gtsave fails with this error:
+`Error in initialize(...) : Invalid path to Chrome`
+
+In the code below I use that cheat and render the Rmd to md on my Mac.
 
 ## S&P example
 
@@ -144,20 +149,21 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] gt_1.0.0        here_1.0.1      lubridate_1.9.4 forcats_1.0.0  
-    ##  [5] stringr_1.5.1   dplyr_1.1.4     purrr_1.1.0     readr_2.1.5    
-    ##  [9] tidyr_1.3.1     tibble_3.3.0    ggplot2_3.5.2   tidyverse_2.0.0
+    ##  [1] chromote_0.5.1  gt_1.0.0        here_1.0.2      lubridate_1.9.4
+    ##  [5] forcats_1.0.0   stringr_1.5.2   dplyr_1.1.4     purrr_1.1.0    
+    ##  [9] readr_2.1.5     tidyr_1.3.1     tibble_3.3.0    ggplot2_4.0.0  
+    ## [13] tidyverse_2.0.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] sass_0.4.10        generics_0.1.4     xml2_1.3.8         stringi_1.8.7     
-    ##  [5] hms_1.1.3          digest_0.6.37      magrittr_2.0.3     evaluate_1.0.4    
+    ##  [1] sass_0.4.10        generics_0.1.4     xml2_1.4.0         stringi_1.8.7     
+    ##  [5] hms_1.1.3          digest_0.6.37      magrittr_2.0.4     evaluate_1.0.5    
     ##  [9] grid_4.5.1         timechange_0.3.0   RColorBrewer_1.1-3 fastmap_1.2.0     
-    ## [13] rprojroot_2.1.0    jsonlite_2.0.0     processx_3.8.6     chromote_0.5.1    
-    ## [17] ps_1.9.1           promises_1.3.3     scales_1.4.0       cli_3.6.5         
-    ## [21] rlang_1.1.6        bigD_0.3.1         withr_3.0.2        yaml_2.3.10       
-    ## [25] tools_4.5.1        tzdb_0.5.0         vctrs_0.6.5        R6_2.6.1          
-    ## [29] lifecycle_1.0.4    fs_1.6.6           pkgconfig_2.0.3    pillar_1.11.0     
-    ## [33] later_1.4.2        gtable_0.3.6       glue_1.8.0         Rcpp_1.1.0        
-    ## [37] xfun_0.52          tidyselect_1.2.1   rstudioapi_0.17.1  knitr_1.50        
-    ## [41] farver_2.1.2       websocket_1.4.4    htmltools_0.5.8.1  rmarkdown_2.29    
-    ## [45] webshot2_0.1.2     compiler_4.5.1
+    ## [13] rprojroot_2.1.1    jsonlite_2.0.0     processx_3.8.6     ps_1.9.1          
+    ## [17] promises_1.3.3     scales_1.4.0       cli_3.6.5          rlang_1.1.6       
+    ## [21] bigD_0.3.1         withr_3.0.2        yaml_2.3.10        tools_4.5.1       
+    ## [25] tzdb_0.5.0         vctrs_0.6.5        R6_2.6.1           lifecycle_1.0.4   
+    ## [29] fs_1.6.6           pkgconfig_2.0.3    pillar_1.11.1      later_1.4.4       
+    ## [33] gtable_0.3.6       glue_1.8.0         Rcpp_1.1.0         xfun_0.53         
+    ## [37] tidyselect_1.2.1   rstudioapi_0.17.1  knitr_1.50         farver_2.1.2      
+    ## [41] htmltools_0.5.8.1  websocket_1.4.4    webshot2_0.1.2     rmarkdown_2.29    
+    ## [45] compiler_4.5.1     S7_0.2.0
