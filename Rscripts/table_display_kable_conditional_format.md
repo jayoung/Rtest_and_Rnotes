@@ -4,6 +4,16 @@ Janet Young
 
 2025-09-22
 
+# Goal
+
+Get conditional formatting using kable to show up in a github_document
+rendering.
+
+Problem - it shows up nicely in the Rstudio interface and in the knit
+window that pops up, but not when we render it on the github site.
+
+## mtcars example
+
 ``` r
 mtcars %>% 
     slice_head(n=6) %>% 
@@ -11,7 +21,9 @@ mtcars %>%
     mutate(drat = cell_spec(drat, 
                             format = "html", 
                             background=ifelse(drat > 3, "red", "green"))) %>% 
-    kable("html",
+    kable(# "html",
+        format = "pipe", 
+        # booktabs = TRUE,
           caption="Example kable table", escape = FALSE) %>% 
     kable_styling(full_width = FALSE)
 ```
@@ -91,7 +103,8 @@ Mazda RX4
 
 <td style="text-align:left;">
 
-<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: red !important;">3.9</span>
+\<span style=” border-radius: 4px; padding-right: 4px; padding-left:
+4px; background-color: red !important;” \>3.9\</span\>
 </td>
 
 </tr>
@@ -125,7 +138,8 @@ Mazda RX4 Wag
 
 <td style="text-align:left;">
 
-<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: red !important;">3.9</span>
+\<span style=” border-radius: 4px; padding-right: 4px; padding-left:
+4px; background-color: red !important;” \>3.9\</span\>
 </td>
 
 </tr>
@@ -159,7 +173,8 @@ Datsun 710
 
 <td style="text-align:left;">
 
-<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: red !important;">3.85</span>
+\<span style=” border-radius: 4px; padding-right: 4px; padding-left:
+4px; background-color: red !important;” \>3.85\</span\>
 </td>
 
 </tr>
@@ -193,7 +208,8 @@ Hornet 4 Drive
 
 <td style="text-align:left;">
 
-<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: red !important;">3.08</span>
+\<span style=” border-radius: 4px; padding-right: 4px; padding-left:
+4px; background-color: red !important;” \>3.08\</span\>
 </td>
 
 </tr>
@@ -227,7 +243,8 @@ Hornet Sportabout
 
 <td style="text-align:left;">
 
-<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: red !important;">3.15</span>
+\<span style=” border-radius: 4px; padding-right: 4px; padding-left:
+4px; background-color: red !important;” \>3.15\</span\>
 </td>
 
 </tr>
@@ -261,7 +278,8 @@ Valiant
 
 <td style="text-align:left;">
 
-<span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: green !important;">2.76</span>
+\<span style=” border-radius: 4px; padding-right: 4px; padding-left:
+4px; background-color: green !important;” \>2.76\</span\>
 </td>
 
 </tr>
@@ -269,6 +287,8 @@ Valiant
 </tbody>
 
 </table>
+
+## kableExtra cookbook example
 
 Example from here
 <https://sharlagelfand.github.io/kableExtra-cookbook/how-to.html#>
