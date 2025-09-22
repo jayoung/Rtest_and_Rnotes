@@ -19,6 +19,14 @@ Get conditional formatting using kable to show up in a github_document rendering
 
 Problem - it shows up nicely in the Rstudio interface and in the knit window that pops up, but not when we render it on the github site.
 
+A possible solution could be to make the github repo a 'github pages' site, and render to html_document, but I think in that case the github pages have to be public (even if the code is not)
+
+xx I think I could push on the approach of capturing the table to an image and then embedding it. Works on the Mac but the rhino/gizmo doesn't find chrome, so cannot do a webshot. But I could either try to find chrome, or find another snapshotting way to capture the image.
+
+https://www.littlemissdata.com/blog/pretty-r-tables-in-github
+
+https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site
+
 ## mtcars example
 
 
@@ -43,8 +51,8 @@ Show without conditional formatting  adding html options:
 ```{r}
 my_dat %>% 
     kable("html",
-        # format = "latex", 
-        # booktabs = TRUE,
+          # format = "latex", 
+          # booktabs = TRUE,
           caption="Example kable table without conditional formatting add html option", escape = FALSE) %>% 
     kable_styling(full_width = FALSE)
 ```
@@ -58,28 +66,25 @@ my_dat %>%
                             format = "html", 
                             background=ifelse(drat > 3, "red", "green"))) %>% 
     kable("html",
-        # format = "latex", 
-        # booktabs = TRUE,
+          # format = "latex", 
+          # booktabs = TRUE,
           caption="Example kable table with conditional formatting", escape = FALSE) %>% 
     kable_styling(full_width = FALSE)
 ```
 
- (there is also `row_spec` and `column_spec`)
- 
- 
-With conditional formatting (uses `cell_spec()`):
+(there is also `row_spec` and `column_spec`)
+
+
+Try row_spec (operates AFTER kable_styling, so maybe it'll show up?  NO. Again, works within Rstudio but doesn't render on github)
 
 ```{r}
 my_dat %>% 
-    # mutate(drat = cell_spec(drat, 
-    #                         format = "html", 
-    #                         background=ifelse(drat > 3, "red", "green"))) %>% 
     kable("html",
-        # format = "latex", 
-        # booktabs = TRUE,
+          # format = "latex", 
+          # booktabs = TRUE,
           caption="Example kable table with conditional formatting", escape = FALSE) %>% 
     kable_styling(full_width = FALSE) %>%
-  row_spec(3:4, bold = T, color = "white", background = "#D7261E")
+    row_spec(3:4, bold = T, color = "white", background = "#D7261E")
 ```
 
 ## kableExtra cookbook example
