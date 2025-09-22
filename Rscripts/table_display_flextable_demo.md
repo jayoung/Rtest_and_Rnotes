@@ -50,16 +50,17 @@ Try a save-table-as-image cheat (see
 <https://github.com/davidgohel/flextable/issues/532>)
 
 ``` r
-knitr::opts_chunk$set(dev = "ragg_png")
+# knitr::opts_chunk$set(dev = "ragg_png")
 ```
 
 ``` r
 temp <- save_as_image(my_flextable, 
-              path=here("Rscripts/table_display_temp_tables/temp_flextable_3.png")) # suppressMessages( )
+              path=here("Rscripts/table_display_temp_tables/temp_flextable_3.png")) 
+
+# {#id .class width=20% height=20%}
 ```
 
-<img src="table_display_temp_tables/temp_flextable_3.png" id="id"
-class="class" style="width:20.0%;height:20.0%" />
+![](table_display_temp_tables/temp_flextable_3.png)
 
 # More code examples
 
