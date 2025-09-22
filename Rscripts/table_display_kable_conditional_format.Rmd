@@ -29,7 +29,7 @@ mtcars %>%
                             format = "html", 
                             background=ifelse(drat > 3, "red", "green"))) %>% 
     kable(# "html",
-        format = "pipe", 
+        format = "latex", 
         # booktabs = TRUE,
           caption="Example kable table", escape = FALSE) %>% 
     kable_styling(full_width = FALSE)
