@@ -33,7 +33,7 @@ set_flextable_defaults(text.align = "center",
                        font.size = 6,
                        layout = "autofit") # text.align here doesn't seem to work
 my_flextable <- flextable(head(mtcars), 
-                  col_keys = c("am", "carb", "gear", "mpg", "drat" ))  %>% 
+                          col_keys = c("am", "carb", "gear", "mpg", "drat" ))  %>% 
     align(align = "center", part = "all") %>%
     border_inner_h(officer::fp_border(color = "lightgrey", width=0.25), part="all") %>% 
     border_inner_v(officer::fp_border(color = "lightgrey", width=0.25), part="all") %>% 
@@ -47,10 +47,10 @@ my_flextable <- flextable(head(mtcars),
     color(i=  ~ drat > 3.5, j = ~ drat , color = "red") %>% 
     ## bold every cell in the row, based on drat column value
     bold(i = ~ drat > 3.5, j = NULL, bold = TRUE) %>% 
-    # width(width=0.4) ## width of the table in inches
-    set_table_properties(layout = "autofit", width = .2) #%>% 
-    # set_caption(caption =  as_paragraph( as_chunk("Example flextable",
-    #                                               props = fp_text_default() )))
+    width(width=0.4) %>% ## width of the table in inches
+    set_table_properties(layout = "autofit", width = .2) %>% 
+    set_caption(caption =  as_paragraph( as_chunk("Example flextable",
+                                                  props = fp_text_default() )))
 
 my_flextable
 ```
@@ -58,18 +58,15 @@ my_flextable
 
 Try a save-table-as-image cheat (see https://github.com/davidgohel/flextable/issues/532)
 
-```{r}
-# knitr::opts_chunk$set(dev = "ragg_png")
-```
 
 ```{r}
 temp <- save_as_image(my_flextable, 
-              path=here("Rscripts/table_display_temp_tables/temp_flextable_3.png")) 
+                      path=here("Rscripts/table_display_temp_tables/temp_flextable_3.png")) 
 
 # {#id .class width=20% height=20%}
 ```
 
-![](table_display_temp_tables/temp_flextable_3.png)
+![](table_display_temp_tables/temp_flextable_3.png){#id .class width=50% height=50%}
 
 
 # More code examples

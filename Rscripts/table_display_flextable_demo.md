@@ -22,7 +22,7 @@ set_flextable_defaults(text.align = "center",
                        font.size = 6,
                        layout = "autofit") # text.align here doesn't seem to work
 my_flextable <- flextable(head(mtcars), 
-                  col_keys = c("am", "carb", "gear", "mpg", "drat" ))  %>% 
+                          col_keys = c("am", "carb", "gear", "mpg", "drat" ))  %>% 
     align(align = "center", part = "all") %>%
     border_inner_h(officer::fp_border(color = "lightgrey", width=0.25), part="all") %>% 
     border_inner_v(officer::fp_border(color = "lightgrey", width=0.25), part="all") %>% 
@@ -36,31 +36,28 @@ my_flextable <- flextable(head(mtcars),
     color(i=  ~ drat > 3.5, j = ~ drat , color = "red") %>% 
     ## bold every cell in the row, based on drat column value
     bold(i = ~ drat > 3.5, j = NULL, bold = TRUE) %>% 
-    # width(width=0.4) ## width of the table in inches
-    set_table_properties(layout = "autofit", width = .2) #%>% 
-    # set_caption(caption =  as_paragraph( as_chunk("Example flextable",
-    #                                               props = fp_text_default() )))
+    width(width=0.4) %>% ## width of the table in inches
+    set_table_properties(layout = "autofit", width = .2) %>% 
+    set_caption(caption =  as_paragraph( as_chunk("Example flextable",
+                                                  props = fp_text_default() )))
 
 my_flextable
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-1-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-1-1.png" width="400" />
 
 Try a save-table-as-image cheat (see
 <https://github.com/davidgohel/flextable/issues/532>)
 
 ``` r
-# knitr::opts_chunk$set(dev = "ragg_png")
-```
-
-``` r
 temp <- save_as_image(my_flextable, 
-              path=here("Rscripts/table_display_temp_tables/temp_flextable_3.png")) 
+                      path=here("Rscripts/table_display_temp_tables/temp_flextable_3.png")) 
 
 # {#id .class width=20% height=20%}
 ```
 
-![](table_display_temp_tables/temp_flextable_3.png)
+<img src="table_display_temp_tables/temp_flextable_3.png" id="id"
+class="class" style="width:50.0%;height:50.0%" />
 
 # More code examples
 
@@ -78,7 +75,7 @@ df <- airquality[ sample.int(10),]
 flextable(df)
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-4-1.png" width="900" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-3-1.png" width="900" />
 
 Fancier
 
@@ -101,7 +98,7 @@ ft <- align(ft,
 ft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-5-1.png" width="900" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-4-1.png" width="900" />
 
 Use `set_flextable_defaults` to change the default display settings:
 
@@ -114,7 +111,7 @@ set_flextable_defaults(
 flextable(df)
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-6-1.png" width="900" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-5-1.png" width="900" />
 
 Use col_keys to select some columns
 
@@ -124,7 +121,7 @@ myft <- flextable(head(mtcars),
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-7-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-6-1.png" width="750" />
 
 Formatting certain cells/columns  
 - use j to specify certain column(s) by index - can use conditional
@@ -137,7 +134,7 @@ myft <- bold(myft, ~ drat > 3.5, ~ drat, bold = TRUE)
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-8-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-7-1.png" width="750" />
 
 Adding header rows that span \>1 column:
 
@@ -149,7 +146,7 @@ myft <- align(myft, i = 1, part = "header", align = "center")
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-9-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-8-1.png" width="750" />
 
 Aligning within the parent document:
 
@@ -158,7 +155,7 @@ myft <- set_table_properties(myft, align = "right", layout = "autofit")
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-10-1.png" width="750" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-9-1.png" width="750" />
 
 Ask to display non-existent columns if we want to separate groups of
 columns a bit - here we ask for the `col1` column. Also `empty_blanks()`
@@ -173,7 +170,7 @@ myft <- flextable(
 myft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-11-1.png" width="610" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-10-1.png" width="610" />
 
 Cute table that includes tiny plots:
 
@@ -208,7 +205,7 @@ ft
     ## Warning in (function (img_data, width = NULL, height = NULL) : package 'magick'
     ## is required to read image files
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-12-1.png" width="741" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-11-1.png" width="741" />
 
 Exporting formatted tables: `save_as_docx`, `save_as_pptx`,
 `save_as_image`
