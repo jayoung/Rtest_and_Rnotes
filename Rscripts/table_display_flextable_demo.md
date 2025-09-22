@@ -2,7 +2,7 @@ table_display_flextable_demo
 ================
 Janet Young
 
-2025-09-18
+2025-09-22
 
 Checking out the `flextable` package, using code from the [flextable
 “book” website](https://ardata-fr.github.io/flextable-book/index.html).
@@ -42,7 +42,7 @@ ft <- set_caption(ft, caption = "New York Air Quality Measurements")
 ft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-3-1.png" width="902" />
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-3-1.png" width="900" />
 
 Using default display settings:
 
@@ -137,7 +137,18 @@ ft <- flextable(data = z) %>%
 ft
 ```
 
-<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-10-1.png" width="771" />
+    ## Warning in (function (img_data, width = NULL, height = NULL) : package 'magick'
+    ## is required to read image files
+    ## Warning in (function (img_data, width = NULL, height = NULL) : package 'magick'
+    ## is required to read image files
+    ## Warning in (function (img_data, width = NULL, height = NULL) : package 'magick'
+    ## is required to read image files
+    ## Warning in (function (img_data, width = NULL, height = NULL) : package 'magick'
+    ## is required to read image files
+    ## Warning in (function (img_data, width = NULL, height = NULL) : package 'magick'
+    ## is required to read image files
+
+<img src="table_display_flextable_demo_files/figure-gfm/unnamed-chunk-10-1.png" width="741" />
 
 Exporting formatted tables: `save_as_docx`, `save_as_pptx`,
 `save_as_image`
