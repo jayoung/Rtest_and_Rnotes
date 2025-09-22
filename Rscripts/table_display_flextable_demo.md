@@ -8,8 +8,13 @@ Checking out the `flextable` package
 
 # Summary of features I might want to use
 
+The caption displays within my Rstudio session but not when I knit the
+doc or sync to github.
+
+Table width also doesn’t seem to be carried through when I knit
+
 ``` r
-## , tab.width=0.1
+## 
 ## make sure the package defaults are in place 
 init_flextable_defaults()
 ## set some of my own defaults
