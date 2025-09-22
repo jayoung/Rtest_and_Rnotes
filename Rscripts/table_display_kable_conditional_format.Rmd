@@ -50,7 +50,7 @@ my_dat %>%
 ```
 
 
-With conditional formatting:
+With conditional formatting (uses `cell_spec()`):
 
 ```{r}
 my_dat %>% 
@@ -63,6 +63,25 @@ my_dat %>%
           caption="Example kable table with conditional formatting", escape = FALSE) %>% 
     kable_styling(full_width = FALSE)
 ```
+
+ (there is also `row_spec` and `column_spec`)
+ 
+ 
+With conditional formatting (uses `cell_spec()`):
+
+```{r}
+my_dat %>% 
+    # mutate(drat = cell_spec(drat, 
+    #                         format = "html", 
+    #                         background=ifelse(drat > 3, "red", "green"))) %>% 
+    kable("html",
+        # format = "latex", 
+        # booktabs = TRUE,
+          caption="Example kable table with conditional formatting", escape = FALSE) %>% 
+    kable_styling(full_width = FALSE) %>%
+  row_spec(3:4, bold = T, color = "white", background = "#D7261E")
+```
+
 ## kableExtra cookbook example
 
 Example from here https://sharlagelfand.github.io/kableExtra-cookbook/how-to.html#

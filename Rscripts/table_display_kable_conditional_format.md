@@ -549,7 +549,7 @@ Valiant
 
 </table>
 
-With conditional formatting:
+With conditional formatting (uses `cell_spec()`):
 
 ``` r
 my_dat %>% 
@@ -809,6 +809,277 @@ Valiant
 <td style="text-align:left;">
 
 <span style="     border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: green !important;">2.76</span>
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+(there is also `row_spec` and `column_spec`)
+
+With conditional formatting (uses `cell_spec()`):
+
+``` r
+my_dat %>% 
+    # mutate(drat = cell_spec(drat, 
+    #                         format = "html", 
+    #                         background=ifelse(drat > 3, "red", "green"))) %>% 
+    kable("html",
+        # format = "latex", 
+        # booktabs = TRUE,
+          caption="Example kable table with conditional formatting", escape = FALSE) %>% 
+    kable_styling(full_width = FALSE) %>%
+  row_spec(3:4, bold = T, color = "white", background = "#D7261E")
+```
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+
+<caption>
+
+Example kable table with conditional formatting
+</caption>
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+</th>
+
+<th style="text-align:right;">
+
+am
+</th>
+
+<th style="text-align:right;">
+
+carb
+</th>
+
+<th style="text-align:right;">
+
+gear
+</th>
+
+<th style="text-align:right;">
+
+mpg
+</th>
+
+<th style="text-align:right;">
+
+drat
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+Mazda RX4
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+21.0
+</td>
+
+<td style="text-align:right;">
+
+3.90
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Mazda RX4 Wag
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+21.0
+</td>
+
+<td style="text-align:right;">
+
+3.90
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: rgba(215, 38, 30, 255) !important;">
+
+Datsun 710
+</td>
+
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: rgba(215, 38, 30, 255) !important;">
+
+1
+</td>
+
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: rgba(215, 38, 30, 255) !important;">
+
+1
+</td>
+
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: rgba(215, 38, 30, 255) !important;">
+
+4
+</td>
+
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: rgba(215, 38, 30, 255) !important;">
+
+22.8
+</td>
+
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: rgba(215, 38, 30, 255) !important;">
+
+3.85
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: rgba(215, 38, 30, 255) !important;">
+
+Hornet 4 Drive
+</td>
+
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: rgba(215, 38, 30, 255) !important;">
+
+0
+</td>
+
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: rgba(215, 38, 30, 255) !important;">
+
+1
+</td>
+
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: rgba(215, 38, 30, 255) !important;">
+
+3
+</td>
+
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: rgba(215, 38, 30, 255) !important;">
+
+21.4
+</td>
+
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: rgba(215, 38, 30, 255) !important;">
+
+3.08
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Hornet Sportabout
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+2
+</td>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:right;">
+
+18.7
+</td>
+
+<td style="text-align:right;">
+
+3.15
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Valiant
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:right;">
+
+18.1
+</td>
+
+<td style="text-align:right;">
+
+2.76
 </td>
 
 </tr>
