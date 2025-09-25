@@ -84,6 +84,11 @@ miscellaneous coll-looking R tips from [Luke Pemberton](https://lpembleton.rbind
 
 Blog post on working with [regular expressions](https://blog.djnavarro.net/posts/2024-12-16_regex-backreferences/)
 
+Bioconductor support:
+
+- [https://support.bioconductor.org/](https://support.bioconductor.org/)
+- Zulip workspace (a bit like Slack)
+
 ### haven't looked yet: future
 
 [The Elements of Data Analytic Style](https://leanpub.com/datastyle) by Jeff Leek (a Leanpub book)
