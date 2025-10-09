@@ -1,0 +1,133 @@
+---
+title: "MSAdist_demo"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: html_document
+---
+
+
+# Play with MSA2dist package
+
+See [documentation](https://bioconductor.org/packages/release/bioc/vignettes/MSA2dist/inst/doc/MSA2dist.html)
+
+```{r}
+library(MSA2dist)
+
+# output: github_document
+# always_allow_html: true
+
+# load example data
+data(hiv, package="MSA2dist")
+data(AAMatrix, package="MSA2dist")
+data(woodmouse, package="ape")
+```
+
+The `hiv` dataset is a DNAStringSet object, 13 DNA seqs, each 273bp in length (91aa)
+
+```{r}
+hiv
+```
+
+`MSA2dist::cds2aa` translates DNA seqs, has some options regarding which reading frame. Creates an AAStringSet object
+
+```{r}
+hiv_aa <- cds2aa(hiv) 
+hiv_aa
+```
+
+
+aastring2dist gets a distances matrix. We need to specify scoring matrix - the vignette uses Grantham scores. 
+
+Returns a list of three items [1] "distSTRING" "sitesUsed"  "regionUsed"
+
+Something is wrong on my computer!  doesn't display right at all. Should be a numeric matrix.
+
+```{r}
+hiv_aa_dist <- aastring2dist(hiv_aa, 
+                             score=granthamMatrix())
+
+# lapply(hiv_aa_dist, class)
+# hiv_aa_dist[["distSTRING"]] %>% head()
+# head(hiv_aa_dist$distSTRING)
+
+# distSTRING = matrix of distances
+# sitesUsed = matrix of number of sites used
+# regionUsed = IRanges object specifying which part of the alignment was used (default is the whole thing)
+```
+
+Show the distances between the first 4 seqs (wrap in as.matrix for now, because of a weird rendering bug probably with Rstudio)
+
+```{r}
+as.matrix(hiv_aa_dist[["distSTRING"]][1:4, 1:4])
+```
+
+Printing this matrix looks really wierd in the Rstudio/Rmd rendering but it looks OK under most other circumstances, e.g. if I wrap in `as.matrix()`, when I knit, and if I print in the console. I think something is going wrong in my Rstudio. Probably need a new version or to restart my computer or something.
+
+
+To use a different score matrix, here as an example the AAMatrix from the R package alakazam is used:
+
+```{r}
+head(AAMatrix)
+```
+
+# DNA distance
+
+```{r}
+aa.dist.AAMatrix <- aastring2dist(hiv_aa, score=AAMatrix)
+as.matrix(aa.dist.AAMatrix[["distSTRING"]][1:4, 1:4])
+
+```
+```{r}
+dna.dist <- dnastring2dist(hiv, model="K80")
+as.matrix(dna.dist[["distSTRING"]][1:4, 1:4])
+
+```
+
+# Ka/Ks
+
+There are tons of models available for Ka/Ks calculations
+
+```{r}
+ka_ks_li <- dnastring2kaks(hiv, model="Li")
+head( as.matrix( ka_ks_li ) )
+```
+
+```{r}
+ka_ks_YN <- dnastring2kaks(hiv, model="YN")
+head( as.matrix( ka_ks_YN ) )
+```
+
+## average behavior each codon
+
+dnastring2codonmat turns a DNA alignment into a matrix of codons. One row per codon slice of the alignment, one column per sequence in the alignment
+
+codonmat2xy does calculations for each codon position. "This function calculates average behavior of each codon for all pairwise comparisons for indels, syn, and nonsyn mutations according to Nei and Gojobori (1986)."
+
+
+Output:
+
+- n is number of pairwise comparisons
+
+```{r}
+
+hiv.xy <-  codonmat2xy(dnastring2codonmat(hiv))
+
+head(as.matrix(hiv.xy))
+
+```
+
+
+## Grantham scores
+
+I found [this info](https://gist.github.com/danielecook/501f03650bca6a3db31ff3af2d413d2a), not sure how correct it is: 
+
+[Grantham scores](https://www.science.org/doi/10.1126/science.185.4154.862), which categorize codon replacements into classes of increasing chemical dissimilarity, were designated conservative (0-50), moderately conservative (51-100), moderately radical (101-150), or radical (≥151) according to the classification proposed by Li et al. (28).  These numbers are estimated by looking at the frequency of all pair-wise amino acid substitutions between species. 
+
+
+
+
+# Finished
+
+```{r}
+sessionInfo()
+```

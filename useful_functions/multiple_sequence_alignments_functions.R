@@ -20,6 +20,14 @@ degapAln <- function(myAln, fractionOfSeqsWithGap=1) {
                      min.block.width=1) %>% 
             DNAStringSet()
     }
+    ## I don't think there is a BMultipleAlignment class!
+    if(class(myAln)=="BStringSet") {
+        maskedAln <- myAln %>% 
+            BMultipleAlignment() %>% 
+            maskGaps(min.fraction=fractionOfSeqsWithGap, 
+                     min.block.width=1) %>% 
+            BStringSet()
+    }
     if(is.null(maskedAln)) {
         stop("\n\nERROR - input alignment is an object of a class that the function is not set up to handle\n\n")
     }

@@ -2,12 +2,12 @@ divergence_metrics
 ================
 Janet Young
 
-2025-02-13
+2025-10-08
 
-Goal - play with code to look at divergence metrics in a multiple
-sequence alignment
+# Goal
 
-Load libraries
+Play with code to look at divergence metrics in a multiple sequence
+alignment
 
 ``` r
 knitr::opts_chunk$set(echo = TRUE)
@@ -16,6 +16,8 @@ library(Biostrings)
 library(pwalign)
 library(here)
 ```
+
+# Define some utility functions
 
 Set up a couple of utility functions to degap alignments
 
@@ -45,7 +47,9 @@ degapAAaln <- function(myAln, fractionOfSeqsWithGap=1) {
 }
 ```
 
-Read example alignments (DNA and protein)
+# Read example alignments (DNA and protein)
+
+Histon amino acid alignment
 
 ``` r
 aa_aln_histone <- here("Rscripts/multiple_sequence_alignments/example_alignment_files/exampleProtAln_shortH2As_histoneFoldDomain.fa") %>% 
@@ -70,8 +74,9 @@ aa_aln_histone
     ## [36]    82 ACLPTAELQFPVSYLDRLLQKDE...SSSVAQDVEGGVNNNREPQRQV H2A.P_rhino
     ## [37]    82 SLSARTEMEFSPSGLERLLQEDR...SHIAPLDVERGVRNNRLLRHLL H2A.P_armadillo
 
+Get a smaller alignment, for testing
+
 ``` r
-## get a smaller alignment
 aa_aln_h2a_l <- aa_aln_histone[ grep("H2A.L", names(aa_aln_histone)) ] %>% 
     degapAAaln()
 
@@ -89,9 +94,18 @@ aa_aln_h2a_l_firstBit
     ## [3]    12 TRSQRGEL--PL                                      H2A.L_mouse
     ## [4]    12 SCSSRAELQFPM                                      H2A.L_pig
 
-`stringDist()` counts number of changes between all pairs of sequences.
+## stringDist function
+
+`stringDist()` (was in Biostrings, moved to pwalign package)
+
+It counts number of changes between all pairs of sequences, using
+various methods - “levenshtein”, “hamming”, “quality”, or
+“substitutionMatrix”.
+
 (I checked - hamming and levenshtein give the same result for this
 particular alignment.)
+
+Show Hamming distances for the tiny alignment:
 
 ``` r
 aa_aln_h2a_l_firstBit %>% 
@@ -104,55 +118,43 @@ aa_aln_h2a_l_firstBit %>%
     ## H2A.L_mouse                             7         6           0         7
     ## H2A.L_pig                               7         3           7         0
 
+Further below I explore the other distance metrics.
+
+## Understand how gaps are counted
+
 To understand how gaps are counted, I make a very tiny alignment. I can
-see that a gap-to-AA mismatch is counted as distance 1.
+see that a gap-to-AA mismatch is counted as distance 1. I can also see
+that gap-to-gap positions count as 0 distance.
 
 ``` r
 aa_aln_h2a_l_firstBit_tiny <- aa_aln_h2a_l_firstBit[2:3] %>% 
     narrow(start=8, end=11)
+
+temp <- aa_aln_h2a_l_firstBit_tiny[2]
+names(temp) <- "H2A.L_mouse_again"
+aa_aln_h2a_l_firstBit_tiny <- c(aa_aln_h2a_l_firstBit_tiny,
+                                temp)
+
 aa_aln_h2a_l_firstBit_tiny
 ```
 
-    ## AAStringSet object of length 2:
+    ## AAStringSet object of length 3:
     ##     width seq                                               names               
     ## [1]     4 LQFP                                              H2A.L_rat
     ## [2]     4 L--P                                              H2A.L_mouse
+    ## [3]     4 L--P                                              H2A.L_mouse_again
+
+### gap handling by stringDist
 
 ``` r
 aa_aln_h2a_l_firstBit_tiny %>% 
     stringDist(diag=TRUE, upper=TRUE, method="hamming")
 ```
 
-    ##             H2A.L_rat H2A.L_mouse
-    ## H2A.L_rat           0           2
-    ## H2A.L_mouse         2           0
-
-Just double-checking - gap-to-gap is counted as distance 0:
-
-``` r
-aa_aln_h2a_l_firstBit_tiny_fakeAln <- aa_aln_h2a_l_firstBit_tiny[c(2,2)]
-aa_aln_h2a_l_firstBit_tiny_fakeAln
-```
-
-    ## AAStringSet object of length 2:
-    ##     width seq                                               names               
-    ## [1]     4 L--P                                              H2A.L_mouse
-    ## [2]     4 L--P                                              H2A.L_mouse
-
-``` r
-aa_aln_h2a_l_firstBit_tiny_fakeAln %>% 
-    stringDist(diag=TRUE, upper=TRUE, method="hamming")
-```
-
-    ##             H2A.L_mouse H2A.L_mouse
-    ## H2A.L_mouse           0           0
-    ## H2A.L_mouse           0           0
-
-``` r
-# dna_aln_cenH3 <- here("Rscripts/multiple_sequence_alignments/example_alignment_files/cenH3_aln8.nt.fa") %>% 
-#     readDNAStringSet()
-# dna_aln_cenH3
-```
+    ##                   H2A.L_rat H2A.L_mouse H2A.L_mouse_again
+    ## H2A.L_rat                 0           2                 2
+    ## H2A.L_mouse               2           0                 0
+    ## H2A.L_mouse_again         2           0                 0
 
 # Hamming versus Levenshtein distances
 
@@ -191,10 +193,54 @@ x %>% stringDist(diag=TRUE, upper=TRUE, method="levenshtein")
     ## lawn    0    2
     ## flaw    2    0
 
-xxxx
+Show levenshtein distances for the real tiny alignment:
 
-Play with more pwalign package functions - see
+``` r
+aa_aln_h2a_l_firstBit %>% 
+    stringDist(diag=TRUE, upper=TRUE, method="levenshtein")
+```
+
+    ##                      H2A.L_chineseHamster H2A.L_rat H2A.L_mouse H2A.L_pig
+    ## H2A.L_chineseHamster                    0         6           7         7
+    ## H2A.L_rat                               6         0           6         3
+    ## H2A.L_mouse                             7         6           0         7
+    ## H2A.L_pig                               7         3           7         0
+
+Haven’t run substitutionMatrix distances, because it requires providing
+a matrix using substitutionMatrix argument, and I haven’t tracked down
+an amino acid matrix that works. This code failes:
+
+``` r
+# data(BLOSUM62)
+# aa_aln_h2a_l_firstBit %>% 
+#     stringDist(diag=TRUE, upper=TRUE, 
+#                method="substitutionMatrix",
+#                substitutionMatrix=BLOSUM62)
+# Error in .Call2("XStringSet_align_distance", x, type, typeCode, gapOpening,  : 
+#   key 45 not in lookup table
+```
+
+Show quality distances for the tiny alignment. I have no idea what this
+is - I can only imagine it’s something intended for phred scores and
+it’s inappropriate to use here.
+
+``` r
+aa_aln_h2a_l_firstBit %>% 
+    stringDist(diag=TRUE, upper=TRUE, method="quality")
+```
+
+    ##                      H2A.L_chineseHamster H2A.L_rat H2A.L_mouse H2A.L_pig
+    ## H2A.L_chineseHamster              0.00000  13.82201     7.51834   7.51834
+    ## H2A.L_rat                        13.82201   0.00000    13.82201  32.73302
+    ## H2A.L_mouse                       7.51834  13.82201     0.00000   7.51834
+    ## H2A.L_pig                         7.51834  32.73302     7.51834   0.00000
+
+# Play with `pwalign` package
+
+See
 [documentation](https://bioconductor.org/packages/release/bioc/vignettes/pwalign/inst/doc/PairwiseAlignments.pdf)
+
+`PairwiseAlignmentsSingleSubject()` :
 
 ``` r
 temp <- aa_aln_h2a_l_firstBit[1:2]
@@ -269,47 +315,44 @@ pid(temp2)
 sessionInfo()
 ```
 
-    ## R version 4.4.0 (2024-04-24)
-    ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 18.04.6 LTS
+    ## R version 4.5.1 (2025-06-13)
+    ## Platform: x86_64-apple-darwin20
+    ## Running under: macOS Sequoia 15.7.1
     ## 
     ## Matrix products: default
-    ## BLAS/LAPACK: FlexiBLAS OPENBLAS;  LAPACK version 3.11.0
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     ## 
     ## locale:
-    ##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-    ##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-    ##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-    ##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-    ##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-    ## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+    ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
     ## 
     ## time zone: America/Los_Angeles
-    ## tzcode source: system (glibc)
+    ## tzcode source: internal
     ## 
     ## attached base packages:
     ## [1] stats4    stats     graphics  grDevices utils     datasets  methods  
     ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] here_1.0.1          pwalign_1.0.0       Biostrings_2.72.0  
-    ##  [4] GenomeInfoDb_1.40.0 XVector_0.44.0      IRanges_2.38.0     
-    ##  [7] S4Vectors_0.42.0    BiocGenerics_0.50.0 lubridate_1.9.4    
-    ## [10] forcats_1.0.0       stringr_1.5.1       dplyr_1.1.4        
-    ## [13] purrr_1.0.4         readr_2.1.5         tidyr_1.3.1        
-    ## [16] tibble_3.2.1        ggplot2_3.5.1       tidyverse_2.0.0    
+    ##  [1] here_1.0.1          pwalign_1.4.0       Biostrings_2.76.0  
+    ##  [4] GenomeInfoDb_1.44.0 XVector_0.48.0      IRanges_2.42.0     
+    ##  [7] S4Vectors_0.46.0    BiocGenerics_0.54.0 generics_0.1.4     
+    ## [10] lubridate_1.9.4     forcats_1.0.0       stringr_1.5.1      
+    ## [13] dplyr_1.1.4         purrr_1.0.4         readr_2.1.5        
+    ## [16] tidyr_1.3.1         tibble_3.3.0        ggplot2_3.5.2      
+    ## [19] tidyverse_2.0.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] generics_0.1.3          stringi_1.8.4           hms_1.1.3              
-    ##  [4] digest_0.6.35           magrittr_2.0.3          evaluate_0.23          
-    ##  [7] grid_4.4.0              timechange_0.3.0        fastmap_1.2.0          
-    ## [10] rprojroot_2.0.4         jsonlite_1.8.9          httr_1.4.7             
-    ## [13] UCSC.utils_1.0.0        scales_1.3.0            cli_3.6.3              
-    ## [16] crayon_1.5.2            rlang_1.1.5             munsell_0.5.1          
-    ## [19] withr_3.0.2             yaml_2.3.8              tools_4.4.0            
-    ## [22] tzdb_0.4.0              colorspace_2.1-0        GenomeInfoDbData_1.2.12
-    ## [25] vctrs_0.6.5             R6_2.5.1                lifecycle_1.0.4        
-    ## [28] zlibbioc_1.50.0         pkgconfig_2.0.3         pillar_1.10.1          
-    ## [31] gtable_0.3.5            glue_1.8.0              xfun_0.44              
-    ## [34] tidyselect_1.2.1        rstudioapi_0.16.0       knitr_1.46             
-    ## [37] htmltools_0.5.8.1       rmarkdown_2.26          compiler_4.4.0
+    ##  [1] stringi_1.8.7           hms_1.1.3               digest_0.6.37          
+    ##  [4] magrittr_2.0.3          evaluate_1.0.4          grid_4.5.1             
+    ##  [7] timechange_0.3.0        RColorBrewer_1.1-3      fastmap_1.2.0          
+    ## [10] rprojroot_2.0.4         jsonlite_2.0.0          httr_1.4.7             
+    ## [13] UCSC.utils_1.4.0        scales_1.4.0            cli_3.6.5              
+    ## [16] crayon_1.5.3            rlang_1.1.6             withr_3.0.2            
+    ## [19] yaml_2.3.10             tools_4.5.1             tzdb_0.5.0             
+    ## [22] GenomeInfoDbData_1.2.14 vctrs_0.6.5             R6_2.6.1               
+    ## [25] lifecycle_1.0.4         pkgconfig_2.0.3         pillar_1.10.2          
+    ## [28] gtable_0.3.6            glue_1.8.0              xfun_0.52              
+    ## [31] tidyselect_1.2.1        rstudioapi_0.17.1       knitr_1.50             
+    ## [34] dichromat_2.0-0.1       farver_2.1.2            htmltools_0.5.8.1      
+    ## [37] rmarkdown_2.29          compiler_4.5.1
