@@ -2,7 +2,7 @@ ggtree_demo
 ================
 Janet Young
 
-2024-11-22
+2025-10-20
 
 (this doesn’t work on the fhR 4.2.0 I could run via the Hutch Rstudio
 server, with the package versions I have there right now. But fhR 4.4.0
@@ -14,9 +14,20 @@ The [ggtree manual](http://yulab-smu.top/treedata-book/index.html) is
 great (very detailed). - Chapter 1 looks at reading/writing trees. The
 treeio and ape packages both have tree read/write functions).
 
+There is a [ggtree google
+group](https://groups.google.com/g/bioc-ggtree) for questions.
+
+There is also a [ggtreeExtra
+package](https://www.bioconductor.org/packages/release/bioc/vignettes/ggtreeExtra/inst/doc/ggtreeExtra.html)
+that provides a function, `geom_fruit`, to align graphs to a tree,
+perhaps more easily than with ggtree.
+
+The [ape package](https://cran.r-project.org/web/packages/ape/) is also
+useful for phylogenetics
+
 # Read a tree and plot it
 
-read in a newick tree file:
+Read in a newick tree file:
 
 ``` r
 nwk_file <- system.file("extdata/sample.nwk", package="treeio") 
@@ -36,9 +47,9 @@ nwk_tree
     ## Tip labels:
     ##   A, B, C, D, E, F, ...
     ## 
-    ## Rooted; includes branch lengths.
+    ## Rooted; includes branch length(s).
 
-plot it using ape’s basic plot function
+Plot it using ape’s basic plot function
 
 ``` r
 plot(nwk_tree)
@@ -46,7 +57,7 @@ plot(nwk_tree)
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
-plot it using ggtree
+Plot it using ggtree
 
 ``` r
 nwk_tree %>% 
@@ -74,21 +85,21 @@ tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A           108.  nose           spikes         
-    ##  2 B            71.8 tail           scales         
-    ##  3 C           117.  tail           scales         
-    ##  4 D            76.5 tail           fur            
-    ##  5 E           121.  nose           spikes         
-    ##  6 F            82.3 teeth          scales         
-    ##  7 G            92.4 teeth          fur            
-    ##  8 H            59.9 nose           fur            
-    ##  9 I            80.1 tail           fur            
-    ## 10 J           102.  teeth          spikes         
-    ## 11 K           124.  tail           spikes         
-    ## 12 L           100.  teeth          spikes         
-    ## 13 M           170.  teeth          scales
+    ##  1 A            59.8 tail           spikes         
+    ##  2 B           119.  nose           spikes         
+    ##  3 C           108.  teeth          scales         
+    ##  4 D           108.  tail           spikes         
+    ##  5 E            85.5 nose           spikes         
+    ##  6 F            50.7 tail           spikes         
+    ##  7 G           101.  teeth          fur            
+    ##  8 H            89.7 teeth          spikes         
+    ##  9 I           122.  tail           fur            
+    ## 10 J           119.  nose           spikes         
+    ## 11 K            81.5 tail           fur            
+    ## 12 L            87.2 tail           fur            
+    ## 13 M           146.  nose           fur
 
-## combine tree and tbl
+## Combine tree and tbl
 
 We associate info tbl with the tree using `left_join` - this creates a
 single `treedata` object that contains info AND tree (we access the tree
@@ -130,7 +141,7 @@ nwk_tree_with_info
     ## Tip labels:
     ##   A, B, C, D, E, F, ...
     ## 
-    ## Rooted; includes branch lengths.
+    ## Rooted; includes branch length(s).
     ## 
     ## with the following features available:
     ##   '', 'fake_height', 'fake_phenotype', 'fake_phenotype2'.
@@ -139,37 +150,40 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE        108.  nose           spikes         
-    ##  2     2 B     TRUE         71.8 tail           scales         
-    ##  3     3 C     TRUE        117.  tail           scales         
-    ##  4     4 D     TRUE         76.5 tail           fur            
-    ##  5     5 E     TRUE        121.  nose           spikes         
-    ##  6     6 F     TRUE         82.3 teeth          scales         
-    ##  7     7 G     TRUE         92.4 teeth          fur            
-    ##  8     8 H     TRUE         59.9 nose           fur            
-    ##  9     9 I     TRUE         80.1 tail           fur            
-    ## 10    10 J     TRUE        102.  teeth          spikes         
+    ##  1     1 A     TRUE         59.8 tail           spikes         
+    ##  2     2 B     TRUE        119.  nose           spikes         
+    ##  3     3 C     TRUE        108.  teeth          scales         
+    ##  4     4 D     TRUE        108.  tail           spikes         
+    ##  5     5 E     TRUE         85.5 nose           spikes         
+    ##  6     6 F     TRUE         50.7 tail           spikes         
+    ##  7     7 G     TRUE        101.  teeth          fur            
+    ##  8     8 H     TRUE         89.7 teeth          spikes         
+    ##  9     9 I     TRUE        122.  tail           fur            
+    ## 10    10 J     TRUE        119.  nose           spikes         
     ## # ℹ 15 more rows
 
-## plot tree with annotations
+## Plot tree with annotations
 
 now we can use ggtree to use column data in the joined treedata object
 for labels, colors, etc, etc
 
 ``` r
+x <- "tail"
 nwk_tree_with_info %>% 
     ggtree(aes(color=fake_phenotype)) +  # color here colors the branches
-    geom_tiplab(aes(color=fake_phenotype)) + # color here colors the tip labels
-    geom_tippoint(aes(subset= fake_phenotype=="tail"), color="black") # add dots to taxa, using subset
+    geom_tiplab(aes(color=fake_phenotype))  + # color here colors the tip labels
+    ## there's some weird bug where I got errors if I tried to do fake_phenotype=="tail" but I get around it like this
+    geom_tippoint(aes(subset= fake_phenotype==.env$x),
+                  color="black") # add dots to taxa, using subset
 ```
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-# add heatmap to the right side of a tree
+# Add heatmap to the right side of a tree
 
 gheatmap is the function for this
 
-## explore gheatmap demo code from ggtree book
+## Explore gheatmap demo code from ggtree book
 
 gheatmap demo code from the [ggtree online
 book](http://yulab-smu.top/treedata-book/chapter7.html#gheatmap):
@@ -407,11 +421,6 @@ ggtree(tr) +
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
-There is also a [ggtreeExtra
-package](https://www.bioconductor.org/packages/release/bioc/vignettes/ggtreeExtra/inst/doc/ggtreeExtra.html)
-that provides a function, `geom_fruit`, to align graphs to a tree. This
-seems easier than the geom_facet way
-
 Simple geom_fruit demo:
 
 ``` r
@@ -450,19 +459,99 @@ ggtree(tr) +
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
+# Turning a tibble back into a tree
+
+Sometimes we take a tree, use `as_tibble()` (it becomes a `tbl_tree`
+object), do a bunch of manipulation (maybe it becomes a classic `tibble`
+object).
+
+It’s not totally obvious how to turn it back into a tree. If we use
+`as.treedata()` on a `tbl_tree` object , it works fine. But if we use it
+on a pure tibble, the branch lengths are lost unless we do
+`as.treedata(branch.length, label)` instead.
+
+Demo code for that:
+
+``` r
+x <- "(((Strix_aluco:8.2,Asio_otus:4.2):3.1,Athene_noctua:7.3):6.3,Tyto_alba:13.5);"
+tree.owls <- read.tree(text= x)
+tree.owls <- as.treedata(tree.owls)
+```
+
+Do I lose branch length on coercion? no, I don’t. `as_tibble()` actually
+returns a `tbl_tree` object. It’s only for pure tibbles that we need to
+do something more to ensure we retain branch lengths:
+`as.treedata(branch.length, label)`.
+
+``` r
+# Do I lose branch length on coercion? no, I don't
+tree.owls %>% 
+    as_tibble() %>% 
+    as.treedata() %>% 
+    ggtree() +
+    geom_tiplab() +
+    geom_treescale() +
+    hexpand(0.3) +
+    labs(title="tree.owls coerced")
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+``` r
+(tree.owls %>% 
+        as_tibble() %>% 
+        as.treedata())@phylo$edge.length
+```
+
+    ## [1]  8.2  4.2  7.3 13.5  6.3  3.1
+
+This double coercion is a cheating way to get a pure tibble rather than
+a `tbl_tree` object. Now we lose branch lengths:
+
+``` r
+tree.owls %>% 
+    as_tibble() %>% 
+    as_tibble() %>% 
+    as.treedata() %>% 
+    ggtree() +
+    geom_tiplab() +
+    geom_treescale() +
+    hexpand(0.3) +
+    labs(title="tree.owls coerced")
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
+But we can avoid losing branch lengths by supplying a couple of
+arguments to `as.treedata()`:
+
+``` r
+tree.owls %>% 
+    as_tibble() %>% 
+    as_tibble() %>% 
+    as.treedata(branch.length, label) %>% 
+    ggtree() +
+    geom_tiplab() +
+    geom_treescale() +
+    hexpand(0.3) +
+    labs(title="tree.owls coerced")
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+
 # Finished
 
 ``` r
 sessionInfo()
 ```
 
-    ## R version 4.4.0 (2024-04-24)
-    ## Platform: x86_64-apple-darwin20
-    ## Running under: macOS Ventura 13.7.1
+    ## R version 4.5.1 (2025-06-13)
+    ## Platform: aarch64-apple-darwin20
+    ## Running under: macOS Sequoia 15.6.1
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRblas.0.dylib 
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     ## 
     ## locale:
     ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -474,22 +563,22 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] tidytree_0.4.6     treeio_1.28.0      ggtreeExtra_1.14.0 ggtree_3.12.0     
-    ##  [5] ape_5.8            lubridate_1.9.3    forcats_1.0.0      stringr_1.5.1     
-    ##  [9] dplyr_1.1.4        purrr_1.0.2        readr_2.1.5        tidyr_1.3.1       
-    ## [13] tibble_3.2.1       ggplot2_3.5.1      tidyverse_2.0.0   
+    ##  [1] tidytree_0.4.6     treeio_1.32.0      ggtreeExtra_1.18.0 ggtree_3.16.3     
+    ##  [5] ape_5.8-1          lubridate_1.9.4    forcats_1.0.0      stringr_1.5.2     
+    ##  [9] dplyr_1.1.4        purrr_1.1.0        readr_2.1.5        tidyr_1.3.1       
+    ## [13] tibble_3.3.0       ggplot2_3.5.2      tidyverse_2.0.0   
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] yulab.utils_0.1.7  utf8_1.2.4         generics_0.1.3     ggplotify_0.1.2   
-    ##  [5] stringi_1.8.4      lattice_0.22-6     hms_1.1.3          digest_0.6.37     
-    ##  [9] magrittr_2.0.3     evaluate_1.0.1     grid_4.4.0         timechange_0.3.0  
-    ## [13] fastmap_1.2.0      jsonlite_1.8.9     ggnewscale_0.5.0   aplot_0.2.3       
-    ## [17] fansi_1.0.6        scales_1.3.0       lazyeval_0.2.2     cli_3.6.3         
-    ## [21] rlang_1.1.4        munsell_0.5.1      withr_3.0.1        yaml_2.3.10       
-    ## [25] tools_4.4.0        parallel_4.4.0     tzdb_0.4.0         colorspace_2.1-1  
-    ## [29] gridGraphics_0.5-1 vctrs_0.6.5        R6_2.5.1           lifecycle_1.0.4   
-    ## [33] ggfun_0.1.6        fs_1.6.4           pkgconfig_2.0.3    pillar_1.9.0      
-    ## [37] gtable_0.3.5       glue_1.8.0         Rcpp_1.0.13        highr_0.11        
-    ## [41] xfun_0.48          tidyselect_1.2.1   rstudioapi_0.16.0  knitr_1.48        
-    ## [45] farver_2.1.2       patchwork_1.3.0    htmltools_0.5.8.1  nlme_3.1-166      
-    ## [49] labeling_0.4.3     rmarkdown_2.28     compiler_4.4.0
+    ##  [1] yulab.utils_0.2.1  utf8_1.2.6         rappdirs_0.3.3     generics_0.1.4    
+    ##  [5] ggplotify_0.1.3    stringi_1.8.7      lattice_0.22-7     hms_1.1.3         
+    ##  [9] digest_0.6.37      magrittr_2.0.4     evaluate_1.0.5     grid_4.5.1        
+    ## [13] timechange_0.3.0   RColorBrewer_1.1-3 fastmap_1.2.0      jsonlite_2.0.0    
+    ## [17] ggnewscale_0.5.2   aplot_0.2.9        scales_1.4.0       lazyeval_0.2.2    
+    ## [21] cli_3.6.5          rlang_1.1.6        withr_3.0.2        yaml_2.3.10       
+    ## [25] tools_4.5.1        parallel_4.5.1     tzdb_0.5.0         gridGraphics_0.5-1
+    ## [29] vctrs_0.6.5        R6_2.6.1           lifecycle_1.0.4    fs_1.6.6          
+    ## [33] ggfun_0.2.0        pkgconfig_2.0.3    pillar_1.11.1      gtable_0.3.6      
+    ## [37] glue_1.8.0         Rcpp_1.1.0         xfun_0.53          tidyselect_1.2.1  
+    ## [41] rstudioapi_0.17.1  knitr_1.50         farver_2.1.2       patchwork_1.3.2   
+    ## [45] htmltools_0.5.8.1  nlme_3.1-168       labeling_0.4.3     rmarkdown_2.29    
+    ## [49] compiler_4.5.1

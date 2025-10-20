@@ -11,7 +11,9 @@ output: html_document
 See [documentation](https://bioconductor.org/packages/release/bioc/vignettes/MSA2dist/inst/doc/MSA2dist.html)
 
 ```{r}
+library(tidyverse)
 library(MSA2dist)
+library(Biostrings)
 
 # output: github_document
 # always_allow_html: true
@@ -35,6 +37,101 @@ hiv_aa <- cds2aa(hiv)
 hiv_aa
 ```
 
+
+```{r}
+simple_percent_identity_pairwise <- function(twoSeqs_stringSet) {
+    if(length(twoSeqs_stringSet) != 2) {
+        stop("\n\nERROR - input does has the wrong number of sequences - function designed to work on just two sequences\n\n")
+    }
+    if(width(twoSeqs_stringSet)[1] !=  width(twoSeqs_stringSet)[2]) {
+        stop("\n\nERROR - seqs don't have the same length as each other\n\n")
+    }
+    output <- tibble(seq1=names(twoSeqs_stringSet)[1],
+                     seq2=names(twoSeqs_stringSet)[2] ) %>% 
+        ## strip off description, if there is one
+        mutate(seq1 = sapply(strsplit(seq1, " "), "[[", 1)) %>% 
+        mutate(seq2 = sapply(strsplit(seq2, " "), "[[", 1))
+    
+    twoSeqs <- as.matrix(twoSeqs_stringSet) %>% 
+        t() %>% 
+        as_tibble()
+    colnames(twoSeqs) <- c("seq1", "seq2")
+    
+    twoSeqs_degapFullGap <- twoSeqs %>% 
+        filter(!(seq1=="-" & seq2=="-"))
+    output$aln_len <- nrow(twoSeqs_degapFullGap)
+    
+    output$num_identical <- sum(twoSeqs_degapFullGap$seq1 == twoSeqs_degapFullGap$seq2)
+    
+    twoSeqs_degapAnyGap <- twoSeqs_degapFullGap %>% 
+        filter(seq1 != "-" & seq2 != "-")
+    output$aln_len_nogaps <- nrow(twoSeqs_degapAnyGap)
+    
+    output <- output %>% 
+        mutate(pid_incl_gap = 100*num_identical / aln_len) %>% 
+        mutate(pid_excl_gap = 100*num_identical / aln_len_nogaps)
+    return(output)
+}
+
+simple_percent_identity_multiple <- function(one_aln) {
+    if(length(unique(width(one_aln)))>1) {
+        stop("\n\nERROR - these are not aligned seqs - they have different lengths: ", 
+             paste(width(one_aln), collapse=","),
+             "\n\n")
+    }
+    lapply(1:(length(one_aln)-1), function(i) {
+        lapply( (i+1):length(one_aln), function(j) {
+            simple_percent_identity_pairwise(one_aln[c(i,j)])
+        }) %>% 
+            bind_rows()
+    }) %>% 
+        bind_rows()
+}
+
+```
+
+```{r}
+hiv_aa_myDists <- simple_percent_identity_multiple(hiv_aa[1:4])
+as.matrix(hiv_aa_myDists)
+```
+
+```{r}
+my_percent_id_to_matrix <- function(my_percent_id_tbl,
+                                    col_to_take="pid_excl_gap") {
+    my_seqorder <- unique(c(my_percent_id_tbl$seq1,
+                            my_percent_id_tbl$seq2))
+    ## first make it symmetrical
+    my_percent_id_tbl_flip <- my_percent_id_tbl %>% 
+        dplyr::rename(seq1_new=seq2, 
+                      seq2_new=seq1) %>% 
+        dplyr::rename(seq1=seq1_new, 
+                      seq2=seq2_new)
+    my_percent_id_tbl_both <- bind_rows(my_percent_id_tbl,
+                                        my_percent_id_tbl_flip) 
+    # return(my_percent_id_tbl_both)
+    my_percent_id_tbl_both <- my_percent_id_tbl_both %>% 
+        select(seq1, seq2, value=all_of(col_to_take))
+    # return(my_percent_id_tbl_both)
+    my_matrix <- my_percent_id_tbl_both %>%
+        pivot_wider(id_cols="seq1",
+                    values_from="value",
+                    names_from="seq2", 
+                    values_fill=0)
+    
+    my_matrix_v2 <- as.matrix(my_matrix[,my_seqorder])
+    rownames(my_matrix_v2) <- my_matrix$seq1
+    my_matrix_v2 <- my_matrix_v2[my_seqorder,]
+    return(my_matrix_v2)
+}
+# temp <- hiv_aa_myDists %>% my_percent_id_to_matrix() 
+temp <- hiv_aa_myDists %>% 
+    mutate(num_diff=aln_len-num_identical) %>% 
+    my_percent_id_to_matrix(col_to_take="num_diff") 
+temp 
+```
+
+
+# Use MSA2dist distance functions
 
 aastring2dist gets a distances matrix. We need to specify scoring matrix - the vignette uses Grantham scores. 
 
@@ -70,13 +167,21 @@ To use a different score matrix, here as an example the AAMatrix from the R pack
 head(AAMatrix)
 ```
 
-# DNA distance
+These numbers are the parwise scores calculated from the scoring matrix, divided by the aligned length:
 
 ```{r}
 aa.dist.AAMatrix <- aastring2dist(hiv_aa, score=AAMatrix)
 as.matrix(aa.dist.AAMatrix[["distSTRING"]][1:4, 1:4])
-
 ```
+
+Multiply by the aligned length to get the number of mismatches (this is the same as my function gives):
+
+```{r}
+as.matrix(aa.dist.AAMatrix[["distSTRING"]][1:4, 1:4] * 91)
+```
+
+# DNA distance
+
 ```{r}
 dna.dist <- dnastring2dist(hiv, model="K80")
 as.matrix(dna.dist[["distSTRING"]][1:4, 1:4])

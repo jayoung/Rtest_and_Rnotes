@@ -14,6 +14,20 @@ library(ggplot2)
 library(TDbook)
 ```
 
+
+
+```{r}
+# ### revert back to ggplot 3.5.2 - this is from 2025-04-09 
+# ## version 4.0.0 is
+# packageurl <- "http://cran.r-project.org/src/contrib/Archive/ggplot2/ggplot2_3.5.2.tar.gz"
+# install.packages(packageurl, repos=NULL, type="source")
+
+### revert back to GGally 2.2.1  (2024-02-14) it says it needs 4.4.0
+# # GGally_2.2.0.tar.gz
+# packageurl <- "http://cran.r-project.org/src/contrib/Archive/GGally/GGally_2.2.1.tar.gz"
+# install.packages(packageurl, repos=NULL, type="source")
+```
+
 ```{r}
 #### tree_anole (phylo object) has 100 tips and 99 internal nodes
 ### df_svl is a data.frame, 100 rows (named like the tips of tree_anole), 1 column ("svl")
@@ -98,5 +112,12 @@ ggtree(tr) +
 raxml_file <- system.file("extdata/RAxML", "RAxML_bipartitionsBranchLabels.H3", package="treeio")
 raxml <- read.raxml(raxml_file)
 ggtree(raxml) + geom_text(aes(label=bootstrap/100))
+```
+
+
+# Finished
+
+```{r}
+sessionInfo()
 ```
 

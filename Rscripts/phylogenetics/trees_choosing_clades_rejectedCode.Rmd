@@ -1,0 +1,257 @@
+---
+title: "trees_choosing_clades_rejectedCode"
+output: html_document
+---
+
+I'm having trouble converting a tb_df to a tree object. It loses the branch lengths
+
+There was a [bug](https://github.com/YuLab-SMU/tidytree/issues/35). It looks like it was [fixed](https://github.com/YuLab-SMU/treeio/pull/101) in July 2023. This is the tidytree package.
+
+
+I'm using treeio_1.32.0. Doesn't seem like it has as.treedata.tbl_df. and tidytree_0.4.6     
+
+
+```{r}
+### copied from https://github.com/YuLab-SMU/treeio/blob/devel/R/method-as-treedata.R
+### and from    https://github.com/YuLab-SMU/treeio/blob/devel/R/method-as-phylo.R
+### and from    https://github.com/YuLab-SMU/treeio/blob/f5a6dec082aa00896ed0285e78dcfe666deef4bb/R/utilities.R#L169
+# 2025 Oct 17
+as.treedata.tbl_df.JY <- function(tree, branch.length, label, ...) {
+    edgelist <- as_tibble(data.frame(tree))
+    branch.length <- rlang::enquo(branch.length)
+    label <- rlang::enquo(label)
+    if (nrow(unique(edgelist[, 1])) > nrow(unique(edgelist[,2]))){
+        edgelist %<>% dplyr::select(rev(seq_len(2)), setdiff(seq_len(ncol(edgelist)), c(1,2)))
+    }    
+    edgelist$`.NAME` <- paste0('name', seq_len(nrow(edgelist)))
+    phylo <- as.phylo.tbl_df.JY(edgelist, branch.length=!!branch.length, label=".NAME", ...)
+    
+    res <- new("treedata",
+               phylo = phylo)
+    
+    if (ncol(edgelist) >= 4) {
+        d <- edgelist[,-c(1,2)]
+        #length_var <- attr(phylo, "length_var")
+        
+        if (!rlang::quo_is_missing(branch.length)) {
+            d <- d[, names(d) != rlang::as_name(branch.length)]
+            if (ncol(d) == 1 && colnames(d)=='.NAME'){
+                res@phylo$tip.label <- edgelist[match(res@phylo$tip.label,edgelist$`.NAME`),2,drop=TRUE]
+                res@phylo$node.label <- edgelist[match(res@phylo$node.label,edgelist$`.NAME`),2,drop=TRUE]
+                return(res)
+            }
+        }
+        if (!rlang::quo_is_missing(label)){
+            d <- d[,names(d) != rlang::as_name(label)]
+            if (ncol(d)== 1 && colnames(d)=='.NAME'){
+                res@phylo$tip.label <- edgelist[match(res@phylo$tip.label,edgelist$`.NAME`),rlang::as_name(label),drop=TRUE]
+                res@phylo$node.label <- edgelist[match(res@phylo$node.label,edgelist$`.NAME`),rlang::as_name(label),drop=TRUE]
+                return(res)
+            }
+            res <- dplyr::left_join(res, d, by = c('label' = '.NAME'))
+            res@phylo$tip.label <- edgelist[match(res@phylo$tip.label,edgelist$`.NAME`),rlang::as_name(label),drop=TRUE]
+            nodelab <- edgelist[match(res@phylo$node.label,edgelist$`.NAME`),rlang::as_name(label),drop=TRUE]
+            if (all(is.na(nodelab))){
+                res@phylo$node.label <- NULL
+            }else{
+                res@phylo$node.label <- nodelab
+            }
+        }else{
+            res <- dplyr::left_join(res, d, by=c('label'='.NAME'))
+            res@phylo$tip.label <- edgelist[match(res@phylo$tip.label,edgelist$`.NAME`),2,drop=TRUE]
+            res@phylo$node.label <- edgelist[match(res@phylo$node.label,edgelist$`.NAME`),2,drop=TRUE]
+        }
+        return(res)
+    }
+    
+    return(res)
+}
+
+
+
+as.phylo.tbl_df.JY <- function(x, branch.length, label, ...) {
+    x <- data.frame(x) %>% mutate_if(is.factor, as.character)
+    branch.length <- rlang::enquo(branch.length)
+    label <- rlang::enquo(label)
+    length_var <- root.edge <- edge.length <- NULL
+    tip.label <- node.label <- labels <- NULL
+    if (nrow(unique(x[, 1, drop=FALSE])) > nrow(unique(x[, 2, drop=FALSE]))){
+        x %<>% dplyr::select(rev(seq_len(2)), seq_len(ncol(x)))
+    }
+    
+    if (!rlang::quo_is_missing(branch.length)){
+        edge.length <- as.numeric(x %>% dplyr::pull(!!branch.length))
+        length_var <- rlang::as_name(branch.length)
+    }
+    
+    if (!rlang::quo_is_missing(label)){
+        labels <- x %>% dplyr::pull(!!label) %>% as.character()
+    }else{
+        labels <- x %>% dplyr::pull(2) %>% as.character()
+    }
+    
+    edge <- check_edgelist.JY(x)
+    
+    indx <- attr(edge, "indx")
+    if (is.null(indx)){
+        indx <- c(FALSE, rep(TRUE, nrow(edge)))
+        labels <- c(unique(edge[,1][!edge[,1] %in% edge[,2]]), labels)
+        if (!is.null(edge.length)){
+            edge.length <- c(0, edge.length)
+        }
+    }
+    
+    isTip <- !edge[,2] %in% edge[,1]
+    
+    index <- rep(NA, length(isTip))
+    index[isTip] <- seq_len(sum(isTip))
+    index[!isTip] <- seq(sum(isTip)+2, length(isTip)+1)
+    mapping <- data.frame(node=index, labelnames=edge[,2], isTip)
+    parent <- mapping[match(edge[,1], mapping$labelnames), "node"]
+    child <- mapping[match(edge[,2], mapping$labelnames), 'node']
+    edge <- as.matrix(cbind(parent, child))
+    colnames(edge) <- NULL
+    edge[is.na(edge)] <- sum(isTip) + 1
+    
+    if (!is.null(edge.length)){
+        root.edge <- edge.length[!indx]
+        if (length(root.edge)==0 || is.na(root.edge)){
+            root.edge <- NULL
+        }
+        edge.length <- edge.length[indx]
+    }
+    
+    if (!is.null(labels)){
+        root.label <- labels[!indx]
+        labels <- labels[indx]
+        tip.label <- labels[isTip]
+        node.label <- c(root.label, labels[!isTip])
+        if (all(is.na(node.label))){
+            node.label <- NULL
+        }
+    }
+    
+    Nnode <- length(unique(as.vector(edge))) - sum(isTip)
+    phylo <- list(
+        edge = edge,
+        Nnode = Nnode,
+        tip.label = tip.label,
+        edge.length = edge.length
+    )
+    class(phylo) <- 'phylo'
+    phylo$root.edge <- root.edge
+    phylo$node.label <- node.label
+    attr(phylo, "length_var") <- length_var
+    return(phylo)
+}
+
+
+.adjust.tree.network.edge.JY <- function(x){
+    tip.nodes <- names(which(table(x) == 1))
+    if (.check.no.tree.network.JY(x, tip.nodes)){
+        cli::cli_abort("The edge is not a edge of tree.")
+    }
+    x <- .rev.edge.JY(x, tip.nodes, index = 1)
+    internal.nodes <- names(which(table(x[,2])>1))
+    while(length(internal.nodes) > 0){
+        x <- .rev.edge.JY(x, internal.nodes, index = 2)
+        internal.nodes <- names(which(table(x[,2])>1))
+    }
+    return(x)
+}
+
+check_edgelist.JY <- function(edgelist) {
+    if (dim(edgelist)[2] < 2)
+        stop("input should be a matrix of edge list that holds the relationships in the first two columns")
+    if (length(unique(edgelist[,1,drop=TRUE])) > length(unique(edgelist[,2,drop=TRUE]))) {
+        children <- edgelist[,1,drop=TRUE]
+        parents <- edgelist[,2,drop=TRUE]
+    } else {
+        children <- edgelist[,2,drop = TRUE]
+        parents <- edgelist[,1,drop = TRUE]
+    }
+    root1 <- unique(parents[!(parents %in% children)])
+    root2 <- unique(parents[parents == children])
+    if ((length(root1) != 1 && length(root2) != 1 )|| any(duplicated(children)))
+        stop("Cannot find root. network is not a tree!")
+    if (length(root1) != 1 && length(root2) == 1){
+        indx <- parents != children
+        parents <- parents[indx]
+        children <- children[indx]
+        edge <- matrix(c(parents, children), ncol=2)
+        edge <- .adjust.tree.network.edge.JY(edge)
+        attr(edge, "indx") <- indx
+    }else{
+        edge <- matrix(c(parents, children), ncol=2)
+        edge <- .adjust.tree.network.edge.JY(edge)
+    }
+    return (edge)
+}
+
+.check.no.tree.network.JY <- function(x, nodes){
+    is.tree <- length(table(x)) - nrow(x) != 1
+    is.tree || any(((x[,1] %in% nodes) + (x[,2] %in% nodes)) ==2) || sum(x[,1]==x[,2])>1
+}
+
+.rev.edge.JY <- function(x, nodes, index){
+    ind <- x[,index] %in% nodes
+    if (sum(ind)>=1){
+        x[ind,] <- t(apply(matrix(x[ind,], ncol=2),1,rev))
+    }
+    return(x)
+}
+
+# treeio::as.treedata(my_dists)
+# treeio::as.treedata.tbl_df(my_dists)
+as.treedata.tbl_df.JY(my_dists)
+```
+
+Example from the [github issue](https://github.com/YuLab-SMU/treeio/pull/101)
+
+```{r}
+## phy is a tree
+phy <- rtree(20, br = runif)
+phy %>% ggtree()
+```
+
+```{r}
+## some info for the internal nodes:
+nodedata <- tibble(node = 21:39, nodeinfo = letters[1:19])
+## some info for the tips:
+tipdata <- tibble(node = 1:20,  tipinfo = LETTERS[1:20])
+
+# as_tibble(phy) is a tbl_tree abstraction with 4 cols:  
+# parent  node branch.length label
+
+phytbl <- as_tibble(phy) %>% 
+    left_join(nodedata, by = "node") %>%
+    left_join(tipdata, by = "node") %>%
+    mutate(label = paste(label, tipinfo))
+
+## phytbl is still a tbl_tree abstraction but now has more columns
+# as.treedata(phytbl)@phylo # Exactly as expected
+
+## it still has branch lengths
+phytbl %>% 
+    as.treedata() %>%
+    ggtree()
+```
+
+
+```{r}
+phytbl2 <- phytbl %>%
+    dplyr::mutate(branchinfo = as.character(NA)) %>%
+    dplyr::group_split(branch.length > 0.6) %>%
+    modify_at(2, ~ mutate(., branchinfo = "info")) %>%
+    dplyr::bind_rows()
+
+# phytbl is a tbl_df class
+
+## this has no branch lengths
+trda2 <- phytbl2 %>% as.treedata()
+
+## this does:
+trda <- phytbl2 %>% as.treedata(branch.length, label)
+trda
+```
+

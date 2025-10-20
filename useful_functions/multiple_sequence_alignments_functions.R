@@ -347,4 +347,60 @@ convertCoordsToOrigCoords <- function(gr) {
 }
 
 
+##### wrote this when working on Priya Shah YFV project (and Jyoti Batra bat genome comparisons)
+### xxx I think the built-in pwalign::pid function gives the same answer as my pid_excl_gap column, but I want to check into that more.
+simple_percent_identity_pairwise <- function(twoSeqs_stringSet) {
+    if(length(twoSeqs_stringSet) != 2) {
+        stop("\n\nERROR - input does has the wrong number of sequences - function designed to work on just two sequences\n\n")
+    }
+    if(width(twoSeqs_stringSet)[1] !=  width(twoSeqs_stringSet)[2]) {
+        stop("\n\nERROR - seqs don't have the same length as each other\n\n")
+    }
+    output <- tibble(seq1=names(twoSeqs_stringSet)[1],
+                     seq2=names(twoSeqs_stringSet)[2] )
+    
+    twoSeqs <- as.matrix(twoSeqs_stringSet) %>% 
+        t() %>% 
+        as_tibble()
+    colnames(twoSeqs) <- c("seq1", "seq2")
+    
+    twoSeqs_degapFullGap <- twoSeqs %>% 
+        filter(!(seq1=="-" & seq2=="-"))
+    output$aln_len <- nrow(twoSeqs_degapFullGap)
+    
+    output$num_identical <- sum(twoSeqs_degapFullGap$seq1 == twoSeqs_degapFullGap$seq2)
+    
+    twoSeqs_degapAnyGap <- twoSeqs_degapFullGap %>% 
+        filter(seq1 != "-" & seq2 != "-")
+    output$aln_len_nogaps <- nrow(twoSeqs_degapAnyGap)
+    
+    output <- output %>% 
+        mutate(pid_incl_gap = 100*num_identical / aln_len) %>% 
+        mutate(pid_excl_gap = 100*num_identical / aln_len_nogaps)
+    return(output)
+}
 
+simple_percent_identity_multiple <- function(one_aln) {
+    if(length(unique(width(one_aln)))>1) {
+        stop("\n\nERROR - these are not aligned seqs - they have different lengths: ", 
+             paste(width(one_aln), collapse=","),
+             "\n\n")
+    }
+    lapply(1:(length(one_aln)-1), function(i) {
+        lapply( (i+1):length(one_aln), function(j) {
+            simple_percent_identity_pairwise(one_aln[c(i,j)])
+        }) %>% 
+            bind_rows()
+    }) %>% 
+        bind_rows()
+}
+
+### xxx replace these examples with reproducible input
+# tempAln <- alns[["pep"]][["janet"]][["Capsid"]]  # [9:11] #%>% 
+# narrow(start=1, end=20)
+# tempAln %>% 
+#     simple_percent_identity_multiple()
+
+# tempAln
+
+# simple_percent_identity_multiple(alns[["pep"]][["tamanash"]][[1]])

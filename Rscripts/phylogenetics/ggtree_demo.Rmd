@@ -22,6 +22,8 @@ library(tidytree)
 The [ggtree manual](http://yulab-smu.top/treedata-book/index.html) is great (very detailed).
 - Chapter 1 looks at reading/writing trees.  The treeio and ape packages both have tree read/write functions).
 
+There is a [ggtree google group](https://groups.google.com/g/bioc-ggtree) for questions.
+
 There is also a [ggtreeExtra package](https://www.bioconductor.org/packages/release/bioc/vignettes/ggtreeExtra/inst/doc/ggtreeExtra.html) that provides a function, `geom_fruit`, to align graphs to a tree, perhaps more easily than with ggtree.
 
 The [ape package](https://cran.r-project.org/web/packages/ape/) is also useful for phylogenetics
@@ -29,7 +31,8 @@ The [ape package](https://cran.r-project.org/web/packages/ape/) is also useful f
 
 # Read a tree and plot it
 
-read in a newick tree file: 
+Read in a newick tree file: 
+
 ```{r}
 nwk_file <- system.file("extdata/sample.nwk", package="treeio") 
 nwk_tree <- read.tree( nwk_file )
@@ -37,12 +40,14 @@ class(nwk_tree)
 nwk_tree
 ```
 
-plot it using ape's basic plot function
+Plot it using ape's basic plot function
+
 ```{r}
 plot(nwk_tree)
 ```
 
-plot it using ggtree
+Plot it using ggtree
+
 ```{r}
 nwk_tree %>% 
     ggtree() +
@@ -64,7 +69,7 @@ tip_dat <- tibble( taxon=nwk_tree$tip.label,
 tip_dat
 ```
 
-## combine tree and tbl
+## Combine tree and tbl
 
 We associate info tbl with the tree using `left_join` - this creates a single `treedata` object that contains info AND tree (we access the tree like this `nwk_tree_with_info@phylo`) 
 
@@ -84,23 +89,26 @@ nwk_tree_with_info
 ```
 
 
-## plot tree with annotations
+## Plot tree with annotations
 
 now we can use ggtree to use column data in the joined treedata object for labels, colors, etc, etc
 
 ```{r}
+x <- "tail"
 nwk_tree_with_info %>% 
     ggtree(aes(color=fake_phenotype)) +  # color here colors the branches
-    geom_tiplab(aes(color=fake_phenotype)) + # color here colors the tip labels
-    geom_tippoint(aes(subset= fake_phenotype=="tail"), color="black") # add dots to taxa, using subset
+    geom_tiplab(aes(color=fake_phenotype))  + # color here colors the tip labels
+    ## there's some weird bug where I got errors if I tried to do fake_phenotype=="tail" but I get around it like this
+    geom_tippoint(aes(subset= fake_phenotype==.env$x),
+                  color="black") # add dots to taxa, using subset
 ```
 
 
-# add heatmap to the right side of a tree
+# Add heatmap to the right side of a tree
 
 gheatmap is the function for this
 
-## explore gheatmap demo code from ggtree book
+## Explore gheatmap demo code from ggtree book
 
 gheatmap demo code from the [ggtree online book](http://yulab-smu.top/treedata-book/chapter7.html#gheatmap):
 
@@ -186,7 +194,6 @@ gheatmap(p, genotype,
 
 ## gheatmap example with my fake tree and fake data
 
-
 ```{r}
 ## imagine we're plotting amino acid changes, like Maria's trying to do
 # here, NA represents "same as taxon A" (same as human in Maria's case)
@@ -212,6 +219,7 @@ gheatmap(p, tip_dat,
 ```
 
 Or maybe we turn that into WT/ nonWT
+
 ```{r}
 tip_dat2 <- tip_dat %>% 
     mutate(across(everything(),
@@ -245,7 +253,6 @@ gheatmap(p, tip_dat3,
 ```
 
 # Tree plus data to the right
-
 
 geom_point to the right
 
@@ -333,6 +340,67 @@ ggtree(tr) +
     ) 
 ```
 
+
+# Turning a tibble back into a tree
+
+Sometimes we take a tree, use `as_tibble()` (it becomes a `tbl_tree` object), do a bunch of manipulation (maybe it becomes a classic `tibble` object).  
+
+It's not totally obvious how to turn it back into a tree. If we use `as.treedata()` on a `tbl_tree` object , it works fine.  But if we use it on a pure tibble, the branch lengths are lost unless we do `as.treedata(branch.length, label)` instead. 
+
+Demo code for that:
+
+```{r}
+x <- "(((Strix_aluco:8.2,Asio_otus:4.2):3.1,Athene_noctua:7.3):6.3,Tyto_alba:13.5);"
+tree.owls <- read.tree(text= x)
+tree.owls <- as.treedata(tree.owls)
+```
+
+Do I lose branch length on coercion? no, I don't. `as_tibble()` actually returns a `tbl_tree` object. It's only for pure tibbles that we need to do something more to ensure we retain branch lengths:  `as.treedata(branch.length, label)`.
+
+
+```{r}
+# Do I lose branch length on coercion? no, I don't
+tree.owls %>% 
+    as_tibble() %>% 
+    as.treedata() %>% 
+    ggtree() +
+    geom_tiplab() +
+    geom_treescale() +
+    hexpand(0.3) +
+    labs(title="tree.owls coerced")
+
+(tree.owls %>% 
+        as_tibble() %>% 
+        as.treedata())@phylo$edge.length
+```
+
+This double coercion is a cheating way to get a pure tibble rather than a `tbl_tree` object. Now we lose branch lengths:
+
+```{r}
+tree.owls %>% 
+    as_tibble() %>% 
+    as_tibble() %>% 
+    as.treedata() %>% 
+    ggtree() +
+    geom_tiplab() +
+    geom_treescale() +
+    hexpand(0.3) +
+    labs(title="tree.owls coerced")
+```
+
+But we can avoid losing branch lengths by supplying a couple of arguments to `as.treedata()`:
+
+```{r}
+tree.owls %>% 
+    as_tibble() %>% 
+    as_tibble() %>% 
+    as.treedata(branch.length, label) %>% 
+    ggtree() +
+    geom_tiplab() +
+    geom_treescale() +
+    hexpand(0.3) +
+    labs(title="tree.owls coerced")
+```
 
 
 # Finished

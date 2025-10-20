@@ -191,6 +191,11 @@ pid(temp2)
 ```
 
 
+"PID1": 100 * (identical positions) / (aligned positions + internal gap positions)
+"PID2": 100 * (identical positions) / (aligned positions)
+"PID3": 100 * (identical positions) / (length shorter sequence)
+"PID4": 100 * (identical positions) / (average length of the two sequences)
+
 
 # Finished
 
