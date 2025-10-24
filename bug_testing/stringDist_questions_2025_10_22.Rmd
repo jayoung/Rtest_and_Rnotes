@@ -1,0 +1,137 @@
+---
+title: "stringDist_questions_2025_10_22"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+# Issues to look at, 2025/10/22 
+
+Using pwalign_1.4.0 and Biostrings_2.76.0 (these are both the current release version) 
+
+[Issue 1](https://github.com/Bioconductor/pwalign/issues/15): can StringDist handle gaps?
+
+[Issue 2](https://github.com/Bioconductor/pwalign/issues/14): weird scores on the diagonal
+
+The two plain R docs stringDist_questions_2025_10_22.issue1.R and stringDist_questions_2025_10_22.issue2.R are useful to make reprex.  After loading `library(reprex)`, you can highlight the code you want as a reprex, copy it into the clipboard, and type `reprex()` on the console. 
+
+
+## Setup 
+
+```{r setup, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(Biostrings)
+library(pwalign)
+library(here)
+data(BLOSUM62)
+```
+
+
+Make small test alignments. `x` has no gaps, `y` has a gap.
+
+```{r}
+aln_no_gaps <-  AAStringSet(c(seq1="VF",
+                              seq2="VF",
+                              seq3="LF"))
+
+aln_with_gap <-  AAStringSet(c(seq1="VF",
+                               seq2="V-",
+                               seq3="LF"))
+```
+
+## Issue 1: can StringDist handle gaps?
+
+stringDist works fine on the gapped alignment with default method (levenshtein)
+
+```{r}
+stringDist(aln_with_gap,
+           diag=TRUE, upper=TRUE)
+```
+
+
+substitutionMatrix method does work without gaps:
+
+```{r}
+stringDist(aln_no_gaps, 
+           diag=TRUE, upper=TRUE,
+           method="substitutionMatrix",
+           substitutionMatrix=BLOSUM62)
+```
+
+
+But substitutionMatrix method gives an error when there's a gap. Maybe the gap penalties are not being handled:
+
+```{r, error=TRUE}
+stringDist(aln_with_gap, 
+           diag=TRUE, upper=TRUE,
+           method="substitutionMatrix",
+           substitutionMatrix=BLOSUM62)
+```
+
+
+
+## Issue 2: inconsistent scores on the diagonal
+
+seq1 and seq2 are identical to each other. Therefore the scores for seq1-versus-seq1 and seq1-versus-seq2 should be identical to each other.  But they're not.  Self-matches always get a score of 0. This makes sense for many distance metrics but maybe not for substitutionMatrix methods.
+
+```{r}
+stringDist(aln_no_gaps, 
+           diag=TRUE, upper=TRUE,
+           method="substitutionMatrix",
+           substitutionMatrix=BLOSUM62)
+```
+Just to make sure I understand how the off-diagonal scores come about, here are the relevant bits of the BLOSUM62 matrix:
+
+```{r}
+BLOSUM62[c("F","L","V"),c("F","L","V")]
+```
+
+
+Understanding the scores:
+
+- VF aligned to VF scores -10, because BLOSUM62 scores F-F as 6 and V-V as 4 
+- VF aligned to LF score -7, because BLOSUM62 scores F-F as 6 and V-L as 1
+
+# Herve's workaround
+
+https://github.com/Bioconductor/pwalign/issues/15
+
+I put his new functions in `useful_functions/multiple_sequence_alignments_functions.R`
+
+```{r}
+source(here("useful_functions/multiple_sequence_alignments_functions.R"))
+```
+
+
+
+```{r}
+x <- c("ARND", "AR-D", "CRNA")
+x1 <- c(x, x[1:2])
+x1 %>% 
+    AAStringSet()
+```
+
+```{r}
+alignedStringDistMatrix(x1)
+```
+
+```{r}
+alignedStringDistMatrix(x1, indel.weight=10)
+```
+
+```{r}
+alignedStringDistMatrix(x1, indel.weight=0)
+```
+
+```{r}
+alignedStringDistMatrix(x1, weightmat=-BLOSUM62)
+```
+
+# Finished
+
+```{r}
+sessionInfo()
+```
+

@@ -45,28 +45,38 @@ get_mean_dist_to_tips <- function(tree) {
     all_tip_ids <- my_tbl %>% 
         filter(isTip) %>% 
         pull(node)
+    all_node_dists <- dist.nodes(tree@phylo)
     new_info <- lapply(1:nrow(my_tbl), function(i) {
         if (my_tbl$isTip[i]) {
-            output <- tibble(tot_distToTip=0,
+            output <- tibble(num_desc_tips=1,
+                             tot_edgeLen=0,
+                             tot_distToTip=0,
+                             mean_distToTip=0,
                              all_descendents=NA_character_,
-                             tip_descendents=NA_character_,
-                             num_desc_tips=1)
+                             tip_descendents=NA_character_)
             return(output)
         } else {
-            my_desc <- getDescendants(tree@phylo, i)
+            my_desc <- phytools::getDescendants(tree@phylo, i)
             my_desc_tips <- intersect(my_desc, all_tip_ids)
+            
+            ## get dists from this node to all descendent tips
+            all_dists_to_tips <- all_node_dists[i,my_desc_tips]
+            
             subtree <- extract.clade(tree@phylo, my_tbl$node[i])
-            output <- tibble(tot_distToTip=sum(subtree$edge.length),
+            output <- tibble(num_desc_tips=length(my_desc_tips),
+                             tot_edgeLen=sum(subtree$edge.length),
+                             tot_distToTip = sum(all_dists_to_tips),
+                             mean_distToTip = mean(all_dists_to_tips),
                              all_descendents=paste(my_desc, collapse=","), 
-                             tip_descendents=paste(my_desc_tips, collapse=","), 
-                             num_desc_tips=length(my_desc_tips)) 
+                             tip_descendents=paste(my_desc_tips, collapse=",")) 
             return(output)
         }
     })  %>% 
         bind_rows() %>% 
-        mutate(mean_distToTip= tot_distToTip/num_desc_tips)
+        mutate(norm_edgeLen= tot_edgeLen/num_desc_tips)
     my_tbl <- cbind(my_tbl, new_info) %>% 
-        as_tibble()
+        as_tibble() %>% 
+        relocate(all_descendents, tip_descendents, .after=isTip) 
     return(my_tbl)
 }
 
@@ -85,14 +95,15 @@ get_mean_dist_to_tips <- function(tree) {
 
 
 #### choose_clades function
-## uses output of get_mean_dist_to_tips to pick clades with <= a certain mean dist-to-tip
+## uses output of get_mean_dist_to_tips to pick clades with <= a certain total edge length (or mean dist-to-tip, 
 choose_clades <- function(dist_tbl, 
                           dist_threshold, 
-                          dist_metric = "mean_distToTip", # or could be tot_distToTip
+                          dist_metric = "mean_distToTip", # or could be tot_edgeLen
                           ## what order to check the tips in. Should matter but I may want to check that.
                           randomize_order = TRUE, seed=NULL,
                           assign_internal_nodes=TRUE,
                           quiet=TRUE) {
+    
     dist_tbl_tree <- dist_tbl %>% as.treedata(branch.length, label)
     
     ## deal with the case where the distance threshold is higher than anything in the entire tree - we just assing a single clade
@@ -137,7 +148,7 @@ choose_clades <- function(dist_tbl,
             ## if we exceed the threshold, assign that clade to all descendent nodes of the PREVIOUS node we checked
             if (this_dist > dist_threshold) {
                 if(!quiet) { cat("    node", this_anc_ID, "forms a clade!\n") }
-                all_descendents <- getDescendants(dist_tbl_tree@phylo, prev_node_checked)
+                all_descendents <- phytools::getDescendants(dist_tbl_tree@phylo, prev_node_checked)
                 ## only want tips
                 all_descendents <- intersect(all_descendents, all_tip_IDs)
                 if(!quiet) { cat("       clade members: ", paste(all_descendents, collapse=","), "\n") }
@@ -170,7 +181,7 @@ choose_clades <- function(dist_tbl,
             if(!is.na(dat$clade)) {next}
             if(!quiet) { cat("## assigning internal node ", each_node, "\n") }
             ## these will be numeric node IDs, including internal nodes
-            all_descendents <- getDescendants(dist_tbl_tree@phylo, each_node) %>% 
+            all_descendents <- phytools::getDescendants(dist_tbl_tree@phylo, each_node) %>% 
                 as.integer()
             if(!quiet) { cat("    all_descendents ", paste(all_descendents, collapse = ","), "\n") }
             all_desc_clades <- dist_tbl %>% 
@@ -197,12 +208,12 @@ choose_clades <- function(dist_tbl,
 ###### choose_clades_several_thresholds and choose_clades_several_thresholds_report - utility functions to check several thresholds for slicing the tree
 choose_clades_several_thresholds <- function(
         dist_tbl, 
-        dist_metric = "mean_distToTip", # or could be tot_distToTip
+        dist_metric = "mean_distToTip", # or could be tot_edgeLen
         distances_to_try = NULL,
         quiet=TRUE) {
     lapply(distances_to_try, function(this_dist) {
         # cat("\n\n####### trying distance ",this_dist, "\n")
-        choose_clades(tree_dists, 
+        choose_clades(dist_tbl, 
                       dist_threshold=this_dist, 
                       dist_metric=dist_metric,
                       quiet=quiet) %>% 
@@ -213,7 +224,7 @@ choose_clades_several_thresholds <- function(
 
 choose_clades_several_thresholds_report <- function(
         dist_tbl, 
-        dist_metric = "mean_distToTip", # or could be tot_distToTip
+        dist_metric = "mean_distToTip", # or could be tot_edgeLen
         distances_to_try = NULL,
         quiet=TRUE) {
     
@@ -229,7 +240,7 @@ choose_clades_several_thresholds_report <- function(
     
     clade_outputs <- choose_clades_several_thresholds(
         dist_tbl, 
-        dist_metric = dist_metric, # or could be tot_distToTip
+        dist_metric = dist_metric, # or could be tot_edgeLen
         distances_to_try = distances_to_try,
         quiet=quiet)
     
@@ -252,7 +263,7 @@ choose_clades_several_thresholds_report <- function(
 #     choose_clades(dist_threshold=10)
 #
 # tree2_tbl_2 <- tree_dists %>%
-#     choose_clades(dist_metric = "tot_distToTip",
+#     choose_clades(dist_metric = "tot_edgeLen",
 #                   dist_threshold=20)
 #
 # p1 <- tree2_tbl_1 %>%

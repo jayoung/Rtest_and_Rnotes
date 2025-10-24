@@ -1,6 +1,9 @@
 ---
 title: "trees_choosing_clades"
-output: html_document
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
 ---
 
 # Setup
@@ -33,17 +36,20 @@ tree.owls <- as.treedata(tree.owls)
 ```
 
 
+
 Plot tree.owls
 
 ```{r, fig.height=3, fig.width=5}
 tree.owls %>% 
     ggtree() +
     geom_tiplab() +
+    geom_nodelab(aes(label=node), 
+                 size=3, color="darkgray",
+                 nudge_x= -0.3, nudge_y= 0.2, hjust=1) +
     geom_treescale() +
     hexpand(0.3) +
     labs(title="tree.owls")
 ```
-
 
 See what tree.owls looks like in tibble format:
 
@@ -67,6 +73,7 @@ print(get_mean_dist_to_tips)
 
 Use that function on tree.owls and show the result
 
+  
 ```{r}
 my_dists <- get_mean_dist_to_tips(tree.owls)
 my_dists %>% 
@@ -120,18 +127,17 @@ tree_dists <- tree %>%
     get_mean_dist_to_tips()
 
 tree2_tbl_1 <- tree_dists %>% 
-    choose_clades(dist_threshold=10)
-
-tree2_tbl_2 <- tree_dists %>% 
-    choose_clades(dist_metric = "tot_distToTip", 
-                  dist_threshold=20)
-
+    choose_clades(dist_threshold=20)
 p1 <- tree2_tbl_1 %>% 
     as.treedata(branch.length, label) %>% 
     ggtree(aes(color=clade)) +
     geom_tiplab(show.legend=FALSE) +
     geom_treescale(width=10) +
-    labs(title="subtree mean dist to tip < 10")
+    labs(title="subtree mean dist to tip < 20")
+
+tree2_tbl_2 <- tree_dists %>% 
+    choose_clades(dist_metric = "tot_edgeLen", 
+                  dist_threshold=20)
 p2 <- tree2_tbl_2 %>% 
     as.treedata(branch.length, label) %>% 
     ggtree(aes(color=clade)) +
@@ -149,22 +155,23 @@ We might have an idea of roughly how many clades we want to slice the tree into.
 
 ```{r}
 choose_clades_several_thresholds_report(tree_dists, 
-                                        distances_to_try=c(10,15,16,17,18,19,20,25,30)) %>% 
+                                        distances_to_try=c(10,15,20,25,30,35,40,45,50)) %>% 
     kable(caption="Choose clades results, with several thresholds",
           digits=1) %>% 
     kable_styling(full_width=FALSE)
 ```
+
 Now we see those results, we can easily choose a threshold that results in e.g. 3 clades, if that's what we want:
 
 ```{r, fig.height=4, fig.width=5}
 tree_dists_three_clades <- choose_clades(tree_dists, 
-                                         dist_threshold=16) 
+                                         dist_threshold=40) 
 tree_dists_three_clades %>% 
     as.treedata(branch.length, label) %>% 
     ggtree(aes(color=clade)) +
     geom_tiplab(show.legend=FALSE) +
     geom_treescale(width=10) +
-    labs(title="subtree mean dist to tip < 16")
+    labs(title="subtree mean dist to tip < 40")
 ```
 
 

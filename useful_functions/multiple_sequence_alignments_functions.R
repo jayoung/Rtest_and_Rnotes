@@ -111,12 +111,11 @@ getCodons <- function(myAln) {
 ## translateCodons - takes a character vector of codons as input, outputs the corresponding amino acids. Utility function for translateGappedAln
 translateCodons <- function(myCodons, 
                             seqname=NULL,
+                            frameshiftTranslatesTo="X", 
                             unknownCodonTranslatesTo="-", 
-                            # ambiguousNucHandling="warn",
                             quiet=FALSE) {
     
-    
-    ## make new genetic code
+    ## make new genetic code that includes codon="---" for which translation = "-"
     gapCodon <- "-"
     names(gapCodon) <- "---"
     my_GENETIC_CODE <- c(GENETIC_CODE, gapCodon)
@@ -124,10 +123,13 @@ translateCodons <- function(myCodons,
     ## translate the codons
     pep <- my_GENETIC_CODE[myCodons]
     
-    ## check for codons that were not possible to translate, e.g. frameshift codons
+    ## check for NA, from codons that were not possible to translate, e.g. frameshift codons and codons containing N
     if (sum(is.na(pep))>0) {
+        ## maybe emit warnings
         if(!quiet) {
-            myError <- paste0("\nWarning - there were codons I could not translate. Using this character: ", unknownCodonTranslatesTo, "\n")
+            myError <- paste0(
+                "\nWarning - there were codons I could not translate. Using this character: ", 
+                unknownCodonTranslatesTo, "\n")
             if(!is.null(seqname)) {
                 myError <- gsub("Warning - there were",
                                 paste0("Warning in seq ",seqname," - there were"),
@@ -139,6 +141,11 @@ translateCodons <- function(myCodons,
                     paste(unknownCodons, collapse=","),
                     "\n\n")
         }
+        ## detect frameshift codons. The contain gap and non-gap characters:
+        isFrameshift <- grepl("-", myCodons) & (nchar(gsub("-", "", myCodons)) > 0)
+        pep[which(isFrameshift)] <- frameshiftTranslatesTo
+        
+        ## replace remaining NA with unknownCodonTranslatesTo
         pep[ which(is.na(pep)) ] <- unknownCodonTranslatesTo
     }
     
@@ -148,19 +155,14 @@ translateCodons <- function(myCodons,
 }
 
 ##### translateGappedAln - wrap the getCodons and translateCodons functions together into one:
-# ambiguousNucHandling - this is for codons containing N/Y/etc
-#    none:   replaces with unknownCodonTranslatesTo
-#    warn:   replaces with unknownCodonTranslatesTo and emits warning
-#    gap:    replaces with a gap codon
-#    stop:   throws an error
+# `frameshiftTranslatesTo="X"`    (e.g. for codons containing gap and DNA base), 
+# `unknownCodonTranslatesTo="-"`  (e.g. for codons containing ambiguities) 
+# `quiet=FALSE` : will emit warnings
 translateGappedAln <- function(myAln, 
+                               frameshiftTranslatesTo="X", 
                                unknownCodonTranslatesTo="-", 
-                               ambiguousNucHandling="warn",
                                quiet=FALSE) {
     ### some upfront checks
-    if(!ambiguousNucHandling %in% c("none", "warn", "stop", "gap")) {
-        stop("\n\nthe ambiguousNucHandling option must be either none, warn or stop\n\n")
-    }
     if(length(names(myAln)) != length(unique(names(myAln)))) {
         duplicatedNames <- names(myAln)
         duplicatedNames <- duplicatedNames[which(duplicated(duplicatedNames))]
@@ -172,43 +174,30 @@ translateGappedAln <- function(myAln,
     
     ### split seqs into codons (list of character vectors)
     myCodons <- getCodons(myAln)
-
-    ### deal with codons containing ambiguities
-    if(ambiguousNucHandling != "none") {
+    
+    ### maybe warn about codons containing ambiguities
+    if(!quiet) {
+        ## figure out warning about ambiguous codons
         ambiguityNucsPattern <- paste(setdiff(names(IUPAC_CODE_MAP), DNA_BASES), 
                                       collapse ="|")
-        myCodons <- lapply(names(myCodons), function(x) {
+        temp <- lapply(names(myCodons), function(x) {
             theseCodons <- myCodons[[x]]
             hasAmbig <- grepl(ambiguityNucsPattern, theseCodons)
-            if(sum(hasAmbig)==0) { return(theseCodons) }
-            ## figure out warning about amiguous codons
+            if(sum(hasAmbig)==0) { return(NULL) }
             ambigs <- theseCodons[which(hasAmbig)]
             ambigPositions <- which(hasAmbig)
             ambigMessage <- paste(ambigPositions, ambigs, sep="_")
             ambigMessage <- paste(ambigMessage, collapse=",")
             ambigMessage <- paste("\n\nWARNING - seq ",x," contains ambiguous codons:",ambigMessage,"\n\n", sep="")
-            
-            if(ambiguousNucHandling == "warn") {
-                if(!quiet) {warning(ambigMessage)}
-            }
-            if(ambiguousNucHandling == "stop") {
-                ambigMessage <- gsub("\n\n$",
-                                     " (and maybe other seqs, don't know)\n\n",
-                                     ambigMessage)
-                stop(ambigMessage) 
-            }
-            if(ambiguousNucHandling == "gap") {
-                theseCodons[which(hasAmbig)] <- "---"
-            }
-            return(theseCodons)
-        }) %>% 
-            set_names(names(myCodons))
+            warning(ambigMessage)
+        })
     }
-
+    
     ### translate those codons
     myAAaln <- lapply(names(myCodons), function(x) {
         translateCodons(myCodons=myCodons[[x]], 
                         seqname=x,
+                        frameshiftTranslatesTo=frameshiftTranslatesTo,
                         unknownCodonTranslatesTo=unknownCodonTranslatesTo, 
                         quiet=quiet)
     }) %>% 
@@ -404,3 +393,107 @@ simple_percent_identity_multiple <- function(one_aln) {
 # tempAln
 
 # simple_percent_identity_multiple(alns[["pep"]][["tamanash"]][[1]])
+
+
+####### alignedStringDistMatrix is a fiunction from Herve that is similar to stringDist but:
+# (a) does not realign the seqs
+# (b) allows supplying a matrix and an indel weight
+
+# see https://github.com/Bioconductor/pwalign/issues/15
+
+.normarg_weightmat <- function(weightmat, indel.weight=1L)
+{
+    if (!(is.matrix(weightmat) && is.numeric(weightmat)))
+        stop(wmsg("'weightmat' must be NULL or a numeric matrix"))
+    if (nrow(weightmat) != ncol(weightmat))
+        stop(wmsg("'weightmat' must be a square matrix"))
+    rownms <- rownames(weightmat)
+    colnms <- colnames(weightmat)
+    if (is.null(rownms) || is.null(colnms))
+        stop(wmsg("'weightmat' must have rownames and colnames"))
+    if (!(all(nchar(rownms) == 1L) && all(nchar(colnms) == 1L)))
+        stop(wmsg("the rownames and colnames on 'weightmat' ",
+                  "must be single letters"))
+    if (!identical(rownms, colnms))
+        stop(wmsg("the rownames and colnames on 'weightmat' ",
+                  "must be the same"))
+    if (!identical(t(weightmat), weightmat))
+        stop(wmsg("'weightmat' must be symmetrical"))
+    if ("-" %in% rownms) {
+        if (!identical(indel.weight, 1L))
+            warning("'indel.weight' is ignored when 'weightmat' has ",
+                    "a row and a column for \"-\"", immediate.=TRUE)
+        return(weightmat)
+    }
+    if (!isSingleNumber(indel.weight))
+        stop(wmsg("'indel.weight' must be a single number"))
+    ## Add "-" row and column to 'weightmat'.
+    weightmat <- rbind(weightmat, `-`=indel.weight)
+    weightmat <- cbind(weightmat, `-`=indel.weight)
+    weightmat["-", "-"] <- 0L
+    weightmat
+}
+
+### Compute the distance matrix of a set of aligned strings using the
+### Hamming distance or weighted Hamming distance.
+###
+### - 'x' must be a character vector (or XStringSet derivative like
+###   DNAStringSet or AAStringSet) where all strings have the same length.
+###
+### - 'weightmat' must be a square symmetric matrix that contains the
+###   weights of the matches and mismatches between 2 given letters. Similar
+###   to a scoring matrix like BLOSUM62 except that weights are conceptually
+###   the opposite of scores. This means that when using BLOSUM62 with
+###   alignedStringDistMatrix(), remember to pass -BLOSUM62.
+###
+### - 'indel.weight' is the weight of a mismatch between "-" and any other
+###   letter. By default the weight of a match between "-" and itself is
+###   considered to be 0. Note that 'indel.weight' will be ignored
+###   if 'weightmat' has a row and a column for "-".
+###
+### Returns a square symmetric matrix with length(x) rows and columns.
+
+alignedStringDistMatrix <- function(x, weightmat=NULL, indel.weight=1L)
+{
+    if (!is(x, "BStringSet"))
+        x <- BStringSet(x)
+    if (!isConstant(width(x)))
+        stop(wmsg("all the strings in 'x' must have the same length"))
+    if (is.null(weightmat)) {
+        ## Computes the weights between 2 vectors of letters of the same
+        ## length. Weight is 0 for a match, 1 for a mismatch that doesn't
+        ## involve "-", and 'indel.weight' for a mismatch that involves "-".
+        ## Returns a numeric vector parallel to 'vol1' and 'vol2'.
+        get_weigths <- function(vol1, vol2) {
+            not_equal <- vol1 != vol2
+            is_minus <- vol1 == "-" | vol2 == "-"
+            (not_equal & !is_minus) + (not_equal & is_minus) * indel.weight
+        }
+    } else {
+        weightmat <- .normarg_weightmat(weightmat, indel.weight)
+        if (!all(uniqueLetters(x) %in% rownames(weightmat)))
+            stop(wmsg("'x' contains letters that are not in the dimnames ",
+                      "of 'weightmat'"))
+        ## Computes the weights between 2 vectors of letters of the
+        ## same length. The weight between 2 given letters is obtained
+        ## from 'weightmat'.
+        ## Returns a numeric vector parallel to 'vol1' and 'vol2'.
+        get_weigths <- function(vol1, vol2) weightmat[cbind(vol1, vol2)]
+    }
+    ans <- matrix(NA_integer_, nrow=length(x), ncol=length(x))
+    x_names <- names(x)
+    if (!is.null(x_names))
+        dimnames(ans) <- list(x_names, x_names)
+    ## Turn 'x' into a list of vectors of letters.
+    vol_list <- lapply(x, function(xx) rawToChar(as.raw(xx), multiple=TRUE))
+    for (i in seq_along(vol_list)) {
+        vol1 <- vol_list[[i]]
+        for (j in seq_len(i)) {
+            vol2 <- vol_list[[j]]
+            ans[i, j] <- ans[j, i] <- sum(get_weigths(vol1, vol2))
+        }
+    }
+    ans
+}
+
+

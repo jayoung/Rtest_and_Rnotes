@@ -2,8 +2,14 @@
 title: "multiple_sequence_alignments_functions_testCode.Rmd"
 author: "Janet Young\n"
 date: "`r Sys.Date()`\n"
-output: html_document
+output: github_document
+always_allow_html: true
 ---
+
+# Goal 
+
+Make a test alignment and some code to work on how to treat alignments with gaps and ambiguities
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -13,34 +19,78 @@ library(Biostrings)
 source(here("useful_functions/multiple_sequence_alignments_functions.R"))
 ```
 
-A test alignment and code to work on how to treat alignments with gaps and ambiguities
+
+Set up test DNA alignment, with in-frame gap, frameshifting gap and codons containing Ns
 
 ```{r}
-testAln <- DNAStringSet(c(seq1="ATGGACAAT",
-                          seq2="ATNGANGGT",
-                          seq3="ATG-ACGGT"))
-translateGappedAln(testAln,
-                   unknownCodonTranslatesTo="X", 
-                   ambiguousNucHandling="gap",
-                   quiet=TRUE)
-
+testAln <- DNAStringSet(c(seq1="ATG-ACAAT---TGG",
+                          seq2="ATNGANGGT---ATG",
+                          seq3="ATG-ACGGTTGGATG"))
+testAln
 ```
 
+`getCodons` is a small function that splits each sequence into constituent codons:
 
 ```{r}
-source(here("useful_functions/multiple_sequence_alignments_functions.R"))
-
 tempCodons <- getCodons(testAln)
-
-lapply( names(tempCodons), function(x) {
-    translateCodons( myCodons=tempCodons[[x]],
-                     seqname=x,
-                     unknownCodonTranslatesTo="-", 
-                     quiet=FALSE)
-}) %>% 
-    set_names(names(tempCodons)) %>% 
-    unlist() %>% 
-    AAStringSet()
+tempCodons
 ```
 
+
+Translate the alignment using my `translateGappedAln` function. The defaults are:
+
+- `frameshiftTranslatesTo="X"`    (e.g. for codons containing gap and DNA base), 
+- `unknownCodonTranslatesTo="-"`  (e.g. for codons containing ambiguities) 
+- `quiet=FALSE` : will emit warnings
+
+```{r}
+translateGappedAln(testAln)
+```
+
+Can simply turn off the warnings:
+
+```{r}
+translateGappedAln(testAln, quiet=TRUE)
+```
+
+Can choose other translations for the ambiguous codons and frameshifts:
+
+```{r}
+translateGappedAln(testAln,
+                   frameshiftTranslatesTo="b", 
+                   unknownCodonTranslatesTo="z", 
+                   quiet=TRUE)
+```
+```{r}
+translateGappedAln(testAln,
+                   frameshiftTranslatesTo="-", 
+                   unknownCodonTranslatesTo="-", 
+                   quiet=TRUE)
+```
+# Degapping alignments
+
+Reminder of what the alignment looks like:
+
+```{r}
+testAln
+```
+
+```{r}
+translateGappedAln(testAln, quiet=TRUE)
+```
+
+```{r}
+degapAln(translateGappedAln(testAln, quiet=TRUE),
+         fractionOfSeqsWithGap = 0.5)
+```
+```{r}
+degapAln(testAln,
+         fractionOfSeqsWithGap = 0.5)
+```
+
+# Finished
+
+```{r}
+sessionInfo()
+```
 
