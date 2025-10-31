@@ -2,7 +2,7 @@ ggplot_tips_and_tricks
 ================
 Janet Young
 
-2025-10-29
+2025-10-31
 
 # Goal
 
@@ -12,6 +12,13 @@ A place to collect various ggplot tips and tricks
 ## the above is a good chunk header for chunks that load libraries
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(patchwork)
+library(palmerpenguins)
+
+library(ggExtra)  ## for ggMarginal
+library(shadowtext)
+library(ggtext)
+library(ggbreak) 
 ```
 
 # Public ggplot2 resources
@@ -165,11 +172,6 @@ e.g. words on top of a map benefit from a white shadow
 ```
 
 ``` r
-library(shadowtext)
-library(palmerpenguins)
-```
-
-``` r
 ## define labelling info
 species_labels_tib <- tibble(
     species = c('Adelie', 'Gentoo', 'Chinstrap'),
@@ -201,7 +203,7 @@ penguins |>
     theme(legend.position = 'none')
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 # Wrapping text over \>1 line in ggplot
 
@@ -217,14 +219,10 @@ penguins |>
          subtitle=str_wrap("a really long title. kasjdhf ;isjdghf khg kajsxdhf khg alsidgf kjhg ljhags dfj hgkjahsdgfkjhg a  ljhsdgf ljhglsdjhfg", width=50))
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 Instead use `ggtext` package - the element_textbox_simple will
 automatically wrap text to fit whatever space is available.
-
-``` r
-library(ggtext)
-```
 
 ``` r
 penguins |> 
@@ -236,7 +234,7 @@ penguins |>
     theme(plot.subtitle = element_textbox_simple())
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 Maybe we need to wrap facet labels - we can use the label_wrap_gen
 function
@@ -255,17 +253,12 @@ df %>%
     theme(legend.position="none")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 # Discontinuous axes using `ggbreak` package
 
 `ggbreak` package
 [vignette](https://cran.r-project.org/web/packages/ggbreak/vignettes/ggbreak.html)
-
-``` r
-library(ggbreak) 
-library(patchwork)
-```
 
 there is a blank plot below, as well as the intended plots, but it
 doesn’t appear when you knit to html or github_document
@@ -286,6 +279,46 @@ p2 <- p1 +
 
 
 p1 + p2
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+# Add marginal density plots
+
+We use [`ggExtra::ggMarginal`](https://github.com/daattali/ggExtra) to
+add marginal density plots.
+
+We do it a slightly weird way because it’s a ggExtraPlot object not a
+regular ggplot object - see [this
+note](https://github.com/daattali/ggExtra?tab=readme-ov-file#using-ggmarginal-in-r-notebooks-or-rmarkdown)
+
+``` r
+## first make a basic plot
+p1 <- penguins |> 
+    drop_na() |>
+    ggplot(
+        aes(bill_length_mm, flipper_length_mm, color = species)
+    ) +
+    geom_point(size = 1) +
+    theme_classic() + 
+    ## legend needs to be at bottom (or left) so it doesn't push the density plot away from the main plot
+    theme(legend.position="bottom")
+
+## then use ggMarginal
+p1 <- ggMarginal(p1, type="density", groupColour = TRUE)
+```
+
+``` r
+p1
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+If we want to use patchwork to combine \>1 ggMarginal plot, we need to
+use the `wrap_elements()` function:
+
+``` r
+patchwork::wrap_elements(p1) + patchwork::wrap_elements(p1)
 ```
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
@@ -314,22 +347,25 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] patchwork_1.3.2      ggbreak_0.1.6        ggtext_0.1.2        
-    ##  [4] palmerpenguins_0.1.1 shadowtext_0.1.4     lubridate_1.9.4     
-    ##  [7] forcats_1.0.0        stringr_1.5.2        dplyr_1.1.4         
-    ## [10] purrr_1.1.0          readr_2.1.5          tidyr_1.3.1         
-    ## [13] tibble_3.3.0         ggplot2_3.5.2        tidyverse_2.0.0     
+    ##  [1] ggbreak_0.1.6        ggtext_0.1.2         shadowtext_0.1.4    
+    ##  [4] ggExtra_0.11.0       palmerpenguins_0.1.1 patchwork_1.3.2     
+    ##  [7] lubridate_1.9.4      forcats_1.0.0        stringr_1.5.2       
+    ## [10] dplyr_1.1.4          purrr_1.1.0          readr_2.1.5         
+    ## [13] tidyr_1.3.1          tibble_3.3.0         ggplot2_3.5.2       
+    ## [16] tidyverse_2.0.0     
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] yulab.utils_0.2.1  rappdirs_0.3.3     generics_0.1.4     ggplotify_0.1.3   
     ##  [5] xml2_1.4.0         stringi_1.8.7      hms_1.1.3          digest_0.6.37     
     ##  [9] magrittr_2.0.4     evaluate_1.0.5     grid_4.5.1         timechange_0.3.0  
-    ## [13] RColorBrewer_1.1-3 fastmap_1.2.0      aplot_0.2.9        scales_1.4.0      
-    ## [17] cli_3.6.5          rlang_1.1.6        litedown_0.7       commonmark_2.0.0  
-    ## [21] withr_3.0.2        yaml_2.3.10        tools_4.5.1        tzdb_0.5.0        
-    ## [25] gridGraphics_0.5-1 vctrs_0.6.5        R6_2.6.1           lifecycle_1.0.4   
-    ## [29] ggfun_0.2.0        fs_1.6.6           pkgconfig_2.0.3    pillar_1.11.1     
-    ## [33] gtable_0.3.6       glue_1.8.0         Rcpp_1.1.0         xfun_0.53         
-    ## [37] tidyselect_1.2.1   rstudioapi_0.17.1  knitr_1.50         farver_2.1.2      
-    ## [41] htmltools_0.5.8.1  rmarkdown_2.29     labeling_0.4.3     compiler_4.5.1    
-    ## [45] markdown_2.0       gridtext_0.1.5
+    ## [13] RColorBrewer_1.1-3 fastmap_1.2.0      promises_1.3.3     aplot_0.2.9       
+    ## [17] scales_1.4.0       cli_3.6.5          shiny_1.11.1       rlang_1.1.6       
+    ## [21] litedown_0.7       commonmark_2.0.0   withr_3.0.2        yaml_2.3.10       
+    ## [25] tools_4.5.1        tzdb_0.5.0         httpuv_1.6.16      gridGraphics_0.5-1
+    ## [29] vctrs_0.6.5        R6_2.6.1           mime_0.13          lifecycle_1.0.4   
+    ## [33] ggfun_0.2.0        fs_1.6.6           miniUI_0.1.2       pkgconfig_2.0.3   
+    ## [37] pillar_1.11.1      later_1.4.4        gtable_0.3.6       glue_1.8.0        
+    ## [41] Rcpp_1.1.0         xfun_0.53          tidyselect_1.2.1   rstudioapi_0.17.1 
+    ## [45] knitr_1.50         farver_2.1.2       xtable_1.8-4       htmltools_0.5.8.1 
+    ## [49] labeling_0.4.3     rmarkdown_2.29     compiler_4.5.1     markdown_2.0      
+    ## [53] gridtext_0.1.5

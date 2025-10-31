@@ -14,6 +14,13 @@ A place to collect various ggplot tips and tricks
 ## the above is a good chunk header for chunks that load libraries
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(patchwork)
+library(palmerpenguins)
+
+library(ggExtra)  ## for ggMarginal
+library(shadowtext)
+library(ggtext)
+library(ggbreak) 
 ```
 
 # Public ggplot2 resources
@@ -153,11 +160,6 @@ Mostly I don't like the way shadowtext looks, but it could be really useful if w
 # grep("Arial", system_fonts()$name, value=TRUE)
 ```
 
-```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
-library(shadowtext)
-library(palmerpenguins)
-```
-
 
 
 ```{r, fig.height=2, fig.width=5}
@@ -206,10 +208,6 @@ penguins |>
 
 Instead use `ggtext` package - the element_textbox_simple will automatically wrap text to fit whatever space is available.
 
-```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
-library(ggtext)
-```
-
 ```{r, fig.height=3, fig.width=5}
 penguins |> 
     count(island) |>
@@ -242,11 +240,6 @@ df %>%
 
 `ggbreak` package [vignette](https://cran.r-project.org/web/packages/ggbreak/vignettes/ggbreak.html)
 
-```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
-library(ggbreak) 
-library(patchwork)
-```
-
 there is a blank plot below, as well as the intended plots, but it doesn't appear when you knit to html or github_document
 
 ```{r, fig.height=4, fig.width=7}
@@ -267,7 +260,39 @@ p2 <- p1 +
 p1 + p2
 ```
 
+# Add marginal density plots
 
+We use [`ggExtra::ggMarginal`](https://github.com/daattali/ggExtra) to add marginal density plots.
+
+We do it a slightly weird way because it's a ggExtraPlot object not a regular ggplot object - see [this note](https://github.com/daattali/ggExtra?tab=readme-ov-file#using-ggmarginal-in-r-notebooks-or-rmarkdown)
+
+```{r, fig.height=4, fig.width=5}
+## first make a basic plot
+p1 <- penguins |> 
+    drop_na() |>
+    ggplot(
+        aes(bill_length_mm, flipper_length_mm, color = species)
+    ) +
+    geom_point(size = 1) +
+    theme_classic() + 
+    ## legend needs to be at bottom (or left) so it doesn't push the density plot away from the main plot
+    theme(legend.position="bottom")
+
+## then use ggMarginal
+p1 <- ggMarginal(p1, type="density", groupColour = TRUE)
+```
+
+```{r, fig.height=4, fig.width=5}
+p1
+```
+
+
+If we want to use patchwork to combine >1 ggMarginal plot, we need to use the `wrap_elements()` function:
+
+
+```{r, fig.height=4, fig.width=10}
+patchwork::wrap_elements(p1) + patchwork::wrap_elements(p1)
+```
 
 # Finished
 
