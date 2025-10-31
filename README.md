@@ -56,6 +56,12 @@ R learning - data cleaning: [a primer](https://rfortherestofus.com/2019/12/how-t
 
 check out these two packages for making interactive graphs: ggiraph and plotly. video tutorial https://rfortherestofus.com/2021/03/interactive-graphs-in-r/
 
+## My notes
+
+Many files in this repo, but these are some that will probably be useful frequently:
+
+- [ggplot tips and tricks](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/ggplot/ggplot_tips_and_tricks.md)
+
 ## Resources
 
 [R primers](https://r-primers.andrewheiss.com)
@@ -162,7 +168,11 @@ Modify size by simple scaling
 ![Caption for the picture.](/path/to/image.png){#id .class width=50% height=50%}
 ```
 
-### Knit an Rmd doc from the linux command line
+### Knit/render an Rmd doc from the linux command line
+
+Easiest way: on gizmo/rhino, `~/bin/render_Rmd.perl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each.
+
+Alternatives:
 
 On my mac:
 ```
@@ -190,8 +200,6 @@ Rscript -e '.libPaths()'
 
 module purge
 ```
-
-On gizmo/rhino, `~/bin/render_Rmd_report.pl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each.
 
 
 On gizmo/rhino, using sbatch and a shell script, and run it like this: `cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes ; sbatch example_knit_batch_script.sh` - the script looks like this:

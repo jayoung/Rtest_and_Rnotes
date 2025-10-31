@@ -16,7 +16,50 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-# stat_summary on geom_violin
+# Public ggplot2 resources
+
+[ggplot2 gallery](https://www.r-graph-gallery.com/ggplot2-package.html)
+
+[ggplot2 extensions gallery](https://exts.ggplot2.tidyverse.org/gallery/) - shows various packages that extent ggplot. Examples (but there are many many more):
+- patchwork and cowplot to combine plots 
+- gganimate 
+- ggstatsplot (and ggsignif) to add results of statistical tests, 
+- gggenomes and gggenes
+
+A ggplot [tutorial](https://rgup.gitlab.io/research_cycle/02_ggplot.html)
+
+[Demos](https://www.datanovia.com/en/lessons/combine-multiple-ggplots-into-a-figure/#google_vignette) of how to combine >1 plot into a figure. Packages: 
+
+- gridExtra::grid.arrange() 
+- cowplot::plot_grid() 
+- patchwork::plot_layout() 
+- ggpubr::ggarrange() 
+
+https://www.thoughtworks.com/insights/blog/coding-habits-data-scientists
+
+
+# ggplot2 versions
+
+ggplot2 version 4 is a big change, and may break some things in other packages.
+
+I don't want to update to it yet.  That may mean I need to use older versions of some other packages.
+
+Here's how I can install a particular archive version of a package once I identify the URL on CRAN:
+
+```{r}
+# ### revert back to ggplot 3.5.2 - this is from 2025-04-09 
+# ## version 4.0.0 is
+# packageurl <- "http://cran.r-project.org/src/contrib/Archive/ggplot2/ggplot2_3.5.2.tar.gz"
+# install.packages(packageurl, repos=NULL, type="source")
+
+### revert back to GGally 2.2.1 (2024-02-14). Newer versions need ggplot2 version 4.4.0
+# # GGally_2.2.0.tar.gz
+# packageurl <- "http://cran.r-project.org/src/contrib/Archive/GGally/GGally_2.2.1.tar.gz"
+# install.packages(packageurl, repos=NULL, type="source")
+```
+
+
+# Adding median dots to violin plots: geom_violin + stat_summary
 
 Purpose:  make violin plots, and add statistical summaries (e.g. a dot for the median)
 
@@ -31,9 +74,9 @@ mtcars %>% ggplot(aes(x=factor(cyl), y=mpg, fill = factor(am))) +
 ```
 
 
-# `annotate()` versus `geom_text()`
+# Annotating plots - `annotate()` versus `geom_text()`
 
-annotate() is better than geom_text() for some uses. 
+`annotate()` is better than `geom_text()` for some uses. 
 
 Demo based on [rfortherestofus](https://rfortherestofus.com/2023/10/annotate-vs-geoms)
 
@@ -88,11 +131,18 @@ scatterplot +
 ```
 
 
-# shadowtext package
+# Explore `shadowtext` package
 
 Demo from [rfortherestofus](https://rfortherestofus.com/2024/05/shadowtext-ggplot)
 
 Mostly I don't like the way shadowtext looks, but it could be really useful if we're putting words over the top of some other dense data, e.g. words on top of a map benefit from a white shadow
+
+
+```{r}
+### revert back to shadowtext 0.1.4 (2024-07-18). Newer versions need ggplot2 version 4.4.0
+# packageurl <- "https://cran.r-project.org/src/contrib/Archive/shadowtext/shadowtext_0.1.4.tar.gz"
+# install.packages(packageurl, repos=NULL, type="source")
+```
 
 ```{r, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
 ### to install missing fonts:
@@ -141,7 +191,7 @@ penguins |>
     theme(legend.position = 'none')
 ```
 
-# wrapping text in ggplot
+# Wrapping text over >1 line in ggplot
 
 `str_wrap()` - you have to figure out width manually, which can be tedious
 
@@ -188,7 +238,7 @@ df %>%
 
 
 
-# discontinuous axes using `ggbreak` package
+# Discontinuous axes using `ggbreak` package
 
 `ggbreak` package [vignette](https://cran.r-project.org/web/packages/ggbreak/vignettes/ggbreak.html)
 
