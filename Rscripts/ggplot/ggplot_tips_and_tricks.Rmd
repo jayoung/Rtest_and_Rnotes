@@ -15,12 +15,16 @@ A place to collect various ggplot tips and tricks
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(patchwork)
+library(here)
 library(palmerpenguins)
 
 library(ggExtra)  ## for ggMarginal
 library(shadowtext)
 library(ggtext)
 library(ggbreak) 
+
+### for my_ggMarginal:
+source(here("useful_functions/other_functions.R"))
 ```
 
 # Public ggplot2 resources
@@ -93,9 +97,9 @@ Demo based on [rfortherestofus](https://rfortherestofus.com/2023/10/annotate-vs-
 Example where annotate is better
 
 ```{r, fig.height=5, fig.width=5}
-scatterplot <- palmerpenguins::penguins |> 
-    select(bill_length_mm, flipper_length_mm, species) |> 
-    drop_na()|> 
+scatterplot <- palmerpenguins::penguins %>% 
+    select(bill_length_mm, flipper_length_mm, species) %>% 
+    drop_na()%>% 
     ggplot(aes(bill_length_mm, flipper_length_mm, col = species)) +
     geom_point(size = 2.5) +
     labs(
@@ -113,27 +117,27 @@ Here we use `geom_text()` and it looks bad, because it is still drawing stuff (c
 
 ```{r, fig.height=5, fig.width=5}
 scatterplot +
-  geom_text(
-    x = 35,
-    y = 217.5,
-    label = 'Important penguins',
-    fontface = 'bold', # makes text bold
-    size = 4.5 # font size
-  )
+    geom_text(
+        x = 35,
+        y = 217.5,
+        label = 'Important penguins',
+        fontface = 'bold', # makes text bold
+        size = 4.5 # font size
+    )
 ```
 
 Here we use `annotate()` instead and it ignores the data
 
 ```{r, fig.height=5, fig.width=5}
 scatterplot +
-  annotate(
-    'text',
-    x = 35,
-    y = 217.5,
-    label = 'Important penguins',
-    fontface = 'bold', 
-    size = 4.5
-  )
+    annotate(
+        'text',
+        x = 35,
+        y = 217.5,
+        label = 'Important penguins',
+        fontface = 'bold', 
+        size = 4.5
+    )
 
 ```
 
@@ -175,8 +179,8 @@ We can use geom_shadowtext() pretty much the same as we'd use geom_label, using 
 
 ```{r, fig.height=4, fig.width=5}
 ## the plot
-penguins |> 
-    drop_na() |>
+penguins %>% 
+    drop_na() %>%
     ggplot(
         aes(bill_length_mm, flipper_length_mm, fill = species)
     ) +
@@ -198,8 +202,8 @@ penguins |>
 `str_wrap()` - you have to figure out width manually, which can be tedious
 
 ```{r, fig.height=3, fig.width=5}
-penguins |> 
-    count(island) |>
+penguins %>% 
+    count(island) %>%
     ggplot(aes(x=island, y=n)) +
     geom_col() +
     labs(title="a short title",
@@ -209,8 +213,8 @@ penguins |>
 Instead use `ggtext` package - the element_textbox_simple will automatically wrap text to fit whatever space is available.
 
 ```{r, fig.height=3, fig.width=5}
-penguins |> 
-    count(island) |>
+penguins %>% 
+    count(island) %>%
     ggplot(aes(x=island, y=n)) +
     geom_col() +
     labs(title="a short title",
@@ -268,22 +272,22 @@ We do it a slightly weird way because it's a ggExtraPlot object not a regular gg
 
 ```{r, fig.height=4, fig.width=5}
 ## first make a basic plot
-p1 <- penguins |> 
-    drop_na() |>
+p1 <- penguins %>% 
+    drop_na() %>%
     ggplot(
         aes(bill_length_mm, flipper_length_mm, color = species)
     ) +
     geom_point(size = 1) +
     theme_classic() + 
     ## legend needs to be at bottom (or left) so it doesn't push the density plot away from the main plot
-    theme(legend.position="bottom")
+    theme(legend.position="bottom") 
 
 ## then use ggMarginal
-p1 <- ggMarginal(p1, type="density", groupColour = TRUE)
+p1a <- ggMarginal(p1, type="density", groupColour = TRUE)
 ```
 
 ```{r, fig.height=4, fig.width=5}
-p1
+p1a
 ```
 
 
@@ -291,8 +295,69 @@ If we want to use patchwork to combine >1 ggMarginal plot, we need to use the `w
 
 
 ```{r, fig.height=4, fig.width=10}
-patchwork::wrap_elements(p1) + patchwork::wrap_elements(p1)
+patchwork::wrap_elements(p1a) + patchwork::wrap_elements(p1a)
 ```
+
+[A known issue with ggMarginal](https://github.com/daattali/ggExtra/issues/128) - it doesn't respect coord_cartesian settings on the main plot:
+
+```{r, fig.height=4, fig.width=5}
+p1b <- p1 +
+    coord_cartesian(xlim=c(0,60)) 
+p1b <- ggMarginal(p1b, type="density", groupColour = TRUE)
+```
+
+```{r, fig.height=4, fig.width=5}
+p1b
+```
+
+A workaround is to use `xlim` rather than coord_cartesian. The downside of that is that it actually REMOVES data outside the specified range, so the density plots are not accurate.
+
+```{r, fig.height=4, fig.width=5}
+p1b <- p1 +
+    xlim(c(0,60))
+p1b <- ggMarginal(p1b, type="density", groupColour = TRUE)
+```
+
+```{r, fig.height=4, fig.width=5}
+p1b
+```
+
+We can also do it in basic ggplot (including changing the axis limits).   I made a function to do that - it's called `my_ggMarginal()` and is in `useful_functions/other_functions.R`
+
+Show that function:
+
+```{r}
+print(my_ggMarginal)
+```
+
+```{r}
+my_penguin_colors <- c(Adelie="orange",
+                       Gentoo="purple",
+                       Chinstrap="forestgreen")
+penguins %>%  
+    drop_na() %>% 
+    my_ggMarginal(x_var="bill_length_mm",
+                  y_var="flipper_length_mm", color_var="species",
+                  my_xlim=c(0,60), my_ylim=c(160,240),
+                  my_color_scheme=my_penguin_colors,
+                  my_title="penguins",
+                  my_subtitle = "by species")
+```
+
+
+
+
+`geom_rug()` is an alternative way to show the marginal distributions:
+
+```{r}
+p1 +
+    geom_rug(alpha=.2,
+             length = unit(0.1, "inches")) 
+## default length is unit(0.03, "npc"), i.e. 0.03* the plot dimensions (so the x and y axis rugs might be different lengths, unless we control that)
+```
+
+
+
 
 # Finished
 

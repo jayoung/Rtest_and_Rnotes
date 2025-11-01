@@ -13,12 +13,16 @@ A place to collect various ggplot tips and tricks
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(patchwork)
+library(here)
 library(palmerpenguins)
 
 library(ggExtra)  ## for ggMarginal
 library(shadowtext)
 library(ggtext)
 library(ggbreak) 
+
+### for my_ggMarginal:
+source(here("useful_functions/other_functions.R"))
 ```
 
 # Public ggplot2 resources
@@ -100,9 +104,9 @@ Demo based on
 Example where annotate is better
 
 ``` r
-scatterplot <- palmerpenguins::penguins |> 
-    select(bill_length_mm, flipper_length_mm, species) |> 
-    drop_na()|> 
+scatterplot <- palmerpenguins::penguins %>% 
+    select(bill_length_mm, flipper_length_mm, species) %>% 
+    drop_na()%>% 
     ggplot(aes(bill_length_mm, flipper_length_mm, col = species)) +
     geom_point(size = 2.5) +
     labs(
@@ -120,13 +124,13 @@ stuff (color) from the data passed in, and that’s not what we want
 
 ``` r
 scatterplot +
-  geom_text(
-    x = 35,
-    y = 217.5,
-    label = 'Important penguins',
-    fontface = 'bold', # makes text bold
-    size = 4.5 # font size
-  )
+    geom_text(
+        x = 35,
+        y = 217.5,
+        label = 'Important penguins',
+        fontface = 'bold', # makes text bold
+        size = 4.5 # font size
+    )
 ```
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
@@ -135,14 +139,14 @@ Here we use `annotate()` instead and it ignores the data
 
 ``` r
 scatterplot +
-  annotate(
-    'text',
-    x = 35,
-    y = 217.5,
-    label = 'Important penguins',
-    fontface = 'bold', 
-    size = 4.5
-  )
+    annotate(
+        'text',
+        x = 35,
+        y = 217.5,
+        label = 'Important penguins',
+        fontface = 'bold', 
+        size = 4.5
+    )
 ```
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
@@ -185,8 +189,8 @@ geom_label, using bg.color to tell it the color of the shadow.
 
 ``` r
 ## the plot
-penguins |> 
-    drop_na() |>
+penguins %>% 
+    drop_na() %>%
     ggplot(
         aes(bill_length_mm, flipper_length_mm, fill = species)
     ) +
@@ -211,8 +215,8 @@ penguins |>
 tedious
 
 ``` r
-penguins |> 
-    count(island) |>
+penguins %>% 
+    count(island) %>%
     ggplot(aes(x=island, y=n)) +
     geom_col() +
     labs(title="a short title",
@@ -225,8 +229,8 @@ Instead use `ggtext` package - the element_textbox_simple will
 automatically wrap text to fit whatever space is available.
 
 ``` r
-penguins |> 
-    count(island) |>
+penguins %>% 
+    count(island) %>%
     ggplot(aes(x=island, y=n)) +
     geom_col() +
     labs(title="a short title",
@@ -294,22 +298,22 @@ note](https://github.com/daattali/ggExtra?tab=readme-ov-file#using-ggmarginal-in
 
 ``` r
 ## first make a basic plot
-p1 <- penguins |> 
-    drop_na() |>
+p1 <- penguins %>% 
+    drop_na() %>%
     ggplot(
         aes(bill_length_mm, flipper_length_mm, color = species)
     ) +
     geom_point(size = 1) +
     theme_classic() + 
     ## legend needs to be at bottom (or left) so it doesn't push the density plot away from the main plot
-    theme(legend.position="bottom")
+    theme(legend.position="bottom") 
 
 ## then use ggMarginal
-p1 <- ggMarginal(p1, type="density", groupColour = TRUE)
+p1a <- ggMarginal(p1, type="density", groupColour = TRUE)
 ```
 
 ``` r
-p1
+p1a
 ```
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
@@ -318,10 +322,150 @@ If we want to use patchwork to combine \>1 ggMarginal plot, we need to
 use the `wrap_elements()` function:
 
 ``` r
-patchwork::wrap_elements(p1) + patchwork::wrap_elements(p1)
+patchwork::wrap_elements(p1a) + patchwork::wrap_elements(p1a)
 ```
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+[A known issue with
+ggMarginal](https://github.com/daattali/ggExtra/issues/128) - it doesn’t
+respect coord_cartesian settings on the main plot:
+
+``` r
+p1b <- p1 +
+    coord_cartesian(xlim=c(0,60)) 
+p1b <- ggMarginal(p1b, type="density", groupColour = TRUE)
+```
+
+``` r
+p1b
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+A workaround is to use `xlim` rather than coord_cartesian. The downside
+of that is that it actually REMOVES data outside the specified range, so
+the density plots are not accurate.
+
+``` r
+p1b <- p1 +
+    xlim(c(0,60))
+p1b <- ggMarginal(p1b, type="density", groupColour = TRUE)
+```
+
+``` r
+p1b
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+We can also do it in basic ggplot (including changing the axis limits).
+I made a function to do that - it’s called `my_ggMarginal()` and is in
+`useful_functions/other_functions.R`
+
+Show that function:
+
+``` r
+print(my_ggMarginal)
+```
+
+    ## function (df, x_var = NULL, y_var = NULL, color_var = NULL, my_xlim = NULL, 
+    ##     my_ylim = NULL, my_color_scheme = NULL, my_title = NULL, 
+    ##     my_subtitle = NULL, combine_plots = TRUE, ...) 
+    ## {
+    ##     if (is.null(x_var) | is.null(y_var)) {
+    ##         stop("\n\nYou must supply x_var and y_var\n\n")
+    ##     }
+    ##     if (!x_var %in% colnames(df)) {
+    ##         stop("\n\nYour x variable name ", x_var, " is not in the data frame you supplied\n\n")
+    ##     }
+    ##     if (!y_var %in% colnames(df)) {
+    ##         stop("\n\nYour y variable name ", y_var, " is not in the data frame you supplied\n\n")
+    ##     }
+    ##     if (!color_var %in% colnames(df)) {
+    ##         stop("\n\nYour colors variable name ", color_var, " is not in the data frame you supplied\n\n")
+    ##     }
+    ##     if (is.null(color_var)) {
+    ##         p1 <- df %>% ggplot(aes(x = .data[[x_var]], y = .data[[y_var]]))
+    ##         dens_x <- df %>% ggplot(aes(x = .data[[x_var]]))
+    ##         dens_y <- df %>% ggplot(aes(y = .data[[y_var]]))
+    ##     }
+    ##     else {
+    ##         p1 <- df %>% ggplot(aes(x = .data[[x_var]], y = .data[[y_var]], 
+    ##             color = .data[[color_var]]))
+    ##         dens_x <- df %>% ggplot(aes(x = .data[[x_var]], color = .data[[color_var]], 
+    ##             fill = .data[[color_var]]))
+    ##         dens_y <- df %>% ggplot(aes(y = .data[[y_var]], color = .data[[color_var]], 
+    ##             fill = .data[[color_var]]))
+    ##     }
+    ##     p1 <- p1 + geom_point(...) + theme_classic()
+    ##     dens_x <- dens_x + geom_density(show.legend = FALSE, alpha = 0.3) + 
+    ##         theme_void()
+    ##     dens_y <- dens_y + geom_density(show.legend = FALSE, alpha = 0.3) + 
+    ##         theme_void()
+    ##     if (!is.null(my_xlim) & !is.null(my_ylim)) {
+    ##         p1 <- p1 + coord_cartesian(xlim = my_xlim, ylim = my_ylim)
+    ##     }
+    ##     if (!is.null(my_xlim)) {
+    ##         if (is.null(my_ylim)) {
+    ##             p1 <- p1 + coord_cartesian(xlim = my_xlim)
+    ##         }
+    ##         dens_x <- dens_x + coord_cartesian(xlim = my_xlim)
+    ##     }
+    ##     if (!is.null(my_ylim)) {
+    ##         if (is.null(my_xlim)) {
+    ##             p1 <- p1 + coord_cartesian(ylim = my_ylim)
+    ##         }
+    ##         dens_y <- dens_y + coord_cartesian(ylim = my_ylim)
+    ##     }
+    ##     if (!is.null(my_color_scheme)) {
+    ##         p1 <- p1 + scale_color_manual(values = my_color_scheme)
+    ##         dens_x <- dens_x + scale_color_manual(values = my_color_scheme)
+    ##         dens_y <- dens_y + scale_color_manual(values = my_color_scheme)
+    ##     }
+    ##     if (!is.null(my_title)) {
+    ##         dens_x <- dens_x + labs(title = my_title)
+    ##     }
+    ##     if (!is.null(my_subtitle)) {
+    ##         dens_x <- dens_x + labs(subtitle = my_subtitle)
+    ##     }
+    ##     if (!combine_plots) {
+    ##         return(list(main_plot = p1, dens_x = dens_x, dens_y = dens_y))
+    ##     }
+    ##     all_plots <- (dens_x + plot_spacer() + p1 + dens_y) + plot_layout(ncol = 2, 
+    ##         nrow = 2, widths = c(6, 1), heights = c(1, 6), guides = "collect")
+    ##     return(all_plots)
+    ## }
+
+``` r
+my_penguin_colors <- c(Adelie="orange",
+                       Gentoo="purple",
+                       Chinstrap="forestgreen")
+penguins %>%  
+    drop_na() %>% 
+    my_ggMarginal(x_var="bill_length_mm",
+                  y_var="flipper_length_mm", color_var="species",
+                  my_xlim=c(0,60), my_ylim=c(160,240),
+                  my_color_scheme=my_penguin_colors,
+                  my_title="penguins",
+                  my_subtitle = "by species")
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+`geom_rug()` is an alternative way to show the marginal distributions:
+
+``` r
+p1 +
+    geom_rug(alpha=.2,
+             length = unit(0.1, "inches")) 
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+``` r
+## default length is unit(0.03, "npc"), i.e. 0.03* the plot dimensions (so the x and y axis rugs might be different lengths, unless we control that)
+```
 
 # Finished
 
@@ -348,24 +492,24 @@ sessionInfo()
     ## 
     ## other attached packages:
     ##  [1] ggbreak_0.1.6        ggtext_0.1.2         shadowtext_0.1.4    
-    ##  [4] ggExtra_0.11.0       palmerpenguins_0.1.1 patchwork_1.3.2     
-    ##  [7] lubridate_1.9.4      forcats_1.0.0        stringr_1.5.2       
-    ## [10] dplyr_1.1.4          purrr_1.1.0          readr_2.1.5         
-    ## [13] tidyr_1.3.1          tibble_3.3.0         ggplot2_3.5.2       
-    ## [16] tidyverse_2.0.0     
+    ##  [4] ggExtra_0.11.0       palmerpenguins_0.1.1 here_1.0.2          
+    ##  [7] patchwork_1.3.2      lubridate_1.9.4      forcats_1.0.0       
+    ## [10] stringr_1.5.2        dplyr_1.1.4          purrr_1.1.0         
+    ## [13] readr_2.1.5          tidyr_1.3.1          tibble_3.3.0        
+    ## [16] ggplot2_3.5.2        tidyverse_2.0.0     
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] yulab.utils_0.2.1  rappdirs_0.3.3     generics_0.1.4     ggplotify_0.1.3   
-    ##  [5] xml2_1.4.0         stringi_1.8.7      hms_1.1.3          digest_0.6.37     
-    ##  [9] magrittr_2.0.4     evaluate_1.0.5     grid_4.5.1         timechange_0.3.0  
-    ## [13] RColorBrewer_1.1-3 fastmap_1.2.0      promises_1.3.3     aplot_0.2.9       
-    ## [17] scales_1.4.0       cli_3.6.5          shiny_1.11.1       rlang_1.1.6       
-    ## [21] litedown_0.7       commonmark_2.0.0   withr_3.0.2        yaml_2.3.10       
-    ## [25] tools_4.5.1        tzdb_0.5.0         httpuv_1.6.16      gridGraphics_0.5-1
-    ## [29] vctrs_0.6.5        R6_2.6.1           mime_0.13          lifecycle_1.0.4   
-    ## [33] ggfun_0.2.0        fs_1.6.6           miniUI_0.1.2       pkgconfig_2.0.3   
-    ## [37] pillar_1.11.1      later_1.4.4        gtable_0.3.6       glue_1.8.0        
-    ## [41] Rcpp_1.1.0         xfun_0.53          tidyselect_1.2.1   rstudioapi_0.17.1 
-    ## [45] knitr_1.50         farver_2.1.2       xtable_1.8-4       htmltools_0.5.8.1 
-    ## [49] labeling_0.4.3     rmarkdown_2.29     compiler_4.5.1     markdown_2.0      
-    ## [53] gridtext_0.1.5
+    ##  [1] gtable_0.3.6       xfun_0.53          tzdb_0.5.0         vctrs_0.6.5       
+    ##  [5] tools_4.5.1        generics_0.1.4     yulab.utils_0.2.1  pkgconfig_2.0.3   
+    ##  [9] ggplotify_0.1.3    RColorBrewer_1.1-3 lifecycle_1.0.4    compiler_4.5.1    
+    ## [13] farver_2.1.2       ggfun_0.2.0        httpuv_1.6.16      litedown_0.7      
+    ## [17] htmltools_0.5.8.1  yaml_2.3.10        later_1.4.4        pillar_1.11.1     
+    ## [21] mime_0.13          commonmark_2.0.0   tidyselect_1.2.1   aplot_0.2.9       
+    ## [25] digest_0.6.37      stringi_1.8.7      labeling_0.4.3     rprojroot_2.1.1   
+    ## [29] fastmap_1.2.0      grid_4.5.1         cli_3.6.5          magrittr_2.0.4    
+    ## [33] withr_3.0.2        scales_1.4.0       promises_1.3.3     rappdirs_0.3.3    
+    ## [37] timechange_0.3.0   rmarkdown_2.29     hms_1.1.3          shiny_1.11.1      
+    ## [41] evaluate_1.0.5     knitr_1.50         miniUI_0.1.2       markdown_2.0      
+    ## [45] gridGraphics_0.5-1 rlang_1.1.6        gridtext_0.1.5     Rcpp_1.1.0        
+    ## [49] xtable_1.8-4       glue_1.8.0         xml2_1.4.0         rstudioapi_0.17.1 
+    ## [53] R6_2.6.1           fs_1.6.6
