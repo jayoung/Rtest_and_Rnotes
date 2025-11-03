@@ -224,6 +224,18 @@ For Tamanash's DMS data, I wrote an R wrapper script called [`DMS_remakeReport_s
 
 ### Miscellaneous 
 
+To extract some list elements using their indices in a pipe, use `magrittr::extract()`. This is the equivalent of using `[`.   Example:
+
+```
+my_list %>% magrittr::extract(3:5) 
+```
+
+The related function `magrittr::extract2()` is the equivalent of `[[`, so we would use it to extract a single element from a list. Example:
+
+```
+my_list %>% magrittr::extract2(1) 
+```
+
 The 'embracing' operator (`{{ }}`), and unquoting using !! and !!! - see [`testCode.R`](Rscripts/testCode.R) for details.
 
 & versus && (and | versus ||):  use the short form for bitwise operation on vectors. Use the long form when we want a single TRUE/FALSE answer.   `any` and `all` functions run OR and AND on all elements of a vector
