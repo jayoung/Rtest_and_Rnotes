@@ -86,30 +86,44 @@ iris_plus_groups <- iris %>%
 iris_plus_groups %>% 
     ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
     geom_boxplot() +
-    geom_point(position=position_jitterdodge(jitter.width = 0.12))
+    geom_point(position=position_jitterdodge(jitter.width = 0.12)) +
+    theme_classic()
 ```
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
-If there’s an empty group, spacing gets weird, so we do
-`geom_boxplot(position = position_dodge(preserve = "single"))`.
+
+If there’s an empty group, widths and spacing get weird (see left plot
+below), so we do
+`geom_boxplot(position = position_dodge(preserve = "single"))` (see
+right plot below).
 
 ``` r
-iris_plus_groups %>% 
+p1 <- iris_plus_groups %>% 
     filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
     ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
-    geom_boxplot(position = position_dodge(preserve = "single")) 
+    geom_boxplot() +
+    theme_classic()
+ p2 <- iris_plus_groups %>% 
+    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    geom_boxplot(position = position_dodge(preserve = "single")) +
+    theme_classic()
+(p1 + p2) +
+     plot_layout(guides="collect")
 ```
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-The `position_dodge2` function gives ALMOST the same output, but the
-alignment of the ‘versicolor’ box is different:
+The `position_dodge2` function gives ALMOST the same outputas
+`position_dodge`, but the alignment of the ‘versicolor’ box is
+different:
 
 ``` r
 iris_plus_groups %>% 
     filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
     ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
-    geom_boxplot(position = position_dodge2(preserve = "single")) 
+    geom_boxplot(position = position_dodge2(preserve = "single")) +
+    theme_classic()
 ```
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
@@ -118,15 +132,16 @@ To ALSO add geom_point and keep them lined up is tricky! This might be
 fixed in newer versions of ggplot2 - there are a few related bug
 reports. In the meantime this is a workaround (given
 [here](https://github.com/tidyverse/ggplot2/issues/2712)) - we have to
-use `position_dodge2` for the boxplots and `position_dodge` for the
-points:
+use `position_dodge2` for the boxplots and `position_jitterdodge` for
+the points:
 
 ``` r
 iris_plus_groups %>% 
     filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
     ggplot(aes(x=Species, y=Sepal.Length, color=group)) + 
     geom_boxplot(position = position_dodge2(0.75, preserve = 'single')) +
-    geom_point(position = position_dodge(0.75, preserve = 'total'))
+    geom_point(position = position_jitterdodge(dodge.width=0.75, jitter.width=0.15))+
+    theme_classic()
 ```
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
