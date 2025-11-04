@@ -1,0 +1,40 @@
+---
+title: "test_randomCodeBits_part1"
+author: "Janet Young\n"
+date: "`r Sys.Date()`"
+output: github_document
+always_allow_html: true
+---
+
+# Goal
+
+First in a set of two linked Rmd scripts, to help me test my `render_Rmd_series.perl` script.
+
+This script (part1) creates a fake dataset, which we will make a plot of in part2. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+```
+
+```{r}
+iris_plus_groups <- iris %>% 
+    as_tibble() %>% 
+    mutate(group = sample(1:2, size=nrow(iris), replace=TRUE)) %>% 
+    mutate(group=paste0("group_", group)) 
+```
+
+
+# Finished
+
+```{r}
+save(iris_plus_groups, 
+     file=here("Rscripts/zz_test_renderRmd_in_series/iris_plus_groups.Rdata"))
+```
+
+
+```{r}
+sessionInfo()
+```
+

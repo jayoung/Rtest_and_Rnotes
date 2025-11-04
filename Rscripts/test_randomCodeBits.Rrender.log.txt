@@ -1,3 +1,0 @@
-running command:
-sbatch --job-name=Rmd -t 3-0 --cpus-per-task=4 --wrap="bash ./test_randomCodeBits.Rrender.sh 2>&1 >> test_randomCodeBits.Rrender.log.txt"
-

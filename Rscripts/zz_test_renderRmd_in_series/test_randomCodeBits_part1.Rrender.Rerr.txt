@@ -1,0 +1,12 @@
+
+
+processing file: test_randomCodeBits_part1.Rmd
+output file: test_randomCodeBits_part1.knit.md
+
+
+Preview created: test_randomCodeBits_part1.html
+
+Output created: test_randomCodeBits_part1.md
+Warning message:
+In png(..., res = dpi, units = "in") :
+  unable to open connection to X11 display ''

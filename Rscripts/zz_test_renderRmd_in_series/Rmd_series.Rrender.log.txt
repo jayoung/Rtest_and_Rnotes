@@ -1,0 +1,3 @@
+running command:
+sbatch --job-name=Rmd -t 3-0 --cpus-per-task=4 --wrap="bash ./Rmd_series.Rrender.sh 2>&1 >> Rmd_series.Rrender.log.txt"
+
