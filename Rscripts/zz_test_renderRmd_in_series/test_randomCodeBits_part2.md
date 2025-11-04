@@ -4,12 +4,10 @@ Janet Young
 
 2025-11-03
 
-# Goal
+This is the second in a set of two linked Rmd scripts, to help me test
+my `render_Rmd_series.perl` script.
 
-First in a set of two linked Rmd scripts, to help me test my
-`render_Rmd_series.perl` script.
-
-This script (part2) plots the fake datasetwe made in part1.
+This script (part2) plots the fake dataset we made in part1.
 
 ``` r
 # load iris_plus_groups
@@ -26,12 +24,12 @@ iris_plus_groups %>%
 
 ![](test_randomCodeBits_part2_files/figure-gfm/unnamed-chunk-2-1.svg)<!-- -->
 
-# Finished
-
 ``` r
-save(iris_plus_groups, 
-     file=here("Rscripts/zz_test_renderRmd_in_series/iris_plus_groups.Rdata"))
+ggsave(filename=here("Rscripts/zz_test_renderRmd_in_series/iris_plus_groups_plot.pdf"),
+       height=3.5, width=4.5)
 ```
+
+# Finished
 
 ``` r
 sessionInfo()
@@ -64,12 +62,13 @@ sessionInfo()
     ##  [9] tibble_3.3.0    ggplot2_3.5.1   tidyverse_2.0.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6      compiler_4.4.1    tidyselect_1.2.1  scales_1.3.0     
-    ##  [5] yaml_2.3.8        fastmap_1.2.0     R6_2.6.1          labeling_0.4.3   
-    ##  [9] generics_0.1.4    knitr_1.50        rprojroot_2.0.4   munsell_0.5.1    
-    ## [13] pillar_1.11.0     tzdb_0.4.0        rlang_1.1.5       stringi_1.8.7    
-    ## [17] xfun_0.53         timechange_0.3.0  cli_3.6.3         withr_3.0.2      
-    ## [21] magrittr_2.0.3    digest_0.6.36     grid_4.4.1        hms_1.1.3        
-    ## [25] lifecycle_1.0.4   vctrs_0.6.5       evaluate_0.24.0   glue_1.8.0       
-    ## [29] farver_2.1.2      colorspace_2.1-0  rmarkdown_2.27    tools_4.4.1      
-    ## [33] pkgconfig_2.0.3   htmltools_0.5.8.1
+    ##  [1] gtable_0.3.6      compiler_4.4.1    tidyselect_1.2.1  textshaping_0.4.0
+    ##  [5] systemfonts_1.1.0 scales_1.3.0      yaml_2.3.8        fastmap_1.2.0    
+    ##  [9] R6_2.6.1          labeling_0.4.3    generics_0.1.4    knitr_1.50       
+    ## [13] rprojroot_2.0.4   munsell_0.5.1     pillar_1.11.0     tzdb_0.4.0       
+    ## [17] rlang_1.1.5       stringi_1.8.7     xfun_0.53         timechange_0.3.0 
+    ## [21] cli_3.6.3         withr_3.0.2       magrittr_2.0.3    digest_0.6.36    
+    ## [25] grid_4.4.1        hms_1.1.3         lifecycle_1.0.4   vctrs_0.6.5      
+    ## [29] evaluate_0.24.0   glue_1.8.0        farver_2.1.2      ragg_1.3.2       
+    ## [33] colorspace_2.1-0  rmarkdown_2.27    tools_4.4.1       pkgconfig_2.0.3  
+    ## [37] htmltools_0.5.8.1

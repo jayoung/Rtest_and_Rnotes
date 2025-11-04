@@ -4,10 +4,12 @@ Janet Young
 
 2025-11-03
 
-# Goal
-
-First in a set of two linked Rmd scripts, to help me test my
+This is the first in a set of two linked Rmd scripts, to help me test my
 `render_Rmd_series.perl` script.
+
+Here’s the command I use to run the series of scripts:
+
+    render_Rmd_series.perl test_randomCodeBits_part1.Rmd test_randomCodeBits_part2.Rmd
 
 This script (part1) creates a fake dataset, which we will make a plot of
 in part2.

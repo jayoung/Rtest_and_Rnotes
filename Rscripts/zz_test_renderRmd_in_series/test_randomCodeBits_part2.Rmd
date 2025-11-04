@@ -6,11 +6,10 @@ output: github_document
 always_allow_html: true
 ---
 
-# Goal
 
-First in a set of two linked Rmd scripts, to help me test my `render_Rmd_series.perl` script.
+This is the second in a set of two linked Rmd scripts, to help me test my `render_Rmd_series.perl` script.
 
-This script (part2) plots the fake datasetwe made in part1. 
+This script (part2) plots the fake dataset we made in part1. 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -31,15 +30,13 @@ iris_plus_groups %>%
     theme_classic()
 ```
 
+```{r}
+ggsave(filename=here("Rscripts/zz_test_renderRmd_in_series/iris_plus_groups_plot.pdf"),
+       height=3.5, width=4.5)
+```
 
 
 # Finished
-
-```{r}
-save(iris_plus_groups, 
-     file=here("Rscripts/zz_test_renderRmd_in_series/iris_plus_groups.Rdata"))
-```
-
 
 ```{r}
 sessionInfo()
