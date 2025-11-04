@@ -70,6 +70,50 @@ Here's how I can install a particular archive version of a package once I identi
 ```
 
 
+# Adding individual data points to grouped/filled boxplots and getting the aligned
+
+The trick is that we need to 'dodge' the points, using  `geom_point(position=position_jitterdodge())` (or we could have used `position_dodge` if we don't want the jitter)
+
+```{r}
+iris_plus_groups <- iris %>% 
+    as_tibble() %>% 
+    mutate(group = sample(1:2, size=nrow(iris), replace=TRUE)) %>% 
+    mutate(group=paste0("group_", group)) 
+
+iris_plus_groups %>% 
+    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    geom_boxplot() +
+    geom_point(position=position_jitterdodge(jitter.width = 0.12))
+```
+If there's an empty group, spacing gets weird, so we do `geom_boxplot(position = position_dodge(preserve = "single"))`.
+
+```{r}
+iris_plus_groups %>% 
+    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    geom_boxplot(position = position_dodge(preserve = "single")) 
+```
+
+The `position_dodge2` function gives ALMOST the same output, but the alignment of the 'versicolor' box is different:
+
+```{r}
+iris_plus_groups %>% 
+    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    geom_boxplot(position = position_dodge2(preserve = "single")) 
+```
+
+
+To ALSO add geom_point and keep them lined up is tricky! This might be fixed in newer versions of ggplot2 - there are a few related bug reports.  In the meantime this is a workaround (given [here](https://github.com/tidyverse/ggplot2/issues/2712)) - we have to use `position_dodge2` for the boxplots and `position_dodge` for the points:
+
+```{r}
+iris_plus_groups %>% 
+    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=Species, y=Sepal.Length, color=group)) + 
+    geom_boxplot(position = position_dodge2(0.75, preserve = 'single')) +
+    geom_point(position = position_dodge(0.75, preserve = 'total'))
+```
+
 # Adding median dots to violin plots: geom_violin + stat_summary
 
 Purpose:  make violin plots, and add statistical summaries (e.g. a dot for the median)

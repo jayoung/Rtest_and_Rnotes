@@ -2,7 +2,7 @@ ggplot_tips_and_tricks
 ================
 Janet Young
 
-2025-10-31
+2025-11-03
 
 # Goal
 
@@ -71,6 +71,66 @@ I identify the URL on CRAN:
 # install.packages(packageurl, repos=NULL, type="source")
 ```
 
+# Adding individual data points to grouped/filled boxplots and getting the aligned
+
+The trick is that we need to ‘dodge’ the points, using
+`geom_point(position=position_jitterdodge())` (or we could have used
+`position_dodge` if we don’t want the jitter)
+
+``` r
+iris_plus_groups <- iris %>% 
+    as_tibble() %>% 
+    mutate(group = sample(1:2, size=nrow(iris), replace=TRUE)) %>% 
+    mutate(group=paste0("group_", group)) 
+
+iris_plus_groups %>% 
+    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    geom_boxplot() +
+    geom_point(position=position_jitterdodge(jitter.width = 0.12))
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+If there’s an empty group, spacing gets weird, so we do
+`geom_boxplot(position = position_dodge(preserve = "single"))`.
+
+``` r
+iris_plus_groups %>% 
+    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    geom_boxplot(position = position_dodge(preserve = "single")) 
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+The `position_dodge2` function gives ALMOST the same output, but the
+alignment of the ‘versicolor’ box is different:
+
+``` r
+iris_plus_groups %>% 
+    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    geom_boxplot(position = position_dodge2(preserve = "single")) 
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+To ALSO add geom_point and keep them lined up is tricky! This might be
+fixed in newer versions of ggplot2 - there are a few related bug
+reports. In the meantime this is a workaround (given
+[here](https://github.com/tidyverse/ggplot2/issues/2712)) - we have to
+use `position_dodge2` for the boxplots and `position_dodge` for the
+points:
+
+``` r
+iris_plus_groups %>% 
+    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=Species, y=Sepal.Length, color=group)) + 
+    geom_boxplot(position = position_dodge2(0.75, preserve = 'single')) +
+    geom_point(position = position_dodge(0.75, preserve = 'total'))
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
 # Adding median dots to violin plots: geom_violin + stat_summary
 
 Purpose: make violin plots, and add statistical summaries (e.g. a dot
@@ -89,7 +149,7 @@ mtcars %>% ggplot(aes(x=factor(cyl), y=mpg, fill = factor(am))) +
                  size = 2, geom = "point")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 # Annotating plots - `annotate()` versus `geom_text()`
 
@@ -133,7 +193,7 @@ scatterplot +
     )
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 Here we use `annotate()` instead and it ignores the data
 
@@ -149,7 +209,7 @@ scatterplot +
     )
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 # Explore `shadowtext` package
 
@@ -207,7 +267,7 @@ penguins %>%
     theme(legend.position = 'none')
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 # Wrapping text over \>1 line in ggplot
 
@@ -223,7 +283,7 @@ penguins %>%
          subtitle=str_wrap("a really long title. kasjdhf ;isjdghf khg kajsxdhf khg alsidgf kjhg ljhags dfj hgkjahsdgfkjhg a  ljhsdgf ljhglsdjhfg", width=50))
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 Instead use `ggtext` package - the element_textbox_simple will
 automatically wrap text to fit whatever space is available.
@@ -238,7 +298,7 @@ penguins %>%
     theme(plot.subtitle = element_textbox_simple())
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 Maybe we need to wrap facet labels - we can use the label_wrap_gen
 function
@@ -257,7 +317,7 @@ df %>%
     theme(legend.position="none")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 # Discontinuous axes using `ggbreak` package
 
@@ -285,7 +345,7 @@ p2 <- p1 +
 p1 + p2
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 # Add marginal density plots
 
@@ -316,7 +376,7 @@ p1a <- ggMarginal(p1, type="density", groupColour = TRUE)
 p1a
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 If we want to use patchwork to combine \>1 ggMarginal plot, we need to
 use the `wrap_elements()` function:
@@ -325,7 +385,7 @@ use the `wrap_elements()` function:
 patchwork::wrap_elements(p1a) + patchwork::wrap_elements(p1a)
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 [A known issue with
 ggMarginal](https://github.com/daattali/ggExtra/issues/128) - it doesn’t
@@ -341,7 +401,7 @@ p1b <- ggMarginal(p1b, type="density", groupColour = TRUE)
 p1b
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 A workaround is to use `xlim` rather than coord_cartesian. The downside
 of that is that it actually REMOVES data outside the specified range, so
@@ -357,7 +417,7 @@ p1b <- ggMarginal(p1b, type="density", groupColour = TRUE)
 p1b
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 We can also do it in basic ggplot (including changing the axis limits).
 I made a function to do that - it’s called `my_ggMarginal()` and is in
@@ -451,7 +511,7 @@ penguins %>%
                   my_subtitle = "by species")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 `geom_rug()` is an alternative way to show the marginal distributions:
 
@@ -461,7 +521,7 @@ p1 +
              length = unit(0.1, "inches")) 
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 ``` r
 ## default length is unit(0.03, "npc"), i.e. 0.03* the plot dimensions (so the x and y axis rugs might be different lengths, unless we control that)
