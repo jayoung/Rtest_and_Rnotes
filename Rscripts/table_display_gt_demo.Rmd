@@ -79,7 +79,6 @@ gt::cols_label() function can help use relabel the columns, including formatting
 
 ```{r}
 ## metro is in the gt package. ?metro says "A dataset with information on all 320 Paris Metro stations as of June 2024"
-
 metro |>
   dplyr::select(name, lines, passengers, connect_other) |>
   dplyr::slice_max(passengers, n = 10) |>
