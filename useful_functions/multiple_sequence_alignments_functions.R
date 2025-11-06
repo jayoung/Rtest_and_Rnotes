@@ -338,7 +338,9 @@ convertCoordsToOrigCoords <- function(gr) {
 
 ##### wrote this when working on Priya Shah YFV project (and Jyoti Batra bat genome comparisons)
 ### xxx I think the built-in pwalign::pid function gives the same answer as my pid_excl_gap column, but I want to check into that more.
-simple_percent_identity_pairwise <- function(twoSeqs_stringSet) {
+### removeChars_forAlnLenCalc - sometimes I want to ignore positions containing certain characters (in addition to gaps) when I calculate degapped aln length
+simple_percent_identity_pairwise <- function(twoSeqs_stringSet, 
+                                             removeChars_forAlnLenCalc=NULL) {
     if(length(twoSeqs_stringSet) != 2) {
         stop("\n\nERROR - input does has the wrong number of sequences - function designed to work on just two sequences\n\n")
     }
@@ -361,6 +363,13 @@ simple_percent_identity_pairwise <- function(twoSeqs_stringSet) {
     
     twoSeqs_degapAnyGap <- twoSeqs_degapFullGap %>% 
         filter(seq1 != "-" & seq2 != "-")
+    if(!is.null(removeChars_forAlnLenCalc)) {
+        for (my_char in removeChars_forAlnLenCalc) {
+            twoSeqs_degapAnyGap <- twoSeqs_degapFullGap %>% 
+                filter(seq1 != my_char & seq2 != my_char)
+        }
+    }
+    
     output$aln_len_nogaps <- nrow(twoSeqs_degapAnyGap)
     
     output <- output %>% 

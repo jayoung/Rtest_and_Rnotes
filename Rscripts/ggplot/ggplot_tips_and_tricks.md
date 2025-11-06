@@ -2,7 +2,7 @@ ggplot_tips_and_tricks
 ================
 Janet Young
 
-2025-11-03
+2025-11-06
 
 # Goal
 
@@ -14,12 +14,15 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(patchwork)
 library(here)
-library(palmerpenguins)
+library(janitor)
+library(kableExtra)
 
 library(ggExtra)  ## for ggMarginal
 library(shadowtext)
 library(ggtext)
 library(ggbreak) 
+
+library(palmerpenguins)
 
 ### for my_ggMarginal:
 source(here("useful_functions/other_functions.R"))
@@ -48,7 +51,7 @@ of how to combine \>1 plot into a figure. Packages:
 
 <https://www.thoughtworks.com/insights/blog/coding-habits-data-scientists>
 
-# ggplot2 versions
+# ggplot2 version notes
 
 ggplot2 version 4 is a big change, and may break some things in other
 packages.
@@ -71,26 +74,418 @@ I identify the URL on CRAN:
 # install.packages(packageurl, repos=NULL, type="source")
 ```
 
-# Adding individual data points to grouped/filled boxplots and getting the aligned
+# ggplot tips and tricks
+
+## Example datasets for this script
+
+Get a couple of example datasets - show the first few rows of each
+
+### iris_tbl
+
+(clean up the built-in iris dataset a bit)
+
+``` r
+iris_tbl <- iris %>% 
+    as_tibble() %>% 
+    clean_names()
+```
+
+`iris_tbl` has 150 rows and 5 columns
+
+``` r
+iris_tbl %>% 
+    slice_head(n=3) %>% 
+    kable(caption="iris_tbl") %>% 
+    kable_styling(full_width = FALSE)
+```
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+
+<caption>
+
+iris_tbl
+</caption>
+
+<thead>
+
+<tr>
+
+<th style="text-align:right;">
+
+sepal_length
+</th>
+
+<th style="text-align:right;">
+
+sepal_width
+</th>
+
+<th style="text-align:right;">
+
+petal_length
+</th>
+
+<th style="text-align:right;">
+
+petal_width
+</th>
+
+<th style="text-align:left;">
+
+species
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:right;">
+
+5.1
+</td>
+
+<td style="text-align:right;">
+
+3.5
+</td>
+
+<td style="text-align:right;">
+
+1.4
+</td>
+
+<td style="text-align:right;">
+
+0.2
+</td>
+
+<td style="text-align:left;">
+
+setosa
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+4.9
+</td>
+
+<td style="text-align:right;">
+
+3.0
+</td>
+
+<td style="text-align:right;">
+
+1.4
+</td>
+
+<td style="text-align:right;">
+
+0.2
+</td>
+
+<td style="text-align:left;">
+
+setosa
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+4.7
+</td>
+
+<td style="text-align:right;">
+
+3.2
+</td>
+
+<td style="text-align:right;">
+
+1.3
+</td>
+
+<td style="text-align:right;">
+
+0.2
+</td>
+
+<td style="text-align:left;">
+
+setosa
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+### penguins
+
+`penguins` has 344 rows and 8 columns
+
+``` r
+penguins %>% 
+    slice_head(n=3) %>% 
+    kable(caption="penguins") %>% 
+    kable_styling(full_width = FALSE)
+```
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+
+<caption>
+
+penguins
+</caption>
+
+<thead>
+
+<tr>
+
+<th style="text-align:left;">
+
+species
+</th>
+
+<th style="text-align:left;">
+
+island
+</th>
+
+<th style="text-align:right;">
+
+bill_length_mm
+</th>
+
+<th style="text-align:right;">
+
+bill_depth_mm
+</th>
+
+<th style="text-align:right;">
+
+flipper_length_mm
+</th>
+
+<th style="text-align:right;">
+
+body_mass_g
+</th>
+
+<th style="text-align:left;">
+
+sex
+</th>
+
+<th style="text-align:right;">
+
+year
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:left;">
+
+Adelie
+</td>
+
+<td style="text-align:left;">
+
+Torgersen
+</td>
+
+<td style="text-align:right;">
+
+39.1
+</td>
+
+<td style="text-align:right;">
+
+18.7
+</td>
+
+<td style="text-align:right;">
+
+181
+</td>
+
+<td style="text-align:right;">
+
+3750
+</td>
+
+<td style="text-align:left;">
+
+male
+</td>
+
+<td style="text-align:right;">
+
+2007
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Adelie
+</td>
+
+<td style="text-align:left;">
+
+Torgersen
+</td>
+
+<td style="text-align:right;">
+
+39.5
+</td>
+
+<td style="text-align:right;">
+
+17.4
+</td>
+
+<td style="text-align:right;">
+
+186
+</td>
+
+<td style="text-align:right;">
+
+3800
+</td>
+
+<td style="text-align:left;">
+
+female
+</td>
+
+<td style="text-align:right;">
+
+2007
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:left;">
+
+Adelie
+</td>
+
+<td style="text-align:left;">
+
+Torgersen
+</td>
+
+<td style="text-align:right;">
+
+40.3
+</td>
+
+<td style="text-align:right;">
+
+18.0
+</td>
+
+<td style="text-align:right;">
+
+195
+</td>
+
+<td style="text-align:right;">
+
+3250
+</td>
+
+<td style="text-align:left;">
+
+female
+</td>
+
+<td style="text-align:right;">
+
+2007
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+## Using color names in a column literally
+
+Use `scale_color_identity()` if colors are specified by name in a
+column. Note that by default `guide="none"` for `scale_color_identity()`
+(could add `guide=guide_legend()` but that would just show the color
+names, which makes no sense)
+
+``` r
+p1 <- iris_tbl %>% 
+    ggplot(aes(x=sepal_length, y=petal_length, color=species)) +
+    geom_point() + 
+    theme_classic() +
+    labs(title="Color points by species")
+
+p2 <- iris_tbl %>% 
+    mutate(species_color=case_when(
+        species=="versicolor" ~ "orange",
+        TRUE ~ "darkgray"
+    )) %>% 
+    ggplot(aes(x=sepal_length, y=petal_length, color=species_color)) +
+    geom_point() + 
+    theme_classic() +
+    scale_color_identity() +
+    labs(title="Color to highlight versicolor")
+
+p1 + p2
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+## Adding individual data points to grouped/filled boxplots and getting the aligned
 
 The trick is that we need to ‘dodge’ the points, using
 `geom_point(position=position_jitterdodge())` (or we could have used
 `position_dodge` if we don’t want the jitter)
 
 ``` r
-iris_plus_groups <- iris %>% 
+iris_plus_groups <- iris_tbl %>% 
     as_tibble() %>% 
-    mutate(group = sample(1:2, size=nrow(iris), replace=TRUE)) %>% 
+    mutate(group = sample(1:2, size=nrow(iris_tbl), replace=TRUE)) %>% 
     mutate(group=paste0("group_", group)) 
 
 iris_plus_groups %>% 
-    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    ggplot(aes(x=species, y=sepal_length, color=group)) +
     geom_boxplot() +
     geom_point(position=position_jitterdodge(jitter.width = 0.12)) +
     theme_classic()
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 If there’s an empty group, widths and spacing get weird (see left plot
 below), so we do
@@ -99,20 +494,20 @@ right plot below).
 
 ``` r
 p1 <- iris_plus_groups %>% 
-    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
-    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    filter( ! (species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=species, y=sepal_length, color=group)) +
     geom_boxplot() +
     theme_classic()
- p2 <- iris_plus_groups %>% 
-    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
-    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+p2 <- iris_plus_groups %>% 
+    filter( ! (species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=species, y=sepal_length, color=group)) +
     geom_boxplot(position = position_dodge(preserve = "single")) +
     theme_classic()
 (p1 + p2) +
-     plot_layout(guides="collect")
+    plot_layout(guides="collect")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 The `position_dodge2` function gives ALMOST the same outputas
 `position_dodge`, but the alignment of the ‘versicolor’ box is
@@ -120,13 +515,13 @@ different:
 
 ``` r
 iris_plus_groups %>% 
-    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
-    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    filter( ! (species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=species, y=sepal_length, color=group)) +
     geom_boxplot(position = position_dodge2(preserve = "single")) +
     theme_classic()
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 To ALSO add geom_point and keep them lined up is tricky! This might be
 fixed in newer versions of ggplot2 - there are a few related bug
@@ -137,16 +532,16 @@ the points:
 
 ``` r
 iris_plus_groups %>% 
-    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
-    ggplot(aes(x=Species, y=Sepal.Length, color=group)) + 
+    filter( ! (species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=species, y=sepal_length, color=group)) + 
     geom_boxplot(position = position_dodge2(0.75, preserve = 'single')) +
     geom_point(position = position_jitterdodge(dodge.width=0.75, jitter.width=0.15))+
     theme_classic()
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-# Adding median dots to violin plots: geom_violin + stat_summary
+## Adding median dots to violin plots: geom_violin + stat_summary
 
 Purpose: make violin plots, and add statistical summaries (e.g. a dot
 for the median)
@@ -164,9 +559,9 @@ mtcars %>% ggplot(aes(x=factor(cyl), y=mpg, fill = factor(am))) +
                  size = 2, geom = "point")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
-# Annotating plots - `annotate()` versus `geom_text()`
+## Annotating plots - `annotate()` versus `geom_text()`
 
 `annotate()` is better than `geom_text()` for some uses.
 
@@ -187,8 +582,8 @@ scatterplot <- palmerpenguins::penguins %>%
     labs(
         x = 'Bill length (in mm)',
         y = 'Flipper length (in mm)',
-        col = 'Species',
-        title = 'Measurements of different Penguin Species'
+        col = 'species',
+        title = 'Measurements of different Penguin species'
     ) +
     theme_minimal(base_size = 16) +
     theme(legend.position = 'top')
@@ -208,7 +603,7 @@ scatterplot +
     )
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 Here we use `annotate()` instead and it ignores the data
 
@@ -224,9 +619,9 @@ scatterplot +
     )
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
-# Explore `shadowtext` package
+## Explore `shadowtext` package
 
 Demo from
 [rfortherestofus](https://rfortherestofus.com/2024/05/shadowtext-ggplot)
@@ -282,9 +677,9 @@ penguins %>%
     theme(legend.position = 'none')
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
-# Wrapping text over \>1 line in ggplot
+## Wrapping text over \>1 line in ggplot
 
 `str_wrap()` - you have to figure out width manually, which can be
 tedious
@@ -298,7 +693,7 @@ penguins %>%
          subtitle=str_wrap("a really long title. kasjdhf ;isjdghf khg kajsxdhf khg alsidgf kjhg ljhags dfj hgkjahsdgfkjhg a  ljhsdgf ljhglsdjhfg", width=50))
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 Instead use `ggtext` package - the element_textbox_simple will
 automatically wrap text to fit whatever space is available.
@@ -313,7 +708,7 @@ penguins %>%
     theme(plot.subtitle = element_textbox_simple())
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 Maybe we need to wrap facet labels - we can use the label_wrap_gen
 function
@@ -332,9 +727,9 @@ df %>%
     theme(legend.position="none")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-# Discontinuous axes using `ggbreak` package
+## Discontinuous axes using `ggbreak` package
 
 `ggbreak` package
 [vignette](https://cran.r-project.org/web/packages/ggbreak/vignettes/ggbreak.html)
@@ -360,9 +755,9 @@ p2 <- p1 +
 p1 + p2
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
-# Add marginal density plots
+## Add marginal density plots
 
 We use [`ggExtra::ggMarginal`](https://github.com/daattali/ggExtra) to
 add marginal density plots.
@@ -391,7 +786,7 @@ p1a <- ggMarginal(p1, type="density", groupColour = TRUE)
 p1a
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 If we want to use patchwork to combine \>1 ggMarginal plot, we need to
 use the `wrap_elements()` function:
@@ -400,7 +795,7 @@ use the `wrap_elements()` function:
 patchwork::wrap_elements(p1a) + patchwork::wrap_elements(p1a)
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 [A known issue with
 ggMarginal](https://github.com/daattali/ggExtra/issues/128) - it doesn’t
@@ -416,7 +811,7 @@ p1b <- ggMarginal(p1b, type="density", groupColour = TRUE)
 p1b
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 A workaround is to use `xlim` rather than coord_cartesian. The downside
 of that is that it actually REMOVES data outside the specified range, so
@@ -432,7 +827,7 @@ p1b <- ggMarginal(p1b, type="density", groupColour = TRUE)
 p1b
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 We can also do it in basic ggplot (including changing the axis limits).
 I made a function to do that - it’s called `my_ggMarginal()` and is in
@@ -526,7 +921,31 @@ penguins %>%
                   my_subtitle = "by species")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+
+If we want to show \>1 of those plots together (from `my_ggMarginal`),
+we need a special function. First we add the `combine_plots = FALSE`
+option when we run `my_ggMarginal()`.
+
+Then we combine plots into a list, and feed that to
+`combine_myGGmarginal_plots`:
+
+``` r
+p1 <- penguins %>%  
+    drop_na() %>% 
+    my_ggMarginal(x_var="bill_length_mm",
+                  y_var="flipper_length_mm", 
+                  color_var="species",
+                  my_xlim=c(0,60), my_ylim=c(160,240),
+                  my_color_scheme=my_penguin_colors,
+                  my_title="penguins",
+                  my_subtitle = "by species", 
+                  combine_plots = FALSE)
+
+combine_myGGmarginal_plots(list(p1,p1))
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
 
 `geom_rug()` is an alternative way to show the marginal distributions:
 
@@ -536,7 +955,7 @@ p1 +
              length = unit(0.1, "inches")) 
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+    ## NULL
 
 ``` r
 ## default length is unit(0.03, "npc"), i.e. 0.03* the plot dimensions (so the x and y axis rugs might be different lengths, unless we control that)
@@ -566,25 +985,27 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] ggbreak_0.1.6        ggtext_0.1.2         shadowtext_0.1.4    
-    ##  [4] ggExtra_0.11.0       palmerpenguins_0.1.1 here_1.0.2          
-    ##  [7] patchwork_1.3.2      lubridate_1.9.4      forcats_1.0.0       
-    ## [10] stringr_1.5.2        dplyr_1.1.4          purrr_1.1.0         
-    ## [13] readr_2.1.5          tidyr_1.3.1          tibble_3.3.0        
-    ## [16] ggplot2_3.5.2        tidyverse_2.0.0     
+    ##  [1] palmerpenguins_0.1.1 ggbreak_0.1.6        ggtext_0.1.2        
+    ##  [4] shadowtext_0.1.4     ggExtra_0.11.0       kableExtra_1.4.0    
+    ##  [7] janitor_2.2.1        here_1.0.2           patchwork_1.3.2     
+    ## [10] lubridate_1.9.4      forcats_1.0.0        stringr_1.5.2       
+    ## [13] dplyr_1.1.4          purrr_1.1.0          readr_2.1.5         
+    ## [16] tidyr_1.3.1          tibble_3.3.0         ggplot2_3.5.2       
+    ## [19] tidyverse_2.0.0     
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] gtable_0.3.6       xfun_0.53          tzdb_0.5.0         vctrs_0.6.5       
     ##  [5] tools_4.5.1        generics_0.1.4     yulab.utils_0.2.1  pkgconfig_2.0.3   
     ##  [9] ggplotify_0.1.3    RColorBrewer_1.1-3 lifecycle_1.0.4    compiler_4.5.1    
-    ## [13] farver_2.1.2       ggfun_0.2.0        httpuv_1.6.16      litedown_0.7      
-    ## [17] htmltools_0.5.8.1  yaml_2.3.10        later_1.4.4        pillar_1.11.1     
-    ## [21] mime_0.13          commonmark_2.0.0   tidyselect_1.2.1   aplot_0.2.9       
-    ## [25] digest_0.6.37      stringi_1.8.7      labeling_0.4.3     rprojroot_2.1.1   
-    ## [29] fastmap_1.2.0      grid_4.5.1         cli_3.6.5          magrittr_2.0.4    
-    ## [33] withr_3.0.2        scales_1.4.0       promises_1.3.3     rappdirs_0.3.3    
-    ## [37] timechange_0.3.0   rmarkdown_2.29     hms_1.1.3          shiny_1.11.1      
-    ## [41] evaluate_1.0.5     knitr_1.50         miniUI_0.1.2       markdown_2.0      
-    ## [45] gridGraphics_0.5-1 rlang_1.1.6        gridtext_0.1.5     Rcpp_1.1.0        
-    ## [49] xtable_1.8-4       glue_1.8.0         xml2_1.4.0         rstudioapi_0.17.1 
-    ## [53] R6_2.6.1           fs_1.6.6
+    ## [13] farver_2.1.2       textshaping_1.0.3  snakecase_0.11.1   litedown_0.7      
+    ## [17] ggfun_0.2.0        httpuv_1.6.16      htmltools_0.5.8.1  yaml_2.3.10       
+    ## [21] pillar_1.11.1      later_1.4.4        mime_0.13          commonmark_2.0.0  
+    ## [25] aplot_0.2.9        tidyselect_1.2.1   digest_0.6.37      stringi_1.8.7     
+    ## [29] labeling_0.4.3     rprojroot_2.1.1    fastmap_1.2.0      grid_4.5.1        
+    ## [33] cli_3.6.5          magrittr_2.0.4     withr_3.0.2        scales_1.4.0      
+    ## [37] promises_1.3.3     rappdirs_0.3.3     timechange_0.3.0   rmarkdown_2.29    
+    ## [41] hms_1.1.3          shiny_1.11.1       evaluate_1.0.5     knitr_1.50        
+    ## [45] miniUI_0.1.2       viridisLite_0.4.2  markdown_2.0       gridGraphics_0.5-1
+    ## [49] rlang_1.1.6        gridtext_0.1.5     Rcpp_1.1.0         xtable_1.8-4      
+    ## [53] glue_1.8.0         xml2_1.4.0         svglite_2.2.1      rstudioapi_0.17.1 
+    ## [57] R6_2.6.1           systemfonts_1.2.3  fs_1.6.6

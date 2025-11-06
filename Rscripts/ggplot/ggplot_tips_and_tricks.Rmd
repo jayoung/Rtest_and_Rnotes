@@ -16,16 +16,20 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(patchwork)
 library(here)
-library(palmerpenguins)
+library(janitor)
+library(kableExtra)
 
 library(ggExtra)  ## for ggMarginal
 library(shadowtext)
 library(ggtext)
 library(ggbreak) 
 
+library(palmerpenguins)
+
 ### for my_ggMarginal:
 source(here("useful_functions/other_functions.R"))
 ```
+
 
 # Public ggplot2 resources
 
@@ -49,7 +53,7 @@ A ggplot [tutorial](https://rgup.gitlab.io/research_cycle/02_ggplot.html)
 https://www.thoughtworks.com/insights/blog/coding-habits-data-scientists
 
 
-# ggplot2 versions
+# ggplot2 version notes
 
 ggplot2 version 4 is a big change, and may break some things in other packages.
 
@@ -70,18 +74,79 @@ Here's how I can install a particular archive version of a package once I identi
 ```
 
 
-# Adding individual data points to grouped/filled boxplots and getting the aligned
+# ggplot tips and tricks
+
+## Example datasets for this script
+
+Get a couple of example datasets - show the first few rows of each
+
+### iris_tbl
+
+(clean up the built-in iris dataset a bit)
+
+```{r}
+iris_tbl <- iris %>% 
+    as_tibble() %>% 
+    clean_names()
+```
+
+`iris_tbl` has `r nrow(iris_tbl)` rows and `r ncol(iris_tbl)` columns
+
+```{r}
+iris_tbl %>% 
+    slice_head(n=3) %>% 
+    kable(caption="iris_tbl") %>% 
+    kable_styling(full_width = FALSE)
+```
+
+### penguins
+
+`penguins` has `r nrow(penguins)` rows and `r ncol(penguins)` columns
+
+```{r}
+penguins %>% 
+    slice_head(n=3) %>% 
+    kable(caption="penguins") %>% 
+    kable_styling(full_width = FALSE)
+```
+
+## Using color names in a column literally
+
+Use `scale_color_identity()` if colors are specified by name in a column. Note that by default `guide="none"` for `scale_color_identity()` (could add `guide=guide_legend()` but that would just show the color names, which makes no sense)
+
+```{r, fig.height=4, fig.width=8}
+p1 <- iris_tbl %>% 
+    ggplot(aes(x=sepal_length, y=petal_length, color=species)) +
+    geom_point() + 
+    theme_classic() +
+    labs(title="Color points by species")
+
+p2 <- iris_tbl %>% 
+    mutate(species_color=case_when(
+        species=="versicolor" ~ "orange",
+        TRUE ~ "darkgray"
+    )) %>% 
+    ggplot(aes(x=sepal_length, y=petal_length, color=species_color)) +
+    geom_point() + 
+    theme_classic() +
+    scale_color_identity() +
+    labs(title="Color to highlight versicolor")
+
+p1 + p2
+```
+
+## Adding individual data points to grouped/filled boxplots and getting the aligned
 
 The trick is that we need to 'dodge' the points, using  `geom_point(position=position_jitterdodge())` (or we could have used `position_dodge` if we don't want the jitter)
 
 ```{r, fig.height=3, fig.width=5}
-iris_plus_groups <- iris %>% 
+iris_plus_groups <- iris_tbl %>% 
     as_tibble() %>% 
-    mutate(group = sample(1:2, size=nrow(iris), replace=TRUE)) %>% 
+    mutate(group = sample(1:2, size=nrow(iris_tbl), replace=TRUE)) %>% 
     mutate(group=paste0("group_", group)) 
 
 iris_plus_groups %>% 
-    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    ggplot(aes(x=species, y=sepal_length, color=group)) +
     geom_boxplot() +
     geom_point(position=position_jitterdodge(jitter.width = 0.12)) +
     theme_classic()
@@ -92,17 +157,17 @@ If there's an empty group, widths and spacing get weird (see left plot below), s
 
 ```{r, fig.height=3, fig.width=8}
 p1 <- iris_plus_groups %>% 
-    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
-    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    filter( ! (species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=species, y=sepal_length, color=group)) +
     geom_boxplot() +
     theme_classic()
- p2 <- iris_plus_groups %>% 
-    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
-    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+p2 <- iris_plus_groups %>% 
+    filter( ! (species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=species, y=sepal_length, color=group)) +
     geom_boxplot(position = position_dodge(preserve = "single")) +
     theme_classic()
 (p1 + p2) +
-     plot_layout(guides="collect")
+    plot_layout(guides="collect")
 ```
 
 
@@ -111,8 +176,8 @@ The `position_dodge2` function gives ALMOST the same outputas `position_dodge`, 
 
 ```{r, fig.height=3, fig.width=5}
 iris_plus_groups %>% 
-    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
-    ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
+    filter( ! (species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=species, y=sepal_length, color=group)) +
     geom_boxplot(position = position_dodge2(preserve = "single")) +
     theme_classic()
 ```
@@ -123,8 +188,8 @@ To ALSO add geom_point and keep them lined up is tricky! This might be fixed in 
 
 ```{r, fig.height=3, fig.width=5}
 iris_plus_groups %>% 
-    filter( ! (Species=="versicolor" & group=="group_2")  ) %>% 
-    ggplot(aes(x=Species, y=Sepal.Length, color=group)) + 
+    filter( ! (species=="versicolor" & group=="group_2")  ) %>% 
+    ggplot(aes(x=species, y=sepal_length, color=group)) + 
     geom_boxplot(position = position_dodge2(0.75, preserve = 'single')) +
     geom_point(position = position_jitterdodge(dodge.width=0.75, jitter.width=0.15))+
     theme_classic()
@@ -134,7 +199,7 @@ iris_plus_groups %>%
 
 
 
-# Adding median dots to violin plots: geom_violin + stat_summary
+## Adding median dots to violin plots: geom_violin + stat_summary
 
 Purpose:  make violin plots, and add statistical summaries (e.g. a dot for the median)
 
@@ -149,7 +214,7 @@ mtcars %>% ggplot(aes(x=factor(cyl), y=mpg, fill = factor(am))) +
 ```
 
 
-# Annotating plots - `annotate()` versus `geom_text()`
+## Annotating plots - `annotate()` versus `geom_text()`
 
 `annotate()` is better than `geom_text()` for some uses. 
 
@@ -169,8 +234,8 @@ scatterplot <- palmerpenguins::penguins %>%
     labs(
         x = 'Bill length (in mm)',
         y = 'Flipper length (in mm)',
-        col = 'Species',
-        title = 'Measurements of different Penguin Species'
+        col = 'species',
+        title = 'Measurements of different Penguin species'
     ) +
     theme_minimal(base_size = 16) +
     theme(legend.position = 'top')
@@ -206,7 +271,7 @@ scatterplot +
 ```
 
 
-# Explore `shadowtext` package
+## Explore `shadowtext` package
 
 Demo from [rfortherestofus](https://rfortherestofus.com/2024/05/shadowtext-ggplot)
 
@@ -261,7 +326,7 @@ penguins %>%
     theme(legend.position = 'none')
 ```
 
-# Wrapping text over >1 line in ggplot
+## Wrapping text over >1 line in ggplot
 
 `str_wrap()` - you have to figure out width manually, which can be tedious
 
@@ -304,7 +369,7 @@ df %>%
 
 
 
-# Discontinuous axes using `ggbreak` package
+## Discontinuous axes using `ggbreak` package
 
 `ggbreak` package [vignette](https://cran.r-project.org/web/packages/ggbreak/vignettes/ggbreak.html)
 
@@ -328,7 +393,7 @@ p2 <- p1 +
 p1 + p2
 ```
 
-# Add marginal density plots
+## Add marginal density plots
 
 We use [`ggExtra::ggMarginal`](https://github.com/daattali/ggExtra) to add marginal density plots.
 
@@ -408,7 +473,24 @@ penguins %>%
                   my_subtitle = "by species")
 ```
 
+If we want to show >1 of those plots together (from `my_ggMarginal`), we need a special function.  First we add the `combine_plots = FALSE` option when we run `my_ggMarginal()`.
 
+Then we combine plots into a list, and feed that to `combine_myGGmarginal_plots`:
+
+```{r}
+p1 <- penguins %>%  
+    drop_na() %>% 
+    my_ggMarginal(x_var="bill_length_mm",
+                  y_var="flipper_length_mm", 
+                  color_var="species",
+                  my_xlim=c(0,60), my_ylim=c(160,240),
+                  my_color_scheme=my_penguin_colors,
+                  my_title="penguins",
+                  my_subtitle = "by species", 
+                  combine_plots = FALSE)
+
+combine_myGGmarginal_plots(list(p1,p1))
+```
 
 
 `geom_rug()` is an alternative way to show the marginal distributions:

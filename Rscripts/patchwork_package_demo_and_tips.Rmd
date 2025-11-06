@@ -68,6 +68,18 @@ Example with `*`:
 (p1 + p2 + p3 * theme_minimal()) + plot_layout(ncol=2)
 ```
 
+
+
+Maybe we have our plots in a list, perhaps because we generated them using a function. In that case we can use `wrap_plots()` - "it also accepts the same arguments as `plot_layout()`":
+
+```{r}
+wrap_plots(list(p1, p2, p3),
+           nrow=2)
+```
+
+
+
+
 Show `sessionInfo()`
 
 ```{r}
