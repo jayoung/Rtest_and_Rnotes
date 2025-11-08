@@ -1,0 +1,8 @@
+running command:
+sbatch --job-name=Rmd -t 3-0 --cpus-per-task=4 --wrap="bash ./zzz_Rmd_series.Rrender.sh 2>&1 >> zzz_Rmd_series.Rrender.log.txt"
+
+Running script test_randomCodeBits_part1.Rmd
+  SUCCEEDED
+Running script test_randomCodeBits_part2.Rmd
+  SUCCEEDED
+All scripts ran OK

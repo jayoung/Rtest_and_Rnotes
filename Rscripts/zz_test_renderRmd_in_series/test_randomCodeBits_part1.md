@@ -2,14 +2,23 @@ test\_randomCodeBits\_part1
 ================
 Janet Young
 
-2025-11-03
+2025-11-07
 
 This is the first in a set of two linked Rmd scripts, to help me test my
 `render_Rmd_series.perl` script.
 
+The render\_Rmd\_series.perl script is set up so that it will not run
+downstream scripts if anything in the chain fails.
+
+Make sure to check the resulting
+
 Here’s the command I use to run the series of scripts:
 
     render_Rmd_series.perl test_randomCodeBits_part1.Rmd test_randomCodeBits_part2.Rmd
+
+To remove all output:
+
+    rm -r iris_plus_groups* z* *Rerr.txt *Rout.txt *_files *.md slurm-*out
 
 This script (part1) creates a fake dataset, which we will make a plot of
 in part2.
@@ -19,6 +28,14 @@ iris_plus_groups <- iris %>%
     as_tibble() %>% 
     mutate(group = sample(1:2, size=nrow(iris), replace=TRUE)) %>% 
     mutate(group=paste0("group_", group)) 
+```
+
+Here’s some code that will produce an error, if we were to change `eval`
+to `TRUE.` The render\_Rmd\_series.perl script is set up so that it will
+not run downstream scripts if anything in the chain fails.
+
+``` r
+xxxx
 ```
 
 # Finished

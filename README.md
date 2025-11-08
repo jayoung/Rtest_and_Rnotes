@@ -170,7 +170,11 @@ Modify size by simple scaling
 
 ### Knit/render an Rmd doc from the linux command line
 
-Easiest way: on gizmo/rhino, `~/bin/render_Rmd.perl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each.
+Easiest way: on gizmo/rhino:
+
+- `~/bin/render_Rmd.perl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each (in parallel, i.e. scripts are not linked).
+
+- `~/bin/render_Rmd_series.perl` is a generic perl script that will take the name of several Rmd scripts as input, and make and run an sbatch script to render the report for each, one after the other, stopping if any of them fail (scripts are in a linked series).
 
 Alternatives:
 
