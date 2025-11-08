@@ -46,7 +46,7 @@ suppressMessages( gtsave(my_tbl_gt,
 # my_tbl_gt
 ```
 
-![](table_display_temp_tables/my_tbl_gt.png){#id .class width=60% height=60%}
+![](table_display_temp_tables/my_tbl_gt.png){#id .class width=30% height=30%}
 
 
 Now display `my_tbl_gt` using `patchwork::wrap_table()`. It still wraps the colnames, and keeps the column widths reasonable (although it does drop the italics):
@@ -74,7 +74,7 @@ suppressMessages( gtsave(my_tbl_gt_with_long_caption,
 # my_tbl_gt
 ```
 
-![](table_display_temp_tables/my_tbl_gt_with_long_caption.png){#id .class width=60% height=60%}
+![](table_display_temp_tables/my_tbl_gt_with_long_caption.png){#id .class width=30% height=30%}
 
 
 
@@ -115,7 +115,7 @@ suppressMessages( gtsave(my_tbl_wrap_colnames_gt,
 # my_tbl_wrap_colnames
 ```
 
-![](table_display_temp_tables/my_tbl_wrap_colnames_gt.png){#id .class width=60% height=60%}
+![](table_display_temp_tables/my_tbl_wrap_colnames_gt.png){#id .class width=30% height=30%}
 
 But `wrap_table()` does see the `\n` in colnames:
 

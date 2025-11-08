@@ -46,7 +46,7 @@ suppressMessages( gtsave(my_tbl_gt,
 ```
 
 <img src="table_display_temp_tables/my_tbl_gt.png" id="id" class="class"
-style="width:60.0%;height:60.0%" />
+style="width:30.0%;height:30.0%" />
 
 Now display `my_tbl_gt` using `patchwork::wrap_table()`. It still wraps
 the colnames, and keeps the column widths reasonable (although it does
@@ -79,7 +79,7 @@ suppressMessages( gtsave(my_tbl_gt_with_long_caption,
 ```
 
 <img src="table_display_temp_tables/my_tbl_gt_with_long_caption.png"
-id="id" class="class" style="width:60.0%;height:60.0%" />
+id="id" class="class" style="width:30.0%;height:30.0%" />
 
 However, if we display a gt table with a long caption using
 `patchwork::wrap_table()` (which we might do if we want to combine it
@@ -129,7 +129,7 @@ suppressMessages( gtsave(my_tbl_wrap_colnames_gt,
 ```
 
 <img src="table_display_temp_tables/my_tbl_wrap_colnames_gt.png" id="id"
-class="class" style="width:60.0%;height:60.0%" />
+class="class" style="width:30.0%;height:30.0%" />
 
 But `wrap_table()` does see the `\n` in colnames:
 
