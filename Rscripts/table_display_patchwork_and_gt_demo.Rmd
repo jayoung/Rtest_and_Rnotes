@@ -1,0 +1,141 @@
+---
+title: "table_display_patchwork_and_gt_demo"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(patchwork)
+library(gt)
+```
+
+Testing a few details to do with wrapping long column names when I display tables, as well as combining tables and plots using the `patchwork` package.
+
+
+Make an example tibble with long names (`my_tbl`):
+
+```{r}
+my_tbl <- tibble(
+    first_column_break_with_a_very_break_long_name = c("apple", "orange"),
+    second_column_break_with_a_long_name = c(1034,1365)
+)
+my_tbl
+```
+
+Create `my_tbl_gt` - I use gt to display that, inserting `<br>` linebreaks, and doing some formatting (italics, and font size). Looks good.
+
+```{r}
+my_tbl_gt <- gt(my_tbl) %>% 
+    fmt_number(use_seps = TRUE, decimals=0) %>% 
+    cols_label(first_column_break_with_a_very_break_long_name="<em>first column</em><br>with a very<br>long name",
+               second_column_break_with_a_long_name="second column<br>with a long name",
+               .fn = md ) %>%  
+    ## this makes font 75% the size of default
+    tab_style(style = cell_text(size = pct(75)),
+              locations=list(cells_column_labels(), cells_body()))
+my_tbl_gt
+```
+
+
+
+Now display `my_tbl_gt` using `patchwork::wrap_table()`. It still wraps the colnames, and keeps the column widths reasonable (although it does drop the italics):
+
+```{r}
+options(gt.html_tag_check = FALSE)
+wrap_table(my_tbl_gt, panel="full")
+```
+
+We can also give the table a caption using gt. Looks OK if I display using gt:
+
+```{r}
+my_tbl_gt_with_long_caption <- gt(my_tbl, caption="My caption which is very very long with a lot of words") %>% 
+    fmt_number(use_seps = TRUE, decimals=0) %>% 
+    cols_label(first_column_break_with_a_very_break_long_name="<em>first column</em><br>with a very<br>long name",
+               second_column_break_with_a_long_name="second column<br>with a long name",
+               .fn = md ) %>%  
+    ## this makes font 75% the size of default
+    tab_style(style = cell_text(size = pct(75)),
+              locations=list(cells_column_labels(),
+                             cells_body()))
+my_tbl_gt_with_long_caption
+```
+
+
+
+However, if we display a gt table with a long caption using `patchwork::wrap_table()` (which we might do if we want to combine it with plots), then two things are wrong:
+
+- the caption is not visible (a knowon issue - we could deal with that by adding `+ plot_annotation(title="my title")`).
+- worse: even though the caption is not visible, its presence messes up the column widths:
+
+
+```{r}
+wrap_table(my_tbl_gt_with_long_caption, panel="full")
+```
+
+
+We can also make a version where we include `\n` in the colnames, to try to wrap them a different way
+
+```{r}
+my_tbl_wrap_colnames <- my_tbl %>% 
+    set_names(nm=c("first column\nwith a very\nlong name",
+                   "second column\nwith a long name"))
+```
+
+A plain print output does not wrap colnames:
+
+```{r}
+my_tbl_wrap_colnames
+```
+
+
+Neither does using `gt()`:
+
+```{r}
+my_tbl_wrap_colnames %>% gt()
+```
+
+But `wrap_table()` does see the `\n` in colnames:
+
+```{r}
+wrap_table(my_tbl_wrap_colnames)
+```
+
+Combining the table with a plot (without gt):
+
+(harder to add styling like font size this way)
+
+```{r, fig.height=3.5, fig.width=8}
+p1 <- tibble(x=1:10, y=1:10) %>% 
+    ggplot(aes(x=x,y=y))+
+    geom_point() +
+    theme_classic()
+
+(p1 + wrap_table(my_tbl_wrap_colnames, panel="full") + p1) +
+    plot_layout(widths=c(1,2,1))
+```
+
+
+Combining the table with a plot (WITH gt):
+
+```{r, fig.height=3.5, fig.width=8}
+p1 <- tibble(x=1:10, y=1:10) %>% 
+    ggplot(aes(x=x,y=y))+
+    geom_point() +
+    theme_classic()
+
+(p1 + wrap_table(my_tbl_gt, panel="full") + p1) +
+    plot_layout(widths=c(1,2,1))
+```
+
+
+
+
+```{r}
+sessionInfo()
+```
+

@@ -72,10 +72,16 @@ p1 +
 
 ## Dealing with long colnames
 
-gt::cols_label() function can help use relabel the columns, including formatting them:
+`gt()` seems to ignore `\n` characters in colnames, whereas other ways to display a table (e.g. `patchwork::wrap_table()` will use those to wrap).
 
-- `<br>` is a line break
+Instead, the `gt::cols_label()` function can help use relabel the columns, including formatting them:
+
+- `<br>` inserts a line break
 - `<em>` starts italics, `<\em>` ends italics
+
+However - if we are subsequently going to use `patchwork::wrap_table()` to put this table together with other plots, the `<br>` will be respected, but column widths will likely be messed up (col widths will be re-calculated to fit the colnames as if there were no line break, which might be too wide).
+
+Instead, if we are using `patchwork::wrap_table()` with long colnames using `cols_label()`, it might be better to avoid using `gt()`.
 
 ```{r}
 ## metro is in the gt package. ?metro says "A dataset with information on all 320 Paris Metro stations as of June 2024"
