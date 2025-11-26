@@ -1,3 +1,8 @@
+### source this file as follows:
+# malik_h_dir <- "/fh/fast/malik_h/"
+# if (Sys.info()[["sysname"]]=="Darwin") { malik_h_dir <- "/Volumes/malik_h/" }
+# source( paste0(malik_h_dir, "user/jayoung/git_more_repos/Rtest_and_Rnotes/useful_functions/general_sequence_functions.R") )
+
 ###### read_seq_file_JY is a utility function to read a fasta file
 ## reads file, and parses out seq IDs and description lines
 ## returns a list of the sequences (as DNAStringSet etc) and a tibble of seq_ids and descriptions
@@ -57,4 +62,37 @@ countAmbiguitiesEachSeq <- function(dna_seqs) {
         rowSums()
 }
 
-
+###### GCcontent - returns GC content values on a single sequence which is a Biostrings object
+## returns num GCs / num ACGTs (i.e. ignores other nucleotides in numerator and denominator)
+GCcontent <- function (myseqs) {
+    if (class(myseqs)=="DNAString") { myseqs <- DNAStringSet(myseqs) }
+    if (class(myseqs)!="DNAStringSet") { 
+        stop("\n\nERROR - input needs to be either a DNAString or a DNAStringSet object\n\n")
+    }
+    
+    nuc_counts <- alphabetFrequency(myseqs)[,c("A","C","G","T")]
+    ## in the case where we only had one seq, nuc_counts is an integer vector, otherwise it's a matrix. 
+    if(class(nuc_counts)[1]=="integer") {
+        gc_totals <- sum(nuc_counts[c("C","G")])
+        grand_totals <- sum(nuc_counts)
+    } else {
+        gc_totals <- rowSums(nuc_counts[,c("C","G")])
+        grand_totals <- rowSums(nuc_counts)
+    }
+    gc_fraction <- gc_totals / grand_totals
+    if(!is.null(names(myseqs))) {
+        names(gc_fraction) <- names(myseqs)
+    }
+    return(gc_fraction)
+}
+## ## test code 
+# myseqs <- c(seq1="AGTAGTGCATGTATGC",
+#             seq2="GGTAGCTGGATGATCGGTA") %>%
+#     DNAStringSet()
+# # alphabetFrequency(myseqs)
+# # width(myseqs)
+# 
+# GCcontent(myseqs[1])
+# GCcontent(myseqs[2])
+# GCcontent(myseqs)
+## correct answers: 0.4375, 0.526

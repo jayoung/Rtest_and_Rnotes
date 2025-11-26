@@ -1,3 +1,8 @@
+### source this file as follows:
+# malik_h_dir <- "/fh/fast/malik_h/"
+# if (Sys.info()[["sysname"]]=="Darwin") { malik_h_dir <- "/Volumes/malik_h/" }
+# source( paste0(malik_h_dir, "user/jayoung/git_more_repos/Rtest_and_Rnotes/useful_functions/other_functions.R") )
+
 ### my_ggMarginal function
 ### inspired by https://stackoverflow.com/questions/8545035/scatterplot-with-marginal-histograms-in-ggplot2
 my_ggMarginal <- function(

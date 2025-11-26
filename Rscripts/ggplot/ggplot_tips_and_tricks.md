@@ -695,7 +695,7 @@ penguins %>%
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
-Instead use `ggtext` package - the element_textbox_simple will
+Instead use `ggtext` package - the `element_textbox_simple()` function will
 automatically wrap text to fit whatever space is available.
 
 ``` r

@@ -20,6 +20,7 @@ source(here("useful_functions/multiple_sequence_alignments_functions.R"))
 ```
 
 
+
 Set up test DNA alignment, with in-frame gap, frameshifting gap and codons containing Ns
 
 ```{r}
