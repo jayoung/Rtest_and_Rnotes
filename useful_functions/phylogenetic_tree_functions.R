@@ -5,6 +5,7 @@
 
 
 ###### addInfoToTree - make a treedata object by combining a phylo object with a tibble that has info on the tips
+## for demo and tests, see Rscripts/phylogenetics/ggtree_demo.Rmd
 addInfoToTree <- function(tree, info, colnameForTaxonLabels="taxon") {
     ##### get info in same order as taxa in the tree:
     if (! colnameForTaxonLabels %in% colnames(info)) {
@@ -23,6 +24,7 @@ addInfoToTree <- function(tree, info, colnameForTaxonLabels="taxon") {
     # now get info
     desiredRows <- match(tree$tip.label, tipLabelsInInfoTable)
     info_treeorder <- info[desiredRows,] 
+    
     # add info to tree
     tree_withInfo <-  left_join(
         tree, 

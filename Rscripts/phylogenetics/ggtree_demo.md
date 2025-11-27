@@ -2,7 +2,7 @@ ggtree_demo
 ================
 Janet Young
 
-2025-10-20
+2025-11-26
 
 (this doesn’t work on the fhR 4.2.0 I could run via the Hutch Rstudio
 server, with the package versions I have there right now. But fhR 4.4.0
@@ -73,31 +73,31 @@ Make a fake data tibble with info on each of the taxa in nwk_tree
 
 ``` r
 num_taxa <- length(nwk_tree$tip.label)
-tip_dat <- tibble( taxon=nwk_tree$tip.label,
-                   fake_height= rnorm(n=num_taxa, mean=100, sd=30 ),
-                   fake_phenotype= sample( c("teeth","nose","tail"), 
-                                           size=num_taxa, replace=TRUE ),
-                   fake_phenotype2=sample( c("fur","scales","spikes"), 
-                                           size=num_taxa, replace=TRUE ) )
-tip_dat
+nwk_tree_tip_dat <- tibble( taxon=nwk_tree$tip.label,
+                            fake_height= rnorm(n=num_taxa, mean=100, sd=30 ),
+                            fake_phenotype= sample( c("teeth","nose","tail"), 
+                                                    size=num_taxa, replace=TRUE ),
+                            fake_phenotype2=sample( c("fur","scales","spikes"), 
+                                                    size=num_taxa, replace=TRUE ) )
+nwk_tree_tip_dat
 ```
 
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A            59.8 tail           spikes         
-    ##  2 B           119.  nose           spikes         
-    ##  3 C           108.  teeth          scales         
-    ##  4 D           108.  tail           spikes         
-    ##  5 E            85.5 nose           spikes         
-    ##  6 F            50.7 tail           spikes         
-    ##  7 G           101.  teeth          fur            
-    ##  8 H            89.7 teeth          spikes         
-    ##  9 I           122.  tail           fur            
-    ## 10 J           119.  nose           spikes         
-    ## 11 K            81.5 tail           fur            
-    ## 12 L            87.2 tail           fur            
-    ## 13 M           146.  nose           fur
+    ##  1 A           140.  teeth          spikes         
+    ##  2 B           103.  tail           spikes         
+    ##  3 C           132.  tail           fur            
+    ##  4 D           103.  nose           fur            
+    ##  5 E           124.  teeth          fur            
+    ##  6 F           140.  teeth          spikes         
+    ##  7 G           144.  nose           fur            
+    ##  8 H           125.  teeth          scales         
+    ##  9 I           131.  tail           fur            
+    ## 10 J            72.3 tail           scales         
+    ## 11 K            98.2 tail           fur            
+    ## 12 L            44.2 teeth          spikes         
+    ## 13 M            93.6 nose           fur
 
 ## Combine tree and tbl
 
@@ -119,8 +119,16 @@ match up OK
 - CHECK the taxon ID in the join column of tbl is UNIQUE - repeated
 values will cause trouble
 
+ALTERNATIVE - I wrote a function to do these checks, called
+`addInfoToTree` - it’s in the [`phylogenetic_tree_functions.R`
+file](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/useful_functions/phylogenetic_tree_functions.R)
+
+If you want to UPDATE the info later, see below…. xxxx
+
+Demo using left_join:
+
 ``` r
-nwk_tree_with_info <- left_join(nwk_tree, tip_dat, by=c("label"="taxon"))
+nwk_tree_with_info <- left_join(nwk_tree, nwk_tree_tip_dat, by=c("label"="taxon"))
 class(nwk_tree_with_info)
 ```
 
@@ -150,16 +158,141 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE         59.8 tail           spikes         
-    ##  2     2 B     TRUE        119.  nose           spikes         
-    ##  3     3 C     TRUE        108.  teeth          scales         
-    ##  4     4 D     TRUE        108.  tail           spikes         
-    ##  5     5 E     TRUE         85.5 nose           spikes         
-    ##  6     6 F     TRUE         50.7 tail           spikes         
-    ##  7     7 G     TRUE        101.  teeth          fur            
-    ##  8     8 H     TRUE         89.7 teeth          spikes         
-    ##  9     9 I     TRUE        122.  tail           fur            
-    ## 10    10 J     TRUE        119.  nose           spikes         
+    ##  1     1 A     TRUE        140.  teeth          spikes         
+    ##  2     2 B     TRUE        103.  tail           spikes         
+    ##  3     3 C     TRUE        132.  tail           fur            
+    ##  4     4 D     TRUE        103.  nose           fur            
+    ##  5     5 E     TRUE        124.  teeth          fur            
+    ##  6     6 F     TRUE        140.  teeth          spikes         
+    ##  7     7 G     TRUE        144.  nose           fur            
+    ##  8     8 H     TRUE        125.  teeth          scales         
+    ##  9     9 I     TRUE        131.  tail           fur            
+    ## 10    10 J     TRUE         72.3 tail           scales         
+    ## # ℹ 15 more rows
+
+Demo using `addInfoToTree` (by default it looks for the tip labels in
+the “taxon” column but you can change that using the
+`colnameForTaxonLabels` option):
+
+``` r
+malik_h_dir <- "/fh/fast/malik_h/"
+if (Sys.info()[["sysname"]]=="Darwin") { malik_h_dir <- "/Volumes/malik_h/" }
+source( paste0(malik_h_dir, "user/jayoung/git_more_repos/Rtest_and_Rnotes/useful_functions/phylogenetic_tree_functions.R") )
+
+nwk_tree_with_info_2 <- addInfoToTree(nwk_tree, nwk_tree_tip_dat)
+class(nwk_tree_with_info_2)
+```
+
+    ## [1] "treedata"
+    ## attr(,"package")
+    ## [1] "tidytree"
+
+``` r
+nwk_tree_with_info_2
+```
+
+    ## 'treedata' S4 object'.
+    ## 
+    ## ...@ phylo:
+    ## 
+    ## Phylogenetic tree with 13 tips and 12 internal nodes.
+    ## 
+    ## Tip labels:
+    ##   A, B, C, D, E, F, ...
+    ## 
+    ## Rooted; includes branch length(s).
+    ## 
+    ## with the following features available:
+    ##   '', 'fake_height', 'fake_phenotype', 'fake_phenotype2'.
+    ## 
+    ## # The associated data tibble abstraction: 25 × 6
+    ## # The 'node', 'label' and 'isTip' are from the phylo tree.
+    ##     node label isTip fake_height fake_phenotype fake_phenotype2
+    ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
+    ##  1     1 A     TRUE        140.  teeth          spikes         
+    ##  2     2 B     TRUE        103.  tail           spikes         
+    ##  3     3 C     TRUE        132.  tail           fur            
+    ##  4     4 D     TRUE        103.  nose           fur            
+    ##  5     5 E     TRUE        124.  teeth          fur            
+    ##  6     6 F     TRUE        140.  teeth          spikes         
+    ##  7     7 G     TRUE        144.  nose           fur            
+    ##  8     8 H     TRUE        125.  teeth          scales         
+    ##  9     9 I     TRUE        131.  tail           fur            
+    ## 10    10 J     TRUE         72.3 tail           scales         
+    ## # ℹ 15 more rows
+
+## Manipulating info tibble in treedata objects
+
+If we want to manipulate the information AFTER we associate it with the
+tree, we first use `as_tibble()`, then manipulate, then use
+`as.treedata(branch.length, label)`:
+
+``` r
+p1 <- nwk_tree_with_info_2 %>% 
+    ggtree() +
+    geom_tiplab()
+    
+p2 <- nwk_tree_with_info_2 %>% 
+    as_tibble() %>% 
+    mutate(new_label= paste(label, fake_phenotype, sep=" ")) %>% 
+    as.treedata(branch.length, label) %>% 
+    ggtree() +
+    geom_tiplab(aes(label=new_label)) +
+    hexpand(0.1)
+
+p1 + p2
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+## Treat a treedata object like a tibble
+
+There are a few ways get tibble-like information back out of the
+`treedata` object. If we use as_tibble() we retain the tiplabels, branch
+lengths, etc (in the label column):
+
+``` r
+as_tibble(nwk_tree_with_info_2)
+```
+
+    ## # A tbl_tree abstraction: 25 × 7
+    ## # which can be converted to treedata or phylo 
+    ## # via as.treedata or as.phylo
+    ##    parent  node branch.length label fake_height fake_phenotype fake_phenotype2
+    ##     <int> <int>         <dbl> <chr>       <dbl> <chr>          <chr>          
+    ##  1     20     1             4 A           140.  teeth          spikes         
+    ##  2     20     2             4 B           103.  tail           spikes         
+    ##  3     19     3             5 C           132.  tail           fur            
+    ##  4     18     4             6 D           103.  nose           fur            
+    ##  5     17     5            21 E           124.  teeth          fur            
+    ##  6     22     6             4 F           140.  teeth          spikes         
+    ##  7     22     7            12 G           144.  nose           fur            
+    ##  8     21     8             8 H           125.  teeth          scales         
+    ##  9     24     9             5 I           131.  tail           fur            
+    ## 10     24    10             2 J            72.3 tail           scales         
+    ## # ℹ 15 more rows
+
+We can also directly access extraInfo, but that doesn’t contain a column
+for the tiplabel, making it hard to do much with it. I don’t like this
+method.
+
+``` r
+nwk_tree_with_info_2@extraInfo
+```
+
+    ## # A tibble: 25 × 4
+    ##     node fake_height fake_phenotype fake_phenotype2
+    ##    <int>       <dbl> <chr>          <chr>          
+    ##  1     1       140.  teeth          spikes         
+    ##  2     2       103.  tail           spikes         
+    ##  3     3       132.  tail           fur            
+    ##  4     4       103.  nose           fur            
+    ##  5     5       124.  teeth          fur            
+    ##  6     6       140.  teeth          spikes         
+    ##  7     7       144.  nose           fur            
+    ##  8     8       125.  teeth          scales         
+    ##  9     9       131.  tail           fur            
+    ## 10    10        72.3 tail           scales         
     ## # ℹ 15 more rows
 
 ## Plot tree with annotations
@@ -177,7 +310,7 @@ nwk_tree_with_info %>%
                   color="black") # add dots to taxa, using subset
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 # Add heatmap to the right side of a tree
 
@@ -237,7 +370,7 @@ gheatmap(p, genotype, offset=15, width=1.5, font.size=3,
     ## Scale for y is already present.
     ## Adding another scale for y, which will replace the existing scale.
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 Same thing but also:  
 - add x axis scale bar (and heatmap colnames are less ugly now)  
@@ -266,7 +399,7 @@ gheatmap(p, genotype, offset=8, width=0.6,
     ## Scale for fill is already present.
     ## Adding another scale for fill, which will replace the existing scale.
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 Show that first plot in circle layout (ignore branch lengths)
 
@@ -289,7 +422,7 @@ gheatmap(p, genotype,
     ## Scale for y is already present.
     ## Adding another scale for y, which will replace the existing scale.
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ## gheatmap example with my fake tree and fake data
 
@@ -297,13 +430,13 @@ gheatmap(p, genotype,
 ## imagine we're plotting amino acid changes, like Maria's trying to do
 # here, NA represents "same as taxon A" (same as human in Maria's case)
 # and we'll plot each amino acid as a separate color
-tip_dat <- data.frame(row.names=nwk_tree_with_info@phylo$tip.label)
-tip_dat$pos1 <- NA
-tip_dat$pos2 <- NA
-tip_dat$pos3 <- NA
-tip_dat[6:8,"pos1"] <- "W"
-tip_dat[4:13,"pos2"] <- "T"
-tip_dat[9:12,"pos3"] <- "C"
+tip_dat_for_heatmap <- data.frame(row.names=nwk_tree_with_info@phylo$tip.label)
+tip_dat_for_heatmap$pos1 <- NA
+tip_dat_for_heatmap$pos2 <- NA
+tip_dat_for_heatmap$pos3 <- NA
+tip_dat_for_heatmap[6:8,"pos1"] <- "W"
+tip_dat_for_heatmap[4:13,"pos2"] <- "T"
+tip_dat_for_heatmap[9:12,"pos3"] <- "C"
 
 ## save a ggtree plot object
 p <- nwk_tree_with_info %>% 
@@ -312,23 +445,23 @@ p <- nwk_tree_with_info %>%
 
 ## add the heatmap to the righthand side. the heatmap data must be matrix or data.frame
 # this is the original code
-gheatmap(p, tip_dat, 
+gheatmap(p, tip_dat_for_heatmap, 
          offset=3,
          width=0.25, font.size=3) 
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 Or maybe we turn that into WT/ nonWT
 
 ``` r
-tip_dat2 <- tip_dat %>% 
+tip_dat_for_heatmap2 <- tip_dat_for_heatmap %>% 
     mutate(across(everything(),
                   function(x) {
                       case_when( is.na(x) ~ "WT",
                                  TRUE ~ "nonWT")
                   }))
-gheatmap(p, tip_dat2, 
+gheatmap(p, tip_dat_for_heatmap2, 
          offset=3,
          width=0.25, font.size=3) +
     scale_fill_manual(breaks=c("WT", "nonWT"), 
@@ -339,19 +472,20 @@ gheatmap(p, tip_dat2,
     ## Scale for fill is already present.
     ## Adding another scale for fill, which will replace the existing scale.
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
-Note that it doesn’t work if tip_dat3 is a tibble (see plot below, not
-useful), although it doesn’t give an error, it just doesn’t give us a
-correct heatmap. Also, setting rownames on a tibble is deprecated.
+Note that it doesn’t work if tip_dat_for_heatmap3 is a tibble (see plot
+below, not useful), although it doesn’t give an error, it just doesn’t
+give us a correct heatmap. Also, setting rownames on a tibble is
+deprecated.
 
 ``` r
-tip_dat3 <- tip_dat2 %>% 
+tip_dat_for_heatmap3 <- tip_dat_for_heatmap2 %>% 
     as_tibble(rownames=NA)
 ## we can check the rownames are present:
-# rownames(tip_dat3)
+# rownames(tip_dat_for_heatmap3)
 
-gheatmap(p, tip_dat3, 
+gheatmap(p, tip_dat_for_heatmap3, 
          offset=3,
          width=0.25, font.size=3) +
     scale_fill_manual(breaks=c("WT", "nonWT"), 
@@ -362,7 +496,7 @@ gheatmap(p, tip_dat3,
     ## Scale for fill is already present.
     ## Adding another scale for fill, which will replace the existing scale.
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 # Tree plus data to the right
 
@@ -386,7 +520,7 @@ p <- ggtree(tr) +
 p
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 geom_col to the right
 
@@ -402,7 +536,7 @@ p <- ggtree(tr) +
 p
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 It CAN handle missing data:
 
@@ -419,7 +553,7 @@ ggtree(tr) +
     xlim_expand(c(0, 3), "Data") # alter col x scale
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 Simple geom_fruit demo:
 
@@ -433,7 +567,7 @@ ggtree(tr) +
     ) 
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 Now control how it looks more
 
@@ -457,9 +591,9 @@ ggtree(tr) +
     ) 
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
-# Turning a tibble back into a tree
+## Turning a tibble back into a tree
 
 Sometimes we take a tree, use `as_tibble()` (it becomes a `tbl_tree`
 object), do a bunch of manipulation (maybe it becomes a classic `tibble`
@@ -495,7 +629,7 @@ tree.owls %>%
     labs(title="tree.owls coerced")
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 ``` r
 (tree.owls %>% 
@@ -520,7 +654,7 @@ tree.owls %>%
     labs(title="tree.owls coerced")
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 But we can avoid losing branch lengths by supplying a couple of
 arguments to `as.treedata()`:
@@ -537,7 +671,7 @@ tree.owls %>%
     labs(title="tree.owls coerced")
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 # Finished
 
@@ -547,7 +681,7 @@ sessionInfo()
 
     ## R version 4.5.1 (2025-06-13)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Sequoia 15.6.1
+    ## Running under: macOS Tahoe 26.1
     ## 
     ## Matrix products: default
     ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 

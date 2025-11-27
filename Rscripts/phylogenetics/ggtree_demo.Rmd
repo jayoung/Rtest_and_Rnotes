@@ -60,13 +60,13 @@ Make a fake data tibble with info on each of the taxa in nwk_tree
 
 ```{r}
 num_taxa <- length(nwk_tree$tip.label)
-tip_dat <- tibble( taxon=nwk_tree$tip.label,
-                   fake_height= rnorm(n=num_taxa, mean=100, sd=30 ),
-                   fake_phenotype= sample( c("teeth","nose","tail"), 
-                                           size=num_taxa, replace=TRUE ),
-                   fake_phenotype2=sample( c("fur","scales","spikes"), 
-                                           size=num_taxa, replace=TRUE ) )
-tip_dat
+nwk_tree_tip_dat <- tibble( taxon=nwk_tree$tip.label,
+                            fake_height= rnorm(n=num_taxa, mean=100, sd=30 ),
+                            fake_phenotype= sample( c("teeth","nose","tail"), 
+                                                    size=num_taxa, replace=TRUE ),
+                            fake_phenotype2=sample( c("fur","scales","spikes"), 
+                                                    size=num_taxa, replace=TRUE ) )
+nwk_tree_tip_dat
 ```
 
 ## Combine tree and tbl
@@ -81,13 +81,67 @@ Advice:
 - CHECK taxon labels in tree and the tbl column you plan to join on match up OK    
 - CHECK the taxon ID in the join column of tbl is UNIQUE - repeated values will cause trouble    
 
+ALTERNATIVE - I wrote a function to do these checks, called `addInfoToTree` - it's in the [`phylogenetic_tree_functions.R` file](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/useful_functions/phylogenetic_tree_functions.R)
+
+
+If you want to UPDATE the info later, see below.... xxxx
+
+Demo using left_join:
 
 ```{r}
-nwk_tree_with_info <- left_join(nwk_tree, tip_dat, by=c("label"="taxon"))
+nwk_tree_with_info <- left_join(nwk_tree, nwk_tree_tip_dat, by=c("label"="taxon"))
 class(nwk_tree_with_info)
 nwk_tree_with_info
 ```
 
+Demo using `addInfoToTree` (by default it looks for the tip labels in the "taxon" column but you can change that using the `colnameForTaxonLabels` option):
+
+```{r}
+malik_h_dir <- "/fh/fast/malik_h/"
+if (Sys.info()[["sysname"]]=="Darwin") { malik_h_dir <- "/Volumes/malik_h/" }
+source( paste0(malik_h_dir, "user/jayoung/git_more_repos/Rtest_and_Rnotes/useful_functions/phylogenetic_tree_functions.R") )
+
+nwk_tree_with_info_2 <- addInfoToTree(nwk_tree, nwk_tree_tip_dat)
+class(nwk_tree_with_info_2)
+nwk_tree_with_info_2
+```
+
+
+## Manipulating info tibble in treedata objects
+
+If we want to manipulate the information AFTER we associate it with the tree, we first use `as_tibble()`, then manipulate, then use `as.treedata(branch.length, label)`:
+
+```{r}
+p1 <- nwk_tree_with_info_2 %>% 
+    ggtree() +
+    geom_tiplab()
+    
+p2 <- nwk_tree_with_info_2 %>% 
+    as_tibble() %>% 
+    mutate(new_label= paste(label, fake_phenotype, sep=" ")) %>% 
+    as.treedata(branch.length, label) %>% 
+    ggtree() +
+    geom_tiplab(aes(label=new_label)) +
+    hexpand(0.1)
+
+p1 + p2
+```
+
+
+
+## Treat a treedata object like a tibble
+
+There are a few ways get tibble-like information back out of the `treedata` object. If we use as_tibble() we retain the tiplabels, branch lengths, etc (in the label column):
+
+```{r}
+as_tibble(nwk_tree_with_info_2)
+```
+
+We can also directly access extraInfo, but that doesn't contain a column for the tiplabel, making it hard to do much with it. I don't like this method.
+
+```{r}
+nwk_tree_with_info_2@extraInfo
+```
 
 ## Plot tree with annotations
 
@@ -198,13 +252,13 @@ gheatmap(p, genotype,
 ## imagine we're plotting amino acid changes, like Maria's trying to do
 # here, NA represents "same as taxon A" (same as human in Maria's case)
 # and we'll plot each amino acid as a separate color
-tip_dat <- data.frame(row.names=nwk_tree_with_info@phylo$tip.label)
-tip_dat$pos1 <- NA
-tip_dat$pos2 <- NA
-tip_dat$pos3 <- NA
-tip_dat[6:8,"pos1"] <- "W"
-tip_dat[4:13,"pos2"] <- "T"
-tip_dat[9:12,"pos3"] <- "C"
+tip_dat_for_heatmap <- data.frame(row.names=nwk_tree_with_info@phylo$tip.label)
+tip_dat_for_heatmap$pos1 <- NA
+tip_dat_for_heatmap$pos2 <- NA
+tip_dat_for_heatmap$pos3 <- NA
+tip_dat_for_heatmap[6:8,"pos1"] <- "W"
+tip_dat_for_heatmap[4:13,"pos2"] <- "T"
+tip_dat_for_heatmap[9:12,"pos3"] <- "C"
 
 ## save a ggtree plot object
 p <- nwk_tree_with_info %>% 
@@ -213,7 +267,7 @@ p <- nwk_tree_with_info %>%
 
 ## add the heatmap to the righthand side. the heatmap data must be matrix or data.frame
 # this is the original code
-gheatmap(p, tip_dat, 
+gheatmap(p, tip_dat_for_heatmap, 
          offset=3,
          width=0.25, font.size=3) 
 ```
@@ -221,13 +275,13 @@ gheatmap(p, tip_dat,
 Or maybe we turn that into WT/ nonWT
 
 ```{r}
-tip_dat2 <- tip_dat %>% 
+tip_dat_for_heatmap2 <- tip_dat_for_heatmap %>% 
     mutate(across(everything(),
                   function(x) {
                       case_when( is.na(x) ~ "WT",
                                  TRUE ~ "nonWT")
                   }))
-gheatmap(p, tip_dat2, 
+gheatmap(p, tip_dat_for_heatmap2, 
          offset=3,
          width=0.25, font.size=3) +
     scale_fill_manual(breaks=c("WT", "nonWT"), 
@@ -236,15 +290,15 @@ gheatmap(p, tip_dat2,
 ```
 
 
-Note that it doesn't work if tip_dat3 is a tibble (see plot below, not useful), although it doesn't give an error, it just doesn't give us a correct heatmap.   Also, setting rownames on a tibble is deprecated.
+Note that it doesn't work if tip_dat_for_heatmap3 is a tibble (see plot below, not useful), although it doesn't give an error, it just doesn't give us a correct heatmap.   Also, setting rownames on a tibble is deprecated.
 
 ```{r}
-tip_dat3 <- tip_dat2 %>% 
+tip_dat_for_heatmap3 <- tip_dat_for_heatmap2 %>% 
     as_tibble(rownames=NA)
 ## we can check the rownames are present:
-# rownames(tip_dat3)
+# rownames(tip_dat_for_heatmap3)
 
-gheatmap(p, tip_dat3, 
+gheatmap(p, tip_dat_for_heatmap3, 
          offset=3,
          width=0.25, font.size=3) +
     scale_fill_manual(breaks=c("WT", "nonWT"), 
@@ -341,7 +395,8 @@ ggtree(tr) +
 ```
 
 
-# Turning a tibble back into a tree
+
+## Turning a tibble back into a tree
 
 Sometimes we take a tree, use `as_tibble()` (it becomes a `tbl_tree` object), do a bunch of manipulation (maybe it becomes a classic `tibble` object).  
 
@@ -401,6 +456,7 @@ tree.owls %>%
     hexpand(0.3) +
     labs(title="tree.owls coerced")
 ```
+
 
 
 # Finished

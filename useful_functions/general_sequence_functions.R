@@ -53,6 +53,36 @@ read_seq_file_JY <- function(seq_file,
 # test[["seqs"]] %>% names()
 # test[["info"]]
 
+####### read_multiple_seq_files_JY - when we have >1 seqfile, uses read_seq_file_JY to read them, and combines the results, add a "file" column to the info table
+read_multiple_seq_files_JY <- function(files, ...) {
+    dat <- lapply(files, read_seq_file_JY, ...)
+    files_without_dir <- strsplit(files, "/")
+    files_without_dir <- sapply(files_without_dir, function(x) {
+        x[length(x)]
+    })
+    names(dat) <- files_without_dir
+    
+    ## seqs
+    seqs <- lapply(dat, "[[", "seqs")
+    if(class(seqs[[1]]) == "DNAStringSet") {
+        seqs <- seqs %>% DNAStringSetList() %>% unlist(use.names=FALSE)
+    }
+    if(class(seqs[[1]]) == "AAStringSet") {
+        seqs <- seqs %>% AAStringSetList() %>% unlist(use.names=FALSE)
+    }
+    if(class(seqs[[1]]) == "BStringSet") {
+        seqs <- seqs %>% BStringSetList() %>% unlist(use.names=FALSE)
+    }
+    ## info
+    info <- lapply(names(dat), function(x) {
+        dat[[x]][["info"]] %>% 
+            mutate(file=x) %>%
+            relocate(file)
+    }) %>% 
+        bind_rows()
+    output <- list(seqs=seqs, info=info)
+    return(output)
+}
 
 #### countAmbiguitiesEachSeq - a small function that counts all non-ACGT seqs in each member of a DNAStringSet
 countAmbiguitiesEachSeq <- function(dna_seqs) {
