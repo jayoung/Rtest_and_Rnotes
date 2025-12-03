@@ -10,6 +10,11 @@ always_allow_html: true
 
 A place to collect various ggplot tips and tricks
 
+
+xxxx maybe I should move the stuff in the `notes/ggplot_notes/` folder here
+
+
+
 ```{r setup, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
 ## the above is a good chunk header for chunks that load libraries
 knitr::opts_chunk$set(echo = TRUE)
@@ -55,7 +60,7 @@ https://www.thoughtworks.com/insights/blog/coding-habits-data-scientists
 
 # ggplot2 version notes
 
-ggplot2 version 4 is a big change, and may break some things in other packages.
+ggplot2 version 4.0.0 is a big change, and may break some things in other packages. See notes from the Bioconductor team [here](https://blog.bioconductor.org/posts/2025-07-07-ggplot2-update/).
 
 I don't want to update to it yet.  That may mean I need to use older versions of some other packages.
 
