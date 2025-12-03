@@ -2,7 +2,10 @@ ggtree_demo
 ================
 Janet Young
 
-2025-11-26
+2025-12-02
+
+The rendered version of this Rmd script is
+[here](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/phylogenetics/ggtree_demo.md).
 
 (this doesn’t work on the fhR 4.2.0 I could run via the Hutch Rstudio
 server, with the package versions I have there right now. But fhR 4.4.0
@@ -85,19 +88,19 @@ nwk_tree_tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A           140.  teeth          spikes         
-    ##  2 B           103.  tail           spikes         
-    ##  3 C           132.  tail           fur            
-    ##  4 D           103.  nose           fur            
-    ##  5 E           124.  teeth          fur            
-    ##  6 F           140.  teeth          spikes         
-    ##  7 G           144.  nose           fur            
-    ##  8 H           125.  teeth          scales         
-    ##  9 I           131.  tail           fur            
-    ## 10 J            72.3 tail           scales         
-    ## 11 K            98.2 tail           fur            
-    ## 12 L            44.2 teeth          spikes         
-    ## 13 M            93.6 nose           fur
+    ##  1 A            80.6 teeth          scales         
+    ##  2 B           137.  teeth          scales         
+    ##  3 C            56.7 teeth          scales         
+    ##  4 D            95.4 tail           fur            
+    ##  5 E            54.3 teeth          fur            
+    ##  6 F           141.  tail           spikes         
+    ##  7 G            80.4 tail           scales         
+    ##  8 H           104.  teeth          scales         
+    ##  9 I           105.  nose           scales         
+    ## 10 J            41.4 nose           scales         
+    ## 11 K           116.  teeth          fur            
+    ## 12 L           118.  teeth          spikes         
+    ## 13 M           111.  tail           spikes
 
 ## Combine tree and tbl
 
@@ -158,16 +161,16 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE        140.  teeth          spikes         
-    ##  2     2 B     TRUE        103.  tail           spikes         
-    ##  3     3 C     TRUE        132.  tail           fur            
-    ##  4     4 D     TRUE        103.  nose           fur            
-    ##  5     5 E     TRUE        124.  teeth          fur            
-    ##  6     6 F     TRUE        140.  teeth          spikes         
-    ##  7     7 G     TRUE        144.  nose           fur            
-    ##  8     8 H     TRUE        125.  teeth          scales         
-    ##  9     9 I     TRUE        131.  tail           fur            
-    ## 10    10 J     TRUE         72.3 tail           scales         
+    ##  1     1 A     TRUE         80.6 teeth          scales         
+    ##  2     2 B     TRUE        137.  teeth          scales         
+    ##  3     3 C     TRUE         56.7 teeth          scales         
+    ##  4     4 D     TRUE         95.4 tail           fur            
+    ##  5     5 E     TRUE         54.3 teeth          fur            
+    ##  6     6 F     TRUE        141.  tail           spikes         
+    ##  7     7 G     TRUE         80.4 tail           scales         
+    ##  8     8 H     TRUE        104.  teeth          scales         
+    ##  9     9 I     TRUE        105.  nose           scales         
+    ## 10    10 J     TRUE         41.4 nose           scales         
     ## # ℹ 15 more rows
 
 Demo using `addInfoToTree` (by default it looks for the tip labels in
@@ -209,16 +212,16 @@ nwk_tree_with_info_2
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE        140.  teeth          spikes         
-    ##  2     2 B     TRUE        103.  tail           spikes         
-    ##  3     3 C     TRUE        132.  tail           fur            
-    ##  4     4 D     TRUE        103.  nose           fur            
-    ##  5     5 E     TRUE        124.  teeth          fur            
-    ##  6     6 F     TRUE        140.  teeth          spikes         
-    ##  7     7 G     TRUE        144.  nose           fur            
-    ##  8     8 H     TRUE        125.  teeth          scales         
-    ##  9     9 I     TRUE        131.  tail           fur            
-    ## 10    10 J     TRUE         72.3 tail           scales         
+    ##  1     1 A     TRUE         80.6 teeth          scales         
+    ##  2     2 B     TRUE        137.  teeth          scales         
+    ##  3     3 C     TRUE         56.7 teeth          scales         
+    ##  4     4 D     TRUE         95.4 tail           fur            
+    ##  5     5 E     TRUE         54.3 teeth          fur            
+    ##  6     6 F     TRUE        141.  tail           spikes         
+    ##  7     7 G     TRUE         80.4 tail           scales         
+    ##  8     8 H     TRUE        104.  teeth          scales         
+    ##  9     9 I     TRUE        105.  nose           scales         
+    ## 10    10 J     TRUE         41.4 nose           scales         
     ## # ℹ 15 more rows
 
 ## Manipulating info tibble in treedata objects
@@ -231,7 +234,7 @@ tree, we first use `as_tibble()`, then manipulate, then use
 p1 <- nwk_tree_with_info_2 %>% 
     ggtree() +
     geom_tiplab()
-    
+
 p2 <- nwk_tree_with_info_2 %>% 
     as_tibble() %>% 
     mutate(new_label= paste(label, fake_phenotype, sep=" ")) %>% 
@@ -260,16 +263,16 @@ as_tibble(nwk_tree_with_info_2)
     ## # via as.treedata or as.phylo
     ##    parent  node branch.length label fake_height fake_phenotype fake_phenotype2
     ##     <int> <int>         <dbl> <chr>       <dbl> <chr>          <chr>          
-    ##  1     20     1             4 A           140.  teeth          spikes         
-    ##  2     20     2             4 B           103.  tail           spikes         
-    ##  3     19     3             5 C           132.  tail           fur            
-    ##  4     18     4             6 D           103.  nose           fur            
-    ##  5     17     5            21 E           124.  teeth          fur            
-    ##  6     22     6             4 F           140.  teeth          spikes         
-    ##  7     22     7            12 G           144.  nose           fur            
-    ##  8     21     8             8 H           125.  teeth          scales         
-    ##  9     24     9             5 I           131.  tail           fur            
-    ## 10     24    10             2 J            72.3 tail           scales         
+    ##  1     20     1             4 A            80.6 teeth          scales         
+    ##  2     20     2             4 B           137.  teeth          scales         
+    ##  3     19     3             5 C            56.7 teeth          scales         
+    ##  4     18     4             6 D            95.4 tail           fur            
+    ##  5     17     5            21 E            54.3 teeth          fur            
+    ##  6     22     6             4 F           141.  tail           spikes         
+    ##  7     22     7            12 G            80.4 tail           scales         
+    ##  8     21     8             8 H           104.  teeth          scales         
+    ##  9     24     9             5 I           105.  nose           scales         
+    ## 10     24    10             2 J            41.4 nose           scales         
     ## # ℹ 15 more rows
 
 We can also directly access extraInfo, but that doesn’t contain a column
@@ -283,16 +286,16 @@ nwk_tree_with_info_2@extraInfo
     ## # A tibble: 25 × 4
     ##     node fake_height fake_phenotype fake_phenotype2
     ##    <int>       <dbl> <chr>          <chr>          
-    ##  1     1       140.  teeth          spikes         
-    ##  2     2       103.  tail           spikes         
-    ##  3     3       132.  tail           fur            
-    ##  4     4       103.  nose           fur            
-    ##  5     5       124.  teeth          fur            
-    ##  6     6       140.  teeth          spikes         
-    ##  7     7       144.  nose           fur            
-    ##  8     8       125.  teeth          scales         
-    ##  9     9       131.  tail           fur            
-    ## 10    10        72.3 tail           scales         
+    ##  1     1        80.6 teeth          scales         
+    ##  2     2       137.  teeth          scales         
+    ##  3     3        56.7 teeth          scales         
+    ##  4     4        95.4 tail           fur            
+    ##  5     5        54.3 teeth          fur            
+    ##  6     6       141.  tail           spikes         
+    ##  7     7        80.4 tail           scales         
+    ##  8     8       104.  teeth          scales         
+    ##  9     9       105.  nose           scales         
+    ## 10    10        41.4 nose           scales         
     ## # ℹ 15 more rows
 
 ## Plot tree with annotations
@@ -673,18 +676,118 @@ tree.owls %>%
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
+# ggtree layouts
+
+Different ggtree layouts are shown
+[here](https://yulab-smu.top/treedata-book/chapter4.html?q=equal_angle#tree-layouts).
+This is the same thing but easier to read:
+
+``` r
+set.seed(2017-02-16)
+my_tree <- rtree(50)  # default is to make rooted trees
+# my_mrca <- getMRCA(my_tree, my_tree$tip.label)
+
+my_tree_unrooted <- unroot(my_tree)
+# my_mrca_unrooted <- getMRCA(my_tree_unrooted, my_tree$tip.label)
+```
+
+``` r
+ggtree_params <- list()
+
+ggtree_params[["rectangular"]] <- list(layout = "rectangular")
+ggtree_params[["roundrect"]] <- list(layout = "roundrect")
+ggtree_params[["slanted"]] <- list(layout = "slanted")
+ggtree_params[["ellipse"]] <- list(layout = "ellipse")
+ggtree_params[["circular"]] <- list(layout = "circular")
+ggtree_params[["fan"]] <- list(layout="fan", open.angle=120)
+ggtree_params[["equal_angle"]] <- list(layout = "equal_angle")
+ggtree_params[["daylight"]] <- list(layout = "daylight")
+ggtree_params[["no_blen_rectang"]] <- list(layout = "rectangular", branch.length="none")
+ggtree_params[["no_blen_ellipse"]] <- list(layout="ellipse", branch.length="none")
+ggtree_params[["no_blen_circular"]] <- list(branch.length="none", layout="circular")
+ggtree_params[["no_blen_daylight"]] <- list(branch.length="none", layout="daylight")
+
+### utility function for troubleshooting
+cat_args <- function(my_args_list) {
+    all_args <- sapply(names(my_args_list), function(x) {
+        paste0("arg_name:",x, " , value:",my_args_list[[x]])
+    })
+    all_args <- paste(all_args, collapse="\n")
+    return(all_args)
+}
+# cat_args(ggtree_params[["rectangular"]])
+
+make_all_ggtree_layout_plots <- function(one_tree, parameter_list) {
+    this_mrca <- getMRCA(one_tree, one_tree$tip.label)
+    output_plots <- lapply(names(parameter_list), function(x) {
+        # cat ("x ",x," this_mrca2 ", this_mrca, "\n")
+        p <- parameter_list[[x]]
+        if("branch.length" %in% names(p)) {
+            b <- p[["branch.length"]]
+        } else {
+            b <- "branch.length"  ## ggtree default
+        }
+        if("open.angle" %in% names(p)) {
+            a <- p[["open.angle"]]
+        } else {
+            a <- 0  ## ggtree default
+        }
+        ggtree(one_tree, 
+               layout=p[["layout"]],
+               branch.length=b,
+               open.angle=a) +
+            geom_nodepoint(aes(subset= (node == !!this_mrca)), 
+                           color="red", alpha=0.5, size=2)  + 
+            labs(title=x) +
+            theme(plot.title = element_text(hjust = 0.5, size=10))
+    })
+    names(output_plots) <- names(parameter_list)
+    return(output_plots)   
+}
+ggtree_plots <- make_all_ggtree_layout_plots(my_tree, ggtree_params)
+ggtree_plots_unrooted <- make_all_ggtree_layout_plots(my_tree_unrooted, ggtree_params)
+
+wrap_plots(ggtree_plots) +
+    plot_annotation(title="Rooted tree layouts")
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+
+``` r
+wrap_plots(ggtree_plots_unrooted) +
+    plot_annotation(title="Unrooted tree layouts")
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
+
+Same plots, but focus just on the circular layout versus the daylight
+layout, for both rooted and unrooted trees.
+
+I think the circular layout implicitly implies that there IS a root,
+even when the tree is actuall unrooted.
+
+``` r
+(ggtree_plots[["circular"]] + labs(title="Rooted circular") +
+ggtree_plots[["daylight"]] + labs(title="Rooted daylight")) / 
+(ggtree_plots_unrooted[["circular"]] + labs(title="Unrooted circular") +
+ggtree_plots_unrooted[["daylight"]] + labs(title="Unrooted daylight")) +
+    plot_annotation(caption="Red dot = MRCA of all tips")
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+
 # Finished
 
 ``` r
 sessionInfo()
 ```
 
-    ## R version 4.5.1 (2025-06-13)
+    ## R version 4.5.2 (2025-10-31)
     ## Platform: aarch64-apple-darwin20
     ## Running under: macOS Tahoe 26.1
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+    ## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
     ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     ## 
     ## locale:
@@ -698,21 +801,20 @@ sessionInfo()
     ## 
     ## other attached packages:
     ##  [1] tidytree_0.4.6     treeio_1.32.0      ggtreeExtra_1.18.0 ggtree_3.16.3     
-    ##  [5] ape_5.8-1          lubridate_1.9.4    forcats_1.0.0      stringr_1.5.2     
-    ##  [9] dplyr_1.1.4        purrr_1.1.0        readr_2.1.5        tidyr_1.3.1       
-    ## [13] tibble_3.3.0       ggplot2_3.5.2      tidyverse_2.0.0   
+    ##  [5] ape_5.8-1          patchwork_1.3.2    lubridate_1.9.4    forcats_1.0.0     
+    ##  [9] stringr_1.5.2      dplyr_1.1.4        purrr_1.1.0        readr_2.1.5       
+    ## [13] tidyr_1.3.1        tibble_3.3.0       ggplot2_3.5.2      tidyverse_2.0.0   
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] yulab.utils_0.2.1  utf8_1.2.6         rappdirs_0.3.3     generics_0.1.4    
     ##  [5] ggplotify_0.1.3    stringi_1.8.7      lattice_0.22-7     hms_1.1.3         
-    ##  [9] digest_0.6.37      magrittr_2.0.4     evaluate_1.0.5     grid_4.5.1        
+    ##  [9] digest_0.6.37      magrittr_2.0.4     evaluate_1.0.5     grid_4.5.2        
     ## [13] timechange_0.3.0   RColorBrewer_1.1-3 fastmap_1.2.0      jsonlite_2.0.0    
     ## [17] ggnewscale_0.5.2   aplot_0.2.9        scales_1.4.0       lazyeval_0.2.2    
     ## [21] cli_3.6.5          rlang_1.1.6        withr_3.0.2        yaml_2.3.10       
-    ## [25] tools_4.5.1        parallel_4.5.1     tzdb_0.5.0         gridGraphics_0.5-1
-    ## [29] vctrs_0.6.5        R6_2.6.1           lifecycle_1.0.4    fs_1.6.6          
-    ## [33] ggfun_0.2.0        pkgconfig_2.0.3    pillar_1.11.1      gtable_0.3.6      
+    ## [25] tools_4.5.2        parallel_4.5.2     tzdb_0.5.0         gridGraphics_0.5-1
+    ## [29] vctrs_0.6.5        R6_2.6.1           lifecycle_1.0.4    ggfun_0.2.0       
+    ## [33] fs_1.6.6           pkgconfig_2.0.3    pillar_1.11.1      gtable_0.3.6      
     ## [37] glue_1.8.0         Rcpp_1.1.0         xfun_0.53          tidyselect_1.2.1  
-    ## [41] rstudioapi_0.17.1  knitr_1.50         farver_2.1.2       patchwork_1.3.2   
-    ## [45] htmltools_0.5.8.1  nlme_3.1-168       labeling_0.4.3     rmarkdown_2.29    
-    ## [49] compiler_4.5.1
+    ## [41] rstudioapi_0.17.1  knitr_1.50         farver_2.1.2       htmltools_0.5.8.1 
+    ## [45] nlme_3.1-168       labeling_0.4.3     rmarkdown_2.29     compiler_4.5.2

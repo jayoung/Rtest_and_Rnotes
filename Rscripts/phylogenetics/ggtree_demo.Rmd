@@ -6,10 +6,13 @@ output: github_document
 always_allow_html: true
 ---
 
+The rendered version of this Rmd script is [here](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/phylogenetics/ggtree_demo.md).
+
 (this doesn't work on the fhR 4.2.0 I could run via the Hutch Rstudio server, with the package versions I have there right now.  But fhR 4.4.0 is fine)
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(patchwork)
 library(ape)
 library(ggtree)
 library(ggtreeExtra)
@@ -53,6 +56,7 @@ nwk_tree %>%
     ggtree() +
     geom_tiplab()
 ```
+
 
 # Associate a tree with additional data
 
@@ -115,7 +119,7 @@ If we want to manipulate the information AFTER we associate it with the tree, we
 p1 <- nwk_tree_with_info_2 %>% 
     ggtree() +
     geom_tiplab()
-    
+
 p2 <- nwk_tree_with_info_2 %>% 
     as_tibble() %>% 
     mutate(new_label= paste(label, fake_phenotype, sep=" ")) %>% 
@@ -458,6 +462,98 @@ tree.owls %>%
 ```
 
 
+# ggtree layouts
+
+Different ggtree layouts are shown [here](https://yulab-smu.top/treedata-book/chapter4.html?q=equal_angle#tree-layouts). This is the same thing but easier to read:
+
+```{r, example trees for layout demos}
+set.seed(2017-02-16)
+my_tree <- rtree(50)  # default is to make rooted trees
+# my_mrca <- getMRCA(my_tree, my_tree$tip.label)
+
+my_tree_unrooted <- unroot(my_tree)
+# my_mrca_unrooted <- getMRCA(my_tree_unrooted, my_tree$tip.label)
+```
+
+```{r, message=FALSE}
+ggtree_params <- list()
+
+ggtree_params[["rectangular"]] <- list(layout = "rectangular")
+ggtree_params[["roundrect"]] <- list(layout = "roundrect")
+ggtree_params[["slanted"]] <- list(layout = "slanted")
+ggtree_params[["ellipse"]] <- list(layout = "ellipse")
+ggtree_params[["circular"]] <- list(layout = "circular")
+ggtree_params[["fan"]] <- list(layout="fan", open.angle=120)
+ggtree_params[["equal_angle"]] <- list(layout = "equal_angle")
+ggtree_params[["daylight"]] <- list(layout = "daylight")
+ggtree_params[["no_blen_rectang"]] <- list(layout = "rectangular", branch.length="none")
+ggtree_params[["no_blen_ellipse"]] <- list(layout="ellipse", branch.length="none")
+ggtree_params[["no_blen_circular"]] <- list(branch.length="none", layout="circular")
+ggtree_params[["no_blen_daylight"]] <- list(branch.length="none", layout="daylight")
+
+### utility function for troubleshooting
+cat_args <- function(my_args_list) {
+    all_args <- sapply(names(my_args_list), function(x) {
+        paste0("arg_name:",x, " , value:",my_args_list[[x]])
+    })
+    all_args <- paste(all_args, collapse="\n")
+    return(all_args)
+}
+# cat_args(ggtree_params[["rectangular"]])
+
+make_all_ggtree_layout_plots <- function(one_tree, parameter_list) {
+    this_mrca <- getMRCA(one_tree, one_tree$tip.label)
+    output_plots <- lapply(names(parameter_list), function(x) {
+        # cat ("x ",x," this_mrca2 ", this_mrca, "\n")
+        p <- parameter_list[[x]]
+        if("branch.length" %in% names(p)) {
+            b <- p[["branch.length"]]
+        } else {
+            b <- "branch.length"  ## ggtree default
+        }
+        if("open.angle" %in% names(p)) {
+            a <- p[["open.angle"]]
+        } else {
+            a <- 0  ## ggtree default
+        }
+        ggtree(one_tree, 
+               layout=p[["layout"]],
+               branch.length=b,
+               open.angle=a) +
+            geom_nodepoint(aes(subset= (node == !!this_mrca)), 
+                           color="red", alpha=0.5, size=2)  + 
+            labs(title=x) +
+            theme(plot.title = element_text(hjust = 0.5, size=10))
+    })
+    names(output_plots) <- names(parameter_list)
+    return(output_plots)   
+}
+ggtree_plots <- make_all_ggtree_layout_plots(my_tree, ggtree_params)
+ggtree_plots_unrooted <- make_all_ggtree_layout_plots(my_tree_unrooted, ggtree_params)
+
+wrap_plots(ggtree_plots) +
+    plot_annotation(title="Rooted tree layouts")
+```
+
+
+```{r}
+wrap_plots(ggtree_plots_unrooted) +
+    plot_annotation(title="Unrooted tree layouts")
+```
+
+
+Same plots, but focus just on the circular layout versus the daylight layout, for both rooted and unrooted trees. 
+
+I think the circular layout implicitly implies that there IS a root, even when the tree is actuall unrooted.
+
+
+```{r}
+(ggtree_plots[["circular"]] + labs(title="Rooted circular") +
+ggtree_plots[["daylight"]] + labs(title="Rooted daylight")) / 
+(ggtree_plots_unrooted[["circular"]] + labs(title="Unrooted circular") +
+ggtree_plots_unrooted[["daylight"]] + labs(title="Unrooted daylight")) +
+    plot_annotation(caption="Red dot = MRCA of all tips")
+```
 
 # Finished
 

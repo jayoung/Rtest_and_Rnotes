@@ -7,13 +7,13 @@ always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
+library(tidyverse)
 library(ggtree)
 library(treeio)
 library(tidytree)
 library(ggplot2)
 library(TDbook)
 ```
-
 
 
 ```{r}
@@ -27,6 +27,16 @@ library(TDbook)
 # packageurl <- "http://cran.r-project.org/src/contrib/Archive/GGally/GGally_2.2.1.tar.gz"
 # install.packages(packageurl, repos=NULL, type="source")
 ```
+
+
+
+# geom_tippoint and position / offset
+
+```{r}
+
+```
+
+# other stuff
 
 ```{r}
 #### tree_anole (phylo object) has 100 tips and 99 internal nodes
@@ -113,6 +123,7 @@ raxml_file <- system.file("extdata/RAxML", "RAxML_bipartitionsBranchLabels.H3", 
 raxml <- read.raxml(raxml_file)
 ggtree(raxml) + geom_text(aes(label=bootstrap/100))
 ```
+
 
 
 # Finished
