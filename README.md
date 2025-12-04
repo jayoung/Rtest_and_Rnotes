@@ -141,6 +141,20 @@ Example: type `fun` and press the `tab` key, and R provides the skeleton of a ne
 To see all snippets:  Tools - Edit Code Snippets
 
 
+### reprex
+
+To create reproducible code + output we can use `reprex`
+
+First, we write the code the demonstrates the problem
+
+Load the library:
+```
+library(reprex)
+```
+
+Copy the code you want to the clipboard, and enter `reprex()` in the R Console. In RStudio, you’ll see a preview of your rendered reprex, but it is also now on the clipboard ready to paste.
+
+
 ### Debugging
 
 Three options:    
