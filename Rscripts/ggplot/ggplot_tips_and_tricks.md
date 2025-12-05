@@ -2,11 +2,14 @@ ggplot_tips_and_tricks
 ================
 Janet Young
 
-2025-11-06
+2025-12-05
 
 # Goal
 
 A place to collect various ggplot tips and tricks
+
+xxxx maybe I should move the stuff in the `notes/ggplot_notes/` folder
+here
 
 ``` r
 ## the above is a good chunk header for chunks that load libraries
@@ -53,8 +56,9 @@ of how to combine \>1 plot into a figure. Packages:
 
 # ggplot2 version notes
 
-ggplot2 version 4 is a big change, and may break some things in other
-packages.
+ggplot2 version 4.0.0 is a big change, and may break some things in
+other packages. See notes from the Bioconductor team
+[here](https://blog.bioconductor.org/posts/2025-07-07-ggplot2-update/).
 
 I don’t want to update to it yet. That may mean I need to use older
 versions of some other packages.
@@ -541,25 +545,41 @@ iris_plus_groups %>%
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-## Adding median dots to violin plots: geom_violin + stat_summary
+## Violin plots
 
-Purpose: make violin plots, and add statistical summaries (e.g. a dot
-for the median)
+### Things I usually do on violin plots
 
-I often have trouble getting the statistical summary (median dot) to
-line up correctly if I’ve got subgroupings for the violins. The trick is
-something to do with putting `position=position_dodge(width=0.9)` in the
-stat_summary call
+Add median dots:
+
+    + stat_summary(fun = "median", geom = "point",
+                   position=position_dodge(width=0.9),
+                   show.legend = FALSE)  
+
+Rotate x axis labels:
+
+`+ theme(axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 0.5))`
 
 ``` r
-mtcars %>% ggplot(aes(x=factor(cyl), y=mpg, fill = factor(am))) + 
+penguins %>%
+    filter(!is.na(flipper_length_mm)) %>% 
+    ggplot(aes(x=species, y=flipper_length_mm, fill=species)) +
     geom_violin(scale = "width") + 
-    stat_summary(fun = "mean", colour = "black", 
+    stat_summary(fun = "median", geom = "point",
+                 ## position_dodge(width=0.9) will help median dots line up especially if each x axis value contains subgroups
                  position=position_dodge(width=0.9),
-                 size = 2, geom = "point")
+                 show.legend = FALSE)  +
+    theme_classic() +
+    labs(x="") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    guides(fill="none")
 ```
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+Note: I sometimes have trouble getting the statistical summary (median
+dot) to line up correctly if I’ve got subgroupings for the violins. The
+trick to put `position=position_dodge(width=0.9)` in the stat_summary
+call.
 
 ## Annotating plots - `annotate()` versus `geom_text()`
 
@@ -695,7 +715,7 @@ penguins %>%
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
-Instead use `ggtext` package - the `element_textbox_simple()` function will
+Instead use `ggtext` package - the element_textbox_simple will
 automatically wrap text to fit whatever space is available.
 
 ``` r
@@ -967,12 +987,12 @@ p1 +
 sessionInfo()
 ```
 
-    ## R version 4.5.1 (2025-06-13)
+    ## R version 4.5.2 (2025-10-31)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Sequoia 15.7.1
+    ## Running under: macOS Tahoe 26.1
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+    ## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
     ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     ## 
     ## locale:
@@ -995,17 +1015,17 @@ sessionInfo()
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] gtable_0.3.6       xfun_0.53          tzdb_0.5.0         vctrs_0.6.5       
-    ##  [5] tools_4.5.1        generics_0.1.4     yulab.utils_0.2.1  pkgconfig_2.0.3   
-    ##  [9] ggplotify_0.1.3    RColorBrewer_1.1-3 lifecycle_1.0.4    compiler_4.5.1    
+    ##  [5] tools_4.5.2        generics_0.1.4     yulab.utils_0.2.1  pkgconfig_2.0.3   
+    ##  [9] ggplotify_0.1.3    RColorBrewer_1.1-3 lifecycle_1.0.4    compiler_4.5.2    
     ## [13] farver_2.1.2       textshaping_1.0.3  snakecase_0.11.1   litedown_0.7      
     ## [17] ggfun_0.2.0        httpuv_1.6.16      htmltools_0.5.8.1  yaml_2.3.10       
     ## [21] pillar_1.11.1      later_1.4.4        mime_0.13          commonmark_2.0.0  
     ## [25] aplot_0.2.9        tidyselect_1.2.1   digest_0.6.37      stringi_1.8.7     
-    ## [29] labeling_0.4.3     rprojroot_2.1.1    fastmap_1.2.0      grid_4.5.1        
+    ## [29] labeling_0.4.3     rprojroot_2.1.1    fastmap_1.2.0      grid_4.5.2        
     ## [33] cli_3.6.5          magrittr_2.0.4     withr_3.0.2        scales_1.4.0      
     ## [37] promises_1.3.3     rappdirs_0.3.3     timechange_0.3.0   rmarkdown_2.29    
     ## [41] hms_1.1.3          shiny_1.11.1       evaluate_1.0.5     knitr_1.50        
     ## [45] miniUI_0.1.2       viridisLite_0.4.2  markdown_2.0       gridGraphics_0.5-1
     ## [49] rlang_1.1.6        gridtext_0.1.5     Rcpp_1.1.0         xtable_1.8-4      
     ## [53] glue_1.8.0         xml2_1.4.0         svglite_2.2.1      rstudioapi_0.17.1 
-    ## [57] R6_2.6.1           systemfonts_1.2.3  fs_1.6.6
+    ## [57] R6_2.6.1           systemfonts_1.3.1  fs_1.6.6

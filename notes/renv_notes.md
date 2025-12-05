@@ -6,6 +6,13 @@ When you use Rstudio to initialize a new project you can tell it to (a) use `ren
 
 When you start a fresh project using `renv` it doesn't see ANY of the packages we installed system-wide.
 
+## TO DO list
+
+Read the resources
+
+Questions:
+- should I be recording something like a snapshot ID or git commit ID, when I have working code, before I change package versions?   Right now I'm treating the snapshots anonymously
+
 ## renv resources
 
 [renv documentation site](https://rstudio.github.io/renv/)

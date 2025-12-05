@@ -115,6 +115,7 @@ penguins %>%
     kable_styling(full_width = FALSE)
 ```
 
+
 ## Using color names in a column literally
 
 Use `scale_color_identity()` if colors are specified by name in a column. Note that by default `guide="none"` for `scale_color_identity()` (could add `guide=guide_legend()` but that would just show the color names, which makes no sense)
@@ -202,21 +203,41 @@ iris_plus_groups %>%
 
 
 
+## Violin plots
 
 
-## Adding median dots to violin plots: geom_violin + stat_summary
+### Things I usually do on violin plots
 
-Purpose:  make violin plots, and add statistical summaries (e.g. a dot for the median)
+Add median dots: 
 
-I often have trouble getting the statistical summary (median dot) to line up correctly if I've got subgroupings for the violins. The trick is something to do with putting `position=position_dodge(width=0.9)` in the stat_summary call
-
-```{r, fig.height=3, fig.width=5}
-mtcars %>% ggplot(aes(x=factor(cyl), y=mpg, fill = factor(am))) + 
-    geom_violin(scale = "width") + 
-    stat_summary(fun = "mean", colour = "black", 
-                 position=position_dodge(width=0.9),
-                 size = 2, geom = "point")
 ```
++ stat_summary(fun = "median", geom = "point",
+               position=position_dodge(width=0.9),
+               show.legend = FALSE)  
+```
+
+Rotate x axis labels: 
+
+` + theme(axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 0.5))`
+
+```{r, fig.height=4, fig.width=4}
+penguins %>%
+    filter(!is.na(flipper_length_mm)) %>% 
+    ggplot(aes(x=species, y=flipper_length_mm, fill=species)) +
+    geom_violin(scale = "width") + 
+    stat_summary(fun = "median", geom = "point",
+                 ## position_dodge(width=0.9) will help median dots line up especially if each x axis value contains subgroups
+                 position=position_dodge(width=0.9),
+                 show.legend = FALSE)  +
+    theme_classic() +
+    labs(x="") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    guides(fill="none")
+```
+
+
+Note: I sometimes have trouble getting the statistical summary (median dot) to line up correctly if I've got subgroupings for the violins. The trick to put `position=position_dodge(width=0.9)` in the stat_summary call.
+
 
 
 ## Annotating plots - `annotate()` versus `geom_text()`
