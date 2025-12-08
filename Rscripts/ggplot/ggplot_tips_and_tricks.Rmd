@@ -212,8 +212,8 @@ Add median dots:
 
 ```
 + stat_summary(fun = "median", geom = "point",
-               position=position_dodge(width=0.9),
-               show.legend = FALSE)  
+position=position_dodge(width=0.9),
+show.legend = FALSE)  
 ```
 
 Rotate x axis labels: 
@@ -528,6 +528,33 @@ p1 +
 ## default length is unit(0.03, "npc"), i.e. 0.03* the plot dimensions (so the x and y axis rugs might be different lengths, unless we control that)
 ```
 
+
+## Getting calculated information (stat) from plot objects
+
+Learning from [this blog post](https://blog.msbstats.info/posts/2025-09-16-exploring-ggplot2/), "Exploring {ggplot2}’s Geoms and Stats".
+
+Many geoms do some calculations before plotting. Sometimes we want to access the results of those calculations.
+
+Example:
+
+First we make a histogram.
+
+```{r, fig.height=3.5, fig.width=4}
+p1 <- ggplot(mpg, aes(hwy)) +
+    geom_histogram(bins = 10, color = "black") +
+    theme_classic()
+p1
+```
+
+
+Maybe we want to look at the counts, or the x-axis bin boundaries - we can use `layer_data()`
+
+```{r}
+# i is which layer to look at
+layer_data(p1, i = 1) %>% 
+    kable(digits=2) %>% 
+    kable_styling(full_width = FALSE)
+```
 
 
 

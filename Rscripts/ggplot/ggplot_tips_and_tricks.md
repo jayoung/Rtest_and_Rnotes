@@ -2,7 +2,7 @@ ggplot_tips_and_tricks
 ================
 Janet Young
 
-2025-12-05
+2025-12-08
 
 # Goal
 
@@ -552,8 +552,8 @@ iris_plus_groups %>%
 Add median dots:
 
     + stat_summary(fun = "median", geom = "point",
-                   position=position_dodge(width=0.9),
-                   show.legend = FALSE)  
+    position=position_dodge(width=0.9),
+    show.legend = FALSE)  
 
 Rotate x axis labels:
 
@@ -980,6 +980,1084 @@ p1 +
 ``` r
 ## default length is unit(0.03, "npc"), i.e. 0.03* the plot dimensions (so the x and y axis rugs might be different lengths, unless we control that)
 ```
+
+## Getting calculated information (stat) from plot objects
+
+Learning from [this blog
+post](https://blog.msbstats.info/posts/2025-09-16-exploring-ggplot2/),
+“Exploring {ggplot2}’s Geoms and Stats”.
+
+Many geoms do some calculations before plotting. Sometimes we want to
+access the results of those calculations.
+
+Example:
+
+First we make a histogram.
+
+``` r
+p1 <- ggplot(mpg, aes(hwy)) +
+    geom_histogram(bins = 10, color = "black") +
+    theme_classic()
+p1
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+
+Maybe we want to look at the counts, or the x-axis bin boundaries - we
+can use `layer_data()`
+
+``` r
+# i is which layer to look at
+layer_data(p1, i = 1) %>% 
+    kable(digits=2) %>% 
+    kable_styling(full_width = FALSE)
+```
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:right;">
+
+y
+</th>
+
+<th style="text-align:right;">
+
+count
+</th>
+
+<th style="text-align:right;">
+
+x
+</th>
+
+<th style="text-align:right;">
+
+xmin
+</th>
+
+<th style="text-align:right;">
+
+xmax
+</th>
+
+<th style="text-align:right;">
+
+density
+</th>
+
+<th style="text-align:right;">
+
+ncount
+</th>
+
+<th style="text-align:right;">
+
+ndensity
+</th>
+
+<th style="text-align:left;">
+
+flipped_aes
+</th>
+
+<th style="text-align:left;">
+
+PANEL
+</th>
+
+<th style="text-align:right;">
+
+group
+</th>
+
+<th style="text-align:right;">
+
+ymin
+</th>
+
+<th style="text-align:right;">
+
+ymax
+</th>
+
+<th style="text-align:left;">
+
+colour
+</th>
+
+<th style="text-align:left;">
+
+fill
+</th>
+
+<th style="text-align:right;">
+
+linewidth
+</th>
+
+<th style="text-align:right;">
+
+linetype
+</th>
+
+<th style="text-align:left;">
+
+alpha
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:right;">
+
+5
+</td>
+
+<td style="text-align:right;">
+
+5
+</td>
+
+<td style="text-align:right;">
+
+10.67
+</td>
+
+<td style="text-align:right;">
+
+8.89
+</td>
+
+<td style="text-align:right;">
+
+12.44
+</td>
+
+<td style="text-align:right;">
+
+0.01
+</td>
+
+<td style="text-align:right;">
+
+0.08
+</td>
+
+<td style="text-align:right;">
+
+0.08
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+5
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+grey35
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+19
+</td>
+
+<td style="text-align:right;">
+
+19
+</td>
+
+<td style="text-align:right;">
+
+14.22
+</td>
+
+<td style="text-align:right;">
+
+12.44
+</td>
+
+<td style="text-align:right;">
+
+16.00
+</td>
+
+<td style="text-align:right;">
+
+0.02
+</td>
+
+<td style="text-align:right;">
+
+0.32
+</td>
+
+<td style="text-align:right;">
+
+0.32
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+19
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+grey35
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+54
+</td>
+
+<td style="text-align:right;">
+
+54
+</td>
+
+<td style="text-align:right;">
+
+17.78
+</td>
+
+<td style="text-align:right;">
+
+16.00
+</td>
+
+<td style="text-align:right;">
+
+19.56
+</td>
+
+<td style="text-align:right;">
+
+0.06
+</td>
+
+<td style="text-align:right;">
+
+0.90
+</td>
+
+<td style="text-align:right;">
+
+0.90
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+54
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+grey35
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+27
+</td>
+
+<td style="text-align:right;">
+
+27
+</td>
+
+<td style="text-align:right;">
+
+21.33
+</td>
+
+<td style="text-align:right;">
+
+19.56
+</td>
+
+<td style="text-align:right;">
+
+23.11
+</td>
+
+<td style="text-align:right;">
+
+0.03
+</td>
+
+<td style="text-align:right;">
+
+0.45
+</td>
+
+<td style="text-align:right;">
+
+0.45
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+27
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+grey35
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+60
+</td>
+
+<td style="text-align:right;">
+
+60
+</td>
+
+<td style="text-align:right;">
+
+24.89
+</td>
+
+<td style="text-align:right;">
+
+23.11
+</td>
+
+<td style="text-align:right;">
+
+26.67
+</td>
+
+<td style="text-align:right;">
+
+0.07
+</td>
+
+<td style="text-align:right;">
+
+1.00
+</td>
+
+<td style="text-align:right;">
+
+1.00
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+60
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+grey35
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+47
+</td>
+
+<td style="text-align:right;">
+
+47
+</td>
+
+<td style="text-align:right;">
+
+28.44
+</td>
+
+<td style="text-align:right;">
+
+26.67
+</td>
+
+<td style="text-align:right;">
+
+30.22
+</td>
+
+<td style="text-align:right;">
+
+0.06
+</td>
+
+<td style="text-align:right;">
+
+0.78
+</td>
+
+<td style="text-align:right;">
+
+0.78
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+47
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+grey35
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+13
+</td>
+
+<td style="text-align:right;">
+
+13
+</td>
+
+<td style="text-align:right;">
+
+32.00
+</td>
+
+<td style="text-align:right;">
+
+30.22
+</td>
+
+<td style="text-align:right;">
+
+33.78
+</td>
+
+<td style="text-align:right;">
+
+0.02
+</td>
+
+<td style="text-align:right;">
+
+0.22
+</td>
+
+<td style="text-align:right;">
+
+0.22
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+13
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+grey35
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+6
+</td>
+
+<td style="text-align:right;">
+
+6
+</td>
+
+<td style="text-align:right;">
+
+35.56
+</td>
+
+<td style="text-align:right;">
+
+33.78
+</td>
+
+<td style="text-align:right;">
+
+37.33
+</td>
+
+<td style="text-align:right;">
+
+0.01
+</td>
+
+<td style="text-align:right;">
+
+0.10
+</td>
+
+<td style="text-align:right;">
+
+0.10
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+6
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+grey35
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+39.11
+</td>
+
+<td style="text-align:right;">
+
+37.33
+</td>
+
+<td style="text-align:right;">
+
+40.89
+</td>
+
+<td style="text-align:right;">
+
+0.00
+</td>
+
+<td style="text-align:right;">
+
+0.00
+</td>
+
+<td style="text-align:right;">
+
+0.00
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+grey35
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:right;">
+
+42.67
+</td>
+
+<td style="text-align:right;">
+
+40.89
+</td>
+
+<td style="text-align:right;">
+
+44.44
+</td>
+
+<td style="text-align:right;">
+
+0.00
+</td>
+
+<td style="text-align:right;">
+
+0.05
+</td>
+
+<td style="text-align:right;">
+
+0.05
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+grey35
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 # Finished
 
