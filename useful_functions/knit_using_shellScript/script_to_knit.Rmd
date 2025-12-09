@@ -1,0 +1,42 @@
+---
+title: "script_to_knit"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+If I "knit" from Rstudio, plots are saved as png.  I like that (files are smaller so better to host on github)
+
+If I "render" from the command line (on the cluster) using Rscript, plots would be saved as svg (sometimes too big for github). 
+
+
+The fix (thanks to Dan Tenenbaum) is to include the following chunk in my Rmd script:
+
+```{r setup, include=FALSE}
+ragg_png = function(..., res = 192) {
+  ragg::agg_png(..., res = res, units = "in")
+}
+knitr::opts_chunk$set(dev = "ragg_png", fig.ext = "png")
+```
+
+
+The shell script to render looks like this:
+```
+#!/bin/bash
+source /app/lmod/lmod/init/profile
+module purge
+module load fhR/4.4.1-foss-2023b-R-4.4.1
+module load Pandoc/2.13
+
+Rscript -e 'rmarkdown::render("script_to_knit.Rmd", output_format="github_document", clean=TRUE)' > script_to_knit.Rrender.Rout.txt 2> script_to_knit.Rrender.Rerr.txt
+```
+
+```{r mtcars plot}
+plot(mtcars$mpg, mtcars$disp)
+```
+
+
+```{r}
+sessionInfo()
+```

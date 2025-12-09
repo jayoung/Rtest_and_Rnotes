@@ -186,12 +186,31 @@ Modify size by simple scaling
 
 Easiest way: on gizmo/rhino:
 
-- `~/bin/render_Rmd.perl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each (in parallel, i.e. scripts are not linked).
+- `useful_functions/render_Rmd.perl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each (in parallel, i.e. scripts are not linked).
 
-- `~/bin/render_Rmd_series.perl` is a generic perl script that will take the name of several Rmd scripts as input, and make and run an sbatch script to render the report for each, one after the other, stopping if any of them fail (scripts are in a linked series).
+- `useful_functions/render_Rmd_series.perl` is a generic perl script that will take the name of several Rmd scripts as input, and make and run an sbatch script to render the report for each, one after the other, stopping if any of them fail (scripts are in a linked series).
 
-Downside - if I render that way, plot images are saved as svg files, and those can be too big to sync to github.  Rendering using Rstudio is better as it saves png files, which are smaller. I am asking for help on Hutch Slack. In the meantime, if I find I'm getting svg files that are too big, I think I need to render using Rstudio 'knit' button. Maybe [this page](https://stackoverflow.com/questions/79077248/rmarkdown-figures-render-as-html-instead-of-svg-after-recent-change) has an idea of why? (pandoc versions?)
+(there are also links to those scripts in `~/bin`)
 
+Demo script and output, in `useful_functions/knit_using_shellScript`.
+
+By default, if I render that way, plot images are saved as svg files, and those can be too big to sync to github.  Rendering using Rstudio saves png files, which are smaller. Dan Tenenbaum told me how to fix that, by adding this code in my Rmd doc:
+```{r setup, include=FALSE}
+ragg_png = function(..., res = 192) {
+  ragg::agg_png(..., res = res, units = "in")
+}
+knitr::opts_chunk$set(dev = "ragg_png", fig.ext = "png")
+```
+
+I put those code lines in a (hidden) file called `~/.ragg_png_functions_from_dan.R` (also linked in an unhidden way, at `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript/ragg_png_functions_from_dan.R`).
+
+I will source that from `.Rprofile` (global on rhino, and local if there is one), and then I shouldn't need to include it in my code.  Not putting in my Mac global for now - don't think it's relevant.
+
+```
+source("/home/jayoung/.ragg_png_functions_from_dan.R")
+```
+
+#### other notes about render from command line
 
 Alternatives:
 

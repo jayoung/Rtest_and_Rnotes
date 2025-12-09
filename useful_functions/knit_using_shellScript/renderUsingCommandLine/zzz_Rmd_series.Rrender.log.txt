@@ -1,0 +1,6 @@
+running command:
+sbatch --job-name=Rmd -t 3-0 --cpus-per-task=4 --wrap="bash ./zzz_Rmd_series.Rrender.sh 2>&1 >> zzz_Rmd_series.Rrender.log.txt"
+
+Running script script_to_knit_without_raggChunk.Rmd
+  SUCCEEDED
+All scripts ran OK

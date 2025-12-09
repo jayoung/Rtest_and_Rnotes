@@ -1,0 +1,7 @@
+Reading /home/jayoung/.Rprofile
+1/4                  
+2/4 [mtcars plot]    
+3/4                  
+4/4 [unnamed-chunk-1]
+/app/software/Pandoc/2.13/bin/pandoc +RTS -K512m -RTS script_to_knit_without_raggChunk.knit.md --to gfm+tex_math_dollars-yaml_metadata_block --from markdown+autolink_bare_uris+tex_math_single_backslash --output script_to_knit_without_raggChunk.md --template /app/software/R/4.4.1-gfbf-2023b/lib/R/library/rmarkdown/rmarkdown/templates/github_document/resources/default.md 
+/app/software/Pandoc/2.13/bin/pandoc +RTS -K512m -RTS script_to_knit_without_raggChunk.md --to html4 --from gfm+tex_math_dollars --output script_to_knit_without_raggChunk.html --self-contained --highlight-style pygments --template /app/software/R/4.4.1-gfbf-2023b/lib/R/library/rmarkdown/rmarkdown/templates/github_document/resources/preview.html --variable 'github-markdown-css:/app/software/R/4.4.1-gfbf-2023b/lib/R/library/rmarkdown/rmarkdown/templates/github_document/resources/github.css' --metadata pagetitle=PREVIEW --mathjax 

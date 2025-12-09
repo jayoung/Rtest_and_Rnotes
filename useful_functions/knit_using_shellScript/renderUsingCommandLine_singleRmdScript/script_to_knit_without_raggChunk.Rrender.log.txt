@@ -1,0 +1,3 @@
+running command:
+sbatch --job-name=Rmd -t 3-0 --cpus-per-task=4 --wrap="bash ./script_to_knit_without_raggChunk.Rrender.sh 2>&1 >> script_to_knit_without_raggChunk.Rrender.log.txt"
+

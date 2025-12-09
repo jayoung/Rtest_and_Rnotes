@@ -1,0 +1,9 @@
+
+
+processing file: script_to_knit_without_raggChunk.Rmd
+output file: script_to_knit_without_raggChunk.knit.md
+
+
+Preview created: script_to_knit_without_raggChunk.html
+
+Output created: script_to_knit_without_raggChunk.md

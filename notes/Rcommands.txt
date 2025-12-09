@@ -49,7 +49,7 @@ library("gtools")
  .libPaths(/home/btrask/traskdata/lib_linux/R)
 (to add private library path in linux)
 
-.Rprofile gets read when I start up R, so I can put functions I use regularly in there.
+`.Rprofile` gets read when I start up R, so I can put functions/options I use regularly in there.  If there's one in the project directory (local), that one will be read. If not, it'll look for one in `~` (global).  If you want to load BOTH local and global `.Rprofile` files, you need to include a line in the local file that looks something like this: `source("/home/jayoung/.Rprofile")`.  
 
 Now I have aliases 
 R = R for Bioconductor-release packages

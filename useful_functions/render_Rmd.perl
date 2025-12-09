@@ -3,7 +3,9 @@ use warnings;
 use strict;
 use Getopt::Long;
 
-####### render_Rmd.perl my_script_1.Rmd my_script_1.Rmd
+####### render_Rmd.perl my_script_1.Rmd my_script_2.Rmd
+## runs those scripts in parallel (i.e. they are not a linked series)
+
 
 my $R_module = "fhR/4.4.1-foss-2023b-R-4.4.1";
 my $pandoc_module = "Pandoc/2.13";

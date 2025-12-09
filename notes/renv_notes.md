@@ -123,6 +123,11 @@ Each time we have a version of the code that works well, we should "lock" that s
 - call `renv::snapshot()` to record the latest package versions in your lockfile.
 - git add/commit/push to commit the lockfile
 
+Maybe I want to add this line to each project-specific `.Rprofile` file, so that I can render Rmd scripts from the command line (using `render_Rmd_series.perl`) making sure plots get saved as png not svg:
+```
+source("/home/jayoung/.ragg_png_functions_from_dan.R")
+```
+Even better I would copy that file somewhere within the project so that it's more self-contained.
 
 
 ### Mac paths
