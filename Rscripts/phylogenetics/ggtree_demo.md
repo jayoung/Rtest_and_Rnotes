@@ -2,7 +2,7 @@ ggtree_demo
 ================
 Janet Young
 
-2025-12-02
+2025-12-08
 
 The rendered version of this Rmd script is
 [here](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/phylogenetics/ggtree_demo.md).
@@ -88,19 +88,19 @@ nwk_tree_tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A            80.6 teeth          scales         
-    ##  2 B           137.  teeth          scales         
-    ##  3 C            56.7 teeth          scales         
-    ##  4 D            95.4 tail           fur            
-    ##  5 E            54.3 teeth          fur            
-    ##  6 F           141.  tail           spikes         
-    ##  7 G            80.4 tail           scales         
-    ##  8 H           104.  teeth          scales         
-    ##  9 I           105.  nose           scales         
-    ## 10 J            41.4 nose           scales         
-    ## 11 K           116.  teeth          fur            
-    ## 12 L           118.  teeth          spikes         
-    ## 13 M           111.  tail           spikes
+    ##  1 A           128.  teeth          spikes         
+    ##  2 B            83.2 nose           scales         
+    ##  3 C           159.  teeth          spikes         
+    ##  4 D           107.  teeth          fur            
+    ##  5 E           104.  nose           scales         
+    ##  6 F            82.1 tail           scales         
+    ##  7 G            69.6 tail           spikes         
+    ##  8 H           132.  teeth          fur            
+    ##  9 I           148.  teeth          scales         
+    ## 10 J            92.1 teeth          fur            
+    ## 11 K            88.8 tail           scales         
+    ## 12 L           106.  tail           scales         
+    ## 13 M            66.5 tail           fur
 
 ## Combine tree and tbl
 
@@ -126,7 +126,8 @@ ALTERNATIVE - I wrote a function to do these checks, called
 `addInfoToTree` - it’s in the [`phylogenetic_tree_functions.R`
 file](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/useful_functions/phylogenetic_tree_functions.R)
 
-If you want to UPDATE the info later, see below…. xxxx
+If you want to UPDATE the info later, see
+[below](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/phylogenetics/ggtree_demo.md#turning-a-tibble-back-into-a-tree)
 
 Demo using left_join:
 
@@ -161,16 +162,16 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE         80.6 teeth          scales         
-    ##  2     2 B     TRUE        137.  teeth          scales         
-    ##  3     3 C     TRUE         56.7 teeth          scales         
-    ##  4     4 D     TRUE         95.4 tail           fur            
-    ##  5     5 E     TRUE         54.3 teeth          fur            
-    ##  6     6 F     TRUE        141.  tail           spikes         
-    ##  7     7 G     TRUE         80.4 tail           scales         
-    ##  8     8 H     TRUE        104.  teeth          scales         
-    ##  9     9 I     TRUE        105.  nose           scales         
-    ## 10    10 J     TRUE         41.4 nose           scales         
+    ##  1     1 A     TRUE        128.  teeth          spikes         
+    ##  2     2 B     TRUE         83.2 nose           scales         
+    ##  3     3 C     TRUE        159.  teeth          spikes         
+    ##  4     4 D     TRUE        107.  teeth          fur            
+    ##  5     5 E     TRUE        104.  nose           scales         
+    ##  6     6 F     TRUE         82.1 tail           scales         
+    ##  7     7 G     TRUE         69.6 tail           spikes         
+    ##  8     8 H     TRUE        132.  teeth          fur            
+    ##  9     9 I     TRUE        148.  teeth          scales         
+    ## 10    10 J     TRUE         92.1 teeth          fur            
     ## # ℹ 15 more rows
 
 Demo using `addInfoToTree` (by default it looks for the tip labels in
@@ -212,16 +213,16 @@ nwk_tree_with_info_2
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE         80.6 teeth          scales         
-    ##  2     2 B     TRUE        137.  teeth          scales         
-    ##  3     3 C     TRUE         56.7 teeth          scales         
-    ##  4     4 D     TRUE         95.4 tail           fur            
-    ##  5     5 E     TRUE         54.3 teeth          fur            
-    ##  6     6 F     TRUE        141.  tail           spikes         
-    ##  7     7 G     TRUE         80.4 tail           scales         
-    ##  8     8 H     TRUE        104.  teeth          scales         
-    ##  9     9 I     TRUE        105.  nose           scales         
-    ## 10    10 J     TRUE         41.4 nose           scales         
+    ##  1     1 A     TRUE        128.  teeth          spikes         
+    ##  2     2 B     TRUE         83.2 nose           scales         
+    ##  3     3 C     TRUE        159.  teeth          spikes         
+    ##  4     4 D     TRUE        107.  teeth          fur            
+    ##  5     5 E     TRUE        104.  nose           scales         
+    ##  6     6 F     TRUE         82.1 tail           scales         
+    ##  7     7 G     TRUE         69.6 tail           spikes         
+    ##  8     8 H     TRUE        132.  teeth          fur            
+    ##  9     9 I     TRUE        148.  teeth          scales         
+    ## 10    10 J     TRUE         92.1 teeth          fur            
     ## # ℹ 15 more rows
 
 ## Manipulating info tibble in treedata objects
@@ -263,16 +264,16 @@ as_tibble(nwk_tree_with_info_2)
     ## # via as.treedata or as.phylo
     ##    parent  node branch.length label fake_height fake_phenotype fake_phenotype2
     ##     <int> <int>         <dbl> <chr>       <dbl> <chr>          <chr>          
-    ##  1     20     1             4 A            80.6 teeth          scales         
-    ##  2     20     2             4 B           137.  teeth          scales         
-    ##  3     19     3             5 C            56.7 teeth          scales         
-    ##  4     18     4             6 D            95.4 tail           fur            
-    ##  5     17     5            21 E            54.3 teeth          fur            
-    ##  6     22     6             4 F           141.  tail           spikes         
-    ##  7     22     7            12 G            80.4 tail           scales         
-    ##  8     21     8             8 H           104.  teeth          scales         
-    ##  9     24     9             5 I           105.  nose           scales         
-    ## 10     24    10             2 J            41.4 nose           scales         
+    ##  1     20     1             4 A           128.  teeth          spikes         
+    ##  2     20     2             4 B            83.2 nose           scales         
+    ##  3     19     3             5 C           159.  teeth          spikes         
+    ##  4     18     4             6 D           107.  teeth          fur            
+    ##  5     17     5            21 E           104.  nose           scales         
+    ##  6     22     6             4 F            82.1 tail           scales         
+    ##  7     22     7            12 G            69.6 tail           spikes         
+    ##  8     21     8             8 H           132.  teeth          fur            
+    ##  9     24     9             5 I           148.  teeth          scales         
+    ## 10     24    10             2 J            92.1 teeth          fur            
     ## # ℹ 15 more rows
 
 We can also directly access extraInfo, but that doesn’t contain a column
@@ -286,16 +287,16 @@ nwk_tree_with_info_2@extraInfo
     ## # A tibble: 25 × 4
     ##     node fake_height fake_phenotype fake_phenotype2
     ##    <int>       <dbl> <chr>          <chr>          
-    ##  1     1        80.6 teeth          scales         
-    ##  2     2       137.  teeth          scales         
-    ##  3     3        56.7 teeth          scales         
-    ##  4     4        95.4 tail           fur            
-    ##  5     5        54.3 teeth          fur            
-    ##  6     6       141.  tail           spikes         
-    ##  7     7        80.4 tail           scales         
-    ##  8     8       104.  teeth          scales         
-    ##  9     9       105.  nose           scales         
-    ## 10    10        41.4 nose           scales         
+    ##  1     1       128.  teeth          spikes         
+    ##  2     2        83.2 nose           scales         
+    ##  3     3       159.  teeth          spikes         
+    ##  4     4       107.  teeth          fur            
+    ##  5     5       104.  nose           scales         
+    ##  6     6        82.1 tail           scales         
+    ##  7     7        69.6 tail           spikes         
+    ##  8     8       132.  teeth          fur            
+    ##  9     9       148.  teeth          scales         
+    ## 10    10        92.1 teeth          fur            
     ## # ℹ 15 more rows
 
 ## Plot tree with annotations
@@ -596,7 +597,7 @@ ggtree(tr) +
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
-## Turning a tibble back into a tree
+# Turning a tibble back into a tree
 
 Sometimes we take a tree, use `as_tibble()` (it becomes a `tbl_tree`
 object), do a bunch of manipulation (maybe it becomes a classic `tibble`

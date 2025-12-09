@@ -88,7 +88,7 @@ Advice:
 ALTERNATIVE - I wrote a function to do these checks, called `addInfoToTree` - it's in the [`phylogenetic_tree_functions.R` file](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/useful_functions/phylogenetic_tree_functions.R)
 
 
-If you want to UPDATE the info later, see below.... xxxx
+If you want to UPDATE the info later, see [below](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/phylogenetics/ggtree_demo.md#turning-a-tibble-back-into-a-tree)
 
 Demo using left_join:
 
@@ -400,7 +400,7 @@ ggtree(tr) +
 
 
 
-## Turning a tibble back into a tree
+# Turning a tibble back into a tree
 
 Sometimes we take a tree, use `as_tibble()` (it becomes a `tbl_tree` object), do a bunch of manipulation (maybe it becomes a classic `tibble` object).  
 
