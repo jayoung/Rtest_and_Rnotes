@@ -570,7 +570,7 @@ nwk_tree %>%
 ```
 
 
-But For equal_angle (and daylight) we have to use the `angle` parameter created under the hood when ggtree runs (thank you to Brad Jones for the [solution](https://github.com/YuLab-SMU/ggtree/issues/687))
+But for equal_angle (and daylight) we have to use the `angle` parameter created under the hood when ggtree runs (thank you to Brad Jones for the [solution](https://github.com/YuLab-SMU/ggtree/issues/687))
 
 ```{r}
 nwk_tree %>% 
