@@ -190,6 +190,9 @@ Easiest way: on gizmo/rhino:
 
 - `~/bin/render_Rmd_series.perl` is a generic perl script that will take the name of several Rmd scripts as input, and make and run an sbatch script to render the report for each, one after the other, stopping if any of them fail (scripts are in a linked series).
 
+Downside - if I render that way, plot images are saved as svg files, and those can be too big to sync to github.  Rendering using Rstudio is better as it saves png files, which are smaller. I am asking for help on Hutch Slack. In the meantime, if I find I'm getting svg files that are too big, I think I need to render using Rstudio 'knit' button. Maybe [this page](https://stackoverflow.com/questions/79077248/rmarkdown-figures-render-as-html-instead-of-svg-after-recent-change) has an idea of why? (pandoc versions?)
+
+
 Alternatives:
 
 On my mac:
