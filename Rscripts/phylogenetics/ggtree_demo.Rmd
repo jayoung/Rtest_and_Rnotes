@@ -555,6 +555,32 @@ ggtree_plots_unrooted[["daylight"]] + labs(title="Unrooted daylight")) +
     plot_annotation(caption="Red dot = MRCA of all tips")
 ```
 
+
+
+# Adjusting position of geom_tippoint symbols
+
+For most tree layouts we do it like this: `geom_tippoint(aes(x=x+3))`.   That works fine with default layout (and fan, circular).
+
+```{r}
+nwk_tree %>% 
+    ggtree() + 
+    geom_tippoint(color="blue") +
+    geom_tippoint(aes(x=x+3), color="red") +
+    geom_treescale()
+```
+
+
+But For equal_angle (and daylight) we have to use the `angle` parameter created under the hood when ggtree runs (thank you to Brad Jones for the [solution](https://github.com/YuLab-SMU/ggtree/issues/687))
+
+```{r}
+nwk_tree %>% 
+    ggtree(layout="equal_angle") + 
+    geom_tippoint(color="blue") +
+    geom_tippoint(aes(x=x+cos(angle*pi/180)*3, 
+                      y=y+sin(angle*pi/180)*3), 
+                  color="red") 
+```
+
 # Finished
 
 ```{r}

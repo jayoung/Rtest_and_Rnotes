@@ -30,74 +30,7 @@ library(TDbook)
 
 
 
-# geom_tippoint and position / offset
 
-```{r}
-
-nwk_file <- system.file("extdata/sample.nwk", package="treeio") 
-nwk_tree <- read.tree( nwk_file )
-
-
-num_taxa <- length(nwk_tree$tip.label)
-nwk_tree_tip_dat <- tibble( taxon=nwk_tree$tip.label,
-                            fake_height= rnorm(n=num_taxa, mean=100, sd=30 ),
-                            fake_phenotype= sample( c("teeth","nose","tail"), 
-                                                    size=num_taxa, replace=TRUE ),
-                            fake_phenotype2=sample( c("fur","scales","spikes"), 
-                                                    size=num_taxa, replace=TRUE ) )
-
-nwk_tree_with_info <- left_join(nwk_tree, nwk_tree_tip_dat, by=c("label"="taxon"))
-
-```
-
-
-add 3 works fine with default layout
-
-```{r}
-nwk_tree_with_info %>% 
-    ggtree() + 
-    geom_tippoint(color="blue") +
-    geom_tippoint(aes(x=x+3), color="red") +
-    geom_treescale()
-```
-
-Question - how does position argument to geom_tippoint work? It would be e.g. position=position_jitter()
-
-add 3 works fine with circular layout
-
-```{r}
-nwk_tree_with_info %>% 
-    ggtree(layout="circular") + 
-    geom_tippoint(color="blue") +
-    geom_tippoint(aes(x=x+3), color="red") 
-```
-
-
-add 3 works fine with fan layout
-
-```{r}
-nwk_tree_with_info %>% 
-    ggtree(layout="fan") + 
-    geom_tippoint(color="blue") +
-    geom_tippoint(aes(x=x+3), color="red") 
-```
-NOT with equal angle
-
-```{r}
-nwk_tree_with_info %>% 
-    ggtree(layout="equal_angle") + 
-    geom_tippoint(color="blue") +
-    geom_tippoint(aes(x=x+3), color="red") 
-```
-
-NOT with daylight
-
-```{r}
-nwk_tree_with_info %>% 
-    ggtree(layout="daylight") + 
-    geom_tippoint(color="blue") +
-    geom_tippoint(aes(x=x+3), color="red") 
-```
 
 
 # other stuff

@@ -88,19 +88,19 @@ nwk_tree_tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A           128.  teeth          spikes         
-    ##  2 B            83.2 nose           scales         
-    ##  3 C           159.  teeth          spikes         
-    ##  4 D           107.  teeth          fur            
-    ##  5 E           104.  nose           scales         
-    ##  6 F            82.1 tail           scales         
-    ##  7 G            69.6 tail           spikes         
-    ##  8 H           132.  teeth          fur            
-    ##  9 I           148.  teeth          scales         
-    ## 10 J            92.1 teeth          fur            
-    ## 11 K            88.8 tail           scales         
-    ## 12 L           106.  tail           scales         
-    ## 13 M            66.5 tail           fur
+    ##  1 A           112.  teeth          scales         
+    ##  2 B           118.  tail           scales         
+    ##  3 C            83.9 teeth          spikes         
+    ##  4 D            98.5 nose           scales         
+    ##  5 E           131.  tail           fur            
+    ##  6 F           124.  nose           scales         
+    ##  7 G           119.  tail           scales         
+    ##  8 H           135.  nose           scales         
+    ##  9 I           136.  nose           scales         
+    ## 10 J           152.  nose           spikes         
+    ## 11 K            94.4 teeth          scales         
+    ## 12 L           123.  nose           scales         
+    ## 13 M            55.8 teeth          fur
 
 ## Combine tree and tbl
 
@@ -162,16 +162,16 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE        128.  teeth          spikes         
-    ##  2     2 B     TRUE         83.2 nose           scales         
-    ##  3     3 C     TRUE        159.  teeth          spikes         
-    ##  4     4 D     TRUE        107.  teeth          fur            
-    ##  5     5 E     TRUE        104.  nose           scales         
-    ##  6     6 F     TRUE         82.1 tail           scales         
-    ##  7     7 G     TRUE         69.6 tail           spikes         
-    ##  8     8 H     TRUE        132.  teeth          fur            
-    ##  9     9 I     TRUE        148.  teeth          scales         
-    ## 10    10 J     TRUE         92.1 teeth          fur            
+    ##  1     1 A     TRUE        112.  teeth          scales         
+    ##  2     2 B     TRUE        118.  tail           scales         
+    ##  3     3 C     TRUE         83.9 teeth          spikes         
+    ##  4     4 D     TRUE         98.5 nose           scales         
+    ##  5     5 E     TRUE        131.  tail           fur            
+    ##  6     6 F     TRUE        124.  nose           scales         
+    ##  7     7 G     TRUE        119.  tail           scales         
+    ##  8     8 H     TRUE        135.  nose           scales         
+    ##  9     9 I     TRUE        136.  nose           scales         
+    ## 10    10 J     TRUE        152.  nose           spikes         
     ## # ℹ 15 more rows
 
 Demo using `addInfoToTree` (by default it looks for the tip labels in
@@ -213,16 +213,16 @@ nwk_tree_with_info_2
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE        128.  teeth          spikes         
-    ##  2     2 B     TRUE         83.2 nose           scales         
-    ##  3     3 C     TRUE        159.  teeth          spikes         
-    ##  4     4 D     TRUE        107.  teeth          fur            
-    ##  5     5 E     TRUE        104.  nose           scales         
-    ##  6     6 F     TRUE         82.1 tail           scales         
-    ##  7     7 G     TRUE         69.6 tail           spikes         
-    ##  8     8 H     TRUE        132.  teeth          fur            
-    ##  9     9 I     TRUE        148.  teeth          scales         
-    ## 10    10 J     TRUE         92.1 teeth          fur            
+    ##  1     1 A     TRUE        112.  teeth          scales         
+    ##  2     2 B     TRUE        118.  tail           scales         
+    ##  3     3 C     TRUE         83.9 teeth          spikes         
+    ##  4     4 D     TRUE         98.5 nose           scales         
+    ##  5     5 E     TRUE        131.  tail           fur            
+    ##  6     6 F     TRUE        124.  nose           scales         
+    ##  7     7 G     TRUE        119.  tail           scales         
+    ##  8     8 H     TRUE        135.  nose           scales         
+    ##  9     9 I     TRUE        136.  nose           scales         
+    ## 10    10 J     TRUE        152.  nose           spikes         
     ## # ℹ 15 more rows
 
 ## Manipulating info tibble in treedata objects
@@ -264,16 +264,16 @@ as_tibble(nwk_tree_with_info_2)
     ## # via as.treedata or as.phylo
     ##    parent  node branch.length label fake_height fake_phenotype fake_phenotype2
     ##     <int> <int>         <dbl> <chr>       <dbl> <chr>          <chr>          
-    ##  1     20     1             4 A           128.  teeth          spikes         
-    ##  2     20     2             4 B            83.2 nose           scales         
-    ##  3     19     3             5 C           159.  teeth          spikes         
-    ##  4     18     4             6 D           107.  teeth          fur            
-    ##  5     17     5            21 E           104.  nose           scales         
-    ##  6     22     6             4 F            82.1 tail           scales         
-    ##  7     22     7            12 G            69.6 tail           spikes         
-    ##  8     21     8             8 H           132.  teeth          fur            
-    ##  9     24     9             5 I           148.  teeth          scales         
-    ## 10     24    10             2 J            92.1 teeth          fur            
+    ##  1     20     1             4 A           112.  teeth          scales         
+    ##  2     20     2             4 B           118.  tail           scales         
+    ##  3     19     3             5 C            83.9 teeth          spikes         
+    ##  4     18     4             6 D            98.5 nose           scales         
+    ##  5     17     5            21 E           131.  tail           fur            
+    ##  6     22     6             4 F           124.  nose           scales         
+    ##  7     22     7            12 G           119.  tail           scales         
+    ##  8     21     8             8 H           135.  nose           scales         
+    ##  9     24     9             5 I           136.  nose           scales         
+    ## 10     24    10             2 J           152.  nose           spikes         
     ## # ℹ 15 more rows
 
 We can also directly access extraInfo, but that doesn’t contain a column
@@ -287,16 +287,16 @@ nwk_tree_with_info_2@extraInfo
     ## # A tibble: 25 × 4
     ##     node fake_height fake_phenotype fake_phenotype2
     ##    <int>       <dbl> <chr>          <chr>          
-    ##  1     1       128.  teeth          spikes         
-    ##  2     2        83.2 nose           scales         
-    ##  3     3       159.  teeth          spikes         
-    ##  4     4       107.  teeth          fur            
-    ##  5     5       104.  nose           scales         
-    ##  6     6        82.1 tail           scales         
-    ##  7     7        69.6 tail           spikes         
-    ##  8     8       132.  teeth          fur            
-    ##  9     9       148.  teeth          scales         
-    ## 10    10        92.1 teeth          fur            
+    ##  1     1       112.  teeth          scales         
+    ##  2     2       118.  tail           scales         
+    ##  3     3        83.9 teeth          spikes         
+    ##  4     4        98.5 nose           scales         
+    ##  5     5       131.  tail           fur            
+    ##  6     6       124.  nose           scales         
+    ##  7     7       119.  tail           scales         
+    ##  8     8       135.  nose           scales         
+    ##  9     9       136.  nose           scales         
+    ## 10    10       152.  nose           spikes         
     ## # ℹ 15 more rows
 
 ## Plot tree with annotations
@@ -776,6 +776,36 @@ ggtree_plots_unrooted[["daylight"]] + labs(title="Unrooted daylight")) +
 ```
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+
+# Adjusting position of geom_tippoint symbols
+
+For most tree layouts we do it like this: `geom_tippoint(aes(x=x+3))`.
+That works fine with default layout (and fan, circular).
+
+``` r
+nwk_tree %>% 
+    ggtree() + 
+    geom_tippoint(color="blue") +
+    geom_tippoint(aes(x=x+3), color="red") +
+    geom_treescale()
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+
+But For equal_angle (and daylight) we have to use the `angle` parameter
+created under the hood when ggtree runs (thank you to Brad Jones for the
+[solution](https://github.com/YuLab-SMU/ggtree/issues/687))
+
+``` r
+nwk_tree %>% 
+    ggtree(layout="equal_angle") + 
+    geom_tippoint(color="blue") +
+    geom_tippoint(aes(x=x+cos(angle*pi/180)*3, 
+                      y=y+sin(angle*pi/180)*3), 
+                  color="red") 
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
 # Finished
 
