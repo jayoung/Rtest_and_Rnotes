@@ -210,6 +210,8 @@ I will source that from `.Rprofile` (global on rhino, and local if there is one)
 source("/home/jayoung/.ragg_png_functions_from_dan.R")
 ```
 
+See also advice on ["Two Hidden Ways to Set Global Chunk Options for knitr"](https://yihui.org/en/2023/10/opts-chunk/).
+
 #### other notes about render from command line
 
 Alternatives:

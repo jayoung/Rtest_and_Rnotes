@@ -2,7 +2,7 @@ Jensen-Shannon distance calculations
 ================
 Janet Young
 
-2024-09-23
+2025-12-09
 
 Goal - show how to calculate Jensen-Shannon divergence between two
 (aligned) alignments at each position
@@ -28,7 +28,7 @@ from, and split the single master alignment into 5 individual
 alignments, one for each H2A variant.
 
 ``` r
-aln_file <- "exampleProtAln_shortH2As_histoneFoldDomain.fa"
+aln_file <- "example_alignment_files/exampleProtAln_shortH2As_histoneFoldDomain.fa"
 
 masterAln <- readAAStringSet(aln_file)
 # simplify the sequence names by removing the description
@@ -155,7 +155,6 @@ checkAlnLengths <- function(aln) {
     } 
 }
 
-
 ## define the letters we want to count
 # AA_STANDARD is defined in the Biostrings package and includes the usual 20 amino acids. I want to add the gap character ("-")
 myAAtoTabulate <- c("-", AA_STANDARD)
@@ -165,7 +164,7 @@ getAlnCounts <- function(aln, letters=myAAtoTabulate, as.prob=FALSE) {
     # check for ragged alns (seqs not all the same length)
     checkAlnLengths(aln)
     
-    # get counts
+    ## for each sequence, get matrix of 0 and 1 representing the letter at each position. Returns a list of matrices, one for each input seq, with num_rows= num aln positions, and num_columns=21 (- plus each AA)  
     countsEachSeq <- lapply(1:length(aln), function(i) {
         letterFrequencyInSlidingView(aln[[i]], view.width = 1, letters=letters)
     })
@@ -174,7 +173,24 @@ getAlnCounts <- function(aln, letters=myAAtoTabulate, as.prob=FALSE) {
     expectedTotals <- width(aln)[1]
     totalCountsEachSeq <- sapply(countsEachSeq, sum)
     if ( sum(totalCountsEachSeq != expectedTotals) > 0) {
-        stop("\n\nERROR - the total counts didn't add up correctly. Are there letters in the alignment that are not present in the letters argument you supplied?\n\n")
+        ## generate an informative error message:
+        problem_seqs <- which(totalCountsEachSeq != expectedTotals)
+        problem_seq_letters <- aln[problem_seqs] %>% 
+            as.character() %>% 
+            strsplit(split="")
+        problem_seq_letters <- lapply(problem_seq_letters, function(x) {
+            setdiff(x, myAAtoTabulate) %>% 
+                unique() %>% 
+                paste0()
+        }) %>% 
+            paste(collapse=",")
+        err_msg <- paste0("\n\nERROR - the total counts didn't add up correctly.\n",
+                          "These sequences contain unexpected letters: " , 
+                          paste(problem_seqs, collapse=","),
+                          "\nAnd those letters are: ",
+                          problem_seq_letters,
+                          "\n\n")
+        stop(err_msg)
     }
     
     # get total counts by position - the Reduce function takes a list object and uses the specified function on all the elements
@@ -326,13 +342,13 @@ show R version used, and package versions
 sessionInfo()
 ```
 
-    ## R version 4.4.0 (2024-04-24)
-    ## Platform: x86_64-apple-darwin20
-    ## Running under: macOS Ventura 13.7
+    ## R version 4.5.2 (2025-10-31)
+    ## Platform: aarch64-apple-darwin20
+    ## Running under: macOS Tahoe 26.1
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRblas.0.dylib 
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+    ## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     ## 
     ## locale:
     ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -345,26 +361,24 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] entropy_1.3.1       Biostrings_2.72.1   GenomeInfoDb_1.40.1
-    ##  [4] XVector_0.44.0      IRanges_2.38.0      S4Vectors_0.42.0   
-    ##  [7] BiocGenerics_0.50.0 lubridate_1.9.3     forcats_1.0.0      
-    ## [10] stringr_1.5.1       dplyr_1.1.4         purrr_1.0.2        
-    ## [13] readr_2.1.5         tidyr_1.3.1         tibble_3.2.1       
-    ## [16] ggplot2_3.5.1       tidyverse_2.0.0    
+    ##  [1] entropy_1.3.2       Biostrings_2.76.0   GenomeInfoDb_1.44.1
+    ##  [4] XVector_0.48.0      IRanges_2.42.0      S4Vectors_0.46.0   
+    ##  [7] BiocGenerics_0.54.0 generics_0.1.4      lubridate_1.9.4    
+    ## [10] forcats_1.0.0       stringr_1.5.2       dplyr_1.1.4        
+    ## [13] purrr_1.1.0         readr_2.1.5         tidyr_1.3.1        
+    ## [16] tibble_3.3.0        ggplot2_3.5.2       tidyverse_2.0.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] utf8_1.2.4              generics_0.1.3          stringi_1.8.4          
-    ##  [4] hms_1.1.3               digest_0.6.36           magrittr_2.0.3         
-    ##  [7] evaluate_0.24.0         grid_4.4.0              timechange_0.3.0       
-    ## [10] fastmap_1.2.0           jsonlite_1.8.8          httr_1.4.7             
-    ## [13] fansi_1.0.6             UCSC.utils_1.0.0        scales_1.3.0           
-    ## [16] cli_3.6.3               crayon_1.5.3            rlang_1.1.4            
-    ## [19] munsell_0.5.1           withr_3.0.0             yaml_2.3.8             
-    ## [22] tools_4.4.0             tzdb_0.4.0              colorspace_2.1-0       
-    ## [25] GenomeInfoDbData_1.2.12 vctrs_0.6.5             R6_2.5.1               
-    ## [28] lifecycle_1.0.4         zlibbioc_1.50.0         pkgconfig_2.0.3        
-    ## [31] pillar_1.9.0            gtable_0.3.5            glue_1.7.0             
-    ## [34] highr_0.11              xfun_0.45               tidyselect_1.2.1       
-    ## [37] rstudioapi_0.16.0       knitr_1.47              farver_2.1.2           
-    ## [40] htmltools_0.5.8.1       labeling_0.4.3          rmarkdown_2.27         
-    ## [43] compiler_4.4.0
+    ##  [1] stringi_1.8.7           hms_1.1.3               digest_0.6.37          
+    ##  [4] magrittr_2.0.4          evaluate_1.0.5          grid_4.5.2             
+    ##  [7] timechange_0.3.0        RColorBrewer_1.1-3      fastmap_1.2.0          
+    ## [10] jsonlite_2.0.0          httr_1.4.7              UCSC.utils_1.4.0       
+    ## [13] scales_1.4.0            cli_3.6.5               rlang_1.1.6            
+    ## [16] crayon_1.5.3            withr_3.0.2             yaml_2.3.10            
+    ## [19] tools_4.5.2             tzdb_0.5.0              GenomeInfoDbData_1.2.14
+    ## [22] vctrs_0.6.5             R6_2.6.1                lifecycle_1.0.4        
+    ## [25] pkgconfig_2.0.3         pillar_1.11.1           gtable_0.3.6           
+    ## [28] glue_1.8.0              xfun_0.53               tidyselect_1.2.1       
+    ## [31] rstudioapi_0.17.1       knitr_1.50              farver_2.1.2           
+    ## [34] htmltools_0.5.8.1       labeling_0.4.3          rmarkdown_2.29         
+    ## [37] compiler_4.5.2
