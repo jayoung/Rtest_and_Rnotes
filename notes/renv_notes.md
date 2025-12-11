@@ -6,31 +6,29 @@ When you use Rstudio to initialize a new project you can tell it to (a) use `ren
 
 When you start a fresh project using `renv` it doesn't see ANY of the packages we installed system-wide.
 
-## TO DO list
 
-Read the resources
+Example repo where I used `renv`: [test_Rpackage_versions](https://github.com/jayoung/test_Rpackage_versions). Cloned on my work laptop in `/Users/jayoung/Documents/local_files/Rprojects/test_Rpackage_versions`.
 
-Questions:
-- should I be recording something like a snapshot ID or git commit ID, when I have working code, before I change package versions?   Right now I'm treating the snapshots anonymously
+## Remaining questions 
+
+Should I be recording something like a snapshot ID or git commit ID, when I have working code, before I change package versions?   Right now I would probably treat the snapshots anonymously, and I might not know at which point the code broke. For larger projects, should I rerun all the code before I do a renv snapshot, to avoid capturing a setup that doesn't work?
 
 ## renv resources
 
-[renv documentation site](https://rstudio.github.io/renv/)
+[`renv` documentation site](https://rstudio.github.io/renv/)
 
 [Introduction to renv](https://rstudio.github.io/renv/articles/renv.html)
 
+This [blog post from Erik Gahner](https://erikgahner.dk/2025/using-renv-in-r/) is a nice summary of why and how to use `renv`.
+
 Using `renv` with [Bioconductor](https://rstudio.github.io/renv/articles/bioconductor.html)
+
+Not very useful - [How to Use {renv} and Bioconductor for Reproducible Data Analysis](https://www.appsilon.com/post/renv-bioconductor)
 
 [Posit guide](https://docs.posit.co/ide/user/ide/guide/environments/r/renv.html) to renv
 
-https://erikgahner.dk/2025/using-renv-in-r/
+Longer `renv` [tutorial](https://lmu-osc.github.io/introduction-to-renv/)
 
-https://carlosivanrodriguez.com/how-to/setup_renv.html
-
-https://lmu-osc.github.io/introduction-to-renv/
-
-
-Example repo where I used `renv`: [test_Rpackage_versions](https://github.com/jayoung/test_Rpackage_versions)
 
 ## How to use renv
 
@@ -41,6 +39,12 @@ Don't use the Rstudio way, because I want to specify that we are using Bioconduc
 ```
 library("renv")
 renv::init(bioconductor = "3.22")
+```
+
+Now, the Bioconductor repos will be available when we run `install.packages()`, and we no longer use the BiocManager::install method:
+
+```
+getOption("repos")
 ```
 
 Status is useful:
@@ -106,16 +110,28 @@ Restoring to older versions can also be done - see `renv::history()` and `renv::
 
 ## Specific notes on use
 
+### Some random notes
+
+`renv` tracks what version of R you're using but it does NOT manage it (because it runs inside R).  Likewise, it doesn't track pandoc versions, which can affect how Rmd docs are rendered. Same for which computer OS etc. Docker (or similar) would be the way to manage any of those things.
+
+After switching to a different version of R, we usually need to restore the project, because it keeps different copies of the packages for each version of R.
+
+If we want to use a different version of R for different projects, we could use `rswitch` or `rig` tools.
+
+For very large projects, `renv` can get slow, because it periodically scans the entire folder structure for package dependencies.  If that happens, you can [add a `.renvignore` file](https://carlosivanrodriguez.com/how-to/setup_renv.html#configure-.renvignore) to help it avoid looking in irrelevant places (e.g. in large pdfs, Word docs)
+
+`renv::upgrade` and `renv::update` are different. `upgrade` upgrades the `renv` package to the newest version. `update` updates all the packages in the project to their newest versions.
+
 
 ### Bioconductor
 
 Bioconductor advice [here](https://rstudio.github.io/renv/articles/bioconductor.html).
 
-We initialize `renv` in a different way.
+We initialize `renv` in a different way if we think we'll want to use Bioconductor, and it adds the Bioc repositories to places to look for packages.
 
 ### Recommended habits
 
-When I start a new project, I'll use renv, although I'll initialize from command-line NOT from Rstudio (so I can specify NBioconductor use).  
+When I start a new project, I'll use renv, although I'll initialize from command-line NOT from Rstudio (so I can specify Bioconductor use).  
 
 I'll start with the most recent version of R and packages that I can. Perhaps I also run `update.packages()` ASAP.
 
