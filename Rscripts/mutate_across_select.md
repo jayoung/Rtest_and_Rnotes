@@ -20,7 +20,7 @@ penguins |>
                .names = '{.col}_log10'
         )
     ) |>
-    select(matches("depth") & (ends_with("mm") | ends_with("log10"))) %>% # remove old columns here
+    select(matches("depth") & (ends_with("mm") | ends_with("log10"))) |> # remove old columns here
     head(3)
 ```
 
@@ -47,7 +47,7 @@ penguins |>
             .names = '{str_remove(.col, "_mm")}_cm'
         )
     ) |>
-    select(matches("depth") & (ends_with("mm") | ends_with("cm"))) %>% # remove old columns here
+    select(matches("depth") & (ends_with("mm") | ends_with("cm"))) |> # remove old columns here
     head(3)
 ```
 
@@ -70,7 +70,7 @@ penguins |>
             .names = '{str_remove(.col, "_mm")}_cm'
         )
     ) |>
-    select(matches("depth") & (ends_with("mm") | ends_with("cm"))) %>% # remove old columns here
+    select(matches("depth") & (ends_with("mm") | ends_with("cm"))) |> # remove old columns here
     head(3)
 ```
 
@@ -85,12 +85,12 @@ More practise:
 
 ``` r
 myFunc <- function(x) {x^2}
-penguins %>% 
+penguins |> 
     mutate(across( ends_with("_mm"),
                    myFunc,
                    .names = '{.col}_sq'
-    )) %>% 
-    select(union (ends_with("_mm"), ends_with("_sq") )) %>% 
+    )) |> 
+    select(union (ends_with("_mm"), ends_with("_sq") )) |> 
     head(3)
 ```
 
@@ -106,12 +106,12 @@ We can also use the ~ style way to specify a function on the fly, in
 which case we use `.x` as a standin for the data:
 
 ``` r
-penguins %>% 
+penguins |> 
     mutate(across( ends_with("_mm"),
                    ~ (.x ^ 2),
                    .names = '{.col}_sq'
-    )) %>% 
-    select(intersect(matches("length"), union(ends_with("_mm"), ends_with("_sq") ))) %>% 
+    )) |> 
+    select(intersect(matches("length"), union(ends_with("_mm"), ends_with("_sq") ))) |> 
     head(3)
 ```
 
@@ -130,10 +130,10 @@ How to select columns based on more than one condition - use
 ``` r
 ## two alternative ways to write the same thing:
 # penguins |>
-#     select( ends_with("_mm") | ends_with("_sq")) %>% 
+#     select( ends_with("_mm") | ends_with("_sq")) |> 
 #     head(3)
 penguins |> 
-    select(union (ends_with("_mm"), ends_with("_g") )) %>% 
+    select(union (ends_with("_mm"), ends_with("_g") )) |> 
     head(3)
 ```
 
@@ -147,10 +147,10 @@ penguins |>
 ``` r
 ## two alternative ways to write the same thing:
 # penguins |>
-#     select( ends_with("_mm") & matches("_length") )  %>%
+#     select( ends_with("_mm") & matches("_length") )  |>
 #     head(3)
 penguins |>
-    select(intersect (ends_with("_mm"), matches("_length") )) %>% 
+    select(intersect (ends_with("_mm"), matches("_length") )) |> 
     head(3)
 ```
 
@@ -174,7 +174,7 @@ and can let its partner do the checking whenever where feels like it.
 penguins |>
     select(
         where(is.numeric)
-    ) %>% 
+    ) |> 
     head(3)
 ```
 
@@ -190,7 +190,7 @@ penguins |>
 Use this instead to get column means, medians etc
 
 ``` r
-penguins %>% 
+penguins |> 
     summarise(across(where(is.numeric), 
                      ~ mean(.x, na.rm=TRUE)))
 ```

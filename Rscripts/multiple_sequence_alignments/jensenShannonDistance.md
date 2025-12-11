@@ -175,14 +175,14 @@ getAlnCounts <- function(aln, letters=myAAtoTabulate, as.prob=FALSE) {
     if ( sum(totalCountsEachSeq != expectedTotals) > 0) {
         ## generate an informative error message:
         problem_seqs <- which(totalCountsEachSeq != expectedTotals)
-        problem_seq_letters <- aln[problem_seqs] %>% 
-            as.character() %>% 
+        problem_seq_letters <- aln[problem_seqs] |> 
+            as.character() |> 
             strsplit(split="")
         problem_seq_letters <- lapply(problem_seq_letters, function(x) {
-            setdiff(x, myAAtoTabulate) %>% 
-                unique() %>% 
+            setdiff(x, myAAtoTabulate) |> 
+                unique() |> 
                 paste0()
-        }) %>% 
+        }) |> 
             paste(collapse=",")
         err_msg <- paste0("\n\nERROR - the total counts didn't add up correctly.\n",
                           "These sequences contain unexpected letters: " , 
@@ -308,7 +308,7 @@ getJSDeachPos <- function(aln_list, letters=myAAtoTabulate) {
 ``` r
 ## we'll keep out JSD results in a tibble for later usage
 jsd_tbl <- tibble(pos = 1:width(masterAln)[1],
-                  aa_in_H2A = strsplit(as.character(masterAln[["H2A_mouse"]]), split="")[[1]]) %>% 
+                  aa_in_H2A = strsplit(as.character(masterAln[["H2A_mouse"]]), split="")[[1]]) |> 
     unite("xaxis_label", c(pos, aa_in_H2A), sep="", remove=FALSE)
 
 jsd_tbl$H2AvsB <- getJSDeachPos(list(masterAlnSplit[["H2A"]], masterAlnSplit[["H2A.B"]]))
@@ -322,7 +322,7 @@ jsd_tbl$H2AvsLvsBvsP <- getJSDeachPos(list(masterAlnSplit[["H2A"]],
 Make a plot
 
 ``` r
-jsd_tbl %>% 
+jsd_tbl |> 
     ggplot(aes(x=pos, y=H2AvsLBP)) +
     geom_col(fill="lightgrey", col="darkgray", width=1) +
     theme_classic() +

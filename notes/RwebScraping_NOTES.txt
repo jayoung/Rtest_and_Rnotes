@@ -18,14 +18,14 @@ I wanted to get this working in order to use an online protein analysis tool cal
 lego_movie <- read_html("http://www.imdb.com/title/tt1490017/")
 
 #Scrape the website for the movie rating
-rating <- lego_movie %>% 
-  html_nodes("strong span") %>%
-  html_text() %>%
+rating <- lego_movie |> 
+  html_nodes("strong span") |>
+  html_text() |>
   as.numeric()
 rating
 
-lego_movie %>% 
-  html_nodes("strong span") %>%
+lego_movie |> 
+  html_nodes("strong span") |>
   html_text()
 
 
@@ -39,10 +39,10 @@ html_attr(cast, "class")
 
 # Get reviews of last company using follow_link()
 session2 <- follow_link(session1, css = "#more_9 li:nth-child(3) a")
-reviews <- session2 %>% html_nodes(".description") %>% html_text()
+reviews <- session2 |> html_nodes(".description") |> html_text()
 reviews
 
-reviews <- session2 %>% html_nodes(".description") %>% html_text()
+reviews <- session2 |> html_nodes(".description") |> html_text()
 reviews
 
 ## forms:
@@ -89,7 +89,7 @@ pon_form <- set_values(pon_form, wcwraw="on")
 
 pon_result <- submit_form(mySession, pon_form, submit="submit_result") # session object
 
-pon_result_allNodes <- pon_result %>% html_nodes("*") %>% html_text()
+pon_result_allNodes <- pon_result |> html_nodes("*") |> html_text()
 
 pon_result_allNodes[ grep ("PREDICTOR OUTPUT", pon_result_allNodes) ]
 
@@ -103,7 +103,7 @@ pon_form2 <- html_form(pon)[[2]]
 pon_form2 <- set_values(pon_form2, Sequence=mySeq2)
 
 pon_result <- submit_form(mySession, pon_form2, submit="submit_result") # session object
-pon_result_allNodes <- pon_result %>% html_nodes("*") %>% html_text()
+pon_result_allNodes <- pon_result |> html_nodes("*") |> html_text()
 pon_result_allNodes[ grep ("PREDICTOR OUTPUT", pon_result_allNodes) ]
 
 pon_result_allNodes[ grep ("PREDICTOR VALUES", pon_result_allNodes) ]
@@ -117,11 +117,11 @@ pon_form2 <- set_values(pon_form2, seq="on")
 pon_form2 <- set_values(pon_form2, wcwraw="on")
 
 
-pon_result_2 <- pon_result %>% html_nodes("pre")  # xml_nodeset object.  pre works but PRE doesn't
-pon_result_2a <- pon_result_2 %>% html_text() # character
+pon_result_2 <- pon_result |> html_nodes("pre")  # xml_nodeset object.  pre works but PRE doesn't
+pon_result_2a <- pon_result_2 |> html_text() # character
 
-pon_result_3 <- pon_result %>% html_nodes("PRE")  # xml_nodeset object. 
-pon_result_3a <- pon_result_3 %>% html_text() # character
+pon_result_3 <- pon_result |> html_nodes("PRE")  # xml_nodeset object. 
+pon_result_3a <- pon_result_3 |> html_text() # character
 
 
 pon_result_2a  # 14 things
@@ -130,9 +130,9 @@ pon_result_3a  # empty
 
 ## if I saved the result as html manually
 result1 <- read_html("Desktop/PONDR.outputSimple.html")
-result1 %>% html_text()  # a single character object 
+result1 |> html_text()  # a single character object 
 
-result1 %>% html_nodes("pre") # one character object per line, easier to parse, although it still has the tags
+result1 |> html_nodes("pre") # one character object per line, easier to parse, although it still has the tags
 
 html_nodes(result1, "pre")[6]
 
@@ -149,7 +149,7 @@ html_text(html_nodes(result1, "pre"))[6]
 
 
    ## 2a has quite a bit, with my OLDER query
-pon_result_3 <- pon_result %>% html_nodes("pre:nth-child(42)") %>% html_text()
+pon_result_3 <- pon_result |> html_nodes("pre:nth-child(42)") |> html_text()
 
 grep ("PREDICTOR OUTPUT", pon_result_2a)
 

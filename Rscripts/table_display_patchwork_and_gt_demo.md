@@ -30,11 +30,11 @@ linebreaks, and doing some formatting (italics, and font size). Looks
 good.
 
 ``` r
-my_tbl_gt <- gt(my_tbl) %>% 
-    fmt_number(use_seps = TRUE, decimals=0) %>% 
+my_tbl_gt <- gt(my_tbl) |> 
+    fmt_number(use_seps = TRUE, decimals=0) |> 
     cols_label(first_column_break_with_a_very_break_long_name="<em>first column</em><br>with a very<br>long name",
                second_column_break_with_a_long_name="second column<br>with a long name",
-               .fn = md ) %>%  
+               .fn = md ) |>  
     ## this makes font 75% the size of default
     tab_style(style = cell_text(size = pct(75)),
               locations=list(cells_column_labels(), cells_body()))
@@ -63,11 +63,11 @@ We can also give the table a caption using gt. Looks OK if I display
 using gt:
 
 ``` r
-my_tbl_gt_with_long_caption <- gt(my_tbl, caption="My caption which is very very long with a lot of words") %>% 
-    fmt_number(use_seps = TRUE, decimals=0) %>% 
+my_tbl_gt_with_long_caption <- gt(my_tbl, caption="My caption which is very very long with a lot of words") |> 
+    fmt_number(use_seps = TRUE, decimals=0) |> 
     cols_label(first_column_break_with_a_very_break_long_name="<em>first column</em><br>with a very<br>long name",
                second_column_break_with_a_long_name="second column<br>with a long name",
-               .fn = md ) %>%  
+               .fn = md ) |>  
     ## this makes font 75% the size of default
     tab_style(style = cell_text(size = pct(75)),
               locations=list(cells_column_labels(),
@@ -100,7 +100,7 @@ We can also make a version where we include `\n` in the colnames, to try
 to wrap them a different way
 
 ``` r
-my_tbl_wrap_colnames <- my_tbl %>% 
+my_tbl_wrap_colnames <- my_tbl |> 
     set_names(nm=c("first column\nwith a very\nlong name",
                    "second column\nwith a long name"))
 ```
@@ -120,7 +120,7 @@ my_tbl_wrap_colnames
 Neither does using `gt()`:
 
 ``` r
-my_tbl_wrap_colnames_gt <- my_tbl_wrap_colnames %>% gt()
+my_tbl_wrap_colnames_gt <- my_tbl_wrap_colnames |> gt()
 
 # save it as png
 suppressMessages( gtsave(my_tbl_wrap_colnames_gt, 
@@ -144,7 +144,7 @@ Combining the table with a plot (without gt):
 (harder to add styling like font size this way)
 
 ``` r
-p1 <- tibble(x=1:10, y=1:10) %>% 
+p1 <- tibble(x=1:10, y=1:10) |> 
     ggplot(aes(x=x,y=y))+
     geom_point() +
     theme_classic()
@@ -158,7 +158,7 @@ p1 <- tibble(x=1:10, y=1:10) %>%
 Combining the table with a plot (WITH gt):
 
 ``` r
-p1 <- tibble(x=1:10, y=1:10) %>% 
+p1 <- tibble(x=1:10, y=1:10) |> 
     ggplot(aes(x=x,y=y))+
     geom_point() +
     theme_classic()

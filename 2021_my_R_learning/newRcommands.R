@@ -1,6 +1,6 @@
-### file manipulation:
+# file manipulation:
 
-#### example data:
+# example data:
 dir.create("data")
 download.file("https://raw.githubusercontent.com/fredhutchio/R_intro/master/extra/clinical.csv", "data/clinical.csv")
 
@@ -32,7 +32,7 @@ str(clinical)
 ###### key tidyverse functions:
 
 
-# %>%    # pipe.  shortcut =command-shift-M
+# |>    # pipe.  shortcut =command-shift-M
 spec()   # on a tibble, shows the class of each column
 select() # chooses columns
 filter() # chooses rows
@@ -48,71 +48,71 @@ n_distinct() # similar to length(unique())
 ###### group_by / tally / count / summarize
 
 ## tally needs to be run after group_by
-clinical %>%
-  group_by(gender) %>%
+clinical |>
+  group_by(gender) |>
   tally() 
 
 ## count does not need to be run after group_by
-clinical %>%
+clinical |>
   count(gender)
 
-clinical %>%
+clinical |>
   count(gender, disease)
 
-clinical %>%
+clinical |>
   count(disease, gender)
 
 ## group_by doesn't change the object, but it does changes how objects interact with downstream functions: example
-by_cyl <- mtcars %>% group_by(cyl)
+by_cyl <- mtcars |> group_by(cyl)
 
 # grouping doesn't change how the data looks (apart from listing
 # how it's grouped):
 by_cyl
 
 # It changes how it acts with the other dplyr verbs:
-by_cyl %>% summarise(
+by_cyl |> summarise(
   disp = mean(disp),
   hp = mean(hp)
 )
-by_cyl %>% filter(disp == max(disp))
+by_cyl |> filter(disp == max(disp))
 
 # compare that with 
-mtcars %>% summarise(
+mtcars |> summarise(
   disp = mean(disp),
   hp = mean(hp)
 )
-mtcars %>% filter(disp == max(disp))
+mtcars |> filter(disp == max(disp))
 
 # Each call to summarise() removes a layer of grouping
-by_vs_am <- mtcars %>% group_by(vs, am)
-by_vs <- by_vs_am %>% summarise(n = n())
+by_vs_am <- mtcars |> group_by(vs, am)
+by_vs <- by_vs_am |> summarise(n = n())
 by_vs
-by_vs %>% summarise(n = sum(n))
+by_vs |> summarise(n = sum(n))
 
 # To removing grouping, use ungroup
-by_vs %>%
-  ungroup() %>%
+by_vs |>
+  ungroup() |>
   summarise(n = sum(n))
 
 
 
 ## summarize (similar to tapply)
-clinical %>%
-  group_by(gender) %>%
+clinical |>
+  group_by(gender) |>
   summarize(mean_days_to_death = mean(days_to_death, na.rm = TRUE))
 
-clinical %>%
-  group_by(gender) %>%
+clinical |>
+  group_by(gender) |>
   summarize(mean_days_to_death = mean(days_to_death, na.rm = TRUE),
             numPeople=n())
 
 
 ####### arrange to sort by a column:
-clinical %>%
+clinical |>
   count(disease)
 
-clinical %>%
-  count(disease) %>%
+clinical |>
+  count(disease) |>
   arrange(n) 
 # arrange(desc(n)) for reverse order
 

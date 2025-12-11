@@ -23,9 +23,9 @@ library(cowplot)   # for theme_minimal_hgrid()
 The dataset is provided as `practicalgg::happy`. Let's look at it in table form and as basic density plots.
 
 ```{r message = FALSE}
-data_health <- practicalgg::happy %>%
-  select(age, health) %>%
-  na.omit() %>%
+data_health <- practicalgg::happy |>
+  select(age, health) |>
+  na.omit() |>
   mutate(health = fct_rev(health)) # revert factor order
 
 data_health

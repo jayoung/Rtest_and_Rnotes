@@ -26,12 +26,12 @@ woodmouse_tree has `r Ntip(woodmouse_tree)` tips, and `r Nnode(woodmouse_tree)` 
 the 'basal' node is node 16 and it has 4 descendents
 
 ```{r}
-woodmouse_tree %>% as_tibble() %>% count(parent)
+woodmouse_tree |> as_tibble() |> count(parent)
 ```
 
 
 ```{r}
-woodmouse_tree %>% as_tibble() %>% filter(parent==16)
+woodmouse_tree |> as_tibble() |> filter(parent==16)
 ```
 
 Add fake node labels
@@ -43,7 +43,7 @@ woodmouse_tree$node.label <- paste("node_", 1:Nnode(woodmouse_tree), sep="")
 
 ```{r look at it ggtree}
 options(ignore.negative.edge=TRUE)
-woodmouse_tree %>% 
+woodmouse_tree |> 
     ggtree() +
     geom_tiplab() +
     geom_nodelab() +
@@ -62,7 +62,7 @@ woodmouse_tree_reroot <- root(woodmouse_tree,
      node=MRCA(woodmouse_tree, c("No1007S","No1103S")) )
  
 options(ignore.negative.edge=TRUE)
-woodmouse_tree_reroot %>% 
+woodmouse_tree_reroot |> 
     ggtree() +
     geom_tiplab() +
     geom_nodelab() +

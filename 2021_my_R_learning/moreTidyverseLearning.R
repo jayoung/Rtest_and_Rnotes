@@ -31,11 +31,11 @@ surveys$genus <- factor(surveys$genus)
 summary(surveys)
 
 # How many rabbits were observed?  75
-surveys %>% filter(taxa=="Rabbit") %>% nrow
+surveys |> filter(taxa=="Rabbit") |> nrow
 
 # How many different genera are in the genus column?  26
 nlevels(surveys$genus)
-surveys %>% count(genus) %>% nrow
+surveys |> count(genus) |> nrow
 
 
 #### converting factors to numeric - be careful
@@ -48,7 +48,7 @@ as.numeric(levels(year_fct))[year_fct]    # The recommended way.
 plot(surveys$sex)
 
 # that ignores the 1748 NA individuals 
-surveys %>% count(sex)
+surveys |> count(sex)
 levels(surveys$sex)
 
 # add NA as a level to be considered, and rename it. This is basic R, not tidyr:
@@ -125,8 +125,8 @@ table(missing_dates[["month"]])
 #  4  9 
 # 70 59 
 
-missing_dates <- missing_dates %>% mutate(day_fixed=day-1)
-missing_dates <- missing_dates %>% 
+missing_dates <- missing_dates |> mutate(day_fixed=day-1)
+missing_dates <- missing_dates |> 
   mutate(date=ymd(paste(year, month, day_fixed, sep = "-")  ))
 # add fixed dates back to original object:
 surveys[is.na(surveys$date), "date"] <- missing_dates$date
@@ -142,64 +142,64 @@ select(surveys, -record_id, -species_id)
 # In this hindfoot_cm column, there are no NAs and all values are less than 3.
 # Hint: think about how the commands should be ordered to produce this data frame!
 
-surveys2 <- surveys %>% 
-  mutate(hindfoot_cm=hindfoot_length/10) %>% 
-  filter(hindfoot_cm<3) %>% 
-  filter(!is.na(hindfoot_cm)) %>% 
+surveys2 <- surveys |> 
+  mutate(hindfoot_cm=hindfoot_length/10) |> 
+  filter(hindfoot_cm<3) |> 
+  filter(!is.na(hindfoot_cm)) |> 
   select(species_id)
 
 ###### grouping, summarizing
-surveys %>%
-  group_by(sex) %>%
+surveys |>
+  group_by(sex) |>
   summarize(mean_weight = mean(weight, na.rm = TRUE))
 
 # there are NAs at the bottom
-surveys %>%
-  group_by(sex, species_id) %>%
-  summarize(mean_weight = mean(weight, na.rm = TRUE)) %>% 
+surveys |>
+  group_by(sex, species_id) |>
+  summarize(mean_weight = mean(weight, na.rm = TRUE)) |> 
   tail()
 
 # get >1 summary statistic for each group add arrange to sort
-surveys %>%
-  filter(!is.na(weight)) %>%
-  filter(!is.na(sex)) %>%
-  group_by(sex, species_id) %>%
+surveys |>
+  filter(!is.na(weight)) |>
+  filter(!is.na(sex)) |>
+  group_by(sex, species_id) |>
   summarize(mean_weight = mean(weight),
-            min_weight = min(weight)) %>% 
+            min_weight = min(weight)) |> 
   arrange(min_weight) 
 
 # descending sort
-surveys %>%
-  filter(!is.na(weight)) %>%
-  filter(!is.na(sex)) %>%
-  group_by(sex, species_id) %>%
+surveys |>
+  filter(!is.na(weight)) |>
+  filter(!is.na(sex)) |>
+  group_by(sex, species_id) |>
   summarize(mean_weight = mean(weight),
-            min_weight = min(weight)) %>% 
+            min_weight = min(weight)) |> 
   arrange(desc(min_weight) )
 
 
 # these are the same:
-surveys %>%
+surveys |>
   count(sex) 
   
-surveys %>%
-  group_by(sex) %>%
+surveys |>
+  group_by(sex) |>
   summarise(count = n())
 
 # alternative to arrange:
-surveys %>%
+surveys |>
   count(sex, sort=TRUE) 
 
 # sorting on two columns:
-surveys %>%
-  count(sex, species) %>%
+surveys |>
+  count(sex, species) |>
   arrange(species, desc(n))
 
 
 ### challenge:  Use group_by() and summarize() to find the mean, min, and max hindfoot length for each species (using species_id). Also add the number of observations (hint: see ?n).
-surveys %>% 
-  filter(!is.na(hindfoot_length)) %>% 
-  group_by(species_id) %>% 
+surveys |> 
+  filter(!is.na(hindfoot_length)) |> 
+  group_by(species_id) |> 
   summarise(meanFoot=mean(hindfoot_length),
             minFoot=min(hindfoot_length),
             maxFoot=max(hindfoot_length),
@@ -207,44 +207,44 @@ surveys %>%
 
 
 ### challenge:  What was the heaviest animal measured in each year? Return the columns year, genus, species_id, and weight.  This is almost it, although if there is a tie in a year I keep both heaviest animals
-surveys %>% 
-  group_by(year) %>% 
-  filter(!is.na(weight)) %>% 
-  filter(weight==max(weight)) %>% 
-  select(year, genus, species_id, weight) %>% 
+surveys |> 
+  group_by(year) |> 
+  filter(!is.na(weight)) |> 
+  filter(weight==max(weight)) |> 
+  select(year, genus, species_id, weight) |> 
   arrange(year)
 
 
-surveys_gw <- surveys %>% 
-  filter(!is.na(weight)) %>% 
-  group_by(plot_id, genus) %>% 
+surveys_gw <- surveys |> 
+  filter(!is.na(weight)) |> 
+  group_by(plot_id, genus) |> 
   summarise(meanWt=mean(weight, na.rm=TRUE))
 
 ### spread turns a LONG tibble into a WIDE tibble
 # somehow it knew to keep the first column (plot_id) the same.
 # then the 'key' argument tells it to take the second column (genus) and make those new column headers, using meanWt as the values in those columns
-surveys_spread <- surveys_gw %>%
+surveys_spread <- surveys_gw |>
   spread(key = genus, value = meanWt)
 
 ### turns out spread has been superceded by pivot_wider: this gives the SAME result
-surveys_spread2 <- surveys_gw %>%
+surveys_spread2 <- surveys_gw |>
   pivot_wider(names_from = genus, values_from = meanWt)
 # using values_fill we can turn the NAs into 0
-surveys_spread2 <- surveys_gw %>%
+surveys_spread2 <- surveys_gw |>
   pivot_wider(names_from = genus, values_from = meanWt, values_fill=0)
 
 ### gather does the opposite -turns a WIDE tibble into a LONG tibble 
-surveys_gather <- surveys_spread %>%
+surveys_gather <- surveys_spread |>
   gather(key = "genus", value = "mean_weight", -plot_id)
 # -plot_id means take every column except plot_id and treat it as a genus value and put the values in a mean_weight column.  It does keep the plot_id as the first column, just like spread did.
 
 ### and gather has been superceded by pivot_longer. This gives identical results
-surveys_gather2 <- surveys_spread %>% 
-  pivot_longer(cols=-plot_id, names_to = "genus", values_to = "mean_weight") %>% 
+surveys_gather2 <- surveys_spread |> 
+  pivot_longer(cols=-plot_id, names_to = "genus", values_to = "mean_weight") |> 
   arrange(genus)
 # maybe we want to drop the NAs to resemble the original summarized data, or maybe we don't.  a quick spread-gather can be useful if you want to ensure all combinations are present and create the relevant NA values
-surveys_gather2 <- surveys_spread %>% 
-  pivot_longer(cols=-plot_id, names_to = "genus", values_to = "mean_weight", values_drop_na=TRUE) %>% 
+surveys_gather2 <- surveys_spread |> 
+  pivot_longer(cols=-plot_id, names_to = "genus", values_to = "mean_weight", values_drop_na=TRUE) |> 
   arrange(genus)
 
 
@@ -254,21 +254,21 @@ surveys_gather2 <- surveys_spread %>%
 # You will need to summarize before reshaping, and use the function n_distinct() to get the number of unique genera within a particular chunk of data. It’s a powerful function! See ?n_distinct for more
 
 # num genera per plot per year
-surveys_spread_genera <- surveys %>% 
-  group_by(year, plot_id) %>% 
-  summarise(numGenera=n_distinct(genus)) %>% 
+surveys_spread_genera <- surveys |> 
+  group_by(year, plot_id) |> 
+  summarise(numGenera=n_distinct(genus)) |> 
   pivot_wider(id_cols=plot_id, names_from=year, values_from=numGenera) 
 
 # works - I did some spot checks on that, e.g.
-temp <- surveys %>% 
+temp <- surveys |> 
   filter(year==1984, plot_id==3) 
 n_distinct( temp$genus)
 rm(temp)
 
 ### 2. Now take that data frame and gather() it again, so each row is a unique plot_id by year combination.
-surveys_spread_genera %>% 
-  pivot_longer(cols=-plot_id, names_to="year", values_to="numGenera") %>% 
-  arrange(year, plot_id) %>% 
+surveys_spread_genera |> 
+  pivot_longer(cols=-plot_id, names_to="year", values_to="numGenera") |> 
+  arrange(year, plot_id) |> 
   select(year, plot_id, numGenera) # select is just to reorder columns so it looks more like the output from the summarise  part of step 1 of this challenge
 
 ### 3. The surveys data set has two measurement columns: hindfoot_length and weight. 
@@ -277,14 +277,14 @@ surveys_spread_genera %>%
 # First, use gather() to create a dataset where we have a key column called measurement and a value column that takes on the value of either hindfoot_length or weight. 
 # Hint: You’ll need to specify which columns are being gathered.
 
-surveys_tricky <- surveys %>% 
+surveys_tricky <- surveys |> 
   #select(year,plot_type,hindfoot_length,weight)
-  pivot_longer(cols=c(hindfoot_length,weight),names_to="measurement") %>% 
-  arrange(measurement) %>% # cosmetic, so I get the identical answer to the website
+  pivot_longer(cols=c(hindfoot_length,weight),names_to="measurement") |> 
+  arrange(measurement) |> # cosmetic, so I get the identical answer to the website
   glimpse()
   
 # the answer from the website:
-surveys_long <- surveys %>%
+surveys_long <- surveys |>
   gather("measurement", "value", hindfoot_length, weight)
 
 identical(surveys_tricky, surveys_long)
@@ -294,15 +294,15 @@ identical(surveys_tricky, surveys_long)
 # Then spread() them into a data set with a column for hindfoot_length and weight. 
 # Hint: You only need to specify the key and value columns for spread().
 
-temp1 <- surveys_tricky %>% 
-  group_by(year, plot_type, measurement) %>% 
-  summarise(mean=mean(value, na.rm=TRUE)) %>% 
+temp1 <- surveys_tricky |> 
+  group_by(year, plot_type, measurement) |> 
+  summarise(mean=mean(value, na.rm=TRUE)) |> 
   pivot_wider(id_cols=-mean, names_from=measurement, values_from=mean)
 
 # answer from the website:
-temp2 <- surveys_long %>%
-  group_by(year, measurement, plot_type) %>%
-  summarize(mean_value = mean(value, na.rm=TRUE)) %>%
+temp2 <- surveys_long |>
+  group_by(year, measurement, plot_type) |>
+  summarize(mean_value = mean(value, na.rm=TRUE)) |>
   spread(measurement, mean_value)
 
 identical(temp1, temp2)
@@ -314,7 +314,7 @@ identical(as.data.frame(temp1), as.data.frame(temp2))
 
 
 ### clean up missing data
-surveys_complete <- surveys %>%
+surveys_complete <- surveys |>
   filter(!is.na(weight),           # remove missing weight
          !is.na(hindfoot_length),  # remove missing hindfoot_length
          !is.na(sex))                # remove missing sex
@@ -322,18 +322,18 @@ surveys_complete <- surveys %>%
 #  remove observations for rare species (i.e., that have been observed less than 50 times). We will do this in two steps: first we are going to create a data set that counts how often each species has been observed, and filter out the rare species; then, we will extract only the observations for these more common species:
 
 ## Extract the most common species_id
-species_counts <- surveys_complete %>%
-  count(species_id) %>% 
+species_counts <- surveys_complete |>
+  count(species_id) |> 
   filter(n >= 50)
 
 ## Only keep the most common species
-surveys_complete <- surveys_complete %>%
+surveys_complete <- surveys_complete |>
   filter(species_id %in% species_counts$species_id)
 
 # only rodents survived the filtering:
-surveys_complete %>% count(taxa)
-surveys_complete %>% count(species)
-surveys_complete %>% count(genus)
+surveys_complete |> count(taxa)
+surveys_complete |> count(species)
+surveys_complete |> count(genus)
 
 ########### plotting
 
@@ -386,14 +386,14 @@ ggplot(data = surveys_complete, mapping = aes(x = species_id, y=hindfoot_length)
   geom_jitter(alpha=0.1, aes(color=factor(plot_id))) +
   geom_boxplot()
 
-yearly_counts <- surveys_complete %>%
+yearly_counts <- surveys_complete |>
   count(year, genus)
 
 ggplot(data = yearly_counts, aes(x = year, y = n, color=genus)) +
   geom_line()
 
 # or, using pipe:
-yearly_counts %>% 
+yearly_counts |> 
   ggplot(mapping = aes(x = year, y = n, color = genus)) +
   geom_line()
 
@@ -403,23 +403,23 @@ ggplot(data = yearly_counts, aes(x = year, y = n)) +
   facet_wrap(facets = vars(genus))
 
 # Now we would like to split the line in each plot by the sex of each individual measured. 
-surveys_complete %>% 
-  count(year, genus, sex) %>% 
+surveys_complete |> 
+  count(year, genus, sex) |> 
   ggplot(aes(x = year, y = n, colour=sex)) +
     geom_line() +
     facet_wrap(facets = vars(genus)) +
     theme_void()
 
 ## Challenge: Use what you just learned to create a plot that depicts how the average weight of each species changes through the years.
-surveys_complete %>% 
-  group_by(species,year) %>% 
-  summarize(meanWt=mean(weight)) %>% 
+surveys_complete |> 
+  group_by(species,year) |> 
+  summarize(meanWt=mean(weight)) |> 
   ggplot(aes(x=year, y=meanWt, color=species)) +
   geom_line() +
   facet_wrap(vars(species))
 
 ### cosmetics:
-yearly_sex_counts <- surveys_complete %>%
+yearly_sex_counts <- surveys_complete |>
   count(year, genus, sex)
 ggplot(data = yearly_sex_counts, mapping = aes(x = year, y = n, color = sex)) +
   geom_line() +

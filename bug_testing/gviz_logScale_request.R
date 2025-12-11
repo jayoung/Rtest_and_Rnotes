@@ -7,13 +7,13 @@ library(patchwork)
 dat <- data.frame(x=c(1,2,3,4),
                   y=c(1,10,100,1000) )
 
-p1 <- dat %>% 
+p1 <- dat |> 
     ggplot(aes(x=x, y=y)) +
     geom_col() +
     scale_y_log10() +
     labs(title="I like this y-axis")
 
-p2 <- dat %>% 
+p2 <- dat |> 
     ggplot(aes(x=x, y=log10(y))) +
     geom_col()  +
     labs(title="better than this one")

@@ -70,7 +70,7 @@ as.treedata.tbl_df.JY <- function(tree, branch.length, label, ...) {
 
 
 as.phylo.tbl_df.JY <- function(x, branch.length, label, ...) {
-    x <- data.frame(x) %>% mutate_if(is.factor, as.character)
+    x <- data.frame(x) |> mutate_if(is.factor, as.character)
     branch.length <- rlang::enquo(branch.length)
     label <- rlang::enquo(label)
     length_var <- root.edge <- edge.length <- NULL
@@ -80,14 +80,14 @@ as.phylo.tbl_df.JY <- function(x, branch.length, label, ...) {
     }
     
     if (!rlang::quo_is_missing(branch.length)){
-        edge.length <- as.numeric(x %>% dplyr::pull(!!branch.length))
+        edge.length <- as.numeric(x |> dplyr::pull(!!branch.length))
         length_var <- rlang::as_name(branch.length)
     }
     
     if (!rlang::quo_is_missing(label)){
-        labels <- x %>% dplyr::pull(!!label) %>% as.character()
+        labels <- x |> dplyr::pull(!!label) |> as.character()
     }else{
-        labels <- x %>% dplyr::pull(2) %>% as.character()
+        labels <- x |> dplyr::pull(2) |> as.character()
     }
     
     edge <- check_edgelist.JY(x)
@@ -211,7 +211,7 @@ Example from the [github issue](https://github.com/YuLab-SMU/treeio/pull/101)
 ```{r}
 ## phy is a tree
 phy <- rtree(20, br = runif)
-phy %>% ggtree()
+phy |> ggtree()
 ```
 
 ```{r}
@@ -223,35 +223,35 @@ tipdata <- tibble(node = 1:20,  tipinfo = LETTERS[1:20])
 # as_tibble(phy) is a tbl_tree abstraction with 4 cols:  
 # parent  node branch.length label
 
-phytbl <- as_tibble(phy) %>% 
-    left_join(nodedata, by = "node") %>%
-    left_join(tipdata, by = "node") %>%
+phytbl <- as_tibble(phy) |> 
+    left_join(nodedata, by = "node") |>
+    left_join(tipdata, by = "node") |>
     mutate(label = paste(label, tipinfo))
 
 ## phytbl is still a tbl_tree abstraction but now has more columns
 # as.treedata(phytbl)@phylo # Exactly as expected
 
 ## it still has branch lengths
-phytbl %>% 
-    as.treedata() %>%
+phytbl |> 
+    as.treedata() |>
     ggtree()
 ```
 
 
 ```{r}
-phytbl2 <- phytbl %>%
-    dplyr::mutate(branchinfo = as.character(NA)) %>%
-    dplyr::group_split(branch.length > 0.6) %>%
-    modify_at(2, ~ mutate(., branchinfo = "info")) %>%
+phytbl2 <- phytbl |>
+    dplyr::mutate(branchinfo = as.character(NA)) |>
+    dplyr::group_split(branch.length > 0.6) |>
+    modify_at(2, ~ mutate(., branchinfo = "info")) |>
     dplyr::bind_rows()
 
 # phytbl is a tbl_df class
 
 ## this has no branch lengths
-trda2 <- phytbl2 %>% as.treedata()
+trda2 <- phytbl2 |> as.treedata()
 
 ## this does:
-trda <- phytbl2 %>% as.treedata(branch.length, label)
+trda <- phytbl2 |> as.treedata(branch.length, label)
 trda
 ```
 

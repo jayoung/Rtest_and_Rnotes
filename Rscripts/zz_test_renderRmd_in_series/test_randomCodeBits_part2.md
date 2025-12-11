@@ -15,7 +15,7 @@ load(file=here("Rscripts/zz_test_renderRmd_in_series/iris_plus_groups.Rdata"))
 ```
 
 ``` r
-iris_plus_groups %>% 
+iris_plus_groups |> 
     ggplot(aes(x=Species, y=Sepal.Length, color=group)) +
     geom_boxplot() +
     geom_point(position=position_jitterdodge(jitter.width = 0.12)) +

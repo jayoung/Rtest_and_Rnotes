@@ -12,9 +12,9 @@ doTtests <- function(my_tbl, groupA, groupB,
   if( sum(!groupB %in% colnames(my_tbl))>0 ) {
     stop("\n\nERROR - you specified samples in groupB that aren't in the data\n\n")
   }
-  my_tbl_A <- my_tbl %>% 
+  my_tbl_A <- my_tbl |> 
     select(all_of(groupA))
-  my_tbl_B <- my_tbl %>% 
+  my_tbl_B <- my_tbl |> 
     select(all_of(groupB))
   # do t.test for each row
   results <- lapply(1:dim(my_tbl)[1], function(i) {

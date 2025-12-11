@@ -128,9 +128,9 @@ Displaying a table via kable is a bit prettier. There are also sorts of
 ways to control formatting here, too - google will help with that
 
 ``` r
-iris %>% 
-    head() %>% 
-    kable() %>% 
+iris |> 
+    head() |> 
+    kable() |> 
     kable_styling()
 ```
 
@@ -276,7 +276,7 @@ plot(iris[,"Sepal.Length"],iris[,"Sepal.Width"])
 Here’s the same plot using ggplot
 
 ``` r
-iris %>% 
+iris |> 
     ggplot(aes(x=Sepal.Length, y=Sepal.Width)) +
     geom_point()
 ```

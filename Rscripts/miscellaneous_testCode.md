@@ -7,10 +7,10 @@ Janet Young
 # basic tidyverse
 
 ``` r
-m <- mtcars %>% as_tibble()
+m <- mtcars |> as_tibble()
 
 ## show counts in each category
-m %>% 
+m |> 
     count(cyl)
 ```
 
@@ -52,10 +52,10 @@ dat
 First we pivot\_longer using names\_pattern argument
 
 ``` r
-longer <- dat %>% 
+longer <- dat |> 
     pivot_longer(cols=-group, 
                  names_pattern = "(.*)(..)$", 
-                 names_to = c("limit", "name")) %>% 
+                 names_to = c("limit", "name")) |> 
     mutate(limit=ifelse(limit=="", "value", limit))
 longer
 ```
@@ -78,7 +78,7 @@ longer
 Then we pivot wider to get the data how we really want it to look:
 
 ``` r
-answer <- longer %>% 
+answer <- longer |> 
     pivot_wider(id_cols = c(group, name), 
                 names_from = limit, values_from = value, 
                 names_repair = "check_unique")
@@ -111,8 +111,8 @@ Alternative in one step, using the special `.value` tag for the
 `names_to` argument:
 
 ``` r
-dat %>% 
-    rename_with(~sub("^(BP|HS|BB)$", "values\\1", .)) %>%     # add prefix values
+dat |> 
+    rename_with(~sub("^(BP|HS|BB)$", "values\\1", .)) |>     # add prefix values
     pivot_longer(cols= -1,
                  names_pattern = "(.*)(BP|HS|BB)$",
                  names_to = c(".value", "names")) 
@@ -150,7 +150,7 @@ details <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/ti
 board_games <- details |>
     select(id, name = primary, boardgamecategory)
 
-board_games %>% 
+board_games |> 
     head(3)
 ```
 
@@ -197,7 +197,7 @@ board_games |>
 ## barplots of counts in each category
 
 ``` r
-m %>% 
+m |> 
     ggplot(aes(x=as.factor(cyl))) +
     geom_bar()
 ```
@@ -214,16 +214,16 @@ together.
 ``` r
 ## calculate the summary stats separately.
 # note that the facetting variable (Species) is a column in the summary 
-iris_summary <- iris %>% 
-    group_by(Species) %>% 
-    summarize(label = dplyr::n()) %>% 
-    mutate(label=paste0("n = ", label)) %>% 
+iris_summary <- iris |> 
+    group_by(Species) |> 
+    summarize(label = dplyr::n()) |> 
+    mutate(label=paste0("n = ", label)) |> 
     ## use the entire dataset (not grouped) to get x and y coords for the n= labels
-    mutate(x=min(iris$Sepal.Length)*1.1) %>% 
+    mutate(x=min(iris$Sepal.Length)*1.1) |> 
     mutate(y=max(iris$Petal.Length)*1.1)
 
 ## then make the plot
-iris %>% 
+iris |> 
     ggplot(aes(x=Sepal.Length, y=Petal.Length, color=Species)) +
     geom_point() +
     geom_text(data=iris_summary, 
@@ -243,7 +243,7 @@ Here the statistical summary applies to each group within each facet.
 
 ``` r
 ## get example data in long format
-iris_long <- iris %>% 
+iris_long <- iris |> 
     pivot_longer(cols=-Species, names_to="variable", values_to="value")
 
 ## make a function to produce the labels we want
@@ -302,7 +302,7 @@ tibble(colA=c("A","B","C"),
 ## the purrr::map functions are a bit like lapply / apply
 
 ``` r
-1:10 %>%
+1:10 |>
     map(rnorm, n = 10)
 ```
 
@@ -348,7 +348,7 @@ tibble(colA=c("A","B","C"),
 
 ``` r
 # do something to each column
-mtcars %>% map_dbl(sum)
+mtcars |> map_dbl(sum)
 ```
 
     ##      mpg      cyl     disp       hp     drat       wt     qsec       vs 
@@ -360,10 +360,10 @@ mtcars %>% map_dbl(sum)
 # split into list, then map.  
 # map_dbl simplify output, in this case to a dbl (or numeric)
 # same for map_lgl(), map_int() and map_chr()
-mtcars %>%
-    split(.$cyl) %>%
-    map(~ lm(mpg ~ wt, data = .x)) %>%
-    map(summary) %>%
+mtcars |>
+    split(.$cyl) |>
+    map(~ lm(mpg ~ wt, data = .x)) |>
+    map(summary) |>
     map_dbl("r.squared")
 ```
 
@@ -372,9 +372,9 @@ mtcars %>%
 
 ``` r
 # map_dfr tries to return a data.frame (binding by rows)  (map_dfc is similar but binds by columns)
-mtcars %>%
-    split(.$cyl) %>%
-    map(~ lm(mpg ~ wt, data = .x)) %>%
+mtcars |>
+    split(.$cyl) |>
+    map(~ lm(mpg ~ wt, data = .x)) |>
     map_dfr(~ as.data.frame(t(as.matrix(coef(.)))))
 ```
 
@@ -403,8 +403,8 @@ and then we have to use `:=` (instead of =)
 
 ``` r
 newVarName <- "sepalLen_new"
-iris %>% 
-    dplyr::rename(!!newVarName := Sepal.Length) %>% 
+iris |> 
+    dplyr::rename(!!newVarName := Sepal.Length) |> 
     head()
 ```
 
@@ -442,7 +442,7 @@ Example:
 ### this wouldn't work
 ## first define a function
 get_var0 <- function(data, column, value) {
-    data %>% filter(column == value)
+    data |> filter(column == value)
 }
 ## then use it - gives an error this way
 # get_var0(mtcars, cyl, 6)
@@ -455,7 +455,7 @@ get_var0 <- function(data, column, value) {
 
 ### this DOES work
 get_var1 <- function(data, column, value) {
-    data %>% filter({{ column }} == value)
+    data |> filter({{ column }} == value)
 }
 get_var1(mtcars, cyl, 6)
 ```
@@ -479,7 +479,7 @@ To see more info: ?rlang::`!!!`
 ``` r
 ## Let's say we want to select the first 3 columns of a data frame. So you can do something like this:
 test_df <- tibble(a = 1, b = 1, c = 1, d = 1)
-test_df %>%
+test_df |>
     select(1, 2, 3)
 ```
 
@@ -491,14 +491,14 @@ test_df %>%
 ``` r
 ## Easy enough. Now let's say we have a list of values that we want to use to replicate the code above. Now if you pass this to the select function it fails:
 our_list <- list(1, 2, 3)
-# test_df %>%
+# test_df |>
 #     select(our_list)
 ## That's because that code essentially translates to this, which doesn't work.
-# test_df %>%
+# test_df |>
 #     select(list(1, 2, 3))
 
 # What we need to do is "unpack" the list using !!!.
-test_df %>%
+test_df |>
     select(!!!our_list)
 ```
 
@@ -509,7 +509,7 @@ test_df %>%
 
 ``` r
 # which translates to this:
-# test_df %>%
+# test_df |>
 #     select(1, 2, 3)
 ```
 

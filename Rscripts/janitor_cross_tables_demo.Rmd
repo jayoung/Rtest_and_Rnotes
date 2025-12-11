@@ -36,7 +36,6 @@ manu_labels <- c("American Home"="A",
                  "Post" = "P",
                  "Quaker Oats" = "Q", 
                  "Ralston Purina" = "R")
-
 cereals <- cereals_raw |> 
     dplyr::rename(manufacturer=mfr) |>
     janitor::clean_names() |>
@@ -46,32 +45,53 @@ cereals <- cereals_raw |>
     mutate(across(c("manufacturer", "type"), as.factor)) |>
     mutate(manufacturer = forcats::fct_recode(manufacturer, !!!manu_labels))
 
-head(cereals)
+## show first 5 rows
+cereals |> 
+    slice_head(n=5)|>
+    knitr::kable() |> 
+    kable_styling()
 ```
 
 default tabyl gives a column called "percent" that's actually a fraction (out of 1) rather than a percent. Argh.
 
 ```{r}
-cereals %>% 
-    tabyl(shelf) %>% 
-    dplyr::rename(fraction=percent)
+cereals |> 
+    tabyl(shelf) |> 
+    dplyr::rename(fraction=percent) |>
+    knitr::kable() |> 
+    kable_styling()
 ```
 But it's easy to reformat that as an actual %
+
 ```{r}
-cereals %>% 
-    tabyl(shelf) %>% 
-      adorn_pct_formatting()
+cereals |> 
+    tabyl(shelf) |> 
+    adorn_pct_formatting() |>
+    knitr::kable() |> 
+    kable_styling()
+```
+
+```{r}
+cereals 
 ```
 
 
-more complex example
+A more complex example - a two way table
 
 ```{r}
 cereals |>
     janitor::tabyl(manufacturer, type) |>
     janitor::adorn_percentages(denominator = "row") |>
     janitor::adorn_pct_formatting() |>
-    janitor::adorn_ns() %>%
-    knitr::kable() %>% 
+    janitor::adorn_ns() |>
+    knitr::kable() |> 
     kable_styling()
 ```
+
+
+# Fisnihed
+
+```{r}
+sessionInfo()
+```
+

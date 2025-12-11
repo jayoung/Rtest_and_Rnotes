@@ -22,22 +22,22 @@ set_flextable_defaults(text.align = "center",
                        font.size = 6,
                        layout = "autofit") # text.align here doesn't seem to work
 my_flextable <- flextable(head(mtcars), 
-                          col_keys = c("am", "carb", "gear", "mpg", "drat" ))  %>% 
-    align(align = "center", part = "all") %>%
-    border_inner_h(officer::fp_border(color = "lightgrey", width=0.25), part="all") %>% 
-    border_inner_v(officer::fp_border(color = "lightgrey", width=0.25), part="all") %>% 
+                          col_keys = c("am", "carb", "gear", "mpg", "drat" ))  |> 
+    align(align = "center", part = "all") |>
+    border_inner_h(officer::fp_border(color = "lightgrey", width=0.25), part="all") |> 
+    border_inner_v(officer::fp_border(color = "lightgrey", width=0.25), part="all") |> 
     ## above and below the header:
     border(border.top=officer::fp_border(color = "darkgrey", width=0.5), 
            border.bottom=officer::fp_border(color = "darkgrey", width=0.5), 
-           part="header") %>%
-    hline_bottom(border = officer::fp_border(color = "darkgrey", width=0.5), part = "body") %>% 
+           part="header") |>
+    hline_bottom(border = officer::fp_border(color = "darkgrey", width=0.5), part = "body") |> 
     ## conditional formatting
     ## add red to just the drat column, based on drat column value
-    color(i=  ~ drat > 3.5, j = ~ drat , color = "red") %>% 
+    color(i=  ~ drat > 3.5, j = ~ drat , color = "red") |> 
     ## bold every cell in the row, based on drat column value
-    bold(i = ~ drat > 3.5, j = NULL, bold = TRUE) %>% 
-    width(width=0.4) %>% ## width of the table in inches
-    set_table_properties(layout = "autofit", width = .2) %>% 
+    bold(i = ~ drat > 3.5, j = NULL, bold = TRUE) |> 
+    width(width=0.4) |> ## width of the table in inches
+    set_table_properties(layout = "autofit", width = .2) |> 
     set_caption(caption =  as_paragraph( as_chunk("Example flextable",
                                                   props = fp_text_default() )))
 
@@ -193,12 +193,12 @@ z <- z[, list(
 ), by = "cut"]
 
 # flextable ----
-ft <- flextable(data = z) %>%
+ft <- flextable(data = z) |>
     mk_par(j = "list_col", value = as_paragraph(
         plot_chunk(value = list_col, type = "dens", col = "#ec11c2", 
                    width = 1.5, height = .4, free_scale = TRUE)
-    )) %>%
-    colformat_double(big.mark = " ", suffix = " $") %>% 
+    )) |>
+    colformat_double(big.mark = " ", suffix = " $") |> 
     autofit()
 ft
 ```

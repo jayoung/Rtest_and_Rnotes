@@ -40,7 +40,7 @@ tree.owls <- as.treedata(tree.owls)
 Plot tree.owls
 
 ```{r, fig.height=3, fig.width=5}
-tree.owls %>% 
+tree.owls |> 
     ggtree() +
     geom_tiplab() +
     geom_nodelab(aes(label=node), 
@@ -54,9 +54,9 @@ tree.owls %>%
 See what tree.owls looks like in tibble format:
 
 ```{r}
-tree.owls %>% 
-    as_tibble() %>% 
-    kable() %>% 
+tree.owls |> 
+    as_tibble() |> 
+    kable() |> 
     kable_styling(full_width=FALSE)
 ```
 
@@ -76,8 +76,8 @@ Use that function on tree.owls and show the result
   
 ```{r}
 my_dists <- get_mean_dist_to_tips(tree.owls)
-my_dists %>% 
-    kable() %>% 
+my_dists |> 
+    kable() |> 
     kable_styling(full_width=FALSE)
 ```
 
@@ -97,12 +97,12 @@ Now I use it to choose clades, with mean distance to tip of <7 (it adds a column
 
 ```{r, fig.height=3, fig.width=5}
 my_dists2 <- choose_clades(my_dists, dist_threshold=7)
-# my_dists2 %>% 
-#     kable() %>% 
+# my_dists2 |> 
+#     kable() |> 
 #     kable_styling(full_width=FALSE)
 
-my_dists2 %>% 
-    as.treedata(branch.length, label) %>% 
+my_dists2 |> 
+    as.treedata(branch.length, label) |> 
     ggtree(aes(color=clade)) +
     hexpand(0.3) +
     geom_tiplab(show.legend=FALSE)
@@ -112,8 +112,8 @@ my_dists2 %>%
 
 ```{r, fig.height=4, fig.width=5}
 nwk <- system.file("extdata", "sample.nwk", package="treeio")
-tree <- read.tree(nwk) %>%  as.treedata()
-tree %>% 
+tree <- read.tree(nwk) |>  as.treedata()
+tree |> 
     ggtree() +
     geom_tiplab() +
     geom_treescale(width=10) +
@@ -123,23 +123,23 @@ tree %>%
 Choose clades a couple of different ways, and show the results
 
 ```{r, fig.height=4, fig.width=10}
-tree_dists <- tree %>% 
+tree_dists <- tree |> 
     get_mean_dist_to_tips()
 
-tree2_tbl_1 <- tree_dists %>% 
+tree2_tbl_1 <- tree_dists |> 
     choose_clades(dist_threshold=20)
-p1 <- tree2_tbl_1 %>% 
-    as.treedata(branch.length, label) %>% 
+p1 <- tree2_tbl_1 |> 
+    as.treedata(branch.length, label) |> 
     ggtree(aes(color=clade)) +
     geom_tiplab(show.legend=FALSE) +
     geom_treescale(width=10) +
     labs(title="subtree mean dist to tip < 20")
 
-tree2_tbl_2 <- tree_dists %>% 
+tree2_tbl_2 <- tree_dists |> 
     choose_clades(dist_metric = "tot_edgeLen", 
                   dist_threshold=20)
-p2 <- tree2_tbl_2 %>% 
-    as.treedata(branch.length, label) %>% 
+p2 <- tree2_tbl_2 |> 
+    as.treedata(branch.length, label) |> 
     ggtree(aes(color=clade)) +
     geom_tiplab(show.legend=FALSE) +
     geom_treescale(width=10) +
@@ -155,9 +155,9 @@ We might have an idea of roughly how many clades we want to slice the tree into.
 
 ```{r}
 choose_clades_several_thresholds_report(tree_dists, 
-                                        distances_to_try=c(10,15,20,25,30,35,40,45,50)) %>% 
+                                        distances_to_try=c(10,15,20,25,30,35,40,45,50)) |> 
     kable(caption="Choose clades results, with several thresholds",
-          digits=1) %>% 
+          digits=1) |> 
     kable_styling(full_width=FALSE)
 ```
 
@@ -166,8 +166,8 @@ Now we see those results, we can easily choose a threshold that results in e.g. 
 ```{r, fig.height=4, fig.width=5}
 tree_dists_three_clades <- choose_clades(tree_dists, 
                                          dist_threshold=40) 
-tree_dists_three_clades %>% 
-    as.treedata(branch.length, label) %>% 
+tree_dists_three_clades |> 
+    as.treedata(branch.length, label) |> 
     ggtree(aes(color=clade)) +
     geom_tiplab(show.legend=FALSE) +
     geom_treescale(width=10) +
@@ -184,16 +184,16 @@ This function assumes that the tree is ultrametric, which is often untrue. So I 
 Age starting from present
 
 ```{r}
-dispRity::tree.age(tree.owls@phylo, order = "past") %>% 
-    kable() %>% 
+dispRity::tree.age(tree.owls@phylo, order = "past") |> 
+    kable() |> 
     kable_styling(full_width=FALSE)
 ```
 
 Age starting from root
 
 ```{r}
-dispRity::tree.age(tree.owls@phylo, order = "present") %>% 
-    kable() %>% 
+dispRity::tree.age(tree.owls@phylo, order = "present") |> 
+    kable() |> 
     kable_styling(full_width=FALSE)
 ```
 

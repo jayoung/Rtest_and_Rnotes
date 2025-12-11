@@ -5,7 +5,7 @@ library("patchwork")
 # Make some plots
 dat <- tibble(x=1:100, y=1:100)
 
-p1 <- dat %>% 
+p1 <- dat |> 
     ggplot(aes(x=x, y=y)) +
     geom_point() + 
     labs(title="p1")

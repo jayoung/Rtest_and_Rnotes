@@ -35,7 +35,7 @@ library(GGally)
 # example data. 244 rows, 7 columns: total_bill  tip    sex smoker day   time size
 data(tips)
 
-tips %>% summary()
+tips |> summary()
 ```
 
     ##    total_bill         tip             sex      smoker      day         time    
@@ -121,11 +121,11 @@ ggpairs(df_zeros)
 add 1 to all columns then plot on a log10 scale:
 
 ``` r
-df_zeros %>% 
+df_zeros |> 
     mutate(across(
         .cols=x:y,
         .fns = function(myNums) { myNums+1 } )
-        ) %>% 
+        ) |> 
 ggpairs() +
     scale_x_log10() +
     scale_y_log10()

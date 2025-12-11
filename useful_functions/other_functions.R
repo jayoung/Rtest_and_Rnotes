@@ -33,23 +33,23 @@ my_ggMarginal <- function(
     
     ## set up the plot aes without colors for groups
     if (is.null(color_var)) {
-        p1 <- df %>%
+        p1 <- df |>
             ggplot(aes(x=.data[[x_var]], y=.data[[y_var]])) 
         ## make the density plots
-        dens_x <- df %>%  
+        dens_x <- df |>  
             ggplot(aes(x = .data[[x_var]])) 
-        dens_y <- df %>%  
+        dens_y <- df |>  
             ggplot(aes(y = .data[[y_var]])) 
     } else {
         ## set up the plot aes with colors for groups
-        p1 <- df %>%
+        p1 <- df |>
             ggplot(aes(x=.data[[x_var]], y=.data[[y_var]], 
                        color = .data[[color_var]])) 
         ## make the density plots
-        dens_x <- df %>%  
+        dens_x <- df |>  
             ggplot(aes(x = .data[[x_var]], 
                        color = .data[[color_var]], fill=.data[[color_var]])) 
-        dens_y <- df %>%  
+        dens_y <- df |>  
             ggplot(aes(y = .data[[y_var]], 
                        color = .data[[color_var]], fill=.data[[color_var]])) 
     }
@@ -158,7 +158,7 @@ blank_plot <- function() {
 }
 
 blank_ggplot <- function() {
-    tibble(x=1:10, y=1:10) %>% 
+    tibble(x=1:10, y=1:10) |> 
         ggplot() +
         theme_void()
 }

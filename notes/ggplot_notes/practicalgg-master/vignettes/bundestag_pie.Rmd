@@ -24,7 +24,7 @@ The dataset is provided as `practicalgg::bundestag`. Let's look at it in table f
 ```{r message = FALSE}
 library(tidyverse)
 
-bundestag <- practicalgg::bundestag %>%
+bundestag <- practicalgg::bundestag |>
   select(party, seats, colors)
 
 bundestag
@@ -37,8 +37,8 @@ ggplot(bundestag, aes(x = 1, y = seats, fill = party)) +
 We could try to style this pie chart to make it look the way we want, but I usually find it easier to draw pie charts in cartesian coordinates, using `geom_arc_bar()` from ggforce. This requires a little more data preparation up front but gives much more predictable results on the back end.
 
 ```{r}
-bund_pie <- bundestag %>%
-  arrange(seats) %>%
+bund_pie <- bundestag |>
+  arrange(seats) |>
   mutate(
     end_angle = 2*pi*cumsum(seats)/sum(seats),   # ending angle for each pie slice
     start_angle = lag(end_angle, default = 0),   # starting angle for each pie slice

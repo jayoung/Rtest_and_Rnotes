@@ -30,16 +30,16 @@ find chrome, or find another snapshotting way to capture the image.
 Set up very simple data table:
 
 ``` r
-my_dat <- mtcars %>% 
-    slice_head(n=6) %>% 
+my_dat <- mtcars |> 
+    slice_head(n=6) |> 
     select(am, carb, gear, mpg, drat)
 ```
 
 Show without conditional formatting:
 
 ``` r
-my_dat %>% 
-    kable(caption="Example kable table without conditional formatting") %>% 
+my_dat |> 
+    kable(caption="Example kable table without conditional formatting") |> 
     kable_styling(full_width = FALSE)
 ```
 
@@ -300,11 +300,11 @@ Valiant
 Show without conditional formatting adding html options:
 
 ``` r
-my_dat %>% 
+my_dat |> 
     kable("html",
           # format = "latex", 
           # booktabs = TRUE,
-          caption="Example kable table without conditional formatting add html option", escape = FALSE) %>% 
+          caption="Example kable table without conditional formatting add html option", escape = FALSE) |> 
     kable_styling(full_width = FALSE)
 ```
 
@@ -565,14 +565,14 @@ Valiant
 With conditional formatting (uses `cell_spec()`):
 
 ``` r
-my_dat %>% 
+my_dat |> 
     mutate(drat = cell_spec(drat, 
                             format = "html", 
-                            background=ifelse(drat > 3, "red", "green"))) %>% 
+                            background=ifelse(drat > 3, "red", "green"))) |> 
     kable("html",
           # format = "latex", 
           # booktabs = TRUE,
-          caption="Example kable table with conditional formatting", escape = FALSE) %>% 
+          caption="Example kable table with conditional formatting", escape = FALSE) |> 
     kable_styling(full_width = FALSE)
 ```
 
@@ -836,12 +836,12 @@ Try row_spec (operates AFTER kable_styling, so maybe it’ll show up? NO.
 Again, works within Rstudio but doesn’t render on github)
 
 ``` r
-my_dat %>% 
+my_dat |> 
     kable("html",
           # format = "latex", 
           # booktabs = TRUE,
-          caption="Example kable table with conditional formatting", escape = FALSE) %>% 
-    kable_styling(full_width = FALSE) %>%
+          caption="Example kable table with conditional formatting", escape = FALSE) |> 
+    kable_styling(full_width = FALSE) |>
     row_spec(3:4, bold = T, color = "white", background = "#D7261E")
 ```
 
@@ -1105,20 +1105,20 @@ Example from here
 <https://sharlagelfand.github.io/kableExtra-cookbook/how-to.html#>
 
 ``` r
-data_noun <- comma_survey %>%
-    filter(!is.na(care_data)) %>%
+data_noun <- comma_survey |>
+    filter(!is.na(care_data)) |>
     select(education, care_data)
 
 
-data_noun_percent <- data_noun %>%
-    mutate(education = fct_explicit_na(education, na_level = "Education unknown")) %>%
-    group_by(education, care_data) %>%
-    summarise(n = n()) %>%
+data_noun_percent <- data_noun |>
+    mutate(education = fct_explicit_na(education, na_level = "Education unknown")) |>
+    group_by(education, care_data) |>
+    summarise(n = n()) |>
     mutate(
         prop = n / sum(n),
         percent = percent(prop)
-    ) %>%
-    ungroup() %>%
+    ) |>
+    ungroup() |>
     select(-n)
 ```
 
@@ -1134,8 +1134,8 @@ data_noun_percent <- data_noun %>%
 
 ``` r
 # data_noun_percent
-data_noun_percent_wide <- data_noun_percent %>%
-    select(-prop) %>%
+data_noun_percent_wide <- data_noun_percent |>
+    select(-prop) |>
     pivot_wider(
         names_from = "care_data",
         values_from = "percent"
@@ -1155,11 +1155,11 @@ data_noun_percent_wide
     ## 6 Education unknown                18.5%        30.8%      32.3%  18.5%
 
 ``` r
-data_noun_percent_wide %>%
+data_noun_percent_wide |>
     kable(
         col.names = c("Education", "Not at all", "Not much", "Some", "A lot"),
         align = c("lrrrr")
-    ) %>%
+    ) |>
     add_header_above(header = c(" " = 1, "How much, if at all, do you care about the debate over the use of the word 'data' as a singular or plural noun?" = 4))
 ```
 
@@ -1398,7 +1398,7 @@ Education unknown
 </table>
 
 ``` r
-k <- data_noun_percent_wide %>%
+k <- data_noun_percent_wide |>
     kable(
         col.names = c(
             "Education",
@@ -1422,15 +1422,15 @@ k
 ``` r
 ## this makes the highest proportion in each row bold
 
-data_noun_bold_highest_prop <- data_noun_percent %>%
-    group_by(education) %>%
-    mutate(highest_prop = max(prop)) %>%
+data_noun_bold_highest_prop <- data_noun_percent |>
+    group_by(education) |>
+    mutate(highest_prop = max(prop)) |>
     mutate(percent = cell_spec(percent, format = "html", bold = prop == highest_prop))
 
 # data_noun_bold_highest_prop
 
-data_noun_bold_highest_prop_wide <- data_noun_bold_highest_prop %>%
-    select(-prop, -highest_prop) %>%
+data_noun_bold_highest_prop_wide <- data_noun_bold_highest_prop |>
+    select(-prop, -highest_prop) |>
     pivot_wider(
         names_from = "care_data",
         values_from = "percent"
@@ -1439,12 +1439,12 @@ data_noun_bold_highest_prop_wide <- data_noun_bold_highest_prop %>%
 k_header <- c(1, ncol(data_noun_bold_highest_prop_wide) - 1)
 names(k_header) <- c(" ", "How much, if at all, do you care about the debate over the use of the word 'data' as a singular or plural noun?")
 
-data_noun_bold_highest_prop_wide %>%
+data_noun_bold_highest_prop_wide |>
     kable("html",
           col.names = c("Education", names(data_noun_bold_highest_prop_wide)[-1]),
           align = c("l", rep("r", ncol(data_noun_bold_highest_prop_wide) - 1)),
           escape = FALSE
-    ) %>%
+    ) |>
     add_header_above(header = k_header)
 ```
 

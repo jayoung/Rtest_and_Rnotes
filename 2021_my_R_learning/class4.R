@@ -69,7 +69,7 @@ my_plot +
 
 
 
-yearly_counts <- birth_reduced %>%
+yearly_counts <- birth_reduced |>
   count(year_of_birth, disease) 
 
 ggplot(yearly_counts) +
@@ -78,7 +78,7 @@ ggplot(yearly_counts) +
 
 
 
-yearly_counts_gender <- birth_reduced %>%
+yearly_counts_gender <- birth_reduced |>
   count(year_of_birth, gender) 
 
 ggplot(yearly_counts_gender) +
@@ -86,8 +86,8 @@ ggplot(yearly_counts_gender) +
                 color=gender))
 
 ### same, but slightly more elegant
-birth_reduced %>%
-  count(year_of_birth, gender) %>%
+birth_reduced |>
+  count(year_of_birth, gender) |>
   ggplot() +
   geom_line(aes(x = year_of_birth, y = n, 
                 lty=gender))
@@ -109,22 +109,22 @@ ggplot(smoke_complete) +
   geom_point(aes(x = age_at_diagnosis, y = cigarettes_per_day, color = disease)) +
   facet_grid(rows = vars(vital_status), cols=vars(disease)) 
 
-birth_reduced %>%
-  count(year_of_birth, gender) %>%
+birth_reduced |>
+  count(year_of_birth, gender) |>
   ggplot() +
   geom_line(aes(x = year_of_birth, y = n)) +
   facet_wrap(vars(gender), ncol=1)
 
 
 # ~gender works, as does vars(gender) and "gender".  plain gender does not. 
-birth_reduced %>%
-  count(year_of_birth, gender) %>%
+birth_reduced |>
+  count(year_of_birth, gender) |>
   ggplot() +
   geom_line(aes(x = year_of_birth, y = n)) +
   facet_wrap(~gender, ncol=1)
 
-birth_reduced %>%
-  count(year_of_birth, gender) %>%
+birth_reduced |>
+  count(year_of_birth, gender) |>
   ggplot() +
   geom_line(aes(x = year_of_birth, y = n)) +
   facet_wrap("gender", ncol=1)

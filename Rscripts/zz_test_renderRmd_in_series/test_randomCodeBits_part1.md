@@ -24,9 +24,9 @@ This script (part1) creates a fake dataset, which we will make a plot of
 in part2.
 
 ``` r
-iris_plus_groups <- iris %>% 
-    as_tibble() %>% 
-    mutate(group = sample(1:2, size=nrow(iris), replace=TRUE)) %>% 
+iris_plus_groups <- iris |> 
+    as_tibble() |> 
+    mutate(group = sample(1:2, size=nrow(iris), replace=TRUE)) |> 
     mutate(group=paste0("group_", group)) 
 ```
 

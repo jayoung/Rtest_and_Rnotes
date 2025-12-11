@@ -13,8 +13,8 @@
 #' library(ggforce)
 #'
 #' # calculate the start and end angles for each pie
-#' bund_pie <- bundestag %>%
-#'   arrange(seats) %>%
+#' bund_pie <- bundestag |>
+#'   arrange(seats) |>
 #'   mutate(
 #'     seat_total = sum(seats),
 #'     end_angle = 2*pi*cumsum(seats)/seat_total,   # ending angle for each pie slice

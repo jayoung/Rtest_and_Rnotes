@@ -43,8 +43,8 @@
 #     update_data <- function(data, node_map) {
 #         cn <- colnames(data)
 #         cn <- cn[cn != "node"]
-#         data <- dplyr::inner_join(data, node_map, by = c(node = "old")) %>%
-#             dplyr::select(c("new", cn)) %>% dplyr::rename(node = .data$new)
+#         data <- dplyr::inner_join(data, node_map, by = c(node = "old")) |>
+#             dplyr::select(c("new", cn)) |> dplyr::rename(node = .data$new)
 #         root <- data$node == (n.tips + 1)
 #         data[root, ] <- NA
 #         data[root, "node"] <- n.tips + 1

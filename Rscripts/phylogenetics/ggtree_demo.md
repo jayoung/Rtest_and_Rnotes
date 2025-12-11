@@ -63,7 +63,7 @@ plot(nwk_tree)
 Plot it using ggtree
 
 ``` r
-nwk_tree %>% 
+nwk_tree |> 
     ggtree() +
     geom_tiplab()
 ```
@@ -232,14 +232,14 @@ tree, we first use `as_tibble()`, then manipulate, then use
 `as.treedata(branch.length, label)`:
 
 ``` r
-p1 <- nwk_tree_with_info_2 %>% 
+p1 <- nwk_tree_with_info_2 |> 
     ggtree() +
     geom_tiplab()
 
-p2 <- nwk_tree_with_info_2 %>% 
-    as_tibble() %>% 
-    mutate(new_label= paste(label, fake_phenotype, sep=" ")) %>% 
-    as.treedata(branch.length, label) %>% 
+p2 <- nwk_tree_with_info_2 |> 
+    as_tibble() |> 
+    mutate(new_label= paste(label, fake_phenotype, sep=" ")) |> 
+    as.treedata(branch.length, label) |> 
     ggtree() +
     geom_tiplab(aes(label=new_label)) +
     hexpand(0.1)
@@ -306,7 +306,7 @@ for labels, colors, etc, etc
 
 ``` r
 x <- "tail"
-nwk_tree_with_info %>% 
+nwk_tree_with_info |> 
     ggtree(aes(color=fake_phenotype)) +  # color here colors the branches
     geom_tiplab(aes(color=fake_phenotype))  + # color here colors the tip labels
     ## there's some weird bug where I got errors if I tried to do fake_phenotype=="tail" but I get around it like this
@@ -443,7 +443,7 @@ tip_dat_for_heatmap[4:13,"pos2"] <- "T"
 tip_dat_for_heatmap[9:12,"pos3"] <- "C"
 
 ## save a ggtree plot object
-p <- nwk_tree_with_info %>% 
+p <- nwk_tree_with_info |> 
     ggtree(aes()) + 
     geom_tiplab(aes())
 
@@ -459,7 +459,7 @@ gheatmap(p, tip_dat_for_heatmap,
 Or maybe we turn that into WT/ nonWT
 
 ``` r
-tip_dat_for_heatmap2 <- tip_dat_for_heatmap %>% 
+tip_dat_for_heatmap2 <- tip_dat_for_heatmap |> 
     mutate(across(everything(),
                   function(x) {
                       case_when( is.na(x) ~ "WT",
@@ -484,7 +484,7 @@ give us a correct heatmap. Also, setting rownames on a tibble is
 deprecated.
 
 ``` r
-tip_dat_for_heatmap3 <- tip_dat_for_heatmap2 %>% 
+tip_dat_for_heatmap3 <- tip_dat_for_heatmap2 |> 
     as_tibble(rownames=NA)
 ## we can check the rownames are present:
 # rownames(tip_dat_for_heatmap3)
@@ -508,7 +508,7 @@ geom_point to the right
 
 ``` r
 tr <- rtree(10)
-dd <- tibble(id=tr$tip.label) %>% 
+dd <- tibble(id=tr$tip.label) |> 
     mutate(value=as.integer(str_remove(id, "t")))
 ```
 
@@ -623,9 +623,9 @@ do something more to ensure we retain branch lengths:
 
 ``` r
 # Do I lose branch length on coercion? no, I don't
-tree.owls %>% 
-    as_tibble() %>% 
-    as.treedata() %>% 
+tree.owls |> 
+    as_tibble() |> 
+    as.treedata() |> 
     ggtree() +
     geom_tiplab() +
     geom_treescale() +
@@ -636,8 +636,8 @@ tree.owls %>%
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 ``` r
-(tree.owls %>% 
-        as_tibble() %>% 
+(tree.owls |> 
+        as_tibble() |> 
         as.treedata())@phylo$edge.length
 ```
 
@@ -647,10 +647,10 @@ This double coercion is a cheating way to get a pure tibble rather than
 a `tbl_tree` object. Now we lose branch lengths:
 
 ``` r
-tree.owls %>% 
-    as_tibble() %>% 
-    as_tibble() %>% 
-    as.treedata() %>% 
+tree.owls |> 
+    as_tibble() |> 
+    as_tibble() |> 
+    as.treedata() |> 
     ggtree() +
     geom_tiplab() +
     geom_treescale() +
@@ -664,10 +664,10 @@ But we can avoid losing branch lengths by supplying a couple of
 arguments to `as.treedata()`:
 
 ``` r
-tree.owls %>% 
-    as_tibble() %>% 
-    as_tibble() %>% 
-    as.treedata(branch.length, label) %>% 
+tree.owls |> 
+    as_tibble() |> 
+    as_tibble() |> 
+    as.treedata(branch.length, label) |> 
     ggtree() +
     geom_tiplab() +
     geom_treescale() +
@@ -783,7 +783,7 @@ For most tree layouts we do it like this: `geom_tippoint(aes(x=x+3))`.
 That works fine with default layout (and fan, circular).
 
 ``` r
-nwk_tree %>% 
+nwk_tree |> 
     ggtree() + 
     geom_tippoint(color="blue") +
     geom_tippoint(aes(x=x+3), color="red") +
@@ -797,7 +797,7 @@ created under the hood when ggtree runs (thank you to Brad Jones for the
 [solution](https://github.com/YuLab-SMU/ggtree/issues/687))
 
 ``` r
-nwk_tree %>% 
+nwk_tree |> 
     ggtree(layout="equal_angle") + 
     geom_tippoint(color="blue") +
     geom_tippoint(aes(x=x+cos(angle*pi/180)*3, 

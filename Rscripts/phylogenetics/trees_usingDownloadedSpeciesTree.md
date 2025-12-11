@@ -37,7 +37,7 @@ mammalTrees <- lapply(mammalTreeFiles, ape::read.nexus)
 names(mammalTrees) <- gsub("/Volumes/malik_h/grp/public_databases/trees/Upham_speciesTrees/MamPhy_fullPosterior_BDvr_","",mammalTreeFiles)
 names(mammalTrees) <- gsub("_MCC_v2_target.nex","",names(mammalTrees))
 
-mammalTreeTaxonomyInfo <- "/Volumes/malik_h/grp/public_databases/trees/Upham_speciesTrees/taxonomy_mamPhy_5911species.csv" %>% 
+mammalTreeTaxonomyInfo <- "/Volumes/malik_h/grp/public_databases/trees/Upham_speciesTrees/taxonomy_mamPhy_5911species.csv" |> 
     read_csv(show_col_types = FALSE)
 ```
 
@@ -51,19 +51,19 @@ names(RTL3_aln) <- sapply(strsplit(names(RTL3_aln), " "), "[[", 1)
 ## now make a seqinfo table - seqname, seqlength, these overlaps, num capsid/protease-overlapping stop-free regions
 RTL3_alnInfoTable <- tibble(id=names(RTL3_aln))
 ## get species name from id
-RTL3_alnInfoTable <- RTL3_alnInfoTable %>% 
-    separate(id, into=c(NA,"species"), extra="drop", remove=FALSE) %>% 
-    mutate(species=str_replace(species, "CapsidHMMhit", "")) %>% 
-    mutate(species=str_replace(species, "ProteaseORF", "")) %>% 
-    mutate(species=str_replace(species, "BetweenORFsRegion", "")) %>% 
-    mutate(species=str_to_sentence(to_snake_case(species))) %>% 
+RTL3_alnInfoTable <- RTL3_alnInfoTable |> 
+    separate(id, into=c(NA,"species"), extra="drop", remove=FALSE) |> 
+    mutate(species=str_replace(species, "CapsidHMMhit", "")) |> 
+    mutate(species=str_replace(species, "ProteaseORF", "")) |> 
+    mutate(species=str_replace(species, "BetweenORFsRegion", "")) |> 
+    mutate(species=str_to_sentence(to_snake_case(species))) |> 
     mutate(species=str_replace_all(species,"_"," "))
 ```
 
 ``` r
-specNamesToGetTreeFor <- RTL3_alnInfoTable %>% 
-    select(species) %>% 
-    deframe() %>% 
+specNamesToGetTreeFor <- RTL3_alnInfoTable |> 
+    select(species) |> 
+    deframe() |> 
     unique()
 ```
 
@@ -78,12 +78,12 @@ commonNameLookup <- sci2comm(sci=specNamesToGetTreeFor)
 # table( sapply(commonNameLookup, is.na))
 
 ## add commonNameLookup to RTL3_alnInfoTable
-commonNameLookup_tbl <- commonNameLookup %>% 
-    unlist() %>% 
+commonNameLookup_tbl <- commonNameLookup |> 
+    unlist() |> 
     as_tibble(rownames="species")
-commonNameLookup_tbl <- commonNameLookup_tbl %>% 
+commonNameLookup_tbl <- commonNameLookup_tbl |> 
     dplyr::rename("common_name"="value")
-RTL3_alnInfoTable <- left_join(RTL3_alnInfoTable, commonNameLookup_tbl, by="species") %>% 
+RTL3_alnInfoTable <- left_join(RTL3_alnInfoTable, commonNameLookup_tbl, by="species") |> 
     relocate(common_name, .after="species")
 ```
 
@@ -102,7 +102,7 @@ taxonomy database helped me find the versions of species names that
 Upham used
 
 ``` r
-RTL3_alnInfoTable <- RTL3_alnInfoTable %>% 
+RTL3_alnInfoTable <- RTL3_alnInfoTable |> 
     mutate(upham_name = case_when( species=="Equus asinus" ~ "Equus africanus",
                                    species=="Carlito syrichta" ~ "Tarsius syrichta",
                                    species=="Canis lupus familiaris" ~ "Canis lupus",
@@ -114,7 +114,7 @@ RTL3_alnInfoTable <- RTL3_alnInfoTable %>%
                                    species=="Piliocolobus tephrosceles" ~ "Colobus guereza", ## not the same species, but I just want it appearing as a sister taxon to  ColobusAngolensism which is present
                                    species=="Nannospalax galili" ~ "Myospalax aspalax", ## really not the same, but any spalax will do
                                    .default = species) )
-RTL3_alnInfoTable <- RTL3_alnInfoTable %>% 
+RTL3_alnInfoTable <- RTL3_alnInfoTable |> 
     mutate(upham_name=str_replace_all(upham_name, " ", "_"))
 
 ## add upham info to my table
@@ -123,11 +123,11 @@ RTL3_alnInfoTable <- left_join(RTL3_alnInfoTable, mammalTreeTaxonomyInfo, by=c("
 
 ``` r
 ### check now whether all the species I want are in the big tree - they are
-specNamesToGetTreeFor_upham <- RTL3_alnInfoTable %>%
-    # filter(!is.na(name_in_fig)) %>%
-    # select(upham_name) %>%
-    select(tiplabel) %>% 
-    deframe() %>%
+specNamesToGetTreeFor_upham <- RTL3_alnInfoTable |>
+    # filter(!is.na(name_in_fig)) |>
+    # select(upham_name) |>
+    select(tiplabel) |> 
+    deframe() |>
     unique()
 # table( tolower(specNamesToGetTreeFor_upham) %in% tolower(mammalTreeTaxonomyInfo$tiplabel ))
 ```
@@ -140,13 +140,13 @@ upham_tree_subset <-  keep.tip(mammalTrees[["DNAonly_4098sp_topoFree_NDexp"]], s
 
 ## replace names with common name
 upham_tree_subset_rename <- upham_tree_subset
-upham_tree_subset_rename$tip.label <- RTL3_alnInfoTable[match(upham_tree_subset$tip.label, RTL3_alnInfoTable$tiplabel),"common_name"] %>% deframe()
+upham_tree_subset_rename$tip.label <- RTL3_alnInfoTable[match(upham_tree_subset$tip.label, RTL3_alnInfoTable$tiplabel),"common_name"] |> deframe()
 
 ### write tree to a file
 write.tree(upham_tree_subset_rename, file=here("Rscripts/phylogenetics/upham_tree_subset_rename.phy"))
 
 ### plot it
-upham_tree_subset_rename %>% 
+upham_tree_subset_rename |> 
     ggtree() +
     geom_tiplab() +
     hexpand(2)

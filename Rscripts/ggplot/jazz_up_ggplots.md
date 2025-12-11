@@ -80,7 +80,7 @@ use the annotate_text font (“Shadows Into Light”) for everything in the
 plot
 
 ``` r
-iris %>% 
+iris |> 
     ggplot(aes(x=Sepal.Length, y=Sepal.Width, color=Species)) +
     geom_point() +
     theme(text = element_text(size = 16, family = annotate_text, 
@@ -92,7 +92,7 @@ iris %>%
 use the entire theme_fe (now uses font_legend, ‘Merriweather Sans’) :
 
 ``` r
-iris %>% 
+iris |> 
     ggplot(aes(x=Sepal.Length, y=Sepal.Width, color=Species)) +
     geom_point() +
     theme_fe(font_legend = font_legend)

@@ -8,33 +8,33 @@ data('movies')
 
 # Exercise 1a
 # Use mutate to create a centered version of the rating variable. A centered variable is one whose mean has been subtracted from it. 
-movies %>% 
-  mutate(rating_norm=rating-mean(rating)) %>% 
+movies |> 
+  mutate(rating_norm=rating-mean(rating)) |> 
   str
 
 # Exercise 1b
 # Use filter to create a new data frame that has only movies from the years 2000 and beyond. 
-movies %>% 
-  mutate(rating_norm=rating-mean(rating)) %>% 
-  filter(year>=2000) %>% 
+movies |> 
+  mutate(rating_norm=rating-mean(rating)) |> 
+  filter(year>=2000) |> 
   str
 
 # Exercise 1c
 # Use select to create a new data frame that only has the title, year, budget, length, rating and votes variables. There are at least 3 ways to do this.
-movies %>% 
+movies |> 
   select(title, year, budget, length, rating, votes)
 
 # Exercise 1d
 # Rename the length column to length_in_min (i.e. length in minutes).
-movies %>% 
+movies |> 
   rename(length_in_min=length) 
 
 
 # Exercise 2
 # Use group_by to group the data by year, and summarize to create a new variable that is the average budget. The summarize function works just like mutate in this case.  Instead of doing na.rm=TRUE on the mean column, I get rid of those movies entirely, so the year doesn't show up if there aren't any movies whose budget is known
-movies %>% 
-  filter(!is.na(budget)) %>% 
-  group_by(year) %>% 
+movies |> 
+  filter(!is.na(budget)) |> 
+  group_by(year) |> 
   summarise(meanBudget=mean(budget))
 
 
@@ -44,7 +44,7 @@ movies %>%
 dat <- tibble(id = 1:10,
              x = rnorm(10),
              y = rnorm(10))
-dat_tidy <- dat %>% 
+dat_tidy <- dat |> 
   pivot_longer(cols=-id, names_to="measurement")
 
 
@@ -54,10 +54,10 @@ dat_tidy <- dat %>%
 # select the same variables as before but also the mpaa, Action, and Drama variables
 # group by mpaa and (your choice) Action or Drama
 # get the average rating
-movies %>% 
-  filter(year>1990) %>% 
-  select(title, year, budget, length, rating, votes, mpaa, Action, Drama) %>% 
-  group_by(mpaa,Action) %>% 
+movies |> 
+  filter(year>1990) |> 
+  select(title, year, budget, length, rating, votes, mpaa, Action, Drama) |> 
+  group_by(mpaa,Action) |> 
   summarise(aveRating=mean(rating)) 
 
 
@@ -93,14 +93,14 @@ stocks <- data.frame(
   Z = rnorm(10, 0, 4)
 )
 
-stocks %>% head
+stocks |> head
 
-stocks %>% 
+stocks |> 
   pivot_longer(
     cols      = -time,   # works similar to using select()
     names_to  = 'stock', # the name of the column that will have column names as labels
     values_to = 'price'  # the name of the column for the values
-  ) %>% 
+  ) |> 
   head()
 
 stocks <- data.frame(
@@ -115,13 +115,13 @@ stocks <- data.frame(
 
 head(stocks)
 
-stocks %>% 
+stocks |> 
   pivot_longer(
     cols = -time,
     names_to = c('stock', 'entry'),   ### two names because we're splitting column headers
     names_sep = '_',    ### this does some splitting on the column headers
     values_to = 'price'
-  ) %>% 
+  ) |> 
   head()
 
 
@@ -129,20 +129,20 @@ stocks %>%
 library(rvest)
 current_year = lubridate::year(Sys.Date())
 url = glue::glue("http://www.basketball-reference.com/leagues/NBA_{current_year-1}_totals.html")
-bball = read_html(url) %>% 
-  html_nodes("#totals_stats") %>% 
-  html_table() %>% 
+bball = read_html(url) |> 
+  html_nodes("#totals_stats") |> 
+  html_table() |> 
   data.frame() 
 
 
 #### mutate can be used to change class of columns, not just to add columns:
 # across means work on multiple columns
-bball = bball %>% 
+bball = bball |> 
   mutate(across(c(-Player, -Pos, -Tm), as.numeric))
 # I get warnings about NA coercion, because some values were ""
 
 ## some more examples
-bball = bball %>% 
+bball = bball |> 
   mutate(
     trueShooting = PTS / (2 * (FGA + (.44 * FTA))),
     effectiveFG  = (FG + (.5 * X3P)) / FGA,
@@ -151,9 +151,9 @@ bball = bball %>%
 
 summary(select(bball, shootingDif))
 
-bball %>% 
-  separate(Player, into=c('first_name', 'last_name'), sep=' ') %>% 
-  select(1:5) %>% 
+bball |> 
+  separate(Player, into=c('first_name', 'last_name'), sep=' ') |> 
+  select(1:5) |> 
   head()
 # there were warnings about players who had less or more than two names
 

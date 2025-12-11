@@ -14,11 +14,11 @@ library(weights)
 
 ``` r
 dat <- tibble(x = c(1,1,1,1,1,1,2,2,2,3,3,3,4,4),
-              wt = c(.5,.5,.5,.5,.5,1,1,1,1,2,2,2,2,2) ) %>% 
-  mutate(y=rev(x)+1) %>% 
+              wt = c(.5,.5,.5,.5,.5,1,1,1,1,2,2,2,2,2) ) |> 
+  mutate(y=rev(x)+1) |> 
   relocate(y, .after=x) 
-dat %>% 
-    kable() %>% 
+dat |> 
+    kable() |> 
     kable_styling(full_width = FALSE)
 ```
 
@@ -320,8 +320,8 @@ wt
 </table>
 
 ``` r
- dat %>% 
-  pivot_longer(cols=-wt, names_to="class", values_to="value") %>% 
+ dat |> 
+  pivot_longer(cols=-wt, names_to="class", values_to="value") |> 
   ggplot(aes(x=class, y=value)) +
   geom_boxplot() +
   labs(x="") +

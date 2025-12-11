@@ -34,8 +34,8 @@ b <- ggplot(seals, aes(x=long, y=lat))
 # ?seals 
 # "This vector field was produced from the data described in..."
 ### each longitude value in seals is present 21 times, each latitude 55 times
-# seals %>% count(long) %>% count(n)
-# seals %>% count(lat)  %>% count(n)
+# seals |> count(long) |> count(n)
+# seals |> count(lat)  |> count(n)
 # it's simply a grid in x-y space
 ```
 
@@ -141,8 +141,8 @@ the example given makes it hard to see what’s going on, so I sample 30
 rows at random
 
 ``` r
-seals %>% 
-    slice_sample(n=30) %>% 
+seals |> 
+    slice_sample(n=30) |> 
     ggplot(aes(xmin = long, ymin = lat, 
                xmax = long + 1, ymax = lat + 1)) + 
     geom_rect() +

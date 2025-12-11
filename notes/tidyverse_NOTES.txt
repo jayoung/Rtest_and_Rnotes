@@ -86,21 +86,21 @@ as.data.frame(df)
 With base R data frames, [ sometimes returns a data frame, and sometimes returns a vector. With tibbles, [ always returns another tibble.
 
 
-#### the %>% operator
+#### the |> operator
 
-the pipe operator, %>%, channels the flow of tidy operations. 
+the pipe operator, |>, channels the flow of tidy operations. 
 
-?"%>%"
+?"|>"
 
 
 # Basic use:
-iris %>% head
+iris |> head
 
 # Use with lhs as first argument
-iris %>% head(10)
+iris |> head(10)
 
 # Using the dot place-holder
-"Ceci n'est pas une pipe" %>% gsub("une", "un", .)
+"Ceci n'est pas une pipe" |> gsub("une", "un", .)
 
 #### working through some exercises
   df <- data.frame(abc = 1, xyz = "a")

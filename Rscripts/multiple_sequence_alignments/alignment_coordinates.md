@@ -106,7 +106,7 @@ sequence. Show the last few rows of the tibble.
 ``` r
 alnPos_lookup_table <- makeLookupTibble( aln[ref_name] )
 
-alnPos_lookup_table %>% 
+alnPos_lookup_table |> 
     tail()
 ```
 
@@ -149,13 +149,13 @@ First, let’s turn that matrix 90 degrees and make it into a tibble,
 which will be easier to work with
 
 ``` r
-aln_counts <- aln_counts %>% 
-    t() %>% 
-    as.data.frame() %>% 
-    as_tibble(rownames="aln_pos") %>% 
+aln_counts <- aln_counts |> 
+    t() |> 
+    as.data.frame() |> 
+    as_tibble(rownames="aln_pos") |> 
     mutate(aln_pos=as.integer(aln_pos))
 
-aln_counts %>% 
+aln_counts |> 
     head()
 ```
 
@@ -174,8 +174,8 @@ Use `left_join()` to add the human positions
 ``` r
 aln_counts <- left_join(aln_counts,
                         alnPos_lookup_table, 
-                        by="aln_pos") %>% 
-    relocate(human_CENPA_ORF, .after=aln_pos) %>% 
+                        by="aln_pos") |> 
+    relocate(human_CENPA_ORF, .after=aln_pos) |> 
     dplyr::rename(human_pos=human_CENPA_ORF)
 aln_counts
 ```
@@ -198,14 +198,14 @@ aln_counts
 Add the nucleotide in human
 
 ``` r
-human_nucs <- aln[[ref_name]] %>% 
-    as.character() %>% 
+human_nucs <- aln[[ref_name]] |> 
+    as.character() |> 
     str_split("")
 human_nucs <- human_nucs[[1]]
 
 aln_counts$human_nuc <- human_nucs
 
-aln_counts <- aln_counts %>% 
+aln_counts <- aln_counts |> 
     relocate(human_nuc, .after=human_pos)
 aln_counts
 ```
@@ -229,7 +229,7 @@ Perhaps we drop the positions where human has a gap - we might not care
 about those
 
 ``` r
-aln_counts <- aln_counts %>% 
+aln_counts <- aln_counts |> 
     filter(human_nuc != "-")
 aln_counts
 ```
@@ -285,19 +285,19 @@ addAlnCoords <- function(feature_tbl,
     }
     
     ## get lookup tbl in a useful format
-    lookup_tbl <- lookup_tbl %>% 
+    lookup_tbl <- lookup_tbl |> 
         select(aln_pos, ref_pos=matches(refseq_name))
 
     # look up start aln_pos
     feature_tbl <- left_join(feature_tbl,
                              lookup_tbl,
-                             by=c("start"="ref_pos") ) %>% 
+                             by=c("start"="ref_pos") ) |> 
         ## the rename column is weird and misbehaves when certain Bioconductor packages are loaded, unless I specify that I want to use the rename function from the dplyr package, like this:
         dplyr::rename(start_aln=aln_pos)
     # look up end aln_pos
     feature_tbl <- left_join(feature_tbl,
                              lookup_tbl,
-                             by=c("end"="ref_pos") ) %>% 
+                             by=c("end"="ref_pos") ) |> 
         dplyr::rename(end_aln=aln_pos)
     return(feature_tbl)
 }

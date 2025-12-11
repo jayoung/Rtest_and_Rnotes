@@ -145,29 +145,29 @@ mean( select(myDat2, mpg)  )
 # instead, we do this: 
 mean(myDat2$mpg)
 
-# the 'pipe' operater is really helpful in writing understandable code: %>% 
+# the 'pipe' operater is really helpful in writing understandable code: |> 
 # instead of crazy nested parentheses, e.g.
 mean( select(myDat2, mpg)  )
 # we can do this:
-myDat2 %>% 
-    filter(cyl == 8) %>% 
+myDat2 |> 
+    filter(cyl == 8) |> 
     summarize(mean(mpg))
 
 # alternative notation - the dot means take the thing coming in through the pipe:
-myDat2 %>% 
-    filter(., cyl == 8) %>% 
+myDat2 |> 
+    filter(., cyl == 8) |> 
     summarize(., mean(mpg))
 
 
 # the tidyverse way to make graphs is using the ggplot2 package (command = 'ggplot')
-myDat2 %>% 
+myDat2 |> 
     ggplot(aes(x=mpg,y=wt)) +
     geom_point()
 
-myDat2 %>% 
+myDat2 |> 
     ggplot(aes(x=mpg,y=wt, col=cyl)) +
     geom_point()
 
-myDat2 %>% 
+myDat2 |> 
     ggplot(aes(x=mpg,y=wt, col=as.factor(cyl))) +
     geom_point()

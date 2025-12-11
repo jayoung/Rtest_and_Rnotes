@@ -50,13 +50,13 @@ undebug(mean_center)
 
 ### example data 2, using tidyverse
 library(tidyverse)
-diamonds %>%
+diamonds |>
     mutate(
         price_per_carat = price / carat
-    ) %>% 
+    ) |> 
     group_by(
         cut
-    ) %>% 
+    ) |> 
     summarise(
         price_mean = mean(price_per_carat),
         price_sd = sd(price_per_carat),
@@ -66,15 +66,15 @@ diamonds %>%
 ## need to have >1 step for debugging to be effective
 myFunc <- function(myTbl) {
     output <- myTbl
-    output <- output %>%
+    output <- output |>
         mutate(
             price_per_carat = price / carat
         ) 
-    output <- output %>% 
+    output <- output |> 
         group_by(
             cut
         )
-    output <- output %>% 
+    output <- output |> 
         summarise(
             price_mean = mean(price_per_carat),
             price_sd = sd(price_per_carat),
@@ -93,15 +93,15 @@ undebug(myFunc)
 myFunc2 <- function(myTbl) {
     browser()
     output <- myTbl
-    output <- output %>%
+    output <- output |>
         mutate(
             price_per_carat = price / carat
         ) 
-    output <- output %>% 
+    output <- output |> 
         group_by(
             cut
         )
-    output <- output %>% 
+    output <- output |> 
         summarise(
             price_mean = mean(price_per_carat),
             price_sd = sd(price_per_carat),

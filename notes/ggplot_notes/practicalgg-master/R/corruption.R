@@ -14,9 +14,9 @@
 #' library(tidyverse)
 #' library(cowplot)
 #'
-#' corruption %>%
-#'   filter(year == 2015) %>%
-#'   na.omit() %>%
+#' corruption |>
+#'   filter(year == 2015) |>
+#'   na.omit() |>
 #'   ggplot(aes(cpi, hdi)) + geom_point(aes(color = region)) +
 #'   geom_smooth(method = 'lm', formula = y~log(x), se = FALSE) +
 #'   scale_color_brewer(name = NULL, type = "qual") +

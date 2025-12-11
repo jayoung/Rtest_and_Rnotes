@@ -90,17 +90,17 @@ Get a couple of example datasets - show the first few rows of each
 (clean up the built-in iris dataset a bit)
 
 ```{r}
-iris_tbl <- iris %>% 
-    as_tibble() %>% 
+iris_tbl <- iris |> 
+    as_tibble() |> 
     clean_names()
 ```
 
 `iris_tbl` has `r nrow(iris_tbl)` rows and `r ncol(iris_tbl)` columns
 
 ```{r}
-iris_tbl %>% 
-    slice_head(n=3) %>% 
-    kable(caption="iris_tbl") %>% 
+iris_tbl |> 
+    slice_head(n=3) |> 
+    kable(caption="iris_tbl") |> 
     kable_styling(full_width = FALSE)
 ```
 
@@ -109,9 +109,9 @@ iris_tbl %>%
 `penguins` has `r nrow(penguins)` rows and `r ncol(penguins)` columns
 
 ```{r}
-penguins %>% 
-    slice_head(n=3) %>% 
-    kable(caption="penguins") %>% 
+penguins |> 
+    slice_head(n=3) |> 
+    kable(caption="penguins") |> 
     kable_styling(full_width = FALSE)
 ```
 
@@ -121,17 +121,17 @@ penguins %>%
 Use `scale_color_identity()` if colors are specified by name in a column. Note that by default `guide="none"` for `scale_color_identity()` (could add `guide=guide_legend()` but that would just show the color names, which makes no sense)
 
 ```{r, fig.height=4, fig.width=8}
-p1 <- iris_tbl %>% 
+p1 <- iris_tbl |> 
     ggplot(aes(x=sepal_length, y=petal_length, color=species)) +
     geom_point() + 
     theme_classic() +
     labs(title="Color points by species")
 
-p2 <- iris_tbl %>% 
+p2 <- iris_tbl |> 
     mutate(species_color=case_when(
         species=="versicolor" ~ "orange",
         TRUE ~ "darkgray"
-    )) %>% 
+    )) |> 
     ggplot(aes(x=sepal_length, y=petal_length, color=species_color)) +
     geom_point() + 
     theme_classic() +
@@ -146,12 +146,12 @@ p1 + p2
 The trick is that we need to 'dodge' the points, using  `geom_point(position=position_jitterdodge())` (or we could have used `position_dodge` if we don't want the jitter)
 
 ```{r, fig.height=3, fig.width=5}
-iris_plus_groups <- iris_tbl %>% 
-    as_tibble() %>% 
-    mutate(group = sample(1:2, size=nrow(iris_tbl), replace=TRUE)) %>% 
+iris_plus_groups <- iris_tbl |> 
+    as_tibble() |> 
+    mutate(group = sample(1:2, size=nrow(iris_tbl), replace=TRUE)) |> 
     mutate(group=paste0("group_", group)) 
 
-iris_plus_groups %>% 
+iris_plus_groups |> 
     ggplot(aes(x=species, y=sepal_length, color=group)) +
     geom_boxplot() +
     geom_point(position=position_jitterdodge(jitter.width = 0.12)) +
@@ -162,13 +162,13 @@ iris_plus_groups %>%
 If there's an empty group, widths and spacing get weird (see left plot below), so we do `geom_boxplot(position = position_dodge(preserve = "single"))` (see right plot below).
 
 ```{r, fig.height=3, fig.width=8}
-p1 <- iris_plus_groups %>% 
-    filter( ! (species=="versicolor" & group=="group_2")  ) %>% 
+p1 <- iris_plus_groups |> 
+    filter( ! (species=="versicolor" & group=="group_2")  ) |> 
     ggplot(aes(x=species, y=sepal_length, color=group)) +
     geom_boxplot() +
     theme_classic()
-p2 <- iris_plus_groups %>% 
-    filter( ! (species=="versicolor" & group=="group_2")  ) %>% 
+p2 <- iris_plus_groups |> 
+    filter( ! (species=="versicolor" & group=="group_2")  ) |> 
     ggplot(aes(x=species, y=sepal_length, color=group)) +
     geom_boxplot(position = position_dodge(preserve = "single")) +
     theme_classic()
@@ -181,8 +181,8 @@ The `position_dodge2` function gives ALMOST the same outputas `position_dodge`, 
 
 
 ```{r, fig.height=3, fig.width=5}
-iris_plus_groups %>% 
-    filter( ! (species=="versicolor" & group=="group_2")  ) %>% 
+iris_plus_groups |> 
+    filter( ! (species=="versicolor" & group=="group_2")  ) |> 
     ggplot(aes(x=species, y=sepal_length, color=group)) +
     geom_boxplot(position = position_dodge2(preserve = "single")) +
     theme_classic()
@@ -193,8 +193,8 @@ iris_plus_groups %>%
 To ALSO add geom_point and keep them lined up is tricky! This might be fixed in newer versions of ggplot2 - there are a few related bug reports.  In the meantime this is a workaround (given [here](https://github.com/tidyverse/ggplot2/issues/2712)) - we have to use `position_dodge2` for the boxplots and `position_jitterdodge` for the points:
 
 ```{r, fig.height=3, fig.width=5}
-iris_plus_groups %>% 
-    filter( ! (species=="versicolor" & group=="group_2")  ) %>% 
+iris_plus_groups |> 
+    filter( ! (species=="versicolor" & group=="group_2")  ) |> 
     ggplot(aes(x=species, y=sepal_length, color=group)) + 
     geom_boxplot(position = position_dodge2(0.75, preserve = 'single')) +
     geom_point(position = position_jitterdodge(dodge.width=0.75, jitter.width=0.15))+
@@ -221,8 +221,8 @@ Rotate x axis labels:
 ` + theme(axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 0.5))`
 
 ```{r, fig.height=4, fig.width=4}
-penguins %>%
-    filter(!is.na(flipper_length_mm)) %>% 
+penguins |>
+    filter(!is.na(flipper_length_mm)) |> 
     ggplot(aes(x=species, y=flipper_length_mm, fill=species)) +
     geom_violin(scale = "width") + 
     stat_summary(fun = "median", geom = "point",
@@ -252,9 +252,9 @@ Demo based on [rfortherestofus](https://rfortherestofus.com/2023/10/annotate-vs-
 Example where annotate is better
 
 ```{r, fig.height=5, fig.width=5}
-scatterplot <- palmerpenguins::penguins %>% 
-    select(bill_length_mm, flipper_length_mm, species) %>% 
-    drop_na()%>% 
+scatterplot <- palmerpenguins::penguins |> 
+    select(bill_length_mm, flipper_length_mm, species) |> 
+    drop_na()|> 
     ggplot(aes(bill_length_mm, flipper_length_mm, col = species)) +
     geom_point(size = 2.5) +
     labs(
@@ -334,8 +334,8 @@ We can use geom_shadowtext() pretty much the same as we'd use geom_label, using 
 
 ```{r, fig.height=4, fig.width=5}
 ## the plot
-penguins %>% 
-    drop_na() %>%
+penguins |> 
+    drop_na() |>
     ggplot(
         aes(bill_length_mm, flipper_length_mm, fill = species)
     ) +
@@ -357,8 +357,8 @@ penguins %>%
 `str_wrap()` - you have to figure out width manually, which can be tedious
 
 ```{r, fig.height=3, fig.width=5}
-penguins %>% 
-    count(island) %>%
+penguins |> 
+    count(island) |>
     ggplot(aes(x=island, y=n)) +
     geom_col() +
     labs(title="a short title",
@@ -368,8 +368,8 @@ penguins %>%
 Instead use `ggtext` package - the element_textbox_simple will automatically wrap text to fit whatever space is available.
 
 ```{r, fig.height=3, fig.width=5}
-penguins %>% 
-    count(island) %>%
+penguins |> 
+    count(island) |>
     ggplot(aes(x=island, y=n)) +
     geom_col() +
     labs(title="a short title",
@@ -386,7 +386,7 @@ df <- data.frame(measurement = rnorm(20,mean=30),
                            rep('group1',10)), 
                  sex = c(rep(c('M','F'),10)))
 
-df %>%
+df |>
     ggplot(aes(sex, measurement, color = sex)) +
     geom_boxplot() +
     facet_wrap(~group, labeller = label_wrap_gen(width=24))+
@@ -427,8 +427,8 @@ We do it a slightly weird way because it's a ggExtraPlot object not a regular gg
 
 ```{r, fig.height=4, fig.width=5}
 ## first make a basic plot
-p1 <- penguins %>% 
-    drop_na() %>%
+p1 <- penguins |> 
+    drop_na() |>
     ggplot(
         aes(bill_length_mm, flipper_length_mm, color = species)
     ) +
@@ -489,8 +489,8 @@ print(my_ggMarginal)
 my_penguin_colors <- c(Adelie="orange",
                        Gentoo="purple",
                        Chinstrap="forestgreen")
-penguins %>%  
-    drop_na() %>% 
+penguins |>  
+    drop_na() |> 
     my_ggMarginal(x_var="bill_length_mm",
                   y_var="flipper_length_mm", color_var="species",
                   my_xlim=c(0,60), my_ylim=c(160,240),
@@ -504,8 +504,8 @@ If we want to show >1 of those plots together (from `my_ggMarginal`), we need a 
 Then we combine plots into a list, and feed that to `combine_myGGmarginal_plots`:
 
 ```{r}
-p1 <- penguins %>%  
-    drop_na() %>% 
+p1 <- penguins |>  
+    drop_na() |> 
     my_ggMarginal(x_var="bill_length_mm",
                   y_var="flipper_length_mm", 
                   color_var="species",
@@ -551,8 +551,8 @@ Maybe we want to look at the counts, or the x-axis bin boundaries - we can use `
 
 ```{r}
 # i is which layer to look at
-layer_data(p1, i = 1) %>% 
-    kable(digits=2) %>% 
+layer_data(p1, i = 1) |> 
+    kable(digits=2) |> 
     kable_styling(full_width = FALSE)
 ```
 

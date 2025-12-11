@@ -55,19 +55,19 @@ in
 
 ``` r
 ## this doesn't work (although group_by would)
-# mtcars %>% split(cyl)
+# mtcars |> split(cyl)
 
 ## this does work, returns list of 3 data frames
-# mtcars %>% 
+# mtcars |> 
 #     split(.$cyl)
 ```
 
-This could also have been achieved with `group_by %>% summarise`, but
+This could also have been achieved with `group_by |> summarise`, but
 for more complex functions you probably need `map`
 
 ``` r
-mtcars %>% 
-    split(.$cyl) %>% 
+mtcars |> 
+    split(.$cyl) |> 
     map(function(df){ mean(df$mpg) })
 ```
 
@@ -81,8 +81,8 @@ mtcars %>%
     ## [1] 15.1
 
 ``` r
-mtcars %>% 
-    group_by(cyl) %>% 
+mtcars |> 
+    group_by(cyl) |> 
     summarize( mean(mpg) )
 ```
 
@@ -96,8 +96,8 @@ mtcars %>%
 Using `\` - the backslash is shorthand for `function`:
 
 ``` r
-mtcars %>% 
-    split(.$cyl) %>% 
+mtcars |> 
+    split(.$cyl) |> 
     map(\(df){ mean(df$mpg) })
 ```
 
@@ -114,8 +114,8 @@ A more complex function: linear modelling using `lm()`. Output of this
 is a list object, each of which is the output of the lm function:
 
 ``` r
-models <- mtcars %>% 
-    split(.$cyl) %>% 
+models <- mtcars |> 
+    split(.$cyl) |> 
     map(function(df) lm(mpg ~ wt, data = df))
 ```
 
@@ -123,16 +123,16 @@ purrr has a shortcut to make that syntax less verbose - the `.` refers
 to the current list element, and this is a “one-sided function”
 
 ``` r
-models <- mtcars %>% 
-    split(.$cyl) %>% 
+models <- mtcars |> 
+    split(.$cyl) |> 
     map(~lm(mpg ~ wt, data = .))
 ```
 
 Extract bits of the output of lm for each list element:
 
 ``` r
-models %>% 
-    map(summary) %>% 
+models |> 
+    map(summary) |> 
     map_dbl(~.$r.squared)
 ```
 
@@ -142,8 +142,8 @@ models %>%
 or this does the same thing:
 
 ``` r
-models %>% 
-    map(summary) %>% 
+models |> 
+    map(summary) |> 
     map_dbl("r.squared")
 ```
 
@@ -154,7 +154,7 @@ selecting list elements by position:
 
 ``` r
 x <- list(list(1, 2, 3), list(4, 5, 6), list(7, 8, 9))
-x %>% map_dbl(2)
+x |> map_dbl(2)
 ```
 
     ## [1] 2 5 8
@@ -178,7 +178,7 @@ myPlotFunc <- function(dat) {
 }
 
 ## test it on the whole dataset
-iris %>% myPlotFunc()
+iris |> myPlotFunc()
 ```
 
 ![](explore_purrr_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
@@ -187,8 +187,8 @@ Now we try using the tidyverse way to split and apply (=map)
 
 ``` r
 ## group_split then map to plot each (purrr::map)
-temp <- iris %>%
-    group_split(Species) %>%
+temp <- iris |>
+    group_split(Species) |>
     map(myPlotFunc)
 temp[[1]] + temp[[2]] + temp[[3]]
 ```
@@ -200,8 +200,8 @@ Another way to write that is by using an anonymous function. Note the
 denote the data being passed in
 
 ``` r
-temp <- iris %>%
-    group_split(Species) %>%
+temp <- iris |>
+    group_split(Species) |>
     map(~ggplot(.,
                aes(x = Petal.Width, y = Petal.Length)) +
             geom_point() +
@@ -220,7 +220,7 @@ Write code that uses one of the map functions to:
 Compute the mean of every column in mtcars.
 
 ``` r
-mtcars %>% 
+mtcars |> 
     map_dbl(mean)
 ```
 
@@ -232,9 +232,9 @@ mtcars %>%
 Determine the type of each column in nycflights13::flights
 
 ``` r
-nycflights13::flights %>% 
+nycflights13::flights |> 
     # map(typeof)
-    map(class) %>% 
+    map(class) |> 
     map_chr(1)  # need this because class(nycflights13::flights$time_hour) had two elements ("POSIXct" "POSIXt")
 ```
 
@@ -250,8 +250,8 @@ nycflights13::flights %>%
 Compute the number of unique values in each column of iris.
 
 ``` r
-iris %>% 
-    map(unique) %>% 
+iris |> 
+    map(unique) |> 
     map_int(length)
 ```
 
@@ -263,7 +263,7 @@ and 100.
 
 ``` r
 x <- c(-10, 0, 10, 100)
-x %>% 
+x |> 
     map(~ rnorm(n=10, mean=.))
 ```
 
@@ -287,7 +287,7 @@ How can you create a single vector that for each column in a data frame
 indicates whether or not it’s a factor?
 
 ``` r
-iris %>% 
+iris |> 
     map_lgl(is.factor)
 ```
 
@@ -310,8 +310,8 @@ Rewrite map(x, function(df) lm(mpg ~ wt, data = df)) to eliminate the
 anonymous function.
 
 ``` r
-mtcars %>% 
-    split(.$cyl) %>% 
+mtcars |> 
+    split(.$cyl) |> 
     # map(function(df) lm(mpg ~ wt, data = df)) 
     map(~lm(mpg ~ wt, data = .)) 
 ```
@@ -379,7 +379,7 @@ error element:
 
 ``` r
 x <- list(1, 10, "a")
-y <- x %>% map(safely(log))
+y <- x |> map(safely(log))
 str(y)
 ```
 
@@ -402,7 +402,7 @@ list_transpose) - it turns a list-of-lists “inside-out”. now we have a
 list of two things - all the results, and all the errors:
 
 ``` r
-y2 <- y %>% transpose()
+y2 <- y |> transpose()
 str(y2)
 ```
 
@@ -420,7 +420,7 @@ str(y2)
     ##   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
 
 ``` r
-y3 <- y %>% list_transpose()
+y3 <- y |> list_transpose()
 str(y3)
 ```
 
@@ -439,7 +439,7 @@ str(y3)
 
 ``` r
 # can detect errors like this:
-is_ok <- y3$error %>% map_lgl(is_null)
+is_ok <- y3$error |> map_lgl(is_null)
 # and use that to select input values that caused error:
 x[!is_ok]
 ```
@@ -450,7 +450,7 @@ x[!is_ok]
 ``` r
 # or select things that worked: 
 # list_c is a bit like unlist - there's also list_flatten list_rbind list_cbind
-y3$result[is_ok] %>% list_c()
+y3$result[is_ok] |> list_c()
 ```
 
     ## [1] 0.000000 2.302585
@@ -460,7 +460,7 @@ default output if there’s an error:
 
 ``` r
 x <- list(1, 10, "a")
-x %>% 
+x |> 
     map_dbl(possibly(log, NA_real_))
 ```
 
@@ -471,7 +471,7 @@ errors - errors will break it)
 
 ``` r
 x <- list(1, -1)
-x %>% map(quietly(log)) %>% str()
+x |> map(quietly(log)) |> str()
 ```
 
     ## List of 2
@@ -492,7 +492,7 @@ args
 ``` r
 mu <- list(5, 10, -3)
 sigma <- list(1, 5, 10)
-map2(mu, sigma, rnorm, n = 5) %>% str()
+map2(mu, sigma, rnorm, n = 5) |> str()
 ```
 
     ## List of 3
@@ -506,8 +506,8 @@ arguments in the list:
 ``` r
 n <- list(1, 3, 5)
 args1 <- list(n=n, mean=mu, sd=sigma)
-args1 %>%
-    pmap(rnorm) %>% 
+args1 |>
+    pmap(rnorm) |> 
     str()
 ```
 
@@ -527,7 +527,7 @@ params <- tribble(
     10,     5,  3,
     -3,    10,  5
 )
-params %>% 
+params |> 
     pmap(rnorm)
 ```
 
@@ -549,7 +549,7 @@ param <- list(
     list(sd = 5), 
     list(lambda = 10)
 )
-invoke_map(f, param, n = 5) %>% str()
+invoke_map(f, param, n = 5) |> str()
 ```
 
     ## Warning: `invoke_map()` was deprecated in purrr 1.0.0.
@@ -574,7 +574,7 @@ sim <- tribble(
     "rnorm", list(sd = 5),
     "rpois", list(lambda = 10)
 )
-sim %>% 
+sim |> 
     mutate(sim = invoke_map(f, params, n = 10))
 ```
 
@@ -600,7 +600,7 @@ to render to screen or save files:
 ``` r
 x <- list(1, "a", 3)
 
-x %>% 
+x |> 
     walk(print)
 ```
 
@@ -610,7 +610,7 @@ x %>%
 
 ``` r
 ## the map version of that gives the output of the print function AND returns a list
-# x %>% map(print)
+# x |> map(print)
 ```
 
 `walk2` and `pwalk` are more useful
@@ -619,8 +619,8 @@ x %>%
 the apply on some columns/list elements:
 
 ``` r
-iris %>% 
-    keep(is.factor) %>% 
+iris |> 
+    keep(is.factor) |> 
     table()
 ```
 
@@ -629,8 +629,8 @@ iris %>%
     ##         50         50         50
 
 ``` r
-iris %>% 
-    discard(is.factor) %>%
+iris |> 
+    discard(is.factor) |>
     map_dbl(mean)
 ```
 
@@ -642,7 +642,7 @@ iris %>%
 ``` r
 x <- list(1:5, letters, list(10))
 
-x %>% 
+x |> 
     some(is_character)
 ```
 
@@ -651,7 +651,7 @@ x %>%
 ``` r
 #> [1] TRUE
 
-x %>% 
+x |> 
     every(is_vector)
 ```
 
@@ -660,7 +660,7 @@ x %>%
 ``` r
 #> [1] TRUE
 
-x %>%
+x |>
     every(is_character)
 ```
 
@@ -684,7 +684,7 @@ x
 #  [1]  1  7  4  2  9 10  3  8  5  6
 
 ## detect returns the actual value of the first thing that satisfies
-x %>% 
+x |> 
     detect(~ . > 5)
 ```
 
@@ -694,7 +694,7 @@ x %>%
 #> [1] 7
 
 ## detect_index 
-x %>% 
+x |> 
     detect_index(~ . > 5)
 ```
 
@@ -704,7 +704,7 @@ x %>%
 #> [1] 1
 
 ## in this case there are NONE so it fails
-x %>% 
+x |> 
     head_while(~ . > 5)
 ```
 
@@ -712,14 +712,14 @@ x %>%
 
 ``` r
 # but this works
-x %>% 
+x |> 
     head_while(~ . < 6)
 ```
 
     ## [1] 2 5
 
 ``` r
-x %>% 
+x |> 
     tail_while(~ . > 4)
 ```
 
@@ -734,7 +734,7 @@ dfs <- list(
     trt = tibble(name = "Mary", treatment = "A")
 )
 
-dfs %>% reduce(full_join)
+dfs |> reduce(full_join)
 ```
 
     ## Joining with `by = join_by(name)`
@@ -755,7 +755,7 @@ vs <- list(
     c(1, 2, 3, 4, 8, 9, 10)
 )
 
-vs %>% reduce(intersect)
+vs |> reduce(intersect)
 ```
 
     ## [1]  1  3 10
@@ -782,14 +782,14 @@ x
 #  [1]  4  5  2  9  6  7  8  1  3 10
 
 ## this is the same as cumsum()
-x %>% accumulate(`+`)
+x |> accumulate(`+`)
 ```
 
     ##  [1]  5  7  8 11 21 28 34 38 46 55
 
 ``` r
 ## this is the same as sum(x):
-## x %>% reduce(`+`)  
+## x |> reduce(`+`)  
 ```
 
 Exercise: Create an enhanced col_summary() that applies a summary
@@ -797,12 +797,12 @@ function to every numeric column in a data frame.
 
 ``` r
 col_summary_2 <- function(df, func) {
-    df %>% 
-        keep(is.numeric) %>% 
+    df |> 
+        keep(is.numeric) |> 
         map(func)
 }
 
-iris %>% col_summary_2(mean)
+iris |> col_summary_2(mean)
 ```
 
     ## $Sepal.Length
@@ -818,9 +818,9 @@ iris %>% col_summary_2(mean)
     ## [1] 1.199333
 
 ``` r
-# output <- iris %>% 
-#     keep(is.numeric) %>% 
-#     map(summary)  %>% 
+# output <- iris |> 
+#     keep(is.numeric) |> 
+#     map(summary)  |> 
 #     map(~function(dat) { tibble(stat=names(dat), 
 #                                 x=as.numeric(dat)) } )
 # as_tibble(rownames="stat")

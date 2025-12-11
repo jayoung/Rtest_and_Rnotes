@@ -50,7 +50,7 @@ We add the graticule manually by creating it in longitude--latitude coordinates 
 
 ```{r}
 grat_wintri <- 
-  st_graticule(lat = c(-89.9, seq(-80, 80, 20), 89.9)) %>%
+  st_graticule(lat = c(-89.9, seq(-80, 80, 20), 89.9)) |>
   st_transform_proj(crs = crs_wintri)
 ```
 
@@ -83,12 +83,12 @@ longs <- c(rep(c(180, -180), each = 181), 180)
 
 # turn into correctly projected sf collection
 wintri_outline <- 
-  list(cbind(longs, lats)) %>%
-  st_polygon() %>%
+  list(cbind(longs, lats)) |>
+  st_polygon() |>
   st_sfc( # create sf geometry list column
     crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-  ) %>% 
-  st_sf() %>%
+  ) |> 
+  st_sf() |>
   st_transform_proj(crs = crs_wintri) # transform to Winkel tripel
 
 # the resulting data frame

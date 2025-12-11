@@ -67,8 +67,8 @@ longs <- c(
 )
 
 goode_outline <- 
-  list(cbind(longs, lats)) %>%
-  st_polygon() %>%
+  list(cbind(longs, lats)) |>
+  st_polygon() |>
   st_sfc(
     crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
   )
@@ -108,8 +108,8 @@ goode_encl_rect <-
       c(xlim[1], xlim[2], xlim[2], xlim[1], xlim[1]), 
       c(ylim[1], ylim[1], ylim[2], ylim[2], ylim[1])
     )
-  ) %>%
-  st_polygon() %>%
+  ) |>
+  st_polygon() |>
   st_sfc(crs = crs_goode)
 
 # calculate the area outside the earth outline as the difference

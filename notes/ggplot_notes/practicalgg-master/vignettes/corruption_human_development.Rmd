@@ -23,8 +23,8 @@ library(ggrepel)    # for geom_text_repel()
 
 The dataset is provided as `practicalgg::corruption`. Let's look at it in table form and in basic scatterplot form.
 ```{r}
-corrupt <- practicalgg::corruption %>% 
-  filter(year == 2015) %>% 
+corrupt <- practicalgg::corruption |> 
+  filter(year == 2015) |> 
   na.omit()
 
 corrupt
@@ -178,7 +178,7 @@ ggplot(corrupt, aes(cpi, hdi)) +
 Reformat legend into a single row.
 
 ```{r}
-corrupt <- corrupt %>%
+corrupt <- corrupt |>
   mutate(region = case_when(
     region == "Middle East and North Africa" ~ "Middle East\nand North Africa",
     region == "Europe and Central Asia" ~ "Europe and\nCentral Asia",
@@ -238,7 +238,7 @@ Highlight select countries.
 ```{r}
 country_highlight <- c("Germany", "Norway", "United States", "Greece", "Singapore", "Rwanda", "Russia", "Venezuela", "Sudan", "Iraq", "Ghana", "Niger", "Chad", "Kuwait", "Qatar", "Myanmar", "Nepal", "Chile", "Argentina", "Japan", "China")
 
-corrupt <- corrupt %>%
+corrupt <- corrupt |>
   mutate(
     label = ifelse(country %in% country_highlight, country, "")
   )

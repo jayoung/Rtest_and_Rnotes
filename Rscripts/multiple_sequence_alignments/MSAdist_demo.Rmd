@@ -47,28 +47,28 @@ simple_percent_identity_pairwise <- function(twoSeqs_stringSet) {
         stop("\n\nERROR - seqs don't have the same length as each other\n\n")
     }
     output <- tibble(seq1=names(twoSeqs_stringSet)[1],
-                     seq2=names(twoSeqs_stringSet)[2] ) %>% 
+                     seq2=names(twoSeqs_stringSet)[2] ) |> 
         ## strip off description, if there is one
-        mutate(seq1 = sapply(strsplit(seq1, " "), "[[", 1)) %>% 
+        mutate(seq1 = sapply(strsplit(seq1, " "), "[[", 1)) |> 
         mutate(seq2 = sapply(strsplit(seq2, " "), "[[", 1))
     
-    twoSeqs <- as.matrix(twoSeqs_stringSet) %>% 
-        t() %>% 
+    twoSeqs <- as.matrix(twoSeqs_stringSet) |> 
+        t() |> 
         as_tibble()
     colnames(twoSeqs) <- c("seq1", "seq2")
     
-    twoSeqs_degapFullGap <- twoSeqs %>% 
+    twoSeqs_degapFullGap <- twoSeqs |> 
         filter(!(seq1=="-" & seq2=="-"))
     output$aln_len <- nrow(twoSeqs_degapFullGap)
     
     output$num_identical <- sum(twoSeqs_degapFullGap$seq1 == twoSeqs_degapFullGap$seq2)
     
-    twoSeqs_degapAnyGap <- twoSeqs_degapFullGap %>% 
+    twoSeqs_degapAnyGap <- twoSeqs_degapFullGap |> 
         filter(seq1 != "-" & seq2 != "-")
     output$aln_len_nogaps <- nrow(twoSeqs_degapAnyGap)
     
-    output <- output %>% 
-        mutate(pid_incl_gap = 100*num_identical / aln_len) %>% 
+    output <- output |> 
+        mutate(pid_incl_gap = 100*num_identical / aln_len) |> 
         mutate(pid_excl_gap = 100*num_identical / aln_len_nogaps)
     return(output)
 }
@@ -82,9 +82,9 @@ simple_percent_identity_multiple <- function(one_aln) {
     lapply(1:(length(one_aln)-1), function(i) {
         lapply( (i+1):length(one_aln), function(j) {
             simple_percent_identity_pairwise(one_aln[c(i,j)])
-        }) %>% 
+        }) |> 
             bind_rows()
-    }) %>% 
+    }) |> 
         bind_rows()
 }
 
@@ -101,18 +101,18 @@ my_percent_id_to_matrix <- function(my_percent_id_tbl,
     my_seqorder <- unique(c(my_percent_id_tbl$seq1,
                             my_percent_id_tbl$seq2))
     ## first make it symmetrical
-    my_percent_id_tbl_flip <- my_percent_id_tbl %>% 
+    my_percent_id_tbl_flip <- my_percent_id_tbl |> 
         dplyr::rename(seq1_new=seq2, 
-                      seq2_new=seq1) %>% 
+                      seq2_new=seq1) |> 
         dplyr::rename(seq1=seq1_new, 
                       seq2=seq2_new)
     my_percent_id_tbl_both <- bind_rows(my_percent_id_tbl,
                                         my_percent_id_tbl_flip) 
     # return(my_percent_id_tbl_both)
-    my_percent_id_tbl_both <- my_percent_id_tbl_both %>% 
+    my_percent_id_tbl_both <- my_percent_id_tbl_both |> 
         select(seq1, seq2, value=all_of(col_to_take))
     # return(my_percent_id_tbl_both)
-    my_matrix <- my_percent_id_tbl_both %>%
+    my_matrix <- my_percent_id_tbl_both |>
         pivot_wider(id_cols="seq1",
                     values_from="value",
                     names_from="seq2", 
@@ -123,9 +123,9 @@ my_percent_id_to_matrix <- function(my_percent_id_tbl,
     my_matrix_v2 <- my_matrix_v2[my_seqorder,]
     return(my_matrix_v2)
 }
-# temp <- hiv_aa_myDists %>% my_percent_id_to_matrix() 
-temp <- hiv_aa_myDists %>% 
-    mutate(num_diff=aln_len-num_identical) %>% 
+# temp <- hiv_aa_myDists |> my_percent_id_to_matrix() 
+temp <- hiv_aa_myDists |> 
+    mutate(num_diff=aln_len-num_identical) |> 
     my_percent_id_to_matrix(col_to_take="num_diff") 
 temp 
 ```
@@ -144,7 +144,7 @@ hiv_aa_dist <- aastring2dist(hiv_aa,
                              score=granthamMatrix())
 
 # lapply(hiv_aa_dist, class)
-# hiv_aa_dist[["distSTRING"]] %>% head()
+# hiv_aa_dist[["distSTRING"]] |> head()
 # head(hiv_aa_dist$distSTRING)
 
 # distSTRING = matrix of distances

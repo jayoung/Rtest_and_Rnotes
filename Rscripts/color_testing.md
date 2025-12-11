@@ -249,7 +249,7 @@ dat <- tibble(x=rep(LETTERS[1:9], each=10),
 ## default ggplot colors
 
 ``` r
-p1 <- dat %>% 
+p1 <- dat |> 
     ggplot(aes(x=x, y=y, fill=x)) + 
     geom_boxplot() +
     theme_modern() +
@@ -264,7 +264,7 @@ p1
 ## viridis is nice
 
 ``` r
-p2 <- dat %>% 
+p2 <- dat |> 
     ggplot(aes(x=x, y=y, fill=x)) + 
     geom_boxplot() +
     theme_modern() +
@@ -281,7 +281,7 @@ p2
 I think `scale_fill_oi` and `scale_fill_okabeito` are the same (?)
 
 ``` r
-p3 <- dat %>% 
+p3 <- dat |> 
     ggplot(aes(x=x, y=y, fill=x)) + 
     geom_boxplot() +
     theme_modern() +
@@ -298,8 +298,8 @@ p3
 
 ``` r
 ## Dark2 has only 8 colors
-dat %>% 
-    filter(x!="H") %>% 
+dat |> 
+    filter(x!="H") |> 
     ggplot(aes(x=x, y=y, fill=x)) + 
     geom_boxplot() +
     theme_modern() +
@@ -311,7 +311,7 @@ dat %>%
 ![](color_testing_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
-dat %>% 
+dat |> 
     ggplot(aes(x=x, y=y, fill=x)) + 
     geom_boxplot() +
     theme_modern() +

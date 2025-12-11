@@ -8,7 +8,7 @@ First we make some fake data and plots
 
 ``` r
 dat <- tibble(x=1:100, y=1:100, type=rep(c("A","B","C","D"), each=25))
-p1 <- dat %>% 
+p1 <- dat |> 
     ggplot(aes(x=x, y=y)) +
     geom_point() + 
     labs(title="p1")

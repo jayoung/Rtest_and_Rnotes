@@ -7,25 +7,25 @@
 degapAln <- function(myAln, fractionOfSeqsWithGap=1) {
     maskedAln <- NULL
     if(class(myAln)=="AAStringSet") {
-        maskedAln <- myAln %>% 
-            AAMultipleAlignment() %>% 
+        maskedAln <- myAln |> 
+            AAMultipleAlignment() |> 
             maskGaps(min.fraction=fractionOfSeqsWithGap, 
-                     min.block.width=1) %>% 
+                     min.block.width=1) |> 
             AAStringSet()
     }
     if(class(myAln)=="DNAStringSet") {
-        maskedAln <- myAln %>% 
-            DNAMultipleAlignment() %>% 
+        maskedAln <- myAln |> 
+            DNAMultipleAlignment() |> 
             maskGaps(min.fraction=fractionOfSeqsWithGap, 
-                     min.block.width=1) %>% 
+                     min.block.width=1) |> 
             DNAStringSet()
     }
     ## I don't think there is a BMultipleAlignment class!
     if(class(myAln)=="BStringSet") {
-        maskedAln <- myAln %>% 
-            BMultipleAlignment() %>% 
+        maskedAln <- myAln |> 
+            BMultipleAlignment() |> 
             maskGaps(min.fraction=fractionOfSeqsWithGap, 
-                     min.block.width=1) %>% 
+                     min.block.width=1) |> 
             BStringSet()
     }
     if(is.null(maskedAln)) {
@@ -200,9 +200,9 @@ translateGappedAln <- function(myAln,
                         frameshiftTranslatesTo=frameshiftTranslatesTo,
                         unknownCodonTranslatesTo=unknownCodonTranslatesTo, 
                         quiet=quiet)
-    }) %>% 
-        set_names(names(myCodons)) %>% 
-        unlist() %>% 
+    }) |> 
+        set_names(names(myCodons)) |> 
+        unlist() |> 
         AAStringSet()
     
     return(myAAaln)
@@ -212,21 +212,21 @@ translateGappedAln <- function(myAln,
 ## if we supply refSeqName, it'll also get the ungapped position in that refseq
 alnToTibble <- function(aln, refSeqName=NULL) {
     names(aln) <- sapply(strsplit(names(aln), " "), "[[", 1)
-    output <- as.matrix(aln) %>% 
-        t() %>% 
+    output <- as.matrix(aln) |> 
+        t() |> 
         as_tibble() 
     output$aln_pos <- 1:width(aln)[1]
-    output <- output %>% 
+    output <- output |> 
         relocate(aln_pos)
     if(!is.null(refSeqName)) {
         if(!refSeqName %in% colnames(output)) {
             stop("\n\nERROR - the refSeqName you supplied is not in the alignment")
         }
-        ref_seq <- output[,refSeqName] %>% 
+        ref_seq <- output[,refSeqName] |> 
             deframe()
         output$ref_pos <- cumsum(ref_seq != "-")
         output[which(ref_seq=="-"),"ref_pos"] <- NA
-        output <- output %>% 
+        output <- output |> 
             relocate(ref_pos, .after=aln_pos)
     }
     return(output)
@@ -244,7 +244,7 @@ getAlnPosLookupTable <- function(myAln) {
         countNonGap <- cumsum(eachSeq_chars != "-")
         countNonGap[which(eachSeq_chars=="-")] <- NA
         return(countNonGap)
-    }) %>% 
+    }) |> 
         as_tibble()
     output <- bind_cols(output, each_seq_pos)
     return(output)
@@ -259,7 +259,7 @@ convertCoordsOneSeq <- function(queryCoords_gr,
                                 lookup_tbl, 
                                 targetSeqName="aln_pos", 
                                 keep_mcols=TRUE) {
-    querySeqName <- unique(seqnames(queryCoords_gr)) %>% 
+    querySeqName <- unique(seqnames(queryCoords_gr)) |> 
         as.character()
     if(length(querySeqName) > 1) {
         stop("\n\nERROR in convertCoordsOneSeq function - the GRanges objects contains multiple different seqnames\n\n")
@@ -270,25 +270,25 @@ convertCoordsOneSeq <- function(queryCoords_gr,
     if(!targetSeqName %in% colnames(lookup_tbl)) {
         stop("\n\nERROR in convertCoordsOneSeq function - the target seq ", targetSeqName, " is not in the lookup table colnames\n\n")
     }
-    queryCoords_tbl <- queryCoords_gr %>% 
-        as.data.frame() %>% 
+    queryCoords_tbl <- queryCoords_gr |> 
+        as.data.frame() |> 
         as_tibble()
-    lookup <- lookup_tbl %>% 
+    lookup <- lookup_tbl |> 
         select(all_of(c(querySeqName, targetSeqName)))
     colnames(lookup) <- c("query","target")
     
-    queryCoords_tbl <- queryCoords_tbl %>% 
+    queryCoords_tbl <- queryCoords_tbl |> 
         ## convert start
-        left_join (lookup, by=c("start"="query")) %>% 
-        dplyr::rename(target_start=target) %>% 
+        left_join (lookup, by=c("start"="query")) |> 
+        dplyr::rename(target_start=target) |> 
         ## convert end
-        left_join (lookup, by=c("end"="query")) %>% 
+        left_join (lookup, by=c("end"="query")) |> 
         dplyr::rename(target_end=target)
-    new_gr <- queryCoords_tbl %>% 
+    new_gr <- queryCoords_tbl |> 
         select(start=target_start, end=target_end, strand=strand,
-               orig_seqnames=seqnames, orig_start=start, orig_end=end)  %>% 
-        mutate(orig_width = orig_end + 1 - orig_start) %>% 
-        mutate(seqnames=targetSeqName) %>% 
+               orig_seqnames=seqnames, orig_start=start, orig_end=end)  |> 
+        mutate(orig_width = orig_end + 1 - orig_start) |> 
+        mutate(seqnames=targetSeqName) |> 
         GRanges()
     if(keep_mcols) { mcols(new_gr) <- cbind(mcols(new_gr),
                                             mcols(queryCoords_gr)) }
@@ -302,7 +302,7 @@ convertCoords <- function(queryCoords_gr,
                           lookup_tbl, 
                           targetSeqName="aln_pos", 
                           keep_mcols=TRUE) {
-    querySeqNames <- unique(seqnames(queryCoords_gr)) %>% 
+    querySeqNames <- unique(seqnames(queryCoords_gr)) |> 
         as.character()
     missingQueryNames <- setdiff(querySeqNames, colnames(lookup_tbl))
     if(length(missingQueryNames) > 0) {
@@ -318,7 +318,7 @@ convertCoords <- function(queryCoords_gr,
                             lookup_tbl=lookup_tbl, 
                             targetSeqName=targetSeqName, 
                             keep_mcols=keep_mcols)
-    }) %>% 
+    }) |> 
         unlist(use.names = FALSE)
     return(new_gr)
 }
@@ -327,11 +327,11 @@ convertCoords <- function(queryCoords_gr,
 
 ##### convertCoordsToOrigCoords takes output of convertCoords, after we're manipulated in in various ways, and returns a GRanges with the original coords
 convertCoordsToOrigCoords <- function(gr) {
-    gr %>% 
-        as.data.frame() %>% 
-        as_tibble() %>% 
-        select(-seqnames, -start, -end, -width, -orig_width)  %>% 
-        dplyr::rename_with( ~ str_remove_all(.x, "orig_")) %>% 
+    gr |> 
+        as.data.frame() |> 
+        as_tibble() |> 
+        select(-seqnames, -start, -end, -width, -orig_width)  |> 
+        dplyr::rename_with( ~ str_remove_all(.x, "orig_")) |> 
         GRanges()
 }
 
@@ -350,30 +350,30 @@ simple_percent_identity_pairwise <- function(twoSeqs_stringSet,
     output <- tibble(seq1=names(twoSeqs_stringSet)[1],
                      seq2=names(twoSeqs_stringSet)[2] )
     
-    twoSeqs <- as.matrix(twoSeqs_stringSet) %>% 
-        t() %>% 
+    twoSeqs <- as.matrix(twoSeqs_stringSet) |> 
+        t() |> 
         as_tibble()
     colnames(twoSeqs) <- c("seq1", "seq2")
     
-    twoSeqs_degapFullGap <- twoSeqs %>% 
+    twoSeqs_degapFullGap <- twoSeqs |> 
         filter(!(seq1=="-" & seq2=="-"))
     output$aln_len <- nrow(twoSeqs_degapFullGap)
     
     output$num_identical <- sum(twoSeqs_degapFullGap$seq1 == twoSeqs_degapFullGap$seq2)
     
-    twoSeqs_degapAnyGap <- twoSeqs_degapFullGap %>% 
+    twoSeqs_degapAnyGap <- twoSeqs_degapFullGap |> 
         filter(seq1 != "-" & seq2 != "-")
     if(!is.null(removeChars_forAlnLenCalc)) {
         for (my_char in removeChars_forAlnLenCalc) {
-            twoSeqs_degapAnyGap <- twoSeqs_degapFullGap %>% 
+            twoSeqs_degapAnyGap <- twoSeqs_degapFullGap |> 
                 filter(seq1 != my_char & seq2 != my_char)
         }
     }
     
     output$aln_len_nogaps <- nrow(twoSeqs_degapAnyGap)
     
-    output <- output %>% 
-        mutate(pid_incl_gap = 100*num_identical / aln_len) %>% 
+    output <- output |> 
+        mutate(pid_incl_gap = 100*num_identical / aln_len) |> 
         mutate(pid_excl_gap = 100*num_identical / aln_len_nogaps)
     return(output)
 }
@@ -387,16 +387,16 @@ simple_percent_identity_multiple <- function(one_aln) {
     lapply(1:(length(one_aln)-1), function(i) {
         lapply( (i+1):length(one_aln), function(j) {
             simple_percent_identity_pairwise(one_aln[c(i,j)])
-        }) %>% 
+        }) |> 
             bind_rows()
-    }) %>% 
+    }) |> 
         bind_rows()
 }
 
 ### xxx replace these examples with reproducible input
-# tempAln <- alns[["pep"]][["janet"]][["Capsid"]]  # [9:11] #%>% 
+# tempAln <- alns[["pep"]][["janet"]][["Capsid"]]  # [9:11] #|> 
 # narrow(start=1, end=20)
-# tempAln %>% 
+# tempAln |> 
 #     simple_percent_identity_multiple()
 
 # tempAln

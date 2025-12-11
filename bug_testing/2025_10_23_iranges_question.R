@@ -14,7 +14,7 @@
 library(GenomicRanges)
 library(dplyr)
 x <- tibble(start=1:3, end=4:6)
-y <- x %>% mutate(seqnames="chr1")
+y <- x |> mutate(seqnames="chr1")
 GRanges(y)
 
 

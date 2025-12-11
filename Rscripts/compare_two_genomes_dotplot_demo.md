@@ -46,10 +46,10 @@ pafr class objects can be treated like tibbles, and easily coerced to
 tibbles:
 
 ``` r
-ali %>% 
-    filter(qname=="Q_chr3") %>% 
-    select(-qlen) %>% 
-    as_tibble() %>% 
+ali |> 
+    filter(qname=="Q_chr3") |> 
+    select(-qlen) |> 
+    as_tibble() |> 
     head(10)
 ```
 
@@ -123,8 +123,8 @@ tp_labeller <- c(P="primary", S="secondary", I="inversion")
 ```
 
 ``` r
-ali %>% 
-    mutate(tp=toupper(tp)) %>% 
+ali |> 
+    mutate(tp=toupper(tp)) |> 
     ggplot(aes(alen)) + 
     geom_histogram(colour="black", fill="steelblue", bins=20) + 
     theme_bw() + 
@@ -139,8 +139,8 @@ ali %>%
 ## Alignment length versus per-base divergence
 
 ``` r
-ali %>% 
-    filter(!is.na(dv)) %>% 
+ali |> 
+    filter(!is.na(dv)) |> 
     ggplot(aes(x=alen, y=dv, color = tp)) + 
     geom_point(alpha=0.4, size=2) + 
     scale_x_continuous("Alignment length (kb)",
@@ -184,8 +184,8 @@ Zoom in to a particular query or target chromosome:
 ``` r
 # GeomLabel$default_aes$size  ## 3.88
 update_geom_defaults("text", list(size = 2, color="darkred"))
-ali %>% 
-    filter(qname=="Q_chr4" & tp=="P" & alen>=50000) %>% 
+ali |> 
+    filter(qname=="Q_chr4" & tp=="P" & alen>=50000) |> 
     dotplot(label_seqs = TRUE) +
     theme_bw()
 ```
@@ -207,7 +207,7 @@ my_chr_order[[1]] <- unique(ali$qname)
 my_chr_order[[1]] <- my_chr_order[[1]] [ length(my_chr_order[[1]]):1 ]
 my_chr_order[[2]] <- unique(ali$tname)
 
-ali %>% 
+ali |> 
     dotplot(label_seqs=TRUE, 
             order_by="provided", ordering=my_chr_order,
             xlab="new query axis label",
@@ -226,7 +226,7 @@ I’m adding to existing coordinate system)
 
 ``` r
 update_geom_defaults("text", list(size = 2, color="darkred"))
-p1 <- ali %>% 
+p1 <- ali |> 
     dotplot(label_seqs=TRUE) +
     theme_bw()
 suppressMessages( p1zoom <- p1 + 

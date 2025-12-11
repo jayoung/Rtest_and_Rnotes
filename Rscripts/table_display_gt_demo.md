@@ -64,7 +64,7 @@ class="class" style="width:60.0%;height:60.0%" />
 Place a table and plot side-by-side:
 
 ``` r
-p1 <- sp500 %>% 
+p1 <- sp500 |> 
     ggplot(aes(x=date, y=open, color=date)) + 
     geom_point(size=0.2) +
     theme_classic() +
@@ -558,26 +558,26 @@ seq_slice <- c("FQLT",
                "FQLT",
                "FQST",
                "FQST")
-seq_slice_tbl <- seq_slice %>% 
-    strsplit("") %>% 
-    as.data.frame() %>% 
-    set_names(nm=paste0("seq", 1:10)) %>%
-    t() %>% 
-    as.data.frame() %>%
-    set_names(nm=paste0("pos", 1:4)) %>%
+seq_slice_tbl <- seq_slice |> 
+    strsplit("") |> 
+    as.data.frame() |> 
+    set_names(nm=paste0("seq", 1:10)) |>
+    t() |> 
+    as.data.frame() |>
+    set_names(nm=paste0("pos", 1:4)) |>
     as_tibble(rownames="id") 
 ```
 
 Use gt to format that nicely:
 
 ``` r
-seq_slice_gt <- seq_slice_tbl %>% 
+seq_slice_gt <- seq_slice_tbl |> 
     ## gt alone makes a decent-looking table
-    gt(caption="My sequence alignment") %>% 
+    gt(caption="My sequence alignment") |> 
     ## a bunch of formatting things:
-    cols_align(align = "center", columns=-id) %>% 
-    opt_table_font(font = list(google_font(name = "Courier"))) %>% 
-    rm_header() %>% 
+    cols_align(align = "center", columns=-id) |> 
+    opt_table_font(font = list(google_font(name = "Courier"))) |> 
+    rm_header() |> 
     tab_options(column_labels.hidden = TRUE,
                 table_body.border.bottom.style = "hidden",
                 table_body.hlines.style = "hidden",
@@ -585,9 +585,9 @@ seq_slice_gt <- seq_slice_tbl %>%
                 data_row.padding.horizontal=2,
                 ## row striping not visible until I knit. Options don't seem to work. Might be an Rstudio bug
                 row.striping.include_table_body = FALSE,
-                row.striping.include_stub=FALSE) %>% 
+                row.striping.include_stub=FALSE) |> 
     ## px is number of pixels
-    cols_width(id ~ px(75)) %>% 
+    cols_width(id ~ px(75)) |> 
     ## conditional formatting
     tab_style(style = cell_text(color = "red"),
               locations = cells_body(columns = pos1, rows = pos1 == "F") ) |>

@@ -7,6 +7,24 @@ A lot of this is quite old, and most of it is only for myself, not meant for oth
 rhino location: `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes`
 
 
+## Links, and frequently used notes
+
+Many files in this repo, but these are some that will probably be useful frequently:
+
+- [ggplot tips and tricks](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/ggplot/ggplot_tips_and_tricks.md)
+- [ggtree_demo.md](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/phylogenetics/ggtree_demo.md)
+
+Some notes I'm storing in other repos:
+
+- [AI_notes.md](https://github.com/jayoung/MalikLab_bioinformaticsResources/blob/main/janets_NOTES_forMyself/programming_and_statistics/AI_notes.md)
+
+## Intentions
+
+Use `janitor::tabyl` more for cross-tables (see [demo](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/janitor_cross_tables_demo.md))
+
+Use native pipe (switch default in Rstudio)
+
+Use renv for new projects
 
 ## Current learning to do list
 
@@ -23,7 +41,7 @@ files <- dir(here("data", "participants"), pattern="*.csv")
 ```
 for reading multiple files, check out `purrr::map_df`:
 ```
-data <- files %>%
+data <- files |>
     map_df(~read_csv(file=here("data", "particants", .x)))
 ```
 
@@ -44,9 +62,6 @@ figure out gheatmap in ggtree
 joins using plyranges R package - different types https://www.bioconductor.org/packages/devel/bioc/vignettes/plyranges/inst/doc/an-introduction.html#9_Learning_more
 
 
-learn about the other R pipe - `|>`
-
-
 writing R packages and documentation - https://style.tidyverse.org/documentation.html
 - R packages that help develop and maintain and test packages are  {devtools}, {testthat}, {usethis} 
 - software design principals - rather than my own single bloated package, think about a universe of smaller packages. Functions and packages both benefit from being as modular as possible. https://milesmcbain.xyz/posts/data-analysis-reuse/
@@ -55,12 +70,6 @@ writing R packages and documentation - https://style.tidyverse.org/documentation
 R learning - data cleaning: [a primer](https://rfortherestofus.com/2019/12/how-to-clean-messy-data-in-r/), [some tips](https://rfortherestofus.com/2020/02/data-cleaning-tips-in-r/) and [a 15 min video](https://rfortherestofus.com/2020/01/recoding-numeric-values-to-character-values-automatically-in-r/)
 
 check out these two packages for making interactive graphs: ggiraph and plotly. video tutorial https://rfortherestofus.com/2021/03/interactive-graphs-in-r/
-
-## My notes
-
-Many files in this repo, but these are some that will probably be useful frequently:
-
-- [ggplot tips and tricks](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/ggplot/ggplot_tips_and_tricks.md)
 
 ## Resources
 
@@ -101,9 +110,39 @@ Bioconductor support:
 
 Data Science resources [list](https://nrennie.rbind.io/data-science-resources/)
 
+## Positron
+
+An IDE for R or python.  Perhaps a future replacement for Rstudio but as of 2025 it's not able to interact with data stored on the Hutch servers, although I could use it on my Mac, I think.
+
+Its' data viewer looks nice (`View()`) - includes little graphs
+
+
+I am trying it on the work laptop (Dec 2025). Some notes from the walkthrough it gives on migrating from Rstudio:
+
+- "Positron doesn't have an exact equivalent to RStudio Projects, but the concept in Positron that is most analogous to an RStudio Project is a workspace. You can read more in the VS Code documentation about what exactly a workspace is, but in general think of a workspace as about the same thing as a folder, which is about the same thing as an RStudio Project."  More info on [how to think about Rprojects in Positron](https://positron.posit.co/migrate-rstudio-rproj.html)
+- "Air" is a formatting tool for R code
+
+
+Databot - command-shift-P gives us the command pane, and there's an option to open databot. Select which LLM to use (choose Claude Sonnet), then we type requests in plain english. It generates code but doesn't run it without our permission.  You would probably want to copy the useful code chunks into your own qmd/Rmd document.  I have installed the extension but I haven't set it up to connect to a particular LLM yet (because I don't have accounts with the LLMs). It can make plots and tables and plain-english summaries of what the tables show.
+
+After it runs it offers options, like to put its code/findings into markdown files
+
+Databot demo videos from Ted Laderas (Hutch DASL): Using Databot on the NHANES dataset: 
+- [part 1](https://www.youtube.com/watch?v=qs2GozYUUOk)
+- [part 2](https://www.youtube.com/watch?v=lT2J71Jg_ug)
+- [part 3](https://www.youtube.com/watch?v=j0KdDMIgcLY)
+
+
 
 ## Things I've learned
 
+### Pipes:
+
+I was using `magrittr`'s pipe in my code:   `%>%`.   
+
+I recently switch to the native R pipe: `|>`. 
+
+Can insert a pipe in Rstudio using Command-shift-m on the mac. There is a setting in R studio to tell it which of those two styles of pipe you want to use.
 
 ### R does rounding weirdly!
 
@@ -124,17 +163,17 @@ In settings, there's an option to turn on rainbow parentheses to help see pairin
 - `Tools menu - Edit code snippets` shows what snippets are available
 - Markdown snippets are also useful (e.g. place an image). Here we need to do `shift-tab` to activate.  E.g. `r-shift-tab` inserts an R code chunk, if we do it from within a markdown area (i.e. outside an existing R code chunk)
 
-#### Keyboard shortcuts
+#### Rstudio keyboard shortcuts
 
 highlight a function, press function-F1, and it brings up the help page
 
 shift-command-M types a pipe (there's a setting for whether you want that to be `%>%` or `|>`)
 
-tab adds an indent to one or more selected lines of code, whift+tab removes one indent
+tab adds an indent to one or more selected lines of code, shift+tab removes one indent
 
 (see tips [here](https://rfortherestofus.com/2023/11/rstudio-hotkeys))
 
-#### Snippets  
+#### Rstudio Snippets  
 
 Example: type `fun` and press the `tab` key, and R provides the skeleton of a new function
 
@@ -182,100 +221,20 @@ Modify size by simple scaling
 ![Caption for the picture.](/path/to/image.png){#id .class width=50% height=50%}
 ```
 
-### Knit/render an Rmd doc from the linux command line
-
-Easiest way: on gizmo/rhino:
-
-- `useful_functions/render_Rmd.perl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each (in parallel, i.e. scripts are not linked).
-
-- `useful_functions/render_Rmd_series.perl` is a generic perl script that will take the name of several Rmd scripts as input, and make and run an sbatch script to render the report for each, one after the other, stopping if any of them fail (scripts are in a linked series).
-
-(there are also links to those scripts in `~/bin`)
-
-Demo script and output, in `useful_functions/knit_using_shellScript`.
-
-By default, if I render that way, plot images are saved as svg files, and those can be too big to sync to github.  Rendering using Rstudio saves png files, which are smaller. Dan Tenenbaum told me how to fix that, by adding this code in my Rmd doc:
-```{r setup, include=FALSE}
-ragg_png = function(..., res = 192) {
-  ragg::agg_png(..., res = res, units = "in")
-}
-knitr::opts_chunk$set(dev = "ragg_png", fig.ext = "png")
-```
-
-I put those code lines in a (hidden) file called `~/.ragg_png_functions_from_dan.R` (also linked in an unhidden way, at `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript/ragg_png_functions_from_dan.R`).
-
-I will source that from `.Rprofile` (global on rhino, and local if there is one), and then I shouldn't need to include it in my code.  Not putting in my Mac global for now - don't think it's relevant.
-
-```
-source("/home/jayoung/.ragg_png_functions_from_dan.R")
-```
-
-See also advice on ["Two Hidden Ways to Set Global Chunk Options for knitr"](https://yihui.org/en/2023/10/opts-chunk/).
-
-#### other notes about render from command line
-
-Alternatives:
-
-On my mac:
-```
-cd /Volumes/malik_h/user/jayoung/git_more_repos/Rtest_and_Rnotes
-
-## I end up with TWO output files: .html AND .md - not sure why
-## outputs go in the same dir as the input script
-
-Rscript -e 'rmarkdown::render("Rscripts/miscellaneous_testCode.Rmd", output_format="github_document", clean=TRUE)'
-```
-
-On gizmo/rhino, from the command line without sbatch:
-```
-cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes
-
-module load fhR/4.4.1-foss-2023b-R-4.4.1
-module load Pandoc/2.13
-
-## again we get TWO output files
-Rscript -e 'rmarkdown::render("Rscripts/miscellaneous_testCode.Rmd", output_format="github_document", clean=TRUE)'
-
-## note: running R this way, I do not have /home/jayoung/R/x86_64-pc-linux-gnu-library/4.4 in .libPaths(), whereas when I run it from Hutch RStudio-server I do.
-## I don't know where that comes from - I suspect something to do with Rstudio server setup 
-Rscript -e '.libPaths()'
-
-module purge
-```
-
-
-On gizmo/rhino, using sbatch and a shell script, and run it like this: `cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes ; sbatch example_knit_batch_script.sh` - the script looks like this:
-```
-#!/bin/bash
-source /app/lmod/lmod/init/profile
-module load fhR/4.4.1-foss-2023b-R-4.4.1
-module load Pandoc/2.13
-Rscript -e 'rmarkdown::render("Rscripts/miscellaneous_testCode.Rmd", output_format="github_document", clean=TRUE)'
-module purge
-```
-
-
-
-On gizmo/rhino, it can also be done with `sbatch --wrap` but it is annoying due to all the quote and escapes:
-```
-cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes
-sbatch --cpus-per-task=1 --wrap="/bin/bash -c \"source /app/lmod/lmod/init/profile ; module load fhR/4.4.1-foss-2023b-R-4.4.1 ; module load Pandoc/2.13 ; Rscript -e 'rmarkdown::render(\\\"Rscripts/miscellaneous_testCode.Rmd\\\", output_format=\\\"github_document\\\", clean=TRUE)' ; module purge\""
-```
-
-For Tamanash's DMS data, I wrote an R wrapper script called [`DMS_remakeReport_standaloneScript.R`](https://github.com/jayoung/DMSanalysis/blob/main/Rscripts/DMS_remakeReport_standaloneScript.R) that generated reports for multiple data sets by (1) loading the Rdata file (2) rendering the Rmd script (which runs with that loaded data in the environment). I further wrote a perl script called [`remakeReport_wrapper.pl`](https://github.com/jayoung/DMSanalysis/blob/main/bin/remakeReport_wrapper.pl) that calls `DMS_remakeReport_standaloneScript.R` on various Rdata files and makes a shell script to run each in a separate sbatch job.
-
 ### Miscellaneous 
+
+
 
 To extract some list elements using their indices in a pipe, use `magrittr::extract()`. This is the equivalent of using `[`.   Example:
 
 ```
-my_list %>% magrittr::extract(3:5) 
+my_list |> magrittr::extract(3:5) 
 ```
 
 The related function `magrittr::extract2()` is the equivalent of `[[`, so we would use it to extract a single element from a list. Example:
 
 ```
-my_list %>% magrittr::extract2(1) 
+my_list |> magrittr::extract2(1) 
 ```
 
 The 'embracing' operator (`{{ }}`), and unquoting using !! and !!! - see [`testCode.R`](Rscripts/testCode.R) for details.
@@ -342,9 +301,9 @@ library(patchwork)
 library(ggplot2)
 library(magick)
 
-plt1 <- image_read("https://bellard.org/bpg/2.png") %>%
+plt1 <- image_read("https://bellard.org/bpg/2.png") |>
   image_ggplot()
-plt2 <- iris %>% 
+plt2 <- iris |> 
   ggplot(aes(x=Sepal.Length, y=Sepal.Width)) +
   geom_point()
 
@@ -484,3 +443,86 @@ q(save="no")
 module purge
 ```
 Seems like that worked, and I can load those libraries within Rstudio-server without needing to load the cairo module.
+
+
+## Knit/render an Rmd doc from the linux command line
+
+Easiest way: on gizmo/rhino:
+
+- `useful_functions/render_Rmd.perl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each (in parallel, i.e. scripts are not linked).
+
+- `useful_functions/render_Rmd_series.perl` is a generic perl script that will take the name of several Rmd scripts as input, and make and run an sbatch script to render the report for each, one after the other, stopping if any of them fail (scripts are in a linked series).
+
+(there are also links to those scripts in `~/bin`)
+
+Demo script and output, in `useful_functions/knit_using_shellScript`.
+
+By default, if I render that way, plot images are saved as svg files, and those can be too big to sync to github.  Rendering using Rstudio saves png files, which are smaller. Dan Tenenbaum told me how to fix that, by adding this code in my Rmd doc:
+```{r setup, include=FALSE}
+ragg_png = function(..., res = 192) {
+  ragg::agg_png(..., res = res, units = "in")
+}
+knitr::opts_chunk$set(dev = "ragg_png", fig.ext = "png")
+```
+
+I put those code lines in a (hidden) file called `~/.ragg_png_functions_from_dan.R` (also linked in an unhidden way, at `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript/ragg_png_functions_from_dan.R`).
+
+I will source that from `.Rprofile` (global on rhino, and local if there is one), and then I shouldn't need to include it in my code.  Not putting in my Mac global for now - don't think it's relevant.
+
+```
+source("/home/jayoung/.ragg_png_functions_from_dan.R")
+```
+
+See also advice on ["Two Hidden Ways to Set Global Chunk Options for knitr"](https://yihui.org/en/2023/10/opts-chunk/).
+
+### other notes about render from command line
+
+Alternatives:
+
+On my mac:
+```
+cd /Volumes/malik_h/user/jayoung/git_more_repos/Rtest_and_Rnotes
+
+## I end up with TWO output files: .html AND .md - not sure why
+## outputs go in the same dir as the input script
+
+Rscript -e 'rmarkdown::render("Rscripts/miscellaneous_testCode.Rmd", output_format="github_document", clean=TRUE)'
+```
+
+On gizmo/rhino, from the command line without sbatch:
+```
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes
+
+module load fhR/4.4.1-foss-2023b-R-4.4.1
+module load Pandoc/2.13
+
+## again we get TWO output files
+Rscript -e 'rmarkdown::render("Rscripts/miscellaneous_testCode.Rmd", output_format="github_document", clean=TRUE)'
+
+## note: running R this way, I do not have /home/jayoung/R/x86_64-pc-linux-gnu-library/4.4 in .libPaths(), whereas when I run it from Hutch RStudio-server I do.
+## I don't know where that comes from - I suspect something to do with Rstudio server setup 
+Rscript -e '.libPaths()'
+
+module purge
+```
+
+
+On gizmo/rhino, using sbatch and a shell script, and run it like this: `cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes ; sbatch example_knit_batch_script.sh` - the script looks like this:
+```
+#!/bin/bash
+source /app/lmod/lmod/init/profile
+module load fhR/4.4.1-foss-2023b-R-4.4.1
+module load Pandoc/2.13
+Rscript -e 'rmarkdown::render("Rscripts/miscellaneous_testCode.Rmd", output_format="github_document", clean=TRUE)'
+module purge
+```
+
+
+
+On gizmo/rhino, it can also be done with `sbatch --wrap` but it is annoying due to all the quote and escapes:
+```
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes
+sbatch --cpus-per-task=1 --wrap="/bin/bash -c \"source /app/lmod/lmod/init/profile ; module load fhR/4.4.1-foss-2023b-R-4.4.1 ; module load Pandoc/2.13 ; Rscript -e 'rmarkdown::render(\\\"Rscripts/miscellaneous_testCode.Rmd\\\", output_format=\\\"github_document\\\", clean=TRUE)' ; module purge\""
+```
+
+For Tamanash's DMS data, I wrote an R wrapper script called [`DMS_remakeReport_standaloneScript.R`](https://github.com/jayoung/DMSanalysis/blob/main/Rscripts/DMS_remakeReport_standaloneScript.R) that generated reports for multiple data sets by (1) loading the Rdata file (2) rendering the Rmd script (which runs with that loaded data in the environment). I further wrote a perl script called [`remakeReport_wrapper.pl`](https://github.com/jayoung/DMSanalysis/blob/main/bin/remakeReport_wrapper.pl) that calls `DMS_remakeReport_standaloneScript.R` on various Rdata files and makes a shell script to run each in a separate sbatch job.

@@ -45,30 +45,30 @@ names(RTL3_aln) <- sapply(strsplit(names(RTL3_aln), " "), "[[", 1)
 RTL3_alnInfoTable <- tibble(id=names(RTL3_aln))
 
 ## get species name from seqnames
-RTL3_alnInfoTable <- RTL3_alnInfoTable %>% 
-    separate(id, into=c(NA,"species"), extra="drop", remove=FALSE) %>% 
-    mutate(species=str_replace(species, "CapsidHMMhit", "")) %>% 
-    mutate(species=str_replace(species, "ProteaseORF", "")) %>% 
-    mutate(species=str_replace(species, "BetweenORFsRegion", "")) %>% 
-    mutate(species=str_to_sentence(to_snake_case(species))) %>% 
+RTL3_alnInfoTable <- RTL3_alnInfoTable |> 
+    separate(id, into=c(NA,"species"), extra="drop", remove=FALSE) |> 
+    mutate(species=str_replace(species, "CapsidHMMhit", "")) |> 
+    mutate(species=str_replace(species, "ProteaseORF", "")) |> 
+    mutate(species=str_replace(species, "BetweenORFsRegion", "")) |> 
+    mutate(species=str_to_sentence(to_snake_case(species))) |> 
     mutate(species=str_replace_all(species,"_"," "))
 
 ## get rid of some redundant species for this purpose - get rid of any seq whose name contains "annotationSeq"
-RTL3_alnInfoTable <- RTL3_alnInfoTable %>% 
+RTL3_alnInfoTable <- RTL3_alnInfoTable |> 
     filter(!grepl("annotationSeq",id))
 
-RTL3_alnInfoTable %>% 
-    head(5) %>% 
-    kable() %>% 
+RTL3_alnInfoTable |> 
+    head(5) |> 
+    kable() |> 
     kable_styling()
 ```
 get just the species names
 
 ```{r}
 ## first get all 81 species names in the table
-query_species <- RTL3_alnInfoTable %>% 
-    select(species) %>% 
-    deframe() %>% 
+query_species <- RTL3_alnInfoTable |> 
+    select(species) |> 
+    deframe() |> 
     unique()
 
 ## make a smaller set of species, for quicker testing:
@@ -98,15 +98,15 @@ Use that list to add the common names to the tibble I'm building up
 
 ```{r}
 ## add commonNameLookup to RTL3_alnInfoTable
-commonNameLookup_tbl <- commonNameLookup %>% 
-    unlist() %>% 
-    as_tibble(rownames="species") %>% 
+commonNameLookup_tbl <- commonNameLookup |> 
+    unlist() |> 
+    as_tibble(rownames="species") |> 
     dplyr::rename("common_name"="value")
-RTL3_alnInfoTable <- left_join(RTL3_alnInfoTable, commonNameLookup_tbl, by="species") %>% 
+RTL3_alnInfoTable <- left_join(RTL3_alnInfoTable, commonNameLookup_tbl, by="species") |> 
     relocate(common_name, .after="species")
-RTL3_alnInfoTable %>% 
-    head(5) %>% 
-    kable() %>% 
+RTL3_alnInfoTable |> 
+    head(5) |> 
+    kable() |> 
     kable_styling()
 ```
 
@@ -131,7 +131,7 @@ test_query_species_classification_tree <- class2tree(test_query_species_classifi
 plot(test_query_species_classification_tree)
 
 # ## ggtree didn't like this tree. Maybe because it includes a polytomy? Maybe because there's some weird conflicts between packages and functions?
-# test_query_species_classification_tree %>%
+# test_query_species_classification_tree |>
 #     ggtree() +
 #     geom_tiplabel()
 ```
@@ -165,7 +165,7 @@ specNames_classification_eol <- classification(query_species, db="eol", rows=1)
 
 ## 65 are data.frame and 16 are character. The character ones all look like this "No hierarchy information for 22212420" (with different IDs)
 
-# sapply(specNames_classification_eol, class) %>% table()
+# sapply(specNames_classification_eol, class) |> table()
 # specNames_classification_eol[which(sapply(specNames_classification_eol, class) =="character")]
 
 ## get just the 65 data.frame items:
@@ -173,7 +173,7 @@ specNames_classification_eol_good <- specNames_classification_eol[ which(sapply(
 
 ## still get an error with class2tree because there are some NA. Try getting rid of those:
 specNames_classification_eol_good <- lapply(specNames_classification_eol_good, function(x) {
-    x %>% 
+    x |> 
         filter(!is.na(rank))
 })
 ## some had nothing left after getting rid of the NA.  49 remain after I get rid of those:

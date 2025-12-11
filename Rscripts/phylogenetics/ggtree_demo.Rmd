@@ -52,7 +52,7 @@ plot(nwk_tree)
 Plot it using ggtree
 
 ```{r}
-nwk_tree %>% 
+nwk_tree |> 
     ggtree() +
     geom_tiplab()
 ```
@@ -116,14 +116,14 @@ nwk_tree_with_info_2
 If we want to manipulate the information AFTER we associate it with the tree, we first use `as_tibble()`, then manipulate, then use `as.treedata(branch.length, label)`:
 
 ```{r}
-p1 <- nwk_tree_with_info_2 %>% 
+p1 <- nwk_tree_with_info_2 |> 
     ggtree() +
     geom_tiplab()
 
-p2 <- nwk_tree_with_info_2 %>% 
-    as_tibble() %>% 
-    mutate(new_label= paste(label, fake_phenotype, sep=" ")) %>% 
-    as.treedata(branch.length, label) %>% 
+p2 <- nwk_tree_with_info_2 |> 
+    as_tibble() |> 
+    mutate(new_label= paste(label, fake_phenotype, sep=" ")) |> 
+    as.treedata(branch.length, label) |> 
     ggtree() +
     geom_tiplab(aes(label=new_label)) +
     hexpand(0.1)
@@ -153,7 +153,7 @@ now we can use ggtree to use column data in the joined treedata object for label
 
 ```{r}
 x <- "tail"
-nwk_tree_with_info %>% 
+nwk_tree_with_info |> 
     ggtree(aes(color=fake_phenotype)) +  # color here colors the branches
     geom_tiplab(aes(color=fake_phenotype))  + # color here colors the tip labels
     ## there's some weird bug where I got errors if I tried to do fake_phenotype=="tail" but I get around it like this
@@ -265,7 +265,7 @@ tip_dat_for_heatmap[4:13,"pos2"] <- "T"
 tip_dat_for_heatmap[9:12,"pos3"] <- "C"
 
 ## save a ggtree plot object
-p <- nwk_tree_with_info %>% 
+p <- nwk_tree_with_info |> 
     ggtree(aes()) + 
     geom_tiplab(aes())
 
@@ -279,7 +279,7 @@ gheatmap(p, tip_dat_for_heatmap,
 Or maybe we turn that into WT/ nonWT
 
 ```{r}
-tip_dat_for_heatmap2 <- tip_dat_for_heatmap %>% 
+tip_dat_for_heatmap2 <- tip_dat_for_heatmap |> 
     mutate(across(everything(),
                   function(x) {
                       case_when( is.na(x) ~ "WT",
@@ -297,7 +297,7 @@ gheatmap(p, tip_dat_for_heatmap2,
 Note that it doesn't work if tip_dat_for_heatmap3 is a tibble (see plot below, not useful), although it doesn't give an error, it just doesn't give us a correct heatmap.   Also, setting rownames on a tibble is deprecated.
 
 ```{r}
-tip_dat_for_heatmap3 <- tip_dat_for_heatmap2 %>% 
+tip_dat_for_heatmap3 <- tip_dat_for_heatmap2 |> 
     as_tibble(rownames=NA)
 ## we can check the rownames are present:
 # rownames(tip_dat_for_heatmap3)
@@ -316,7 +316,7 @@ geom_point to the right
 
 ```{r}
 tr <- rtree(10)
-dd <- tibble(id=tr$tip.label) %>% 
+dd <- tibble(id=tr$tip.label) |> 
     mutate(value=as.integer(str_remove(id, "t")))
 ```
 
@@ -419,27 +419,27 @@ Do I lose branch length on coercion? no, I don't. `as_tibble()` actually returns
 
 ```{r}
 # Do I lose branch length on coercion? no, I don't
-tree.owls %>% 
-    as_tibble() %>% 
-    as.treedata() %>% 
+tree.owls |> 
+    as_tibble() |> 
+    as.treedata() |> 
     ggtree() +
     geom_tiplab() +
     geom_treescale() +
     hexpand(0.3) +
     labs(title="tree.owls coerced")
 
-(tree.owls %>% 
-        as_tibble() %>% 
+(tree.owls |> 
+        as_tibble() |> 
         as.treedata())@phylo$edge.length
 ```
 
 This double coercion is a cheating way to get a pure tibble rather than a `tbl_tree` object. Now we lose branch lengths:
 
 ```{r}
-tree.owls %>% 
-    as_tibble() %>% 
-    as_tibble() %>% 
-    as.treedata() %>% 
+tree.owls |> 
+    as_tibble() |> 
+    as_tibble() |> 
+    as.treedata() |> 
     ggtree() +
     geom_tiplab() +
     geom_treescale() +
@@ -450,10 +450,10 @@ tree.owls %>%
 But we can avoid losing branch lengths by supplying a couple of arguments to `as.treedata()`:
 
 ```{r}
-tree.owls %>% 
-    as_tibble() %>% 
-    as_tibble() %>% 
-    as.treedata(branch.length, label) %>% 
+tree.owls |> 
+    as_tibble() |> 
+    as_tibble() |> 
+    as.treedata(branch.length, label) |> 
     ggtree() +
     geom_tiplab() +
     geom_treescale() +
@@ -562,7 +562,7 @@ ggtree_plots_unrooted[["daylight"]] + labs(title="Unrooted daylight")) +
 For most tree layouts we do it like this: `geom_tippoint(aes(x=x+3))`.   That works fine with default layout (and fan, circular).
 
 ```{r}
-nwk_tree %>% 
+nwk_tree |> 
     ggtree() + 
     geom_tippoint(color="blue") +
     geom_tippoint(aes(x=x+3), color="red") +
@@ -573,7 +573,7 @@ nwk_tree %>%
 But for equal_angle (and daylight) we have to use the `angle` parameter created under the hood when ggtree runs (thank you to Brad Jones for the [solution](https://github.com/YuLab-SMU/ggtree/issues/687))
 
 ```{r}
-nwk_tree %>% 
+nwk_tree |> 
     ggtree(layout="equal_angle") + 
     geom_tippoint(color="blue") +
     geom_tippoint(aes(x=x+cos(angle*pi/180)*3, 

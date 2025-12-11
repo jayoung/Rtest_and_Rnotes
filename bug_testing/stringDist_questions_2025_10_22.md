@@ -137,7 +137,7 @@ source(here("useful_functions/multiple_sequence_alignments_functions.R"))
 ``` r
 x <- c("ARND", "AR-D", "CRNA")
 x1 <- c(x, x[1:2])
-x1 %>% 
+x1 |> 
     AAStringSet()
 ```
 

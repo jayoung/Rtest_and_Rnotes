@@ -1,0 +1,15 @@
+---
+title: "t-tests"
+author: "Janet Young"
+date: "`r Sys.Date()`"
+output: github_document
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(palmerpenguins)
+```
+
+`View(penguins)` gives a similar viewer that we're used to in Rstudio, but also very nice little summary graphs of each column of our data (distgribution, how many NAs, etc) 

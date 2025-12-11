@@ -24,7 +24,7 @@ source(here("useful_functions/multiple_sequence_alignments_functions.R"))
 Histone amino acid alignment
 
 ``` r
-aa_aln_histone <- here("Rscripts/multiple_sequence_alignments/example_alignment_files/exampleProtAln_shortH2As_histoneFoldDomain.fa") %>% 
+aa_aln_histone <- here("Rscripts/multiple_sequence_alignments/example_alignment_files/exampleProtAln_shortH2As_histoneFoldDomain.fa") |> 
     readAAStringSet()
 
 names(aa_aln_histone) <- sapply(strsplit(names(aa_aln_histone), " "), "[[", 1)
@@ -49,7 +49,7 @@ aa_aln_histone
 Get a smaller alignment, for testing
 
 ``` r
-aa_aln_h2a_l <- aa_aln_histone[ grep("H2A.L", names(aa_aln_histone)) ] %>% 
+aa_aln_h2a_l <- aa_aln_histone[ grep("H2A.L", names(aa_aln_histone)) ] |> 
     degapAln()
 aa_aln_h2a_l
 ```
@@ -66,7 +66,7 @@ aa_aln_h2a_l
     ## [8]    82 SRSTRAELQFPVSRVDRVLRESH...RKRITPENVEKAVSKNPQLSRVF H2A.L_armadillo
 
 ``` r
-aa_aln_h2a_l_firstBit <- aa_aln_h2a_l %>% 
+aa_aln_h2a_l_firstBit <- aa_aln_h2a_l |> 
     narrow(start=1, end=12)
 aa_aln_h2a_l_firstBit <- aa_aln_h2a_l_firstBit[1:4]
 
@@ -112,7 +112,7 @@ indel gets counted as 1 difference, as does a substitution, and that a
 gap aligned to a gap is scored as 0 difference
 
 ``` r
-simple_aa_aln %>% 
+simple_aa_aln |> 
     stringDist(diag=TRUE, upper=TRUE, method="hamming")
 ```
 
@@ -147,7 +147,7 @@ x
     ## [2]     4 flaw                                              flaw
 
 ``` r
-x %>% stringDist(diag=TRUE, upper=TRUE, method="hamming")
+x |> stringDist(diag=TRUE, upper=TRUE, method="hamming")
 ```
 
     ##      lawn flaw
@@ -161,7 +161,7 @@ alignment with 2 diffs at the ends:
     flaw-
 
 ``` r
-x %>% stringDist(diag=TRUE, upper=TRUE, method="levenshtein")
+x |> stringDist(diag=TRUE, upper=TRUE, method="levenshtein")
 ```
 
     ##      lawn flaw
@@ -182,7 +182,7 @@ called `alignedStringDistMatrix` that does NOT realign the input, and
 simp <https://github.com/Bioconductor/pwalign/issues/15>
 
 ``` r
-simple_aa_aln %>% 
+simple_aa_aln |> 
     alignedStringDistMatrix()
 ```
 
@@ -207,7 +207,7 @@ the negative of BLOSUM62 to be a distance rather than a similarity
 score:
 
 ``` r
-simple_aa_aln %>% 
+simple_aa_aln |> 
     alignedStringDistMatrix(weightmat=-BLOSUM62)
 ```
 
@@ -221,7 +221,7 @@ simple_aa_aln %>%
 Indels have a default distance score of 1 but we can change that:
 
 ``` r
-simple_aa_aln %>% 
+simple_aa_aln |> 
     alignedStringDistMatrix(weightmat=-BLOSUM62, indel.weight = 0)
 ```
 
@@ -233,7 +233,7 @@ simple_aa_aln %>%
     ## seq4   -19   -19   -19  -31  -31
 
 ``` r
-simple_aa_aln %>% 
+simple_aa_aln |> 
     alignedStringDistMatrix(weightmat=-BLOSUM62, indel.weight = 10)
 ```
 
@@ -287,7 +287,7 @@ BLOSUM62[AA_ALPHABET[1:20],AA_ALPHABET[1:20]]
     ## V  0 -3 -3 -3 -1 -2 -2 -3 -3  3  1 -2  1 -1 -2 -2  0 -3 -1  4
 
 ``` r
-tiny_aln <- aa_aln_h2a_l[1:4] %>%
+tiny_aln <- aa_aln_h2a_l[1:4] |>
     narrow(start=81, end=82)
 names(tiny_aln) <- paste0("seq",1:4)
 tiny_aln
@@ -301,7 +301,7 @@ tiny_aln
     ## [4]     2 LF                                                seq4
 
 ``` r
-tiny_aln %>% 
+tiny_aln |> 
     alignedStringDistMatrix(weightmat=BLOSUM62)
 ```
 
@@ -341,12 +341,12 @@ if (Sys.info()["sysname"] == "Darwin") {
 }
 
 ## CapsidTrim - 26 seqs, 124aa wide
-aln_capsid <- paste0(malik_h, "user/jayoung/paml_screen/Priya_Shah_YFV/janet_analysis/viral_genomes/get_genomes/genome_alignments/more_genomes_v3_YFVcomplexPlusOneMore/t_coffee/alignments_each_gene/CapsidTrim_more_genomes_v3_slice.sorted.fa") %>% 
+aln_capsid <- paste0(malik_h, "user/jayoung/paml_screen/Priya_Shah_YFV/janet_analysis/viral_genomes/get_genomes/genome_alignments/more_genomes_v3_YFVcomplexPlusOneMore/t_coffee/alignments_each_gene/CapsidTrim_more_genomes_v3_slice.sorted.fa") |> 
     readAAStringSet()
 names(aln_capsid) <- gsub("CapsidTrim_","",names(aln_capsid))
 
 ## CapsidFull - 26 seqs, 146aa wide
-# aln_capsid <- paste0(malik_h, "user/jayoung/paml_screen/Priya_Shah_YFV/janet_analysis/viral_genomes/get_genomes/genome_alignments/more_genomes_v3_YFVcomplexPlusOneMore/t_coffee/alignments_each_gene/CapsidFull_more_genomes_v3_slice.sorted.fa") %>% 
+# aln_capsid <- paste0(malik_h, "user/jayoung/paml_screen/Priya_Shah_YFV/janet_analysis/viral_genomes/get_genomes/genome_alignments/more_genomes_v3_YFVcomplexPlusOneMore/t_coffee/alignments_each_gene/CapsidFull_more_genomes_v3_slice.sorted.fa") |> 
 # readAAStringSet()
 # names(aln_capsid) <- gsub("CapsidFull_","",names(aln_capsid))
 
@@ -357,13 +357,13 @@ aln_capsid_small <- aln_capsid[c("JN628281_17D_reference",
                                  "AY632543.1_Sepik_virus",
                                  "ZIKVug_MR766_ZIKVug_LC002520",
                                  "WNV_2000crow_3356_AF404756",
-                                 "DENV2_16681_KU725663")] %>% 
+                                 "DENV2_16681_KU725663")] |> 
     degapAln()
 ```
 
 ``` r
 ## 124aa wide (YFV and Sepik)
-aln_capsid_one_pair <- aln_capsid_small[1:2] %>% 
+aln_capsid_one_pair <- aln_capsid_small[1:2] |> 
     degapAln()
 ```
 
@@ -375,7 +375,7 @@ getPairAlnStatsByResidue <- function(twoSeqAln,
                                      substitutionMatrix=BLOSUM62) {
     ## up-front checks
     if(length(twoSeqAln)!=2) { stop ("\n\nERROR - getPairAlnStatsByResidue function is designed for a two-sequence alignment\n\n") }
-    aln_lens <- width(twoSeqAln) %>% unique()
+    aln_lens <- width(twoSeqAln) |> unique()
     if(length(aln_lens)>1) { stop("\n\nERROR - your sequences are not aligned - they have different lengths\n\n")}
     
     ### add gap to the substitutionMatrix
@@ -386,21 +386,21 @@ getPairAlnStatsByResidue <- function(twoSeqAln,
     ## start output 
     output <- alnToTibble(twoSeqAln) 
     colnames(output)[2:3] <- c("seq1","seq2") 
-    output <- output %>% 
-        mutate(seq1_id=names(twoSeqAln[1])) %>% 
-        mutate(seq2_id=names(twoSeqAln)[2]) %>% 
+    output <- output |> 
+        mutate(seq1_id=names(twoSeqAln[1])) |> 
+        mutate(seq2_id=names(twoSeqAln)[2]) |> 
         relocate(seq1_id, seq2_id)
     
     pos_tbl <- getAlnPosLookupTable(twoSeqAln)
     colnames(pos_tbl)[2:3] <- c("seq1_pos","seq2_pos") 
-    output <- left_join(output, pos_tbl, by="aln_pos")%>% 
+    output <- left_join(output, pos_tbl, by="aln_pos")|> 
         relocate(seq1_pos, seq2_pos, .after=aln_pos)
     
     ### split seqs into individual residues
     each_seq <- strsplit(as.character(twoSeqAln), "") 
     ### check for things that aren't in the scoring matrix
     unrecognized_residues <- setdiff( unlist(each_seq, use.names = FALSE), 
-                                      rownames(substitutionMatrix)) %>% 
+                                      rownames(substitutionMatrix)) |> 
         unique()
     if(length(unrecognized_residues)> 0) {
         stop("\n\nERROR - there are unrecognized residues in the sequences: ", paste(unrecognized_residues, collapse=","), "\n\n")
@@ -411,14 +411,14 @@ getPairAlnStatsByResidue <- function(twoSeqAln,
         substitutionMatrix[ each_seq[[1]][i], each_seq[[2]][i] ]
     })
     
-    output <- output %>% 
-        mutate(matrix_score=scores) %>% 
-        mutate(identical = each_seq[[1]]==each_seq[[2]]) %>% 
+    output <- output |> 
+        mutate(matrix_score=scores) |> 
+        mutate(identical = each_seq[[1]]==each_seq[[2]]) |> 
         mutate(positive = matrix_score > 0)
     
     if(is.na(gapScore)) {
         ## if we score gaps as NAs, we need to fix the 'identical' column for the positions - they will have FALSE rather than NA
-        output <- output %>% 
+        output <- output |> 
             mutate(identical = case_when( (is.na(seq1_pos) | is.na(seq2_pos)) ~ NA, 
                                           TRUE ~ identical))
     }
@@ -476,19 +476,19 @@ alnStats_toSlidingWindowResults <- function(alnStatsTbl,
         stop("\n\nERROR - which column contains the scores to use for sliding windows? Cannot find ",score_colname,"\n\n")
     }
     ## create windows
-    max_pos <- alnStatsTbl %>% pull(!!pos_colname) %>% max(na.rm = TRUE)
+    max_pos <- alnStatsTbl |> pull(!!pos_colname) |> max(na.rm = TRUE)
     
     ## restructure the score as Views, each region is a sliding window
-    my_views <- Views(subject=alnStatsTbl %>% filter(!is.na(!!pos_colname)) %>% pull(score_colname) %>% as.integer(),
+    my_views <- Views(subject=alnStatsTbl |> filter(!is.na(!!pos_colname)) |> pull(score_colname) |> as.integer(),
                       start= seq(from=1, to=max_pos+1-alnStatsTblwindowSize, by=windowSlide),
                       width=alnStatsTblwindowSize)
     ## calculate stuff in each window
-    output <- as(my_views, "IRanges") %>% 
-        as.data.frame() %>% ## get an error if I skip this intermediate step
-        as_tibble() %>%
-        dplyr::rename(win_start=start, win_end=end) %>% 
-        mutate(win_mid= (win_start + win_end)/2) %>% 
-        relocate(win_mid, .after=win_end) %>% 
+    output <- as(my_views, "IRanges") |> 
+        as.data.frame() |> ## get an error if I skip this intermediate step
+        as_tibble() |>
+        dplyr::rename(win_start=start, win_end=end) |> 
+        mutate(win_mid= (win_start + win_end)/2) |> 
+        relocate(win_mid, .after=win_end) |> 
         mutate(mean_score = viewApply(my_views, function(x) { mean(as.integer(x), na.rm=TRUE) }),
                # median_score = viewApply(my_views, function(x) { median(as.integer(x), na.rm=TRUE) }),
                tot_score = viewSums(my_views, na.rm = TRUE))
@@ -499,17 +499,17 @@ alnStats_toSlidingWindowResults <- function(alnStatsTbl,
 }
 
 ### seems to be working. 
-aln_capsid_one_pair_position_scores_windows_identical_gapNA <- aln_capsid_one_pair_position_scores_gapNA %>%
+aln_capsid_one_pair_position_scores_windows_identical_gapNA <- aln_capsid_one_pair_position_scores_gapNA |>
     alnStats_toSlidingWindowResults()
-aln_capsid_one_pair_position_scores_windows_identical_gap0 <- aln_capsid_one_pair_position_scores_gap0 %>%
+aln_capsid_one_pair_position_scores_windows_identical_gap0 <- aln_capsid_one_pair_position_scores_gap0 |>
     alnStats_toSlidingWindowResults()
-aln_capsid_one_pair_position_scores_windows_positive_gapNA <- aln_capsid_one_pair_position_scores_gapNA %>%
+aln_capsid_one_pair_position_scores_windows_positive_gapNA <- aln_capsid_one_pair_position_scores_gapNA |>
     alnStats_toSlidingWindowResults(score_colname="positive")
-aln_capsid_one_pair_position_scores_windows_positive_gap0 <- aln_capsid_one_pair_position_scores_gap0 %>%
+aln_capsid_one_pair_position_scores_windows_positive_gap0 <- aln_capsid_one_pair_position_scores_gap0 |>
     alnStats_toSlidingWindowResults(score_colname="positive")
 
 # 
-# temp <- aln_capsid_one_pair_position_scores_gap0 %>%  
+# temp <- aln_capsid_one_pair_position_scores_gap0 |>  
 #     alnStats_toSlidingWindowResults(pos_colname="seq1_pos", score_colname="positive")
 # temp
 # aln_capsid_one_pair_position_scores_windows_identical_gap0
@@ -525,7 +525,7 @@ aln_capsid_one_pair
     ## [2]   104 MATRGASKSRVTTRGVNMVTAKA...KILKKLRNIVTNLMKGLSGRRKR AY632543.1_Sepik_...
 
 ``` r
-aln_capsid_one_pair_position_scores_gap0 %>% 
+aln_capsid_one_pair_position_scores_gap0 |> 
     ggplot(aes(x=aln_pos, y=matrix_score)) +
     geom_hline(yintercept = 0, lty=2, color="lightgray") +
     geom_line() +
@@ -538,12 +538,12 @@ aln_capsid_one_pair_position_scores_gap0 %>%
 
 ``` r
 my_color_scheme <- c("FALSE"="gray", "TRUE"="red")
-p1 <- aln_capsid_one_pair_position_scores_gap0 %>% 
-    mutate(seq1_gap = is.na(seq1_pos)) %>% 
-    mutate(seq2_gap = is.na(seq2_pos)) %>% 
-    select(aln_pos, identical, positive, seq1_gap, seq2_gap) %>% 
-    pivot_longer(cols=-aln_pos, names_to="statistic") %>% 
-    mutate(statistic=factor(statistic, levels = c("seq1_gap", "seq2_gap", "positive", "identical"))) %>% 
+p1 <- aln_capsid_one_pair_position_scores_gap0 |> 
+    mutate(seq1_gap = is.na(seq1_pos)) |> 
+    mutate(seq2_gap = is.na(seq2_pos)) |> 
+    select(aln_pos, identical, positive, seq1_gap, seq2_gap) |> 
+    pivot_longer(cols=-aln_pos, names_to="statistic") |> 
+    mutate(statistic=factor(statistic, levels = c("seq1_gap", "seq2_gap", "positive", "identical"))) |> 
     ggplot(aes(x=aln_pos, y=statistic, color=value)) +
     geom_point() +
     theme_classic() +
@@ -552,14 +552,14 @@ p1 <- aln_capsid_one_pair_position_scores_gap0 %>%
 # labs(x="alignment position", y="positive each residue")
 
 
-p2 <- aln_capsid_one_pair_position_scores_gap0 %>% 
+p2 <- aln_capsid_one_pair_position_scores_gap0 |> 
     ggplot(aes(x=aln_pos, y=matrix_score)) +
     geom_hline(yintercept = 0, lty=2, color="lightgray") +
     geom_point(size=0.5) +
     theme_classic()  +
     coord_cartesian(xlim=c(0,105))
 
-p3 <- aln_capsid_one_pair_position_scores_windows_identical_gap0 %>% 
+p3 <- aln_capsid_one_pair_position_scores_windows_identical_gap0 |> 
     ggplot(aes(x=aln_pos_mid, y=tot_identical)) +
     geom_point(size=0.5) +
     theme_classic() +
@@ -567,7 +567,7 @@ p3 <- aln_capsid_one_pair_position_scores_windows_identical_gap0 %>%
     coord_cartesian(xlim=c(0,105))
 
 
-p4 <- aln_capsid_one_pair_position_scores_windows_positive_gap0 %>% 
+p4 <- aln_capsid_one_pair_position_scores_windows_positive_gap0 |> 
     ggplot(aes(x=aln_pos_mid, y=tot_positive)) +
     geom_point(size=0.5) +
     theme_classic() +
@@ -588,7 +588,7 @@ See
 
 ``` r
 temp <- aa_aln_h2a_l_firstBit[1:2]
-temp2 <- temp %>% PairwiseAlignmentsSingleSubject()
+temp2 <- temp |> PairwiseAlignmentsSingleSubject()
 nmatch(temp2)
 ```
 

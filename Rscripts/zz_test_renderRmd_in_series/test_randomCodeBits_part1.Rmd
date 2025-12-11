@@ -32,9 +32,9 @@ library(here)
 ```
 
 ```{r}
-iris_plus_groups <- iris %>% 
-    as_tibble() %>% 
-    mutate(group = sample(1:2, size=nrow(iris), replace=TRUE)) %>% 
+iris_plus_groups <- iris |> 
+    as_tibble() |> 
+    mutate(group = sample(1:2, size=nrow(iris), replace=TRUE)) |> 
     mutate(group=paste0("group_", group)) 
 ```
 

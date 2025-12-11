@@ -25,7 +25,7 @@ In group B, all 100 mice have exactly the same blood iron level.
 
 ```{r}
 dat <- tibble(A = rep(c(400,450,500,550,600), 20),
-              B = rep(500, 100) ) %>% 
+              B = rep(500, 100) ) |> 
     mutate(A_noise1 = A + rnorm(100, sd=25),
            A_noise2 = A + rnorm(100, sd=25),
            B_noise1 = B + rnorm(100, sd=25),
@@ -34,21 +34,21 @@ dat <- tibble(A = rep(c(400,450,500,550,600), 20),
 
 ```{r}
 dat <- tibble(A = rep(c(400,450,500,550,600), 20),
-              B = rep(500, 100) ) %>% 
+              B = rep(500, 100) ) |> 
     pivot_longer(cols=everything(),
-                 names_to="group", values_to="iron") %>% 
-    arrange(group) %>% 
-    mutate(iron_rep1 = iron + rnorm(200, sd=25)) %>% 
+                 names_to="group", values_to="iron") |> 
+    arrange(group) |> 
+    mutate(iron_rep1 = iron + rnorm(200, sd=25)) |> 
     mutate(iron_rep2 = iron + rnorm(200, sd=25))
 # for convenience:
-datA <- dat %>% filter(group=="A") 
-datB <- dat %>% filter(group=="B") 
+datA <- dat |> filter(group=="A") 
+datB <- dat |> filter(group=="B") 
 
 # dat
 ```
 
 ```{r, fig.height=4, fig.width=6}
-dat %>% 
+dat |> 
     ggplot(aes(x=iron)) +
     geom_histogram(binwidth=50, fill="gray", color="black") +
     facet_wrap(vars(group)) +
@@ -57,7 +57,7 @@ dat %>%
 ```
 
 ```{r, fig.height=4, fig.width=6}
-dat %>% 
+dat |> 
     ggplot(aes(x=iron_rep1, iron_rep2)) +
     geom_point() +
     facet_wrap(vars(group)) +
@@ -97,8 +97,8 @@ dat2 <- tibble(
 Show default ggpairs plot
 
 ```{r}
-dat2 %>% 
-    select(-x) %>% 
+dat2 |> 
+    select(-x) |> 
     ggpairs(progress=FALSE)
 ```
 
@@ -136,8 +136,8 @@ r2_fun <- function(data, mapping, ndp=2, ...){
               panel.background = element_rect(fill = "white", color="lightgray")) 
 }
 
-dat2 %>% 
-    select(-x) %>% 
+dat2 |> 
+    select(-x) |> 
     ggpairs(upper=list(continuous=r2_fun), 
             progress=FALSE)
 
@@ -155,8 +155,8 @@ ggally_hexbin <- function (data, mapping, ...)  {
     p
 }
 
-dat2 %>% 
-    select(-x) %>% 
+dat2 |> 
+    select(-x) |> 
     ggpairs(lower= list(continuous = "hexbin"),
             upper=list(continuous=r2_fun), 
             progress=FALSE)

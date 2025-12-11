@@ -10,7 +10,7 @@
 #'
 #' # B19013_001: Median household income in the past 12 months (in 2015 Inflation-adjusted dollars)
 #'
-#' texas_income %>%
+#' texas_income |>
 #'   ggplot(aes(fill = estimate)) +
 #'   geom_sf(color = "white") +
 #'   coord_sf(datum = NA) +

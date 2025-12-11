@@ -16,18 +16,18 @@ read_seq_file_JY <- function(seq_file,
         stop("\n\nERROR - seqfile does not exist: ",seq_file, "\n\n")
     }
     if (type=="DNA") {
-        seqs <- seq_file %>% readDNAStringSet(nrec=nrec)
+        seqs <- seq_file |> readDNAStringSet(nrec=nrec)
     }
     if (type=="AA") {
-        seqs <- seq_file %>% readAAStringSet(nrec=nrec)
+        seqs <- seq_file |> readAAStringSet(nrec=nrec)
     }
     if (type=="B") {
-        seqs <- seq_file %>% readBStringSet(nrec=nrec)
+        seqs <- seq_file |> readBStringSet(nrec=nrec)
     }
     if(!exists("seqs")) {
         stop("\n\nERROR - you specified an invalid type. Should be DNA, AA, or B\n\n")
     }
-    headers_split <- names(seqs) %>% strsplit(" ")
+    headers_split <- names(seqs) |> strsplit(" ")
     info_tbl <- tibble(seq_id = sapply(headers_split, "[[", 1),
                        seq_len = width(seqs),
                        desc = sapply(headers_split, function(x) {
@@ -36,9 +36,9 @@ read_seq_file_JY <- function(seq_file,
                            } else { return(NA) }
                        }))
     if(strip_afterDot) {
-        info_tbl <- info_tbl %>% 
-            mutate(seq_id_withDot = seq_id) %>% 
-            mutate(seq_id = str_remove_all(seq_id, "\\.\\d+$")) %>% 
+        info_tbl <- info_tbl |> 
+            mutate(seq_id_withDot = seq_id) |> 
+            mutate(seq_id = str_remove_all(seq_id, "\\.\\d+$")) |> 
             relocate(seq_id_withDot, .after=seq_id)
     }
     if (length(info_tbl$seq_id) == length(unique(info_tbl$seq_id))) {
@@ -50,7 +50,7 @@ read_seq_file_JY <- function(seq_file,
 }
 # fer_ensembl_cds_file <- "/fh/fast/malik_h/grp/public_databases/Ensembl/release-115/Rhinolophus_ferrumequinum/Rhinolophus_ferrumequinum.mRhiFer1_v1.p.cds.all.fa"
 # test <- read_seq_file_JY(fer_ensembl_cds_file, type="DNA", strip_afterDot=TRUE, nrec=10)
-# test[["seqs"]] %>% names()
+# test[["seqs"]] |> names()
 # test[["info"]]
 
 ####### read_multiple_seq_files_JY - when we have >1 seqfile, uses read_seq_file_JY to read them, and combines the results, add a "file" column to the info table
@@ -65,20 +65,20 @@ read_multiple_seq_files_JY <- function(files, ...) {
     ## seqs
     seqs <- lapply(dat, "[[", "seqs")
     if(class(seqs[[1]]) == "DNAStringSet") {
-        seqs <- seqs %>% DNAStringSetList() %>% unlist(use.names=FALSE)
+        seqs <- seqs |> DNAStringSetList() |> unlist(use.names=FALSE)
     }
     if(class(seqs[[1]]) == "AAStringSet") {
-        seqs <- seqs %>% AAStringSetList() %>% unlist(use.names=FALSE)
+        seqs <- seqs |> AAStringSetList() |> unlist(use.names=FALSE)
     }
     if(class(seqs[[1]]) == "BStringSet") {
-        seqs <- seqs %>% BStringSetList() %>% unlist(use.names=FALSE)
+        seqs <- seqs |> BStringSetList() |> unlist(use.names=FALSE)
     }
     ## info
     info <- lapply(names(dat), function(x) {
-        dat[[x]][["info"]] %>% 
-            mutate(file=x) %>%
+        dat[[x]][["info"]] |> 
+            mutate(file=x) |>
             relocate(file)
-    }) %>% 
+    }) |> 
         bind_rows()
     output <- list(seqs=seqs, info=info)
     return(output)
@@ -86,9 +86,9 @@ read_multiple_seq_files_JY <- function(files, ...) {
 
 #### countAmbiguitiesEachSeq - a small function that counts all non-ACGT seqs in each member of a DNAStringSet
 countAmbiguitiesEachSeq <- function(dna_seqs) {
-    alphabetFrequency(dna_seqs) %>% 
-        as_tibble() %>% 
-        select(-A, -C, -G, -T) %>% 
+    alphabetFrequency(dna_seqs) |> 
+        as_tibble() |> 
+        select(-A, -C, -G, -T) |> 
         rowSums()
 }
 
@@ -117,7 +117,7 @@ GCcontent <- function (myseqs) {
 }
 ## ## test code 
 # myseqs <- c(seq1="AGTAGTGCATGTATGC",
-#             seq2="GGTAGCTGGATGATCGGTA") %>%
+#             seq2="GGTAGCTGGATGATCGGTA") |>
 #     DNAStringSet()
 # # alphabetFrequency(myseqs)
 # # width(myseqs)
