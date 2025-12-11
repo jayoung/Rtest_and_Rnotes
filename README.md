@@ -131,9 +131,16 @@ I am trying it on the work laptop (Dec 2025). Some notes from the walkthrough it
 
 I was using `magrittr`'s pipe in my code:   `%>%`.   
 
-I recently switch to the native R pipe: `|>`. 
+I recently switched MOST code in some of my repos to the native R pipe: `|>` (introduced in R 4.1.0).
 
 Can insert a pipe in Rstudio using Command-shift-m on the mac. There is a setting in R studio to tell it which of those two styles of pipe you want to use.
+
+There are situations where the native pipe won't work and we need to use  `%>%`. More info [here](https://tidyverse.org/blog/2023/04/base-vs-magrittr-pipe/). Examples: 
+- when we use the `.` to represent the incoming data as an argument to one of the functions.  
+- if we don't include the parentheses after the function name, e.g. `my_dat |> nrow()` works but `my_dat |> nrow` doesn't. (and `my_dat %>% nrow` does work)
+
+`nrow()` has caused me trouble in pipes. A better alternative is the `tibble::rowid_to_column()` function, e.g. `iris |> rowid_to_column(var="my_row_index") |> head()`
+
 
 ### R does rounding weirdly!
 
@@ -214,8 +221,6 @@ Modify size by simple scaling
 
 ### Miscellaneous 
 
-
-
 To extract some list elements using their indices in a pipe, use `magrittr::extract()`. This is the equivalent of using `[`.   Example:
 
 ```
@@ -269,6 +274,9 @@ myFunc <- function(x) {
 ```
 
 `unz()` function lets you read files within a zip file without even unpacking it. See also `gzfile()` and `bzfile()`
+
+
+`nrow()` is a base R function. There is also a BiocGenerics function called `nrows()`, which I think is supposed to work on a list of matrix-like objects
 
 ## Useful packages
 
