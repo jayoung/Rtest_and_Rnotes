@@ -141,6 +141,9 @@ There are situations where the native pipe won't work and we need to use  `%>%`.
 
 `nrow()` has caused me trouble in pipes. A better alternative is the `tibble::rowid_to_column()` function, e.g. `iris |> rowid_to_column(var="my_row_index") |> head()`
 
+There are other [more complicated pipe types](https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html), including this pipe: `%<>%`. But I doubt I'll use them because it would make the code quite unreadable. 
+
+
 
 ### R does rounding weirdly!
 
