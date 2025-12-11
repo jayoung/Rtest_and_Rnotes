@@ -121,16 +121,7 @@ I am trying it on the work laptop (Dec 2025). Some notes from the walkthrough it
 
 - "Positron doesn't have an exact equivalent to RStudio Projects, but the concept in Positron that is most analogous to an RStudio Project is a workspace. You can read more in the VS Code documentation about what exactly a workspace is, but in general think of a workspace as about the same thing as a folder, which is about the same thing as an RStudio Project."  More info on [how to think about Rprojects in Positron](https://positron.posit.co/migrate-rstudio-rproj.html)
 - "Air" is a formatting tool for R code
-
-
-Databot - command-shift-P gives us the command pane, and there's an option to open databot. Select which LLM to use (choose Claude Sonnet), then we type requests in plain english. It generates code but doesn't run it without our permission.  You would probably want to copy the useful code chunks into your own qmd/Rmd document.  I have installed the extension but I haven't set it up to connect to a particular LLM yet (because I don't have accounts with the LLMs). It can make plots and tables and plain-english summaries of what the tables show.
-
-After it runs it offers options, like to put its code/findings into markdown files
-
-Databot demo videos from Ted Laderas (Hutch DASL): Using Databot on the NHANES dataset: 
-- [part 1](https://www.youtube.com/watch?v=qs2GozYUUOk)
-- [part 2](https://www.youtube.com/watch?v=lT2J71Jg_ug)
-- [part 3](https://www.youtube.com/watch?v=j0KdDMIgcLY)
+- "Databot" is a Positron extension that allows you to use AI, e.g. via the Claude LLM, to do data analysis, including saving the R code for it. [My notes](https://github.com/jayoung/MalikLab_bioinformaticsResources/blob/main/janets_NOTES_forMyself/programming_and_statistics/AI_notes.md#databot-in-positron-for-r-based-data-analysis) (in a different repo).
 
 
 
