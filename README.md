@@ -281,6 +281,9 @@ myFunc <- function(x) {
 
 `nrow()` is a base R function. There is also a BiocGenerics function called `nrows()`, which I think is supposed to work on a list of matrix-like objects
 
+If I have problems with package conflicts - different functions with the same name in different packages masking one another - I may be able to solve that using the `use()` function (available from R 4.4.0 onwards) to load functions from a library, rather than the `library()` function. . Using the `include.only` argument lets you load only the specified functions from a package rather than the whole package. Demo [here](https://erikgahner.dk/2025/use-use-in-r/).
+
+
 ## Useful packages
 
 On a Mac, R packages go here - `/Library/Frameworks/R.framework/Versions` - in subdirectories by version. After installing new R, can delete old packages to save disk space
