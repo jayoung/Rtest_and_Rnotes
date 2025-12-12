@@ -9,14 +9,14 @@ rhino location: `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes`
 
 ## Very partial table of contents of this repo
 
-
 There are many files in this repo, but these are some that will probably be useful frequently:
 
 - [R tips and tricks](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/notes/R_tips_and_tricks.md). In a bit of a random order right now.
 - [ggplot tips and tricks](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/ggplot/ggplot_tips_and_tricks.md)
 - [ggtree_demo.md](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/phylogenetics/ggtree_demo.md)
 - [tutorials_JY_forOthers](https://github.com/jayoung/Rtest_and_Rnotes/tree/main/tutorials_JY_forOthers) folder has example code I used to teach others
-
+- [render_from_command_line_NOTES.md](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/notes/render_from_command_line_NOTES.md)
+- [package_installation_NOTES.md](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/notes/package_installation_NOTES.md)
 
 Some notes I'm storing in other repos:
 
@@ -216,7 +216,8 @@ Inparanoid downloads
 
 [GenVisR](https://bioconductor.org/packages/release/bioc/html/GenVisR.html)
 
-for genomes with karyotypes: [karyoploteR](https://bioconductor.org/packages/release/bioc/vignettes/karyoploteR/inst/doc/karyoploteR.html)
+for genomes with karyotypes: [karyoploteR](https://bioconductor.org/packages/release/bioc/vignettes/karyoploteR/inst/doc/karyoploteR.html). Perhaps also try `GenomeGraphs` or `HilbertVis`
+
 
 rtracklayer can make plots by interacting with a UCSC browser
 

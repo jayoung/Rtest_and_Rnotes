@@ -1,4 +1,0 @@
-from findOverlaps help: "If query is unsorted, it is sorted first, so it is usually better to sort up-front, to avoid a sort with each findOverlaps call." Perhaps also use IntervalTree to speed things up?
-
-
-plotting "karyotypes":  try  GenomeGraphs and HilbertVis
