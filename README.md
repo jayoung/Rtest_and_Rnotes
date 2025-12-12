@@ -194,6 +194,15 @@ library(reprex)
 
 Copy the code you want to the clipboard, and enter `reprex()` in the R Console. In RStudio, you’ll see a preview of your rendered reprex, but it is also now on the clipboard ready to paste.
 
+Or, write the code, and then put it in a reprex block:
+```
+reprex::reprex({
+    x <- 1:4
+    y <- 2:5
+    x + y
+})
+```
+
 
 ### Debugging
 
@@ -283,6 +292,24 @@ myFunc <- function(x) {
 
 If I have problems with package conflicts - different functions with the same name in different packages masking one another - I may be able to solve that using the `use()` function (available from R 4.4.0 onwards) to load functions from a library, rather than the `library()` function. . Using the `include.only` argument lets you load only the specified functions from a package rather than the whole package. Demo [here](https://erikgahner.dk/2025/use-use-in-r/).
 
+
+`separate_longer_delim` is a nice function that lets us "uncollapse" rows when needed:
+```
+df <- data.frame(id = 1:3, x = c("x", "x y z", NA))
+df
+#   id     x
+# 1  1     x
+# 2  2 x y z
+# 3  3  <NA>
+
+df |> tidyr::separate_longer_delim(x, delim = " ")
+#>   id    x
+#> 1  1    x
+#> 2  2    x
+#> 3  2    y
+#> 4  2    z
+#> 5  3 <NA>
+```
 
 ## Useful packages
 
