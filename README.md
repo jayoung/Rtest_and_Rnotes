@@ -7,18 +7,32 @@ A lot of this is quite old, and most of it is only for myself, not meant for oth
 rhino location: `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes`
 
 
-## Links, and frequently used notes
+## Very partial table of contents of this repo
 
-Many files in this repo, but these are some that will probably be useful frequently:
 
+There are many files in this repo, but these are some that will probably be useful frequently:
+
+- [R tips and tricks](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/notes/R_tips_and_tricks.md). In a bit of a random order right now.
 - [ggplot tips and tricks](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/ggplot/ggplot_tips_and_tricks.md)
 - [ggtree_demo.md](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/phylogenetics/ggtree_demo.md)
+- [tutorials_JY_forOthers](https://github.com/jayoung/Rtest_and_Rnotes/tree/main/tutorials_JY_forOthers) folder has example code I used to teach others
+
 
 Some notes I'm storing in other repos:
 
 - [AI_notes.md](https://github.com/jayoung/MalikLab_bioinformaticsResources/blob/main/janets_NOTES_forMyself/programming_and_statistics/AI_notes.md)
 
-## Intentions
+## Things I often need to remember
+
+To Knit/render an Rmd doc from the linux command line, I have a couple of scripts in this repo (in `useful_functions`) that I can run from gizmo/rhino: `render_Rmd.perl` (run scripts in parallel) and `render_Rmd_series.perl` (run scripts in series) 
+
+
+Insert an image into a .md or .Rmd document:
+```
+![Caption for the picture.](/path/to/image.png){#id .class width=50% height=50%}
+```
+
+## My coding intentions
 
 Use `janitor::tabyl` more for cross-tables (see [demo](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/janitor_cross_tables_demo.md))
 
@@ -32,35 +46,24 @@ see another list [here](https://github.com/jayoung/thoughts/blob/main/learning_t
 
 [Tidyverse style guide](https://style.tidyverse.org/syntax.html).  I got up to the end of the 'syntax' section.  Perhaps see also the [Advanced R style guide](http://adv-r.had.co.nz/Style.html).
 
-
-
 R stuff:
-for file lists, check out `dir()`:
+for file lists, check out `dir()` rather than `list.files()`:
 ```
 files <- dir(here("data", "participants"), pattern="*.csv")
 ```
-for reading multiple files, check out `purrr::map_df`:
+
+To read multiple files all at once, check out `purrr::map_df`:
 ```
 data <- files |>
     map_df(~read_csv(file=here("data", "particants", .x)))
 ```
 
-downloading files within R:
-```
-download.file(url, destfile="data-raw/name-of-file.xlsx")
-```
 
-
-there's a package called 'readxl' part of tidyverse, but not core tidyverse. readxl::read_excel(). Has a sheet option
+there's a package called 'readxl' - it's part of tidyverse, but not core tidyverse. Has a function called `readxl::read_excel()` with sheet option.
 
 `furrr` R package is like `purrr`, but parallelized 
 
-
-figure out gheatmap in ggtree
-
-
 joins using plyranges R package - different types https://www.bioconductor.org/packages/devel/bioc/vignettes/plyranges/inst/doc/an-introduction.html#9_Learning_more
-
 
 writing R packages and documentation - https://style.tidyverse.org/documentation.html
 - R packages that help develop and maintain and test packages are  {devtools}, {testthat}, {usethis} 
@@ -104,219 +107,20 @@ Bioconductor support:
 - [https://support.bioconductor.org/](https://support.bioconductor.org/)
 - Zulip workspace (a bit like Slack)
 
+[CRAN task views](http://cran.r-project.org/web/views/) may help identify the right package(s) to use for a certain task. See also [Bioconductor workflow vignettes](https://www.bioconductor.org/packages/release/BiocViews.html#___Workflow)
+
 ### haven't looked yet: future
 
 [The Elements of Data Analytic Style](https://leanpub.com/datastyle) by Jeff Leek (a Leanpub book)
 
 Data Science resources [list](https://nrennie.rbind.io/data-science-resources/)
 
-## Positron
 
-An IDE for R or python.  Perhaps a future replacement for Rstudio but as of 2025 it's not able to interact with data stored on the Hutch servers, although I could use it on my Mac, I think.
 
-Its' data viewer looks nice (`View()`) - includes little graphs
 
+## List of useful packages
 
-I am trying it on the work laptop (Dec 2025). Some notes from the walkthrough it gives on migrating from Rstudio:
-
-- "Positron doesn't have an exact equivalent to RStudio Projects, but the concept in Positron that is most analogous to an RStudio Project is a workspace. You can read more in the VS Code documentation about what exactly a workspace is, but in general think of a workspace as about the same thing as a folder, which is about the same thing as an RStudio Project."  More info on [how to think about Rprojects in Positron](https://positron.posit.co/migrate-rstudio-rproj.html)
-- "Air" is a formatting tool for R code
-- "Databot" is a Positron extension that allows you to use AI, e.g. via the Claude LLM, to do data analysis, including saving the R code for it. [My notes](https://github.com/jayoung/MalikLab_bioinformaticsResources/blob/main/janets_NOTES_forMyself/programming_and_statistics/AI_notes.md#databot-in-positron-for-r-based-data-analysis) (in a different repo).
-
-
-
-## Things I've learned
-
-### Pipes:
-
-I was using `magrittr`'s pipe in my code:   `%>%`.   
-
-I recently switched MOST code in some of my repos to the native R pipe: `|>` (introduced in R 4.1.0).
-
-Can insert a pipe in Rstudio using Command-shift-m on the mac. There is a setting in R studio to tell it which of those two styles of pipe you want to use.
-
-There are situations where the native pipe won't work and we need to use  `%>%`. More info [here](https://tidyverse.org/blog/2023/04/base-vs-magrittr-pipe/). Examples: 
-- when we use the `.` to represent the incoming data as an argument to one of the functions.  
-- if we don't include the parentheses after the function name, e.g. `my_dat |> nrow()` works but `my_dat |> nrow` doesn't. (and `my_dat %>% nrow` does work)
-
-`nrow()` has caused me trouble in pipes. A better alternative is the `tibble::rowid_to_column()` function, e.g. `iris |> rowid_to_column(var="my_row_index") |> head()`
-
-There are other [more complicated pipe types](https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html), including this pipe: `%<>%`. But I doubt I'll use them because it would make the code quite unreadable. 
-
-
-
-### R does rounding weirdly!
-
-See [here](https://psiaims.github.io/CAMIS/R/rounding.html)
-
-"The `round()` function in Base R will round to the nearest whole number and ‘rounding to the even number’ when equidistant, meaning that exactly 12.5 rounds to the integer 12. Note that the janitor package in R contains a function `round_half_up()` that rounds away from zero. in this case it rounds to the nearest whole number and ‘away from zero’ or ‘rounding up’ when equidistant, meaning that exactly 12.5 rounds to the integer 13.""
-
-### Rstudio tricks
-
-"Reindenting your code only shifts things around horizontally. If you want more powerful code reformatting, try using “Code > Reformat Code” (or use ⌘⇧A on macOS or ctrl + shift + A on Windows). It’s a more aggressive form of reformatting that will add extra line breaks and other things to make the code more readable."
-
-In settings, there's an option to turn on rainbow parentheses to help see pairings.
-
-[Snippets](https://rfortherestofus.com/2024/04/snippets-rstudio):
-
-- e.g. the `fun` snippet:  within a code chunk, type `fun` and press tab - the skeleton of a function appears
-- press tab again and you move within the snippet to the next piece you might fill in. Shift-tab also does something (not sure exactly what)
-- `Tools menu - Edit code snippets` shows what snippets are available
-- Markdown snippets are also useful (e.g. place an image). Here we need to do `shift-tab` to activate.  E.g. `r-shift-tab` inserts an R code chunk, if we do it from within a markdown area (i.e. outside an existing R code chunk)
-
-#### Rstudio keyboard shortcuts
-
-highlight a function, press function-F1, and it brings up the help page
-
-shift-command-M types a pipe (there's a setting for whether you want that to be `%>%` or `|>`)
-
-tab adds an indent to one or more selected lines of code, shift+tab removes one indent
-
-(see tips [here](https://rfortherestofus.com/2023/11/rstudio-hotkeys))
-
-#### Rstudio Snippets  
-
-Example: type `fun` and press the `tab` key, and R provides the skeleton of a new function
-
-To see all snippets:  Tools - Edit Code Snippets
-
-
-### reprex
-
-To create reproducible code + output we can use `reprex`
-
-First, we write the code the demonstrates the problem
-
-Load the library:
-```
-library(reprex)
-```
-
-Copy the code you want to the clipboard, and enter `reprex()` in the R Console. In RStudio, you’ll see a preview of your rendered reprex, but it is also now on the clipboard ready to paste.
-
-Or, write the code, and then put it in a reprex block:
-```
-reprex::reprex({
-    x <- 1:4
-    y <- 2:5
-    x + y
-})
-```
-
-
-### Debugging
-
-Three options:    
-- `browser()` (place inside a function, temporarily)    
-- `debug(myFunction)` plus `undebug(myFunction)` (the Rstudio console window has a 'stop' button to exit debugging)   
-- `debugonce()`    
-See (`explore_debugging_functions.R`)[Rscripts/explore_debugging_functions.R] for details.
-
-### Insert an image into an Rmd document
-
-(or any md document, I think)
-
-A simple image:
-```
-![Caption for the picture.](/path/to/image.png)
-```
-
-Modify size (specify pixels, probably)
-```
-![Caption for the picture.](/path/to/image.png){#id .class width=30 height=20px}
-```
-
-Modify size by simple scaling
-```
-![Caption for the picture.](/path/to/image.png){#id .class width=50% height=50%}
-```
-
-### Miscellaneous 
-
-To extract some list elements using their indices in a pipe, use `magrittr::extract()`. This is the equivalent of using `[`.   Example:
-
-```
-my_list |> magrittr::extract(3:5) 
-```
-
-The related function `magrittr::extract2()` is the equivalent of `[[`, so we would use it to extract a single element from a list. Example:
-
-```
-my_list |> magrittr::extract2(1) 
-```
-
-The 'embracing' operator (`{{ }}`), and unquoting using !! and !!! - see [`testCode.R`](Rscripts/testCode.R) for details.
-
-& versus && (and | versus ||):  use the short form for bitwise operation on vectors. Use the long form when we want a single TRUE/FALSE answer.   `any` and `all` functions run OR and AND on all elements of a vector
-
-```
-x <- c(TRUE,TRUE,FALSE,FALSE)
-y <- c(TRUE,FALSE,TRUE,FALSE)
-x & y
-# x && y # this is no good!
-any(x)  ## TRUE
-all(x)  ## FALSE
-```
-
-The `switch` function - a multiway `if` statement, I think?
-```
-centre <- function(x, type) {
-  switch(type,
-         mean = mean(x),
-         median = median(x),
-         trimmed = mean(x, trim = .1))
-}
-x <- rcauchy(10)
-centre(x, "mean")
-centre(x, "median")
-centre(x, "trimmed")
-```
-
-In `switch`, if there's an empty argument, it 'falls-through' to the next thing (e.g. here, `myFunc("a")` returns the same thing as `myFunc("b")`).
-Not also that we can add `call. = FALSE` to a `stop` statement to modify the error message that'll be produced
-```
-myFunc <- function(x) {
-  switch(x, 
-    a = ,
-    b = 1, 
-    c = 2,
-    stop("Unknown `x`", call. = FALSE)
-  )
-}
-```
-
-`unz()` function lets you read files within a zip file without even unpacking it. See also `gzfile()` and `bzfile()`
-
-
-`nrow()` is a base R function. There is also a BiocGenerics function called `nrows()`, which I think is supposed to work on a list of matrix-like objects
-
-If I have problems with package conflicts - different functions with the same name in different packages masking one another - I may be able to solve that using the `use()` function (available from R 4.4.0 onwards) to load functions from a library, rather than the `library()` function. . Using the `include.only` argument lets you load only the specified functions from a package rather than the whole package. Demo [here](https://erikgahner.dk/2025/use-use-in-r/).
-
-
-`separate_longer_delim` is a nice function that lets us "uncollapse" rows when needed:
-```
-df <- data.frame(id = 1:3, x = c("x", "x y z", NA))
-df
-#   id     x
-# 1  1     x
-# 2  2 x y z
-# 3  3  <NA>
-
-df |> tidyr::separate_longer_delim(x, delim = " ")
-#>   id    x
-#> 1  1    x
-#> 2  2    x
-#> 3  2    y
-#> 4  2    z
-#> 5  3 <NA>
-```
-
-## Useful packages
-
-On a Mac, R packages go here - `/Library/Frameworks/R.framework/Versions` - in subdirectories by version. After installing new R, can delete old packages to save disk space
-
-
-### combining plots
+### patchwork to combine plots
 
 patchwork package is great. See [demo code](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/patchwork_package_demo_and_tips.md).
 
@@ -455,106 +259,3 @@ https://rfortherestofus.com/2019/08/themes-to-improve-your-ggplot-figures/
 
 [A nice alternative](https://albert-rapp.de/posts/ggplot2-tips/15_alternative_paired_bars/15_alternative_paired_bars) to paired bar charts. That tutorial shows other alternatives too: arrow plots, slope plots. 
 
-
-## Package installation note
-
-There are some packages that won't install within an rhino/gizmo Rstudio-server session, because we need to load additional modules first, e.g. flextable and gdtools require the cairo module.
-
-Here's what I'm trying, from a gizmo command line session
-```
-module purge
-module load cairo/1.18.0-GCCcore-13.3.0
-module load fhR/4.4.0-foss-2023b
-
-R
-
-install.package("gdtools")
-install.package("flextable")
-q(save="no")
-
-module purge
-```
-Seems like that worked, and I can load those libraries within Rstudio-server without needing to load the cairo module.
-
-
-## Knit/render an Rmd doc from the linux command line
-
-Easiest way: on gizmo/rhino:
-
-- `useful_functions/render_Rmd.perl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each (in parallel, i.e. scripts are not linked).
-
-- `useful_functions/render_Rmd_series.perl` is a generic perl script that will take the name of several Rmd scripts as input, and make and run an sbatch script to render the report for each, one after the other, stopping if any of them fail (scripts are in a linked series).
-
-(there are also links to those scripts in `~/bin`)
-
-Demo script and output, in `useful_functions/knit_using_shellScript`.
-
-By default, if I render that way, plot images are saved as svg files, and those can be too big to sync to github.  Rendering using Rstudio saves png files, which are smaller. Dan Tenenbaum told me how to fix that, by adding this code in my Rmd doc:
-```{r setup, include=FALSE}
-ragg_png = function(..., res = 192) {
-  ragg::agg_png(..., res = res, units = "in")
-}
-knitr::opts_chunk$set(dev = "ragg_png", fig.ext = "png")
-```
-
-I put those code lines in a (hidden) file called `~/.ragg_png_functions_from_dan.R` (also linked in an unhidden way, at `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript/ragg_png_functions_from_dan.R`).
-
-I will source that from `.Rprofile` (global on rhino, and local if there is one), and then I shouldn't need to include it in my code.  Not putting in my Mac global for now - don't think it's relevant.
-
-```
-source("/home/jayoung/.ragg_png_functions_from_dan.R")
-```
-
-See also advice on ["Two Hidden Ways to Set Global Chunk Options for knitr"](https://yihui.org/en/2023/10/opts-chunk/).
-
-### other notes about render from command line
-
-Alternatives:
-
-On my mac:
-```
-cd /Volumes/malik_h/user/jayoung/git_more_repos/Rtest_and_Rnotes
-
-## I end up with TWO output files: .html AND .md - not sure why
-## outputs go in the same dir as the input script
-
-Rscript -e 'rmarkdown::render("Rscripts/miscellaneous_testCode.Rmd", output_format="github_document", clean=TRUE)'
-```
-
-On gizmo/rhino, from the command line without sbatch:
-```
-cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes
-
-module load fhR/4.4.1-foss-2023b-R-4.4.1
-module load Pandoc/2.13
-
-## again we get TWO output files
-Rscript -e 'rmarkdown::render("Rscripts/miscellaneous_testCode.Rmd", output_format="github_document", clean=TRUE)'
-
-## note: running R this way, I do not have /home/jayoung/R/x86_64-pc-linux-gnu-library/4.4 in .libPaths(), whereas when I run it from Hutch RStudio-server I do.
-## I don't know where that comes from - I suspect something to do with Rstudio server setup 
-Rscript -e '.libPaths()'
-
-module purge
-```
-
-
-On gizmo/rhino, using sbatch and a shell script, and run it like this: `cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes ; sbatch example_knit_batch_script.sh` - the script looks like this:
-```
-#!/bin/bash
-source /app/lmod/lmod/init/profile
-module load fhR/4.4.1-foss-2023b-R-4.4.1
-module load Pandoc/2.13
-Rscript -e 'rmarkdown::render("Rscripts/miscellaneous_testCode.Rmd", output_format="github_document", clean=TRUE)'
-module purge
-```
-
-
-
-On gizmo/rhino, it can also be done with `sbatch --wrap` but it is annoying due to all the quote and escapes:
-```
-cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes
-sbatch --cpus-per-task=1 --wrap="/bin/bash -c \"source /app/lmod/lmod/init/profile ; module load fhR/4.4.1-foss-2023b-R-4.4.1 ; module load Pandoc/2.13 ; Rscript -e 'rmarkdown::render(\\\"Rscripts/miscellaneous_testCode.Rmd\\\", output_format=\\\"github_document\\\", clean=TRUE)' ; module purge\""
-```
-
-For Tamanash's DMS data, I wrote an R wrapper script called [`DMS_remakeReport_standaloneScript.R`](https://github.com/jayoung/DMSanalysis/blob/main/Rscripts/DMS_remakeReport_standaloneScript.R) that generated reports for multiple data sets by (1) loading the Rdata file (2) rendering the Rmd script (which runs with that loaded data in the environment). I further wrote a perl script called [`remakeReport_wrapper.pl`](https://github.com/jayoung/DMSanalysis/blob/main/bin/remakeReport_wrapper.pl) that calls `DMS_remakeReport_standaloneScript.R` on various Rdata files and makes a shell script to run each in a separate sbatch job.
