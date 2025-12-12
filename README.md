@@ -114,6 +114,10 @@ Bioconductor support:
 
 [CRAN task views](http://cran.r-project.org/web/views/) may help identify the right package(s) to use for a certain task. See also [Bioconductor workflow vignettes](https://www.bioconductor.org/packages/release/BiocViews.html#___Workflow)
 
+Small daily lessons:
+- [25-day advent calendaR](https://github.com/kiirsti/ggplot_adventcalendaR) providing an introduction to ggplot2
+- The 25 days of chRistmas: [an R advent calendaR](https://kiirstio.wixsite.com/kowen/post/the-25-days-of-christmas-an-r-advent-calendar)
+
 ### haven't looked yet: future
 
 [The Elements of Data Analytic Style](https://leanpub.com/datastyle) by Jeff Leek (a Leanpub book)

@@ -221,6 +221,7 @@ Three options:
 - `debugonce()`    
 See (`explore_debugging_functions.R`)[Rscripts/explore_debugging_functions.R] for details.
 
+[A tutorial](https://data-flair.training/blogs/debugging-in-r-programming/) on debigging
 
 ## Pipes:
 
