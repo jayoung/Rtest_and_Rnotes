@@ -22,15 +22,20 @@ Some notes I'm storing in other repos:
 
 - [AI_notes.md](https://github.com/jayoung/MalikLab_bioinformaticsResources/blob/main/janets_NOTES_forMyself/programming_and_statistics/AI_notes.md)
 
-## Things I often need to remember
+## Quick things I often need to remember or copy/paste:
 
 To Knit/render an Rmd doc from the linux command line, I have a couple of scripts in this repo (in `useful_functions`) that I can run from gizmo/rhino: `render_Rmd.perl` (run scripts in parallel) and `render_Rmd_series.perl` (run scripts in series) 
-
 
 Insert an image into a .md or .Rmd document:
 ```
 ![Caption for the picture.](/path/to/image.png){#id .class width=50% height=50%}
 ```
+
+Rotate x axis labels on a ggplot:
+```
++ theme(axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 0.5))
+```
+
 
 ## My coding intentions
 
