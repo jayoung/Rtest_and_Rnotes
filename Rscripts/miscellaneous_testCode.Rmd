@@ -205,14 +205,14 @@ mtcars |> map_dbl(sum)
 # split into list, then map.  
 # map_dbl simplify output, in this case to a dbl (or numeric)
 # same for map_lgl(), map_int() and map_chr()
-mtcars |>
+mtcars %>%
     split(.$cyl) |>
     map(~ lm(mpg ~ wt, data = .x)) |>
     map(summary) |>
     map_dbl("r.squared")
 
 # map_dfr tries to return a data.frame (binding by rows)  (map_dfc is similar but binds by columns)
-mtcars |>
+mtcars %>%
     split(.$cyl) |>
     map(~ lm(mpg ~ wt, data = .x)) |>
     map_dfr(~ as.data.frame(t(as.matrix(coef(.)))))

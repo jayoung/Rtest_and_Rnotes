@@ -1,8 +1,8 @@
-miscellaneous\_testCode
+miscellaneous_testCode
 ================
 Janet Young
 
-2025-09-17
+2026-01-08
 
 # basic tidyverse
 
@@ -21,7 +21,7 @@ m |>
     ## 2     6     7
     ## 3     8    14
 
-## pivot\_longer with multiple columns
+## pivot_longer with multiple columns
 
 Example data from
 [stackoverflow](https://stackoverflow.com/questions/61367186/pivot-longer-into-multiple-columns)
@@ -49,7 +49,7 @@ dat
     ## 5 2.4    0.68  0.12  0.07    0.12    0.14    0.66    0.69    0.11    0.13
     ## 6 3      0.53  0.15  0.06    0.14    0.16    0.52    0.53    0.15    0.16
 
-First we pivot\_longer using names\_pattern argument
+First we pivot_longer using names_pattern argument
 
 ``` r
 longer <- dat |> 
@@ -140,7 +140,7 @@ dat |>
     ## 17 3     HS      0.15  0.52  0.53
     ## 18 3     BB      0.06  0.15  0.16
 
-## separate\_longer trick (for list-like columns), and str\_replace\_all trick (multiple find-replaces)
+## separate_longer trick (for list-like columns), and str_replace_all trick (multiple find-replaces)
 
 From [here](https://rfortherestofus.com/2024/04/seperate-fcts)
 
@@ -202,11 +202,11 @@ m |>
     geom_bar()
 ```
 
-![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-8-1.svg)<!-- -->
+![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ## adding number of observations (or other statistical summaries) to faceted plot
 
-### Example 1 - geom\_point, with n= labels in each facet
+### Example 1 - geom_point, with n= labels in each facet
 
 Here the statistical summary applies to all observations in the facet
 together.
@@ -233,11 +233,11 @@ iris |>
     guides(color="none")
 ```
 
-![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-9-1.svg)<!-- -->
+![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ### Example 2
 
-Each facet is a geom\_boxplot.
+Each facet is a geom_boxplot.
 
 Here the statistical summary applies to each group within each facet.
 
@@ -266,7 +266,7 @@ ggplot(data = iris_long, aes(x=Species, y=value)) +
     facet_wrap( ~ variable, scales="free")
 ```
 
-![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-10-1.svg)<!-- -->
+![](miscellaneous_testCode_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ## tribble - a way to manually create small tibbles, row-wise
 
@@ -307,44 +307,44 @@ tibble(colA=c("A","B","C"),
 ```
 
     ## [[1]]
-    ##  [1] 0.7994761 3.2024685 0.1897428 0.2600658 2.7048133 1.9885187 1.7167190
-    ##  [8] 2.0321713 0.7799675 0.9308101
+    ##  [1]  2.80548010 -0.02946442  1.73403691 -1.17288906  1.14399359  0.99987723
+    ##  [7]  0.99914177 -0.35486056  0.33312102  1.34016293
     ## 
     ## [[2]]
-    ##  [1] 1.413025 2.416112 2.168077 2.265626 1.620736 3.596568 3.348280 2.453686
-    ##  [9] 3.036318 2.696138
+    ##  [1] 1.921944 2.835545 4.235178 2.962003 3.260186 2.400440 1.641623 2.179467
+    ##  [9] 2.314740 1.750372
     ## 
     ## [[3]]
-    ##  [1] 4.358165 3.392939 4.944223 2.046946 3.893871 1.906327 3.380921 1.660290
-    ##  [9] 2.257931 3.192295
+    ##  [1] 3.0221525 2.3306473 3.8732416 2.4256551 3.1805713 4.5491211 2.5938570
+    ##  [8] 3.3428852 0.4283036 4.5275251
     ## 
     ## [[4]]
-    ##  [1] 3.117022 3.186210 3.683481 4.253755 3.532065 2.708653 3.597682 4.600555
-    ##  [9] 3.458915 2.749981
+    ##  [1] 3.767208 3.853671 4.242229 4.552971 3.939597 1.973274 1.691036 4.477657
+    ##  [9] 4.530377 3.431305
     ## 
     ## [[5]]
-    ##  [1] 5.591847 5.762847 4.397840 5.885003 5.785240 3.028793 6.617885 3.721593
-    ##  [9] 4.552562 4.629021
+    ##  [1] 5.185781 6.339637 4.197316 4.686704 5.159812 3.759238 4.677920 7.090936
+    ##  [9] 5.430454 3.878490
     ## 
     ## [[6]]
-    ##  [1] 5.655206 5.264833 6.885651 6.577583 5.333750 4.533169 4.714905 7.335851
-    ##  [9] 4.385170 6.802606
+    ##  [1] 5.603074 5.498713 7.795477 6.544313 5.752047 4.999642 7.677488 5.325209
+    ##  [9] 5.649123 5.769231
     ## 
     ## [[7]]
-    ##  [1] 6.681980 6.997035 8.565096 7.302910 8.933443 6.523371 7.512763 6.047169
-    ##  [9] 6.441390 6.949077
+    ##  [1] 6.206168 6.024781 6.126270 7.025080 7.809751 6.058823 7.763919 7.111349
+    ##  [9] 6.987956 6.965150
     ## 
     ## [[8]]
-    ##  [1] 7.668497 9.023654 8.531238 7.706305 6.045157 9.052952 8.421327 7.319265
-    ##  [9] 8.101537 7.714075
+    ##  [1]  9.863779  7.551269  8.599946  6.680964  9.117392 10.099301  6.951655
+    ##  [8]  7.405356  8.877055  8.079045
     ## 
     ## [[9]]
-    ##  [1]  9.809170  9.576583  9.045603 10.222793  9.352017 10.784812  9.810245
-    ##  [8]  7.702504  9.649015 10.769725
+    ##  [1] 8.672639 8.255488 9.263808 8.556605 8.517341 8.386660 9.011547 8.912082
+    ##  [9] 8.372162 9.186127
     ## 
     ## [[10]]
-    ##  [1] 10.466105  9.521758  8.888687 10.243233  8.479043  8.238803 11.322849
-    ##  [8] 11.371750 10.607055  8.209686
+    ##  [1]  8.774807 10.462994  8.095934  9.261268  9.013921 10.864277  9.833159
+    ##  [8]  8.765533  9.466135  9.679457
 
 ``` r
 # do something to each column
@@ -360,7 +360,7 @@ mtcars |> map_dbl(sum)
 # split into list, then map.  
 # map_dbl simplify output, in this case to a dbl (or numeric)
 # same for map_lgl(), map_int() and map_chr()
-mtcars |>
+mtcars %>%
     split(.$cyl) |>
     map(~ lm(mpg ~ wt, data = .x)) |>
     map(summary) |>
@@ -372,7 +372,7 @@ mtcars |>
 
 ``` r
 # map_dfr tries to return a data.frame (binding by rows)  (map_dfc is similar but binds by columns)
-mtcars |>
+mtcars %>%
     split(.$cyl) |>
     map(~ lm(mpg ~ wt, data = .x)) |>
     map_dfr(~ as.data.frame(t(as.matrix(coef(.)))))
@@ -573,143 +573,213 @@ metrics_table(dplyr_and_dt)
     ## Warning in gradient(as.numeric(x), ...): NAs introduced by coercion
 
 <table class="table table-condensed">
+
 <thead>
+
 <tr>
+
 <th style="text-align:right;">
+
 package
 </th>
+
 <th style="text-align:right;">
+
 published
 </th>
+
 <th style="text-align:right;">
-dl\_last\_month
+
+dl_last_month
 </th>
+
 <th style="text-align:right;">
+
 stars
 </th>
+
 <th style="text-align:right;">
-tidyverse\_happy
+
+tidyverse_happy
 </th>
+
 <th style="text-align:right;">
-has\_tests
+
+has_tests
 </th>
+
 <th style="text-align:right;">
+
 vignette
 </th>
+
 <th style="text-align:right;">
-last\_commit
+
+last_commit
 </th>
+
 <th style="text-align:right;">
-last\_issue\_closed
+
+last_issue_closed
 </th>
+
 <th style="text-align:right;">
+
 contributors
 </th>
+
 <th style="text-align:right;">
-depends\_count
+
+depends_count
 </th>
+
 <th style="text-align:right;">
-reverse\_count
+
+reverse_count
 </th>
+
 </tr>
+
 </thead>
+
 <tbody>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="font-weight: bold">dplyr </span>
 </td>
+
 <td style="text-align:right;">
+
 2023-11-17
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 100.00%">1563017</span>
+
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 100.00%">1475229</span>
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">4.9k</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">5k
+</span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="color: purple"> <i class="glyphicon glyphicon-glass"></i>
 </span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="color: green"> <i class="glyphicon glyphicon-ok"></i>
 </span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="color: green"> <i class="glyphicon glyphicon-ok"></i>
 </span>
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">22.3</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">26.1</span>
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f06b13"></span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f06b13"></span>
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">271</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">283</span>
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">1</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">1</span>
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">4907</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">5024</span>
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="font-weight: bold">data.table</span>
 </td>
+
 <td style="text-align:right;">
-2025-07-10
+
+2025-12-24
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 59.11%">923903</span>
+
+<span style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: #56A33E; width: 55.68%">821391</span>
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">3.8k</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">3.8k</span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="color: white"> <i class="glyphicon glyphicon-glass"></i>
 </span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="color: red"> <i class="glyphicon glyphicon-remove"></i>
 </span>
 </td>
+
 <td style="text-align:right;">
+
 <span style="color: green"> <i class="glyphicon glyphicon-ok"></i>
 </span>
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">
 </span>
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f06b13"></span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f06b13"></span>
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">168</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">175</span>
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">1</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #1cc2e3">1</span>
 </td>
+
 <td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">1788</span>
+
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">1807</span>
 </td>
+
 </tr>
+
 </tbody>
+
 </table>
