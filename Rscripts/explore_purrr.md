@@ -2,7 +2,7 @@ explore_purrr
 ================
 Janet Young
 
-2024-10-14
+2026-01-08
 
 ``` r
 knitr::opts_chunk$set(echo = TRUE)
@@ -10,11 +10,11 @@ library(tidyverse)
 ```
 
     ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-    ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-    ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-    ## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-    ## ✔ purrr     1.0.2     
+    ## ✔ dplyr     1.1.4     ✔ readr     2.1.6
+    ## ✔ forcats   1.0.1     ✔ stringr   1.6.0
+    ## ✔ ggplot2   4.0.1     ✔ tibble    3.3.0
+    ## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+    ## ✔ purrr     1.2.0     
     ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
@@ -55,19 +55,21 @@ in
 
 ``` r
 ## this doesn't work (although group_by would)
-# mtcars |> split(cyl)
+# mtcars %>% split(cyl)
 
 ## this does work, returns list of 3 data frames
-# mtcars |> 
+## we need to use the magrittr pipe (%>%) so that split can access .
+# mtcars %>% 
 #     split(.$cyl)
 ```
 
-This could also have been achieved with `group_by |> summarise`, but
-for more complex functions you probably need `map`
+This could also have been achieved with `group_by |> summarise`, but for
+more complex functions you probably need `map`
 
 ``` r
-mtcars |> 
-    split(.$cyl) |> 
+## we need to use the magrittr pipe (%>%) so that split can access .
+mtcars %>% 
+    split(.$cyl) %>%
     map(function(df){ mean(df$mpg) })
 ```
 
@@ -96,8 +98,8 @@ mtcars |>
 Using `\` - the backslash is shorthand for `function`:
 
 ``` r
-mtcars |> 
-    split(.$cyl) |> 
+mtcars %>% 
+    split(.$cyl) %>%
     map(\(df){ mean(df$mpg) })
 ```
 
@@ -114,17 +116,20 @@ A more complex function: linear modelling using `lm()`. Output of this
 is a list object, each of which is the output of the lm function:
 
 ``` r
-models <- mtcars |> 
-    split(.$cyl) |> 
+models <- mtcars %>% 
+    split(.$cyl) %>%
     map(function(df) lm(mpg ~ wt, data = df))
 ```
 
-purrr has a shortcut to make that syntax less verbose - the `.` refers
-to the current list element, and this is a “one-sided function”
+The `~` (“lambda expression”) is now NOT recommended by purrr but you
+still often see code that uses it online etc. For example: purrr has a
+shortcut to make that syntax less verbose - the `.` refers to the
+current list element, and this is a “one-sided function”. Or, you should
+use `.x` to refer to the data (and `.y` if there’s \>1 element)
 
 ``` r
-models <- mtcars |> 
-    split(.$cyl) |> 
+models <- mtcars %>% 
+    split(.$cyl) %>%
     map(~lm(mpg ~ wt, data = .))
 ```
 
@@ -268,20 +273,20 @@ x |>
 ```
 
     ## [[1]]
-    ##  [1]  -8.133701  -7.741188  -8.506918 -11.327683  -9.176002  -9.025510
-    ##  [7] -12.171965  -9.264232 -10.800395 -11.494063
+    ##  [1]  -9.064497 -10.924838  -9.963794 -10.070108  -9.245529 -10.131357
+    ##  [7]  -8.426541  -9.699687 -10.430776 -10.701590
     ## 
     ## [[2]]
-    ##  [1] -0.2077772  0.3445319  1.6804160  0.8707911 -2.8521975 -0.4221844
-    ##  [7]  0.1975539  0.6275352  0.1189877 -1.7034314
+    ##  [1] -0.4699853 -0.1916542 -0.8745771  0.3612513 -0.2819181  0.6221907
+    ##  [7]  0.6777893 -0.4259728  0.5016096  0.2538071
     ## 
     ## [[3]]
-    ##  [1]  9.410119 10.160271  8.915423  9.126339 11.823390 11.307454 11.319056
-    ##  [8] 10.816298 10.211468 10.011844
+    ##  [1] 11.264357  9.809178 11.770290 10.012939  7.788737 10.001248 11.674972
+    ##  [8] 11.110788 11.091658 10.316854
     ## 
     ## [[4]]
-    ##  [1] 100.95024 100.35370  98.91227  99.47583 100.18870 100.59784 100.19664
-    ##  [8] 100.91374  99.12627 100.73089
+    ##  [1] 101.82606 100.35546  98.98423  99.93864  97.70401 100.84326  99.58755
+    ##  [8] 101.34601  98.84543 100.74778
 
 How can you create a single vector that for each column in a data frame
 indicates whether or not it’s a factor?
@@ -310,8 +315,8 @@ Rewrite map(x, function(df) lm(mpg ~ wt, data = df)) to eliminate the
 anonymous function.
 
 ``` r
-mtcars |> 
-    split(.$cyl) |> 
+mtcars %>% 
+    split(.$cyl) %>%
     # map(function(df) lm(mpg ~ wt, data = df)) 
     map(~lm(mpg ~ wt, data = .)) 
 ```
@@ -368,7 +373,7 @@ safe_log("a")
     ## NULL
     ## 
     ## $error
-    ## <simpleError in .Primitive("log")(x, base): non-numeric argument to mathematical function>
+    ## <simpleError in .f(...): non-numeric argument to mathematical function>
 
 ``` r
 # or str(safe_log("a"))
@@ -394,7 +399,7 @@ str(y)
     ##   ..$ result: NULL
     ##   ..$ error :List of 2
     ##   .. ..$ message: chr "non-numeric argument to mathematical function"
-    ##   .. ..$ call   : language .Primitive("log")(x, base)
+    ##   .. ..$ call   : language .f(...)
     ##   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
 
 purrr’s transpose function is nice (but it is old and we should now use
@@ -416,7 +421,7 @@ str(y2)
     ##   ..$ : NULL
     ##   ..$ :List of 2
     ##   .. ..$ message: chr "non-numeric argument to mathematical function"
-    ##   .. ..$ call   : language .Primitive("log")(x, base)
+    ##   .. ..$ call   : language .f(...)
     ##   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
 
 ``` r
@@ -434,7 +439,7 @@ str(y3)
     ##   ..$ : NULL
     ##   ..$ :List of 2
     ##   .. ..$ message: chr "non-numeric argument to mathematical function"
-    ##   .. ..$ call   : language .Primitive("log")(x, base)
+    ##   .. ..$ call   : language .f(...)
     ##   .. ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
 
 ``` r
@@ -496,9 +501,9 @@ map2(mu, sigma, rnorm, n = 5) |> str()
 ```
 
     ## List of 3
-    ##  $ : num [1:5] 6 4.49 5.56 4.68 5.18
-    ##  $ : num [1:5] 11.57 -4.6 15.53 7.63 8.58
-    ##  $ : num [1:5] -4.6345 -0.0426 -0.4663 11.876 9.3922
+    ##  $ : num [1:5] 3.22 5.62 4.11 4.44 5.14
+    ##  $ : num [1:5] 9.2 13.57 17.96 14.74 4.25
+    ##  $ : num [1:5] -10.143 -20.498 -0.814 -8.118 -16.641
 
 `pmap()` is for groups of \>2 args. It’s good practise to name the
 arguments in the list:
@@ -512,9 +517,9 @@ args1 |>
 ```
 
     ## List of 3
-    ##  $ : num 4.94
-    ##  $ : num [1:3] 8.21 12.88 13.16
-    ##  $ : num [1:5] 6 10.01 4.93 -1.59 2.48
+    ##  $ : num 5.74
+    ##  $ : num [1:3] 10.6 7.2 8.43
+    ##  $ : num [1:5] -22.84 -7.9 -10.63 3.14 -4.55
 
 args for pmap must always have same length, so they can be stored in a
 data frame:
@@ -532,13 +537,13 @@ params |>
 ```
 
     ## [[1]]
-    ## [1] 6.509365
+    ## [1] 6.13847
     ## 
     ## [[2]]
-    ## [1] 18.165728  7.231731 15.728593
+    ## [1] 14.033007  8.899752  7.029191
     ## 
     ## [[3]]
-    ## [1]   5.9779018   0.0156234   5.9702562   1.3245102 -21.4066532
+    ## [1] -12.8214271   0.2862643 -10.1067759 -11.7361794  -2.0457586
 
 `invoke_map()` is used if you want to vary the function that gets used:
 
@@ -558,10 +563,18 @@ invoke_map(f, param, n = 5) |> str()
     ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
     ## generated.
 
+    ## Warning: `invoke()` was deprecated in purrr 1.0.0.
+    ## ℹ Please use `exec()` instead.
+    ## ℹ The deprecated feature was likely used in the purrr package.
+    ##   Please report the issue at <https://github.com/tidyverse/purrr/issues>.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
     ## List of 3
-    ##  $ : num [1:5] -0.237 0.4 0.583 0.19 0.277
-    ##  $ : num [1:5] -3.358 -11.69 2.641 -0.818 1.264
-    ##  $ : int [1:5] 7 14 11 11 9
+    ##  $ : num [1:5] 0.463 0.237 -0.448 -0.29 -0.847
+    ##  $ : num [1:5] 9.8 2.62 2.69 8.28 -7.34
+    ##  $ : int [1:5] 10 8 19 6 13
 
 that works but invoke_map is deprecated
 
@@ -678,7 +691,7 @@ x <- sample(10)
 x
 ```
 
-    ##  [1]  2  5  8  9  6  7  1  4  3 10
+    ##  [1]  4  8  9 10  5  1  2  6  7  3
 
 ``` r
 #  [1]  1  7  4  2  9 10  3  8  5  6
@@ -698,7 +711,7 @@ x |>
     detect_index(~ . > 5)
 ```
 
-    ## [1] 3
+    ## [1] 2
 
 ``` r
 #> [1] 1
@@ -716,14 +729,14 @@ x |>
     head_while(~ . < 6)
 ```
 
-    ## [1] 2 5
+    ## [1] 4
 
 ``` r
 x |> 
     tail_while(~ . > 4)
 ```
 
-    ## [1] 10
+    ## integer(0)
 
 purrr:::reduce does a function repeatedly (is this like do.call?)
 
@@ -776,7 +789,7 @@ x <- sample(10)
 x
 ```
 
-    ##  [1]  5  2  1  3 10  7  6  4  8  9
+    ##  [1]  6  4  5  3  7  9  8 10  2  1
 
 ``` r
 #  [1]  4  5  2  9  6  7  8  1  3 10
@@ -785,7 +798,7 @@ x
 x |> accumulate(`+`)
 ```
 
-    ##  [1]  5  7  8 11 21 28 34 38 46 55
+    ##  [1]  6 10 15 18 25 34 42 52 54 55
 
 ``` r
 ## this is the same as sum(x):
@@ -825,3 +838,43 @@ iris |> col_summary_2(mean)
 #                                 x=as.numeric(dat)) } )
 # as_tibble(rownames="stat")
 ```
+
+# Finished
+
+``` r
+sessionInfo()
+```
+
+    ## R version 4.5.2 (2025-10-31)
+    ## Platform: aarch64-apple-darwin20
+    ## Running under: macOS Tahoe 26.2
+    ## 
+    ## Matrix products: default
+    ## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+    ## 
+    ## locale:
+    ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+    ## 
+    ## time zone: America/Los_Angeles
+    ## tzcode source: internal
+    ## 
+    ## attached base packages:
+    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
+    ## 
+    ## other attached packages:
+    ##  [1] patchwork_1.3.2 lubridate_1.9.4 forcats_1.0.1   stringr_1.6.0  
+    ##  [5] dplyr_1.1.4     purrr_1.2.0     readr_2.1.6     tidyr_1.3.1    
+    ##  [9] tibble_3.3.0    ggplot2_4.0.1   tidyverse_2.0.0
+    ## 
+    ## loaded via a namespace (and not attached):
+    ##  [1] gtable_0.3.6       crayon_1.5.3       compiler_4.5.2     tidyselect_1.2.1  
+    ##  [5] nycflights13_1.0.2 scales_1.4.0       yaml_2.3.12        fastmap_1.2.0     
+    ##  [9] R6_2.6.1           labeling_0.4.3     generics_0.1.4     knitr_1.50        
+    ## [13] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.1.6       
+    ## [17] utf8_1.2.6         stringi_1.8.7      xfun_0.54          S7_0.2.1          
+    ## [21] timechange_0.3.0   cli_3.6.5          withr_3.0.2        magrittr_2.0.4    
+    ## [25] digest_0.6.39      grid_4.5.2         rstudioapi_0.17.1  hms_1.1.4         
+    ## [29] lifecycle_1.0.4    vctrs_0.6.5        evaluate_1.0.5     glue_1.8.0        
+    ## [33] farver_2.1.2       rmarkdown_2.30     tools_4.5.2        pkgconfig_2.0.3   
+    ## [37] htmltools_0.5.9

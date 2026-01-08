@@ -34,18 +34,20 @@ Can use `...` to supply extra arguments
 Remember that `.` can be used to refer to the data that's being passed in
 ```{r}
 ## this doesn't work (although group_by would)
-# mtcars |> split(cyl)
+# mtcars %>% split(cyl)
 
 ## this does work, returns list of 3 data frames
-# mtcars |> 
+## we need to use the magrittr pipe (%>%) so that split can access .
+# mtcars %>% 
 #     split(.$cyl)
 ```
 
 This could also have been achieved with `group_by |> summarise`, but for more complex functions you probably need `map`
 
 ```{r}
-mtcars |> 
-    split(.$cyl) |> 
+## we need to use the magrittr pipe (%>%) so that split can access .
+mtcars %>% 
+    split(.$cyl) %>%
     map(function(df){ mean(df$mpg) })
 ```
 
@@ -57,22 +59,22 @@ mtcars |>
 
 Using `\` - the backslash is shorthand for `function`:
 ```{r}
-mtcars |> 
-    split(.$cyl) |> 
+mtcars %>% 
+    split(.$cyl) %>%
     map(\(df){ mean(df$mpg) })
 ```
 
 A more complex function:  linear modelling using `lm()`. Output of this is a list object, each of which is the output of the lm function:
 ```{r}
-models <- mtcars |> 
-    split(.$cyl) |> 
+models <- mtcars %>% 
+    split(.$cyl) %>%
     map(function(df) lm(mpg ~ wt, data = df))
 ```
 
 The `~` ("lambda expression") is now NOT recommended by purrr but you still often see code that uses it online etc.  For example: purrr has a shortcut to make that syntax less verbose - the `.` refers to the current list element, and this is a "one-sided function".  Or, you should use `.x` to refer to the data (and `.y` if there's >1 element)
 ```{r}
-models <- mtcars |> 
-    split(.$cyl) |> 
+models <- mtcars %>% 
+    split(.$cyl) %>%
     map(~lm(mpg ~ wt, data = .))
 ```
 
@@ -192,8 +194,8 @@ Answer - it doesn't work, because map_dbl expects only a single number in the ou
 Rewrite map(x, function(df) lm(mpg ~ wt, data = df)) to eliminate the anonymous function.
 ```{r}
 
-mtcars |> 
-    split(.$cyl) |> 
+mtcars %>% 
+    split(.$cyl) %>%
     # map(function(df) lm(mpg ~ wt, data = df)) 
     map(~lm(mpg ~ wt, data = .)) 
 
@@ -446,3 +448,10 @@ iris |> col_summary_2(mean)
 #                                 x=as.numeric(dat)) } )
 # as_tibble(rownames="stat")
 ```
+
+# Finished
+
+```{r}
+sessionInfo()
+```
+
