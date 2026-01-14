@@ -459,3 +459,23 @@ There is also a file called `Renviron` installed with R that will generate some 
 
 
 On a Mac, R packages go here - `/Library/Frameworks/R.framework/Versions` - in subdirectories by version. After installing new R, can delete old packages to save disk space
+
+### Hutch Rstudio server
+
+[New server](https://openondemand.fredhutch.org/pun/sys/dashboard/batch_connect/sessions) (2026).
+
+Occasionally jobs get stuck for ages: "session stays gray with the message 'R is taking longer to start than usual'". 
+
+The solution, from Dan on Slack: "Sometimes it helps to delete or rename the following directories, then start a new RStudio session:"
+```
+rm -r ~/.local/share/rstudio
+rm -r ~/.config/R
+rm -r ~/.config/rstudio
+```
+
+Things to set up again after that (in Tools-Global Options)
+- General-Basic: workspace: do NOT restore .RData on startup, NEVER save .RData on exit
+- Appearance: pane layout (top right is console)
+- Code-Editing: use native pipe operator, 
+- Code-Editing: soft wrap R source files
+- Code-DisplaySyntax:  enable rainbow parentheses
