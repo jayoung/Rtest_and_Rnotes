@@ -2,14 +2,14 @@ sequence logo plots
 ================
 Janet Young
 
-2025-08-29
+2026-01-16
 
 Goal - show how to make logo plots
 
 # Load libraries
 
 ``` r
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo=TRUE)
 library(tidyverse)
 library(Biostrings)
 library(ggseqlogo)
@@ -82,6 +82,15 @@ ggseqlogo(as.character(shortH2Aaln),
     # suppress the color scheme legend:
     guides(fill = "none")  
 ```
+
+    ## Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
+    ## ℹ Please use tidy evaluation idioms with `aes()`.
+    ## ℹ See also `vignette("ggplot2-in-packages")` for more information.
+    ## ℹ The deprecated feature was likely used in the ggseqlogo package.
+    ##   Please report the issue at <https://github.com/omarwagih/ggseqlogo/issues>.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
 
 ![](logoPlots_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
@@ -218,6 +227,18 @@ can ignore it)
 
 First try a simple seqLogo plot for the H2A.B alignment
 
+``` r
+## ASN is an "Alphabet" object defined in the DiffLogo package
+# get a version of the frequency matrices that contain only the 20 amino acids (not the gap)
+shortH2AalnSplit_freqs_justASN <- lapply(shortH2AalnSplit_freqs, function(x) {
+    x[ ASN[["chars"]], ]
+})
+
+DiffLogo::seqLogo(pwm=shortH2AalnSplit_freqs_justASN[["H2A.B"]], 
+                  alphabet=ASN, drawLines=20,
+                  main="H2A.B") 
+```
+
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
 ![](logoPlots_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
@@ -306,12 +327,12 @@ show R version used, and package versions
 sessionInfo()
 ```
 
-    ## R version 4.5.1 (2025-06-13)
+    ## R version 4.5.2 (2025-10-31)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Sequoia 15.6.1
+    ## Running under: macOS Tahoe 26.2
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+    ## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
     ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     ## 
     ## locale:
@@ -325,33 +346,35 @@ sessionInfo()
     ## [8] methods   base     
     ## 
     ## other attached packages:
-    ##  [1] ggmsa_1.14.1        DiffLogo_2.32.0     cba_0.2-25         
-    ##  [4] proxy_0.4-27        ggseqlogo_0.2       Biostrings_2.76.0  
-    ##  [7] GenomeInfoDb_1.44.1 XVector_0.48.0      IRanges_2.42.0     
-    ## [10] S4Vectors_0.46.0    BiocGenerics_0.54.0 generics_0.1.4     
-    ## [13] lubridate_1.9.4     forcats_1.0.0       stringr_1.5.1      
-    ## [16] dplyr_1.1.4         purrr_1.1.0         readr_2.1.5        
-    ## [19] tidyr_1.3.1         tibble_3.3.0        ggplot2_3.5.2      
+    ##  [1] ggmsa_1.16.0        DiffLogo_2.34.0     cba_0.2-25         
+    ##  [4] proxy_0.4-28        ggseqlogo_0.2       Biostrings_2.78.0  
+    ##  [7] Seqinfo_1.0.0       XVector_0.50.0      IRanges_2.44.0     
+    ## [10] S4Vectors_0.48.0    BiocGenerics_0.56.0 generics_0.1.4     
+    ## [13] lubridate_1.9.4     forcats_1.0.1       stringr_1.6.0      
+    ## [16] dplyr_1.1.4         purrr_1.2.0         readr_2.1.6        
+    ## [19] tidyr_1.3.1         tibble_3.3.0        ggplot2_4.0.1      
     ## [22] tidyverse_2.0.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6            xfun_0.52               lattice_0.22-7         
-    ##  [4] tzdb_0.5.0              vctrs_0.6.5             tools_4.5.1            
-    ##  [7] yulab.utils_0.2.0       parallel_4.5.1          pkgconfig_2.0.3        
-    ## [10] ggplotify_0.1.2         RColorBrewer_1.1-3      lifecycle_1.0.4        
-    ## [13] GenomeInfoDbData_1.2.14 compiler_4.5.1          farver_2.1.2           
-    ## [16] treeio_1.32.0           ggforce_0.5.0           ggtree_3.16.3          
-    ## [19] ggfun_0.2.0             htmltools_0.5.8.1       lazyeval_0.2.2         
-    ## [22] yaml_2.3.10             pillar_1.11.0           crayon_1.5.3           
-    ## [25] MASS_7.3-65             seqmagick_0.1.7         nlme_3.1-168           
-    ## [28] tidyselect_1.2.1        aplot_0.2.8             digest_0.6.37          
-    ## [31] stringi_1.8.7           labeling_0.4.3          polyclip_1.10-7        
-    ## [34] fastmap_1.2.0           cli_3.6.5               magrittr_2.0.3         
-    ## [37] patchwork_1.3.1         ape_5.8-1               withr_3.0.2            
-    ## [40] scales_1.4.0            UCSC.utils_1.4.0        timechange_0.3.0       
-    ## [43] rmarkdown_2.29          httr_1.4.7              hms_1.1.3              
-    ## [46] evaluate_1.0.4          knitr_1.50              gridGraphics_0.5-1     
-    ## [49] rlang_1.1.6             Rcpp_1.1.0              tidytree_0.4.6         
-    ## [52] glue_1.8.0              R4RNA_1.36.0            tweenr_2.0.3           
-    ## [55] rstudioapi_0.17.1       jsonlite_2.0.0          R6_2.6.1               
-    ## [58] fs_1.6.6
+    ##  [1] gtable_0.3.6            xfun_0.54               htmlwidgets_1.6.4      
+    ##  [4] lattice_0.22-7          tzdb_0.5.0              vctrs_0.6.5            
+    ##  [7] tools_4.5.2             yulab.utils_0.2.2       parallel_4.5.2         
+    ## [10] pkgconfig_2.0.3         ggplotify_0.1.3         RColorBrewer_1.1-3     
+    ## [13] S7_0.2.1                lifecycle_1.0.4         compiler_4.5.2         
+    ## [16] farver_2.1.2            treeio_1.34.0           ggforce_0.5.0          
+    ## [19] ggtree_4.0.1            fontLiberation_0.1.0    fontquiver_0.2.1       
+    ## [22] ggfun_0.2.0             htmltools_0.5.9         lazyeval_0.2.2         
+    ## [25] yaml_2.3.12             pillar_1.11.1           crayon_1.5.3           
+    ## [28] MASS_7.3-65             seqmagick_0.1.7         fontBitstreamVera_0.1.1
+    ## [31] nlme_3.1-168            tidyselect_1.2.1        aplot_0.2.9            
+    ## [34] digest_0.6.39           stringi_1.8.7           labeling_0.4.3         
+    ## [37] polyclip_1.10-7         fastmap_1.2.0           cli_3.6.5              
+    ## [40] magrittr_2.0.4          patchwork_1.3.2         ape_5.8-1              
+    ## [43] withr_3.0.2             gdtools_0.4.4           scales_1.4.0           
+    ## [46] rappdirs_0.3.3          timechange_0.3.0        rmarkdown_2.30         
+    ## [49] hms_1.1.4               evaluate_1.0.5          knitr_1.50             
+    ## [52] gridGraphics_0.5-1      rlang_1.1.6             ggiraph_0.9.2          
+    ## [55] Rcpp_1.1.0              glue_1.8.0              R4RNA_1.38.0           
+    ## [58] tidytree_0.4.6          tweenr_2.0.3            jsonlite_2.0.0         
+    ## [61] rstudioapi_0.17.1       R6_2.6.1                systemfonts_1.3.1      
+    ## [64] fs_1.6.6

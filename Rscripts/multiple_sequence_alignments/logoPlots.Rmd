@@ -12,7 +12,7 @@ Goal - show how to make logo plots
 # Load libraries
 
 ```{r setup, warning=FALSE, message=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo=TRUE)
 library(tidyverse)
 library(Biostrings)
 library(ggseqlogo)
@@ -196,7 +196,7 @@ I used DiffLogo for Rossana's data, because I was very motivated to make **diffe
 
 First try a simple seqLogo plot for the H2A.B alignment
 
-```{r, fig.height=3, fig.width=9, echo=FALSE}
+```{r, fig.height=3, fig.width=9, echo=TRUE}
 ## ASN is an "Alphabet" object defined in the DiffLogo package
 # get a version of the frequency matrices that contain only the 20 amino acids (not the gap)
 shortH2AalnSplit_freqs_justASN <- lapply(shortH2AalnSplit_freqs, function(x) {

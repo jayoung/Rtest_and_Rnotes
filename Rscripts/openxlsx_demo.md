@@ -1,22 +1,62 @@
-library(openxlsx)
+openxlsx_demo
+================
+Janet Young
 
+2026-01-16
+
+# NOTES
+
+The openxlsx library is now really old.
+
+Use one of these packages instead: readxl, writexl, openxlsx2
+
+[This
+note](https://www.rdocumentation.org/packages/openxlsx/versions/4.2.8.1)
+is from the openxlsx authors: “openxlsx is no longer under active
+development. The package is maintained, and CRAN warnings will be fixed,
+but non-critical issues will not be addressed unless accompanied by a
+pull request. Packages that depend on openxlsx do not need to take any
+action, but for new developments, users are encouraged to use
+alternatives like readxl, writexl, or openxlsx2. The first two packages
+provide support for reading and writing .xlsx files. The latter package
+is a modern reinterpretation of openxlsx and provides similar functions
+to modify worksheets. However, it is not a drop-in replacement, so you
+may want to consult resources like the update vignette.”
+
+# Goal
+
+Show how to use the openxlsx library
+
+``` r
+library(openxlsx)
+```
+
+``` r
 # Tim's example (Hutch Slack channel)
 wb <- createWorkbook()
 addWorksheet(wb, "SheetName")
 freezePane(wb, "SheetName", firstRow = TRUE)
 writeDataTable(wb, "SheetName", iris, tableStyle = "TableStyleLight9")
 saveWorkbook(wb, "Desktop/temp.xlsx", overwrite = TRUE)
+```
 
+    ## Warning in file.create(to[okay]): cannot create file 'Desktop/temp.xlsx',
+    ## reason 'No such file or directory'
+
+``` r
 # with my addition
 myStyle <- createStyle(fontName="Arial", fontSize = 12, textDecoration="bold")
 addStyle(wb, "SheetName", myStyle, stack=TRUE, 
          cols=c(2,3), rows=1:dim(iris)[1], gridExpand=TRUE)
 saveWorkbook(wb, "Desktop/temp.xlsx", overwrite = TRUE)
+```
 
+    ## Warning in file.create(to[okay]): cannot create file 'Desktop/temp.xlsx',
+    ## reason 'No such file or directory'
 
+``` r
 # example from https://cran.r-project.org/web/packages/openxlsx/vignettes/formatting.pdf
 
-library(openxlxs)
 
 
 
@@ -45,16 +85,30 @@ wb <- createWorkbook()
 addWorksheet(wb, "writeData auto-formatting")
 writeData(wb, 1, df, startRow = 2, startCol = 2) # df goes into the sheet starting at cell B2
 saveWorkbook(wb, "Desktop/temp.xlsx", overwrite = TRUE)
+```
 
+    ## Warning in file.create(to[okay]): cannot create file 'Desktop/temp.xlsx',
+    ## reason 'No such file or directory'
+
+``` r
 writeData(wb, 1, df, startRow = 9, startCol = 2, borders = "surrounding") # df goes into the sheet again 
 saveWorkbook(wb, "Desktop/temp.xlsx", overwrite = TRUE)
+```
 
+    ## Warning in file.create(to[okay]): cannot create file 'Desktop/temp.xlsx',
+    ## reason 'No such file or directory'
+
+``` r
 writeData(wb, 1, df, startRow = 16, startCol = 2, borders = "rows")
 writeData(wb, 1, df, startRow = 23, startCol = 2, borders ="columns")
 writeData(wb, 1, df, startRow = 30, startCol = 2, borders ="all")
 saveWorkbook(wb, "Desktop/temp.xlsx", overwrite = TRUE)
+```
 
+    ## Warning in file.create(to[okay]): cannot create file 'Desktop/temp.xlsx',
+    ## reason 'No such file or directory'
 
+``` r
 ## headerStyles
 hs1 <- createStyle(fgFill = "#4F81BD", halign = "CENTER", 
                    textDecoration = "Bold",
@@ -63,11 +117,21 @@ writeData(wb, 1, df, startRow = 16, startCol = 10,
           headerStyle = hs1,
           borders = "rows", borderStyle = "medium")
 saveWorkbook(wb, "Desktop/temp.xlsx", overwrite = TRUE)
+```
 
+    ## Warning in file.create(to[okay]): cannot create file 'Desktop/temp.xlsx',
+    ## reason 'No such file or directory'
+
+``` r
 ## to change the display text for a hyperlink column just write over those cells
 writeData(wb, sheet = 1, x = paste("Hyperlink", 1:5), startRow = 17, startCol = 14)
 saveWorkbook(wb, "Desktop/temp.xlsx", overwrite = TRUE)
+```
 
+    ## Warning in file.create(to[okay]): cannot create file 'Desktop/temp.xlsx',
+    ## reason 'No such file or directory'
+
+``` r
 ## writing as an Excel Table
 addWorksheet(wb, "writeDataTable")
 writeDataTable(wb, 2, df, startRow = 2, startCol = 2)
@@ -78,5 +142,7 @@ writeDataTable(wb, 2, df, startRow = 23, startCol = 2, tableStyle = "TableStyleM
 openXL(wb) ## opens a temp version - pops up an Excel window
 
 saveWorkbook(wb, "Desktop/temp2.xlsx", overwrite = TRUE)
+```
 
-
+    ## Warning in file.create(to[okay]): cannot create file 'Desktop/temp2.xlsx',
+    ## reason 'No such file or directory'
