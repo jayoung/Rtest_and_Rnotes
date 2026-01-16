@@ -227,7 +227,6 @@ Inparanoid downloads
 
 for genomes with karyotypes: [karyoploteR](https://bioconductor.org/packages/release/bioc/vignettes/karyoploteR/inst/doc/karyoploteR.html). Perhaps also try `GenomeGraphs` or `HilbertVis`
 
-
 rtracklayer can make plots by interacting with a UCSC browser
 
 igvR can interact with IGV
@@ -236,8 +235,9 @@ igvR can interact with IGV
 
 [GenomicPlot](https://bioconductor.org/packages/release/bioc/vignettes/GenomicPlot/inst/doc/GenomicPlot_vignettes.html) is more for making metaplots combining data over multiple features
 
-Explored a few options in April 2024 for the SATAY data - see ~/FH_fast_storage/forOtherPeople/forGrantKing/SATAY/janet_Rscripts/ files browser_style_plots_failed_attempts.Rmd and browser_style_plots.Rmd
+Explored a few options in April 2024 for the SATAY data - see  [browser_style_plots_failed_attempts.Rmd](https://github.com/gak2882/SATAY/blob/main/janet_Rscripts/browser_style_plots_failed_attempts.md) and [browser_style_plots.Rmd](https://github.com/gak2882/SATAY/blob/main/janet_Rscripts/browser_style_plots_demo.md)
 
+[genoPlotR](https://genoplotr.r-forge.r-project.org/screenshots.php)
 
 ### wordclouds
 
