@@ -60,7 +60,10 @@ Looks like you can make custom color scheme (see `?make_col_scheme`) but I haven
 
 You can make 'custom height' logos that allow negative values. This may provide a way to make difference logos, but I think we'd have to do the calculations ourselves about letter heights.
 
-I think you can also supply frequency or count matrices (but I haven't tried it)
+Note that ggseqlogo ALWAYS uses small sample corrections, and there doesn't seem to be a way to turn it off. I requested that in a [github issue](https://github.com/omarwagih/ggseqlogo/issues/19). The effect of this is to reduce the total stack height of the logo plot when the number of sequences is low.
+
+You can also supply a frequency matrix (must be a matrix not a data.frame). That works to avoid the small sample correction.
+
 
 ```{r, fig.height=1.5, fig.width=9}
 # ?ggseqlogo
@@ -75,7 +78,17 @@ ggseqlogo(as.character(shortH2Aaln),
     guides(fill = "none")  
 ```
 
-We can use custom color shemes using the `ggseqlogo::make_col_scheme` function.
+The default is to scale the plot by the information content (conservation) of each position, but we can turn that off using `method="probability"`:
+
+```{r, fig.height=1.5, fig.width=9}
+ggseqlogo(as.character(shortH2Aaln),
+          method="probability",
+          col_scheme="chemistry2") +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    guides(fill = "none")  
+```
+
+We can use custom color schemes using the `ggseqlogo::make_col_scheme` function.
 
 Here I use the `DiffLogo::ASN` color scheme
 
@@ -88,6 +101,21 @@ ggseqlogo(as.character(shortH2Aaln),
     theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
     guides(fill = "none") 
 ```
+
+
+Example using a frequency matrix as input to ggseqlogo:
+
+```{r, fig.height=1.5, fig.width=9}
+Biostrings::consensusMatrix(shortH2Aaln)[1:20,] |> 
+    motifStack::pcm2pfm() |> 
+    ggseqlogo()  +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    guides(fill = "none") 
+```
+
+ggseqlogo can make [two-sided (up-down) logo plots](https://omarwagih.github.io/ggseqlogo/#custom-height_logos) that look a bit like DiffLogo plots, although you have to calculate the heights yourself.
+
+xxx how?
 
 
 ## ggmsa quick demo 
@@ -207,21 +235,41 @@ See [DiffLogo documentation](https://bioconductor.org/packages/release/bioc/html
 
 I used DiffLogo for Rossana's data, because I was very motivated to make **difference** logos, not just single-alignment logo plots. In Mar 21, 2022 I think some of the code given in the vignette may have been broken  
 
-(it always gives an annoying bonus message, "pwm must be of class matrix or data.frame. Trying to convert", but if there are no other errors we can ignore it)
+DiffLogo always gives an annoying bonus message, "pwm must be of class matrix or data.frame. Trying to convert", but if there are no other errors we can ignore it. Looks like it really requires a data.frame (not a matrix) - using as.data.frame() can make that warning go away. 
 
 First try a simple seqLogo plot for the H2A.B alignment
 
 ```{r, fig.height=3, fig.width=9, echo=TRUE}
 ## ASN is an "Alphabet" object defined in the DiffLogo package
 # get a version of the frequency matrices that contain only the 20 amino acids (not the gap)
+# we also put rows in a very specific order: ASN[["chars"]] otherwise we'll get a logo plot with the wrong letters
 shortH2AalnSplit_freqs_justASN <- lapply(shortH2AalnSplit_freqs, function(x) {
     x[ ASN[["chars"]], ]
 })
 
-DiffLogo::seqLogo(pwm=shortH2AalnSplit_freqs_justASN[["H2A.B"]], 
-                  alphabet=ASN, drawLines=20,
+DiffLogo::seqLogo(pwm=as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A.B"]]), 
+                  alphabet=ASN, 
+                  drawLines=20,
                   main="H2A.B") 
 ```
+
+IMPORTANT NOTE - if our frequency matrix has the rows (each amino acid) in a different order than the alphabet supplied, it produces a logo plot that at first glance LOOKS OK but is actually wrong (the wrong letters get plotted). 
+
+Can check the matrix and alphabet orders are the same as follows:
+
+```{r}
+identical (rownames(as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A.B"]])), 
+           ASN$chars)
+```
+
+
+# Enrichment+depletion logo plots
+
+Options:
+
+- Difflogo
+- ggseqlogo
+- Logolas package for EDLogo-style plots https://link.springer.com/article/10.1186/s12859-018-2489-3
 
 ## DiffLogo plot, controlling the color scheme
 
@@ -275,7 +323,7 @@ ASN_JYchemistryColors <- changeColors(ASN_JYchemistryColors,
 ```
 
 ```{r, fig.height=3, fig.width=9}
-DiffLogo::seqLogo(pwm=shortH2AalnSplit_freqs_justASN[["H2A.B"]], 
+DiffLogo::seqLogo(pwm=as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A.B"]]), 
                   alphabet=ASN_JYchemistryColors, 
                   drawLines=20) 
 ```
@@ -284,13 +332,36 @@ DiffLogo::seqLogo(pwm=shortH2AalnSplit_freqs_justASN[["H2A.B"]],
 
 # Now show difference logos
 
+
 ```{r, fig.height=3, fig.width=9}
+## include as.data.frame() to avoid warnings
 diffLogoFromPwm(
-    pwm1 = shortH2AalnSplit_freqs_justASN[["H2A"]],
-    pwm2 = shortH2AalnSplit_freqs_justASN[["H2A.B"]],
-    # ymin=0.1, ymax=-0.1,
+    pwm1 = as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A"]]),
+    pwm2 = as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A.B"]]),
+    # ymin=0.5, ymax=-0.5,
     alphabet = ASN_JYchemistryColors)
 ```
+
+Try to mimic DiffLogo plots using ggseqlogo. This works sort of, but I still want to figure out how to scale the heights correctly. In order to match DiffLogo heights, I think we need to scale the total (absolute) stack height by JS divergence, rather than using the absolute diffs for each letter.
+
+
+```{r, fig.height=1.5, fig.width=9}
+
+### tried ratios too. Definitely need a pseudocount so we don't divide by zero, and pseudocount choice would make a big difference to the ratio.
+# pseudocount <- 0.01
+# log2( (shortH2AalnSplit_freqs_justASN[["H2A.B"]]+pseudocount) / (shortH2AalnSplit_freqs_justASN[["H2A"]]+pseudocount) )
+
+
+### diffs here is subtracting freq in one set from freq in the other
+diffs <- shortH2AalnSplit_freqs_justASN[["H2A.B"]] - shortH2AalnSplit_freqs_justASN[["H2A"]]
+
+diffs |> 
+    ggseqlogo(method="custom") +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    guides(fill = "none") +
+    geom_hline(yintercept = 0, color="gray")
+```
+
 
 # Finished
 

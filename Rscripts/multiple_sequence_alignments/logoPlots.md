@@ -2,7 +2,7 @@ sequence logo plots
 ================
 Janet Young
 
-2026-01-20
+2026-01-21
 
 Goal - show how to make logo plots
 
@@ -67,8 +67,14 @@ You can make ‘custom height’ logos that allow negative values. This may
 provide a way to make difference logos, but I think we’d have to do the
 calculations ourselves about letter heights.
 
-I think you can also supply frequency or count matrices (but I haven’t
-tried it)
+Note that ggseqlogo ALWAYS uses small sample corrections, and there
+doesn’t seem to be a way to turn it off. I requested that in a [github
+issue](https://github.com/omarwagih/ggseqlogo/issues/19). The effect of
+this is to reduce the total stack height of the logo plot when the
+number of sequences is low.
+
+You can also supply a frequency matrix (must be a matrix not a
+data.frame). That works to avoid the small sample correction.
 
 ``` r
 # ?ggseqlogo
@@ -94,7 +100,21 @@ ggseqlogo(as.character(shortH2Aaln),
 
 ![](logoPlots_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
-We can use custom color shemes using the `ggseqlogo::make_col_scheme`
+The default is to scale the plot by the information content
+(conservation) of each position, but we can turn that off using
+`method="probability"`:
+
+``` r
+ggseqlogo(as.character(shortH2Aaln),
+          method="probability",
+          col_scheme="chemistry2") +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    guides(fill = "none")  
+```
+
+![](logoPlots_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+We can use custom color schemes using the `ggseqlogo::make_col_scheme`
 function.
 
 Here I use the `DiffLogo::ASN` color scheme
@@ -117,7 +137,26 @@ ggseqlogo(as.character(shortH2Aaln),
     ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
     ## generated.
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+Example using a frequency matrix as input to ggseqlogo:
+
+``` r
+Biostrings::consensusMatrix(shortH2Aaln)[1:20,] |> 
+    motifStack::pcm2pfm() |> 
+    ggseqlogo()  +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    guides(fill = "none") 
+```
+
+![](logoPlots_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+ggseqlogo can make [two-sided (up-down) logo
+plots](https://omarwagih.github.io/ggseqlogo/#custom-height_logos) that
+look a bit like DiffLogo plots, although you have to calculate the
+heights yourself.
+
+xxx how?
 
 ## ggmsa quick demo
 
@@ -136,7 +175,7 @@ ggmsa(shortH2Aaln,
     geom_seqlogo(adaptive=FALSE)  # adaptive=FALSE makes the logo plot taller, but whether T or F the overall heights of each stack are the same
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ## Comparing several alignments
 
@@ -171,7 +210,7 @@ ggseqlogo(shortH2AalnSplit_chars, ncol=1) +
     guides(fill = "none")  
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ## DiffLogo demo, default color scheme
 
@@ -246,27 +285,51 @@ I used DiffLogo for Rossana’s data, because I was very motivated to make
 **difference** logos, not just single-alignment logo plots. In Mar 21,
 2022 I think some of the code given in the vignette may have been broken
 
-(it always gives an annoying bonus message, “pwm must be of class matrix
-or data.frame. Trying to convert”, but if there are no other errors we
-can ignore it)
+DiffLogo always gives an annoying bonus message, “pwm must be of class
+matrix or data.frame. Trying to convert”, but if there are no other
+errors we can ignore it. Looks like it really requires a data.frame (not
+a matrix) - using as.data.frame() can make that warning go away.
 
 First try a simple seqLogo plot for the H2A.B alignment
 
 ``` r
 ## ASN is an "Alphabet" object defined in the DiffLogo package
 # get a version of the frequency matrices that contain only the 20 amino acids (not the gap)
+# we also put rows in a very specific order: ASN[["chars"]] otherwise we'll get a logo plot with the wrong letters
 shortH2AalnSplit_freqs_justASN <- lapply(shortH2AalnSplit_freqs, function(x) {
     x[ ASN[["chars"]], ]
 })
 
-DiffLogo::seqLogo(pwm=shortH2AalnSplit_freqs_justASN[["H2A.B"]], 
-                  alphabet=ASN, drawLines=20,
+DiffLogo::seqLogo(pwm=as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A.B"]]), 
+                  alphabet=ASN, 
+                  drawLines=20,
                   main="H2A.B") 
 ```
 
-    ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
+![](logoPlots_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+IMPORTANT NOTE - if our frequency matrix has the rows (each amino acid)
+in a different order than the alphabet supplied, it produces a logo plot
+that at first glance LOOKS OK but is actually wrong (the wrong letters
+get plotted).
+
+Can check the matrix and alphabet orders are the same as follows:
+
+``` r
+identical (rownames(as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A.B"]])), 
+           ASN$chars)
+```
+
+    ## [1] TRUE
+
+# Enrichment+depletion logo plots
+
+Options:
+
+- Difflogo
+- ggseqlogo
+- Logolas package for EDLogo-style plots
+  <https://link.springer.com/article/10.1186/s12859-018-2489-3>
 
 ## DiffLogo plot, controlling the color scheme
 
@@ -320,29 +383,49 @@ ASN_JYchemistryColors <- changeColors(ASN_JYchemistryColors,
 ```
 
 ``` r
-DiffLogo::seqLogo(pwm=shortH2AalnSplit_freqs_justASN[["H2A.B"]], 
+DiffLogo::seqLogo(pwm=as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A.B"]]), 
                   alphabet=ASN_JYchemistryColors, 
                   drawLines=20) 
 ```
 
-    ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
-
-![](logoPlots_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 # Now show difference logos
 
 ``` r
+## include as.data.frame() to avoid warnings
 diffLogoFromPwm(
-    pwm1 = shortH2AalnSplit_freqs_justASN[["H2A"]],
-    pwm2 = shortH2AalnSplit_freqs_justASN[["H2A.B"]],
-    # ymin=0.1, ymax=-0.1,
+    pwm1 = as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A"]]),
+    pwm2 = as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A.B"]]),
+    # ymin=0.5, ymax=-0.5,
     alphabet = ASN_JYchemistryColors)
 ```
 
-    ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
-    ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
+![](logoPlots_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+Try to mimic DiffLogo plots using ggseqlogo. This works sort of, but I
+still want to figure out how to scale the heights correctly. In order to
+match DiffLogo heights, I think we need to scale the total (absolute)
+stack height by JS divergence, rather than using the absolute diffs for
+each letter.
+
+``` r
+### tried ratios too. Definitely need a pseudocount so we don't divide by zero, and pseudocount choice would make a big difference to the ratio.
+# pseudocount <- 0.01
+# log2( (shortH2AalnSplit_freqs_justASN[["H2A.B"]]+pseudocount) / (shortH2AalnSplit_freqs_justASN[["H2A"]]+pseudocount) )
+
+
+### diffs here is subtracting freq in one set from freq in the other
+diffs <- shortH2AalnSplit_freqs_justASN[["H2A.B"]] - shortH2AalnSplit_freqs_justASN[["H2A"]]
+
+diffs |> 
+    ggseqlogo(method="custom") +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    guides(fill = "none") +
+    geom_hline(yintercept = 0, color="gray")
+```
+
+![](logoPlots_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 # Finished
 
@@ -381,25 +464,56 @@ sessionInfo()
     ## [22] tidyverse_2.0.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6            xfun_0.54               htmlwidgets_1.6.4      
-    ##  [4] lattice_0.22-7          tzdb_0.5.0              vctrs_0.6.5            
-    ##  [7] tools_4.5.2             yulab.utils_0.2.2       parallel_4.5.2         
-    ## [10] pkgconfig_2.0.3         ggplotify_0.1.3         RColorBrewer_1.1-3     
-    ## [13] S7_0.2.1                lifecycle_1.0.4         compiler_4.5.2         
-    ## [16] farver_2.1.2            treeio_1.34.0           ggforce_0.5.0          
-    ## [19] ggtree_4.0.1            fontLiberation_0.1.0    fontquiver_0.2.1       
-    ## [22] ggfun_0.2.0             htmltools_0.5.9         lazyeval_0.2.2         
-    ## [25] yaml_2.3.12             pillar_1.11.1           crayon_1.5.3           
-    ## [28] MASS_7.3-65             seqmagick_0.1.7         fontBitstreamVera_0.1.1
-    ## [31] nlme_3.1-168            tidyselect_1.2.1        aplot_0.2.9            
-    ## [34] digest_0.6.39           stringi_1.8.7           labeling_0.4.3         
-    ## [37] polyclip_1.10-7         fastmap_1.2.0           cli_3.6.5              
-    ## [40] magrittr_2.0.4          patchwork_1.3.2         ape_5.8-1              
-    ## [43] withr_3.0.2             gdtools_0.4.4           scales_1.4.0           
-    ## [46] rappdirs_0.3.3          timechange_0.3.0        rmarkdown_2.30         
-    ## [49] hms_1.1.4               evaluate_1.0.5          knitr_1.50             
-    ## [52] gridGraphics_0.5-1      rlang_1.1.6             ggiraph_0.9.2          
-    ## [55] Rcpp_1.1.0              glue_1.8.0              R4RNA_1.38.0           
-    ## [58] tidytree_0.4.6          tweenr_2.0.3            jsonlite_2.0.0         
-    ## [61] rstudioapi_0.17.1       R6_2.6.1                systemfonts_1.3.1      
-    ## [64] fs_1.6.6
+    ##   [1] DBI_1.2.3                   bitops_1.0-9               
+    ##   [3] rlang_1.1.6                 magrittr_2.0.4             
+    ##   [5] ade4_1.7-23                 matrixStats_1.5.0          
+    ##   [7] compiler_4.5.2              RSQLite_2.4.5              
+    ##   [9] systemfonts_1.3.1           vctrs_0.6.5                
+    ##  [11] pwalign_1.6.0               pkgconfig_2.0.3            
+    ##  [13] crayon_1.5.3                fastmap_1.2.0              
+    ##  [15] motifStack_1.54.0           labeling_0.4.3             
+    ##  [17] caTools_1.18.3              Rsamtools_2.26.0           
+    ##  [19] rmarkdown_2.30              tzdb_0.5.0                 
+    ##  [21] seqmagick_0.1.7             DirichletMultinomial_1.52.0
+    ##  [23] bit_4.6.0                   xfun_0.54                  
+    ##  [25] cachem_1.1.0                cigarillo_1.0.0            
+    ##  [27] aplot_0.2.9                 jsonlite_2.0.0             
+    ##  [29] blob_1.2.4                  DelayedArray_0.36.0        
+    ##  [31] BiocParallel_1.44.0         tweenr_2.0.3               
+    ##  [33] parallel_4.5.2              R6_2.6.1                   
+    ##  [35] stringi_1.8.7               RColorBrewer_1.1-3         
+    ##  [37] rtracklayer_1.70.0          GenomicRanges_1.62.1       
+    ##  [39] SummarizedExperiment_1.40.0 Rcpp_1.1.0                 
+    ##  [41] knitr_1.50                  Matrix_1.7-4               
+    ##  [43] timechange_0.3.0            tidyselect_1.2.1           
+    ##  [45] abind_1.4-8                 rstudioapi_0.17.1          
+    ##  [47] yaml_2.3.12                 codetools_0.2-20           
+    ##  [49] curl_7.0.0                  lattice_0.22-7             
+    ##  [51] Biobase_2.70.0              treeio_1.34.0              
+    ##  [53] withr_3.0.2                 S7_0.2.1                   
+    ##  [55] evaluate_1.0.5              gridGraphics_0.5-1         
+    ##  [57] polyclip_1.10-7             pillar_1.11.1              
+    ##  [59] ggtree_4.0.1                MatrixGenerics_1.22.0      
+    ##  [61] ggfun_0.2.0                 RCurl_1.98-1.17            
+    ##  [63] hms_1.1.4                   scales_1.4.0               
+    ##  [65] tidytree_0.4.6              gtools_3.9.5               
+    ##  [67] glue_1.8.0                  gdtools_0.4.4              
+    ##  [69] lazyeval_0.2.2              seqLogo_1.76.0             
+    ##  [71] tools_4.5.2                 TFMPvalue_0.0.9            
+    ##  [73] BiocIO_1.20.0               BSgenome_1.78.0            
+    ##  [75] GenomicAlignments_1.46.0    ggiraph_0.9.2              
+    ##  [77] fs_1.6.6                    XML_3.99-0.20              
+    ##  [79] TFBSTools_1.48.0            ape_5.8-1                  
+    ##  [81] R4RNA_1.38.0                nlme_3.1-168               
+    ##  [83] patchwork_1.3.2             ggforce_0.5.0              
+    ##  [85] restfulr_0.0.16             cli_3.6.5                  
+    ##  [87] rappdirs_0.3.3              fontBitstreamVera_0.1.1    
+    ##  [89] S4Arrays_1.10.1             gtable_0.3.6               
+    ##  [91] yulab.utils_0.2.2           digest_0.6.39              
+    ##  [93] fontquiver_0.2.1            SparseArray_1.10.6         
+    ##  [95] ggplotify_0.1.3             rjson_0.2.23               
+    ##  [97] htmlwidgets_1.6.4           farver_2.1.2               
+    ##  [99] memoise_2.0.1               htmltools_0.5.9            
+    ## [101] lifecycle_1.0.4             httr_1.4.7                 
+    ## [103] fontLiberation_0.1.0        bit64_4.6.0-1              
+    ## [105] MASS_7.3-65
