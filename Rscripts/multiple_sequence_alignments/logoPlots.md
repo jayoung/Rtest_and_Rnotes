@@ -2,7 +2,7 @@ sequence logo plots
 ================
 Janet Young
 
-2026-01-16
+2026-01-20
 
 Goal - show how to make logo plots
 
@@ -94,6 +94,31 @@ ggseqlogo(as.character(shortH2Aaln),
 
 ![](logoPlots_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
+We can use custom color shemes using the `ggseqlogo::make_col_scheme`
+function.
+
+Here I use the `DiffLogo::ASN` color scheme
+
+``` r
+ASN_ggseqlogo_color_scheme <- make_col_scheme(chars=ASN$chars,
+                                              cols=ASN$cols)
+
+ggseqlogo(as.character(shortH2Aaln),
+          col_scheme=ASN_ggseqlogo_color_scheme) +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    guides(fill = "none") 
+```
+
+    ## Warning: The `<scale>` argument of `guides()` cannot be `FALSE`. Use "none" instead as
+    ## of ggplot2 3.3.4.
+    ## ℹ The deprecated feature was likely used in the ggseqlogo package.
+    ##   Please report the issue at <https://github.com/omarwagih/ggseqlogo/issues>.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+![](logoPlots_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
 ## ggmsa quick demo
 
 Makes a basic logo plot above the corresponding alignment.
@@ -111,7 +136,7 @@ ggmsa(shortH2Aaln,
     geom_seqlogo(adaptive=FALSE)  # adaptive=FALSE makes the logo plot taller, but whether T or F the overall heights of each stack are the same
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ## Comparing several alignments
 
@@ -146,7 +171,7 @@ ggseqlogo(shortH2AalnSplit_chars, ncol=1) +
     guides(fill = "none")  
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ## DiffLogo demo, default color scheme
 
@@ -241,7 +266,7 @@ DiffLogo::seqLogo(pwm=shortH2AalnSplit_freqs_justASN[["H2A.B"]],
 
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ## DiffLogo plot, controlling the color scheme
 
@@ -302,7 +327,7 @@ DiffLogo::seqLogo(pwm=shortH2AalnSplit_freqs_justASN[["H2A.B"]],
 
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 # Now show difference logos
 
@@ -317,7 +342,7 @@ diffLogoFromPwm(
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
     ## [1] "pwm must be of class matrix or data.frame. Trying to convert"
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 # Finished
 

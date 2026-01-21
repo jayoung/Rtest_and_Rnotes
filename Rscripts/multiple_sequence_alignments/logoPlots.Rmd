@@ -75,6 +75,21 @@ ggseqlogo(as.character(shortH2Aaln),
     guides(fill = "none")  
 ```
 
+We can use custom color shemes using the `ggseqlogo::make_col_scheme` function.
+
+Here I use the `DiffLogo::ASN` color scheme
+
+```{r, fig.height=1.5, fig.width=9}
+ASN_ggseqlogo_color_scheme <- make_col_scheme(chars=ASN$chars,
+                                              cols=ASN$cols)
+
+ggseqlogo(as.character(shortH2Aaln),
+          col_scheme=ASN_ggseqlogo_color_scheme) +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    guides(fill = "none") 
+```
+
+
 ## ggmsa quick demo 
 
 Makes a basic logo plot above the corresponding alignment.
