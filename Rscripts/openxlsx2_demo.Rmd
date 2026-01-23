@@ -16,20 +16,50 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Show how to use the openxlsx2 library (replacement for openxlsx).
 
-Package documentation is [here](https://janmarvin.github.io/openxlsx2/index.html).
+Package documentation is [here](https://janmarvin.github.io/openxlsx2/index.html). CRAN page is [here](https://cran.r-project.org/web/packages/openxlsx2/index.html).
 
 For now, I'm not including demo code here, but I wanted a place to keep an important note about using this package on the cluster:
 
 
-This `Sys.setenv` command is needed for write_xlsx to work if I am running on the Rstudio server, otherwise I get a cryptic error about utils::zip
+This `Sys.setenv` command is needed for `write_xlsx()` to work if I am running on the Rstudio server, otherwise I get a cryptic error about utils::zip.  This has been [fixed](https://github.com/JanMarvin/openxlsx2/issues/1532) so I should be able to stop adding these extra lines in a future version.  Still needed in version `openxlsx2_1.23.1` (Jan 23 2026).
+
+
+I used openxlsx2 in the SATAY project for the Mlp data - see scripts [here](https://github.com/gak2882/SATAY/tree/main/250630_SATAY_MlpSyntheticLethality_AnalysisCombined/Rscripts_janet).
+
+```{r}
+library(openxlsx2)
+```
+
+# First show package versions
+
+```{r}
+sessionInfo()
+```
+
+# Next test write_xlsx after setting R_ZIPCMD appropriately
+
+When we set
 
 ```{r}
 if(Sys.info()[["sysname"]]=="Linux") {
     Sys.setenv(R_ZIPCMD="/usr/bin/zip")
 }
-library(openxlsx2)
+write_xlsx(iris, file = temp_xlsx(), col_names = TRUE)
 ```
 
 
-I used openxlsx2 in the SATAY project for the Mlp data - see scripts [here](https://github.com/gak2882/SATAY/tree/main/250630_SATAY_MlpSyntheticLethality_AnalysisCombined/Rscripts_janet).
+
+# Now test write_xlsx when R_ZIPCMD is not set
+
+This will fail until the fix is implemented
+
+```{r}
+if(Sys.info()[["sysname"]]=="Linux") {
+    Sys.setenv(R_ZIPCMD="")
+}
+
+write_xlsx(iris, file = temp_xlsx(), col_names = TRUE)
+```
+
+
 

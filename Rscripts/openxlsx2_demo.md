@@ -2,21 +2,23 @@ openxlsx2_demo
 ================
 Janet Young
 
-2026-01-16
+2026-01-22
 
 # Goal
 
 Show how to use the openxlsx2 library (replacement for openxlsx).
 
 Package documentation is
-[here](https://janmarvin.github.io/openxlsx2/index.html).
+[here](https://janmarvin.github.io/openxlsx2/index.html). CRAN page is
+[here](https://cran.r-project.org/web/packages/openxlsx2/index.html).
 
 For now, I’m not including demo code here, but I wanted a place to keep
 an important note about using this package on the cluster:
 
 This `Sys.setenv` command is needed for write_xlsx to work if I am
 running on the Rstudio server, otherwise I get a cryptic error about
-utils::zip
+utils::zip. This has been
+[fixed](https://github.com/JanMarvin/openxlsx2/issues/1532) so I should
 
 ``` r
 if(Sys.info()[["sysname"]]=="Linux") {
