@@ -1,0 +1,187 @@
+---
+title: "tidymodels_learning"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+# Goal
+
+Explore 'Tidy modeling with R' [book](https://www.tmwr.org/)
+
+Also exploring how I might look at RNA-seq-like data without replicates
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(patchwork)
+library(estimatr)
+```
+
+# Cricket data example
+
+```{r}
+data(crickets, package = "modeldata")
+head(crickets, 3)
+```
+
+```{r}
+crickets |> count(species)
+```
+
+
+Plot the temperature on the x-axis, the chirp rate on the y-axis. The plot elements will be colored differently for each species:
+
+```{r}
+ggplot(crickets, 
+       aes(x = temp, y = rate, color = species, pch = species, lty = species)) + 
+    # Plot points for each data point and color by species
+    geom_point(size = 2) + 
+    # Show a simple linear model fit created separately for each species:
+    geom_smooth(method = lm, formula = 'y ~ x',
+                se = TRUE, alpha = 0.5) +
+    scale_color_brewer(palette = "Paired") +
+    labs(x = "Temperature (C)", y = "Chirp Rate (per minute)") +
+    theme_classic()
+```
+
+
+# Play with estimatr::lm_robust
+
+```{r, fig.height=4, fig.width=11}
+p1 <- ggplot(swiss, aes(x = Agriculture, y = Fertility)) +
+    geom_point() +
+    ## default is loess
+    geom_smooth(method = 'loess', formula = 'y ~ x') +
+    theme_bw() +
+    labs(title="loess")
+
+p2 <- ggplot(swiss, aes(x = Agriculture, y = Fertility)) +
+    geom_point() +
+    geom_smooth(method = 'lm', formula = 'y ~ x') +
+    theme_bw()+
+    labs(title="lm")
+
+p3 <- ggplot(swiss, aes(x = Agriculture, y = Fertility)) +
+    geom_point() +
+    geom_smooth(method = "lm_robust", formula = y ~ x) +
+    theme_bw()+
+    labs(title="lm_robust")
+
+p1 + p2 + p3
+```
+
+# play with EdgeR
+
+It can model variance in heteroskedastic datasets although often it uses negative binomial, which assumes counts data
+
+https://bioconductor.org/packages//release/bioc/html/edgeR.html
+
+```{r}
+library(edgeR)
+bcv <- 0.2
+counts <- matrix( rnbinom(40,size=1/bcv^2,mu=10), 20,2)
+y <- DGEList(counts=counts, group=1:2)
+et <- exactTest(y, dispersion=bcv^2)
+```
+
+```{r}
+ngenes <- 250
+nlibs <- 4
+y <- matrix(rnbinom(ngenes*nlibs,mu=10,size=10),ngenes,nlibs)
+d <- DGEList(counts=y,group=c(1,1,2,2),lib.size=c(1000:1003))
+design <- model.matrix(~group, data=d$samples)
+disp <- estimateGLMTrendedDisp(d, design, min.n=25, df=3)
+plotBCV(disp)
+```
+
+
+# play with DESeq2
+
+```{r}
+library(DESeq2)
+```
+
+```{r}
+## counts(dds) has 200 rows, 20 columns, and contains counts data
+dds <- makeExampleDESeqDataSet(n=2000, m=20)
+vsd <- vst(dds)
+```
+
+
+Column totals do show some variation:
+
+```{r}
+counts(dds) |> 
+    colSums()
+```
+
+
+
+
+```{r}
+freqs2 <- counts(dds) 
+for (i in 1:ncol(freqs2)) {
+    freqs2[,i] <- freqs2[,i]/sum(freqs2[,i])
+}
+rm(i)
+```
+
+```{r}
+## vst and rlog require integers
+# vst(freqs2, fitType = "glmGamPoi")
+
+
+rlog(freqs2)
+```
+
+
+
+```{r}
+counts(dds) |> 
+    as_tibble(rownames="gene_id") |> 
+    select(gene_id:sample4) |> 
+    pivot_longer(cols=-gene_id) |> 
+    ggplot(aes(x=value)) +
+    geom_histogram(binwidth=25) +
+    theme_classic() +
+    facet_wrap(vars(name)) +
+    labs(x="count", y="num genes")
+```
+
+
+```{r}
+counts(dds) |> 
+    as_tibble(rownames="gene_id") |> 
+    ggplot(aes(x=sample1, y=sample2)) +
+    geom_point(size=0.5, alpha=0.5) +
+    theme_classic()
+```
+
+```{r}
+pseud <- 0.1
+counts(dds) |> 
+    as_tibble(rownames="gene_id") |> 
+    mutate(total1and2 = sample1 + sample2) |> 
+    mutate(ratio1vs2 = log2((sample1+pseud)/(sample2+pseud))) |> 
+    ggplot(aes(x=(total1and2+1), y=ratio1vs2)) +
+    geom_hline(yintercept = 0, lty=2, color="darkred") +
+    geom_point(size=0.5, alpha=0.5) +
+    theme_classic() +
+    scale_x_log10()
+```
+
+
+
+
+# Finished
+
+
+```{r}
+sessionInfo()
+```

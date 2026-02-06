@@ -5,7 +5,7 @@ Janet Young
 2025-11-07
 
 This is the first in a set of two linked Rmd scripts, to help me test my
-`render_Rmd_series.perl` script.
+`render_Rmd_series.pl` script.
 
 The render\_Rmd\_series.perl script is set up so that it will not run
 downstream scripts if anything in the chain fails.
@@ -14,7 +14,7 @@ Make sure to check the resulting
 
 Here’s the command I use to run the series of scripts:
 
-    render_Rmd_series.perl test_randomCodeBits_part1.Rmd test_randomCodeBits_part2.Rmd
+    render_Rmd_series.pl test_randomCodeBits_part1.Rmd test_randomCodeBits_part2.Rmd
 
 To remove all output:
 

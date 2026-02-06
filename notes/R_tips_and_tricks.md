@@ -466,7 +466,7 @@ On a Mac, R packages go here - `/Library/Frameworks/R.framework/Versions` - in s
 
 Occasionally jobs get stuck for ages: "session stays gray with the message 'R is taking longer to start than usual'". 
 
-The solution, from Dan on Slack: "Sometimes it helps to delete or rename the following directories, then start a new RStudio session:"
+The solution, from Dan on Slack (question and answer channel, thread started by Costanza Marini, Jan 12 2026): "Sometimes it helps to delete or rename the following directories, then start a new RStudio session:"
 ```
 rm -r ~/.local/share/rstudio
 rm -r ~/.config/R
@@ -479,3 +479,14 @@ Things to set up again after that (in Tools-Global Options)
 - Code-Editing: use native pipe operator, 
 - Code-Editing: soft wrap R source files
 - Code-DisplaySyntax:  enable rainbow parentheses
+- Git/SVN: turn OFF version control within Rstudio (I think it might slow things down, better to do it outside R)
+
+I found that deleting ONLY `~/.local/share/rstudio` seems to be enough to speed things up, and it allows me to keep saved Rstudio preferences.
+
+Also on Jan 22 Dan made a change to Rstudio's settings so that it should no longer suspend a session and save the environment when it's idel for >2hrs.
+
+Rstudio server version via OnDemand, as of Jan 23 2026:
+```
+RStudio 2024.05.999-dev+999 "Chocolate Cosmos" Release (3ada7c6ddc8fcdb86a727a4f0ae467b9d9a7296c, 2024-05-19) for Linux
+Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36
+```

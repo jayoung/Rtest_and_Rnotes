@@ -24,7 +24,7 @@ Some notes I'm storing in other repos:
 
 ## Quick things I often need to remember or copy/paste:
 
-To Knit/render an Rmd doc from the linux command line, I have a couple of scripts in this repo (in `useful_functions`) that I can run from gizmo/rhino: `render_Rmd.perl` (run scripts in parallel) and `render_Rmd_series.perl` (run scripts in series) 
+To Knit/render an Rmd doc from the linux command line, I have a couple of scripts in this repo (in `useful_functions`) that I can run from gizmo/rhino: `render_Rmd.pl` (run scripts in parallel) and `render_Rmd_series.pl` (run scripts in series) 
 
 Insert an image into a .md or .Rmd document:
 ```
@@ -34,6 +34,16 @@ Insert an image into a .md or .Rmd document:
 Rotate x axis labels on a ggplot:
 ```
 + theme(axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 0.5))
+```
+
+Violin plot with median dots
+
+```
+    geom_violin(scale = "width") + 
+    stat_summary(fun = "median", geom = "point",
+                 ## position_dodge(width=0.9) will help median dots line up especially if each x axis value contains subgroups
+                 position=position_dodge(width=0.9),
+                 show.legend = FALSE) 
 ```
 
 
@@ -127,7 +137,7 @@ Data Science resources [list](https://nrennie.rbind.io/data-science-resources/)
 
 
 
-## List of useful packages
+## Useful packages
 
 ### patchwork to combine plots
 
@@ -174,6 +184,14 @@ plt1 | plt2
 - And [here](https://rfortherestofus.com/2023/10/ggplots-in-gt-tables) is a tutorial to show how to use `gt` to put little graphs in some cells of a table
 
 (and I think some others)
+
+### Interactive plots/dashboards
+
+Shiny
+
+Support for `plotly` is being [abandoned](https://gpcds.com/posts/plotly-abandoned-r/) as of 2026. Plotly generates things called htmlwidgets.  `ggiraph`, `leaflet`, and `highcharter` are recommended instead.
+
+`ggiraph` seems like the winner.
 
 ### Volcano plots
 

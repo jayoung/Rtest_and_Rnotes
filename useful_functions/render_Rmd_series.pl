@@ -3,7 +3,7 @@ use warnings;
 use strict;
 use Getopt::Long;
 
-####### render_Rmd.perl my_script_1.Rmd my_script_2.Rmd
+####### render_Rmd.pl my_script_1.Rmd my_script_2.Rmd
 ## runs those scripts one after the other
 
 my $series_name = "zzz_Rmd_series"; ## this will be used as the start of the output file names for those files that relate to all Rmd files in the series
@@ -42,11 +42,11 @@ GetOptions("series=s"      => \$series_name,
 
 ### test - it works from same directory as the Rmd file:
 # cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/Rscripts/
-# ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/render_Rmd.perl test_randomCodeBits.Rmd
+# ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/render_Rmd.pl test_randomCodeBits.Rmd
 
 ### test from project top dir - works
 # cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/
-# ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/render_Rmd.perl Rscripts/test_randomCodeBits.Rmd
+# ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/render_Rmd.pl Rscripts/test_randomCodeBits.Rmd
 
 #####################
 if ($use_sbatch == 1) {print "\n\nUsing sbatch to parallelize\n\n";}

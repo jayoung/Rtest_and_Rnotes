@@ -5,7 +5,7 @@ Janet Young
 2025-11-07
 
 This is the second in a set of two linked Rmd scripts, to help me test
-my `render_Rmd_series.perl` script.
+my `render_Rmd_series.pl` script.
 
 This script (part2) plots the fake dataset we made in part1.
 

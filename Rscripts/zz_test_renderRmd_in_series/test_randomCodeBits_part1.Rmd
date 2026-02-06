@@ -6,16 +6,16 @@ output: github_document
 always_allow_html: true
 ---
 
-This is the first in a set of two linked Rmd scripts, to help me test my `render_Rmd_series.perl` script.
+This is the first in a set of two linked Rmd scripts, to help me test my `render_Rmd_series.pl` script.
 
-The render_Rmd_series.perl script is set up so that it will not run downstream scripts if anything in the chain fails.
+The render_Rmd_series.pl script is set up so that it will not run downstream scripts if anything in the chain fails.
 
 Make sure to check the resulting
 
 Here's the command I use to run the series of scripts:
 
 ```
-render_Rmd_series.perl test_randomCodeBits_part1.Rmd test_randomCodeBits_part2.Rmd
+render_Rmd_series.pl test_randomCodeBits_part1.Rmd test_randomCodeBits_part2.Rmd
 ```
 
 To remove all output:
@@ -39,7 +39,7 @@ iris_plus_groups <- iris |>
 ```
 
 
-Here's some code that will produce an error, if we were to change `eval` to `TRUE.` The render_Rmd_series.perl script is set up so that it will not run downstream scripts if anything in the chain fails.
+Here's some code that will produce an error, if we were to change `eval` to `TRUE.` The render_Rmd_series.pl script is set up so that it will not run downstream scripts if anything in the chain fails.
 
 ```{r produce error, eval=FALSE}
 xxxx
