@@ -2,7 +2,7 @@ sequence logo plots
 ================
 Janet Young
 
-2026-01-21
+2026-02-12
 
 Goal - show how to make logo plots
 
@@ -60,8 +60,8 @@ See [ggseqlogo documentation](https://omarwagih.github.io/ggseqlogo/).
 
 Nice.
 
-Looks like you can make custom color scheme (see `?make_col_scheme`) but
-I haven’t tried it.
+You can make custom color scheme (see `?make_col_scheme`, and example
+below).
 
 You can make ‘custom height’ logos that allow negative values. This may
 provide a way to make difference logos, but I think we’d have to do the
@@ -94,7 +94,7 @@ ggseqlogo(as.character(shortH2Aaln),
     ## ℹ See also `vignette("ggplot2-in-packages")` for more information.
     ## ℹ The deprecated feature was likely used in the ggseqlogo package.
     ##   Please report the issue at <https://github.com/omarwagih/ggseqlogo/issues>.
-    ## This warning is displayed once every 8 hours.
+    ## This warning is displayed once per session.
     ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
     ## generated.
 
@@ -133,7 +133,7 @@ ggseqlogo(as.character(shortH2Aaln),
     ## of ggplot2 3.3.4.
     ## ℹ The deprecated feature was likely used in the ggseqlogo package.
     ##   Please report the issue at <https://github.com/omarwagih/ggseqlogo/issues>.
-    ## This warning is displayed once every 8 hours.
+    ## This warning is displayed once per session.
     ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
     ## generated.
 
@@ -455,65 +455,65 @@ sessionInfo()
     ## 
     ## other attached packages:
     ##  [1] ggmsa_1.16.0        DiffLogo_2.34.0     cba_0.2-25         
-    ##  [4] proxy_0.4-28        ggseqlogo_0.2       Biostrings_2.78.0  
+    ##  [4] proxy_0.4-28        ggseqlogo_0.2.2     Biostrings_2.78.0  
     ##  [7] Seqinfo_1.0.0       XVector_0.50.0      IRanges_2.44.0     
     ## [10] S4Vectors_0.48.0    BiocGenerics_0.56.0 generics_0.1.4     
-    ## [13] lubridate_1.9.4     forcats_1.0.1       stringr_1.6.0      
-    ## [16] dplyr_1.1.4         purrr_1.2.0         readr_2.1.6        
-    ## [19] tidyr_1.3.1         tibble_3.3.0        ggplot2_4.0.1      
+    ## [13] lubridate_1.9.5     forcats_1.0.1       stringr_1.6.0      
+    ## [16] dplyr_1.2.0         purrr_1.2.1         readr_2.1.6        
+    ## [19] tidyr_1.3.2         tibble_3.3.1        ggplot2_4.0.2      
     ## [22] tidyverse_2.0.0    
     ## 
     ## loaded via a namespace (and not attached):
     ##   [1] DBI_1.2.3                   bitops_1.0-9               
-    ##   [3] rlang_1.1.6                 magrittr_2.0.4             
-    ##   [5] ade4_1.7-23                 matrixStats_1.5.0          
-    ##   [7] compiler_4.5.2              RSQLite_2.4.5              
-    ##   [9] systemfonts_1.3.1           vctrs_0.6.5                
-    ##  [11] pwalign_1.6.0               pkgconfig_2.0.3            
-    ##  [13] crayon_1.5.3                fastmap_1.2.0              
-    ##  [15] motifStack_1.54.0           labeling_0.4.3             
-    ##  [17] caTools_1.18.3              Rsamtools_2.26.0           
-    ##  [19] rmarkdown_2.30              tzdb_0.5.0                 
-    ##  [21] seqmagick_0.1.7             DirichletMultinomial_1.52.0
-    ##  [23] bit_4.6.0                   xfun_0.54                  
-    ##  [25] cachem_1.1.0                cigarillo_1.0.0            
-    ##  [27] aplot_0.2.9                 jsonlite_2.0.0             
-    ##  [29] blob_1.2.4                  DelayedArray_0.36.0        
-    ##  [31] BiocParallel_1.44.0         tweenr_2.0.3               
-    ##  [33] parallel_4.5.2              R6_2.6.1                   
-    ##  [35] stringi_1.8.7               RColorBrewer_1.1-3         
-    ##  [37] rtracklayer_1.70.0          GenomicRanges_1.62.1       
-    ##  [39] SummarizedExperiment_1.40.0 Rcpp_1.1.0                 
-    ##  [41] knitr_1.50                  Matrix_1.7-4               
-    ##  [43] timechange_0.3.0            tidyselect_1.2.1           
-    ##  [45] abind_1.4-8                 rstudioapi_0.17.1          
-    ##  [47] yaml_2.3.12                 codetools_0.2-20           
-    ##  [49] curl_7.0.0                  lattice_0.22-7             
-    ##  [51] Biobase_2.70.0              treeio_1.34.0              
-    ##  [53] withr_3.0.2                 S7_0.2.1                   
-    ##  [55] evaluate_1.0.5              gridGraphics_0.5-1         
-    ##  [57] polyclip_1.10-7             pillar_1.11.1              
-    ##  [59] ggtree_4.0.1                MatrixGenerics_1.22.0      
-    ##  [61] ggfun_0.2.0                 RCurl_1.98-1.17            
-    ##  [63] hms_1.1.4                   scales_1.4.0               
-    ##  [65] tidytree_0.4.6              gtools_3.9.5               
-    ##  [67] glue_1.8.0                  gdtools_0.4.4              
-    ##  [69] lazyeval_0.2.2              seqLogo_1.76.0             
-    ##  [71] tools_4.5.2                 TFMPvalue_0.0.9            
-    ##  [73] BiocIO_1.20.0               BSgenome_1.78.0            
-    ##  [75] GenomicAlignments_1.46.0    ggiraph_0.9.2              
-    ##  [77] fs_1.6.6                    XML_3.99-0.20              
-    ##  [79] TFBSTools_1.48.0            ape_5.8-1                  
-    ##  [81] R4RNA_1.38.0                nlme_3.1-168               
-    ##  [83] patchwork_1.3.2             ggforce_0.5.0              
-    ##  [85] restfulr_0.0.16             cli_3.6.5                  
-    ##  [87] rappdirs_0.3.3              fontBitstreamVera_0.1.1    
-    ##  [89] S4Arrays_1.10.1             gtable_0.3.6               
-    ##  [91] yulab.utils_0.2.2           digest_0.6.39              
-    ##  [93] fontquiver_0.2.1            SparseArray_1.10.6         
-    ##  [95] ggplotify_0.1.3             rjson_0.2.23               
-    ##  [97] htmlwidgets_1.6.4           farver_2.1.2               
-    ##  [99] memoise_2.0.1               htmltools_0.5.9            
-    ## [101] lifecycle_1.0.4             httr_1.4.7                 
-    ## [103] fontLiberation_0.1.0        bit64_4.6.0-1              
-    ## [105] MASS_7.3-65
+    ##   [3] rlang_1.1.7                 magrittr_2.0.4             
+    ##   [5] ade4_1.7-23                 otel_0.2.0                 
+    ##   [7] matrixStats_1.5.0           compiler_4.5.2             
+    ##   [9] RSQLite_2.4.5               systemfonts_1.3.1          
+    ##  [11] vctrs_0.7.1                 pwalign_1.6.0              
+    ##  [13] pkgconfig_2.0.3             crayon_1.5.3               
+    ##  [15] fastmap_1.2.0               motifStack_1.54.0          
+    ##  [17] labeling_0.4.3              caTools_1.18.3             
+    ##  [19] Rsamtools_2.26.0            rmarkdown_2.30             
+    ##  [21] tzdb_0.5.0                  seqmagick_0.1.7            
+    ##  [23] DirichletMultinomial_1.52.0 bit_4.6.0                  
+    ##  [25] xfun_0.56                   cachem_1.1.0               
+    ##  [27] cigarillo_1.0.0             aplot_0.2.9                
+    ##  [29] jsonlite_2.0.0              blob_1.3.0                 
+    ##  [31] DelayedArray_0.36.0         BiocParallel_1.44.0        
+    ##  [33] tweenr_2.0.3                parallel_4.5.2             
+    ##  [35] R6_2.6.1                    stringi_1.8.7              
+    ##  [37] RColorBrewer_1.1-3          rtracklayer_1.70.0         
+    ##  [39] GenomicRanges_1.62.1        SummarizedExperiment_1.40.0
+    ##  [41] Rcpp_1.1.1                  knitr_1.51                 
+    ##  [43] Matrix_1.7-4                timechange_0.4.0           
+    ##  [45] tidyselect_1.2.1            abind_1.4-8                
+    ##  [47] rstudioapi_0.18.0           yaml_2.3.12                
+    ##  [49] codetools_0.2-20            curl_7.0.0                 
+    ##  [51] lattice_0.22-7              Biobase_2.70.0             
+    ##  [53] treeio_1.34.0               withr_3.0.2                
+    ##  [55] S7_0.2.1                    evaluate_1.0.5             
+    ##  [57] gridGraphics_0.5-1          polyclip_1.10-7            
+    ##  [59] pillar_1.11.1               ggtree_4.0.1               
+    ##  [61] MatrixGenerics_1.22.0       ggfun_0.2.0                
+    ##  [63] RCurl_1.98-1.17             hms_1.1.4                  
+    ##  [65] scales_1.4.0                tidytree_0.4.6             
+    ##  [67] gtools_3.9.5                glue_1.8.0                 
+    ##  [69] gdtools_0.4.4               lazyeval_0.2.2             
+    ##  [71] seqLogo_1.76.0              tools_4.5.2                
+    ##  [73] TFMPvalue_0.0.9             BiocIO_1.20.0              
+    ##  [75] BSgenome_1.78.0             GenomicAlignments_1.46.0   
+    ##  [77] ggiraph_0.9.2               fs_1.6.6                   
+    ##  [79] XML_3.99-0.22               TFBSTools_1.48.0           
+    ##  [81] ape_5.8-1                   R4RNA_1.38.0               
+    ##  [83] nlme_3.1-168                patchwork_1.3.2            
+    ##  [85] ggforce_0.5.0               restfulr_0.0.16            
+    ##  [87] cli_3.6.5                   rappdirs_0.3.4             
+    ##  [89] fontBitstreamVera_0.1.1     S4Arrays_1.10.1            
+    ##  [91] gtable_0.3.6                yulab.utils_0.2.2          
+    ##  [93] digest_0.6.39               fontquiver_0.2.1           
+    ##  [95] SparseArray_1.10.6          ggplotify_0.1.3            
+    ##  [97] rjson_0.2.23                htmlwidgets_1.6.4          
+    ##  [99] farver_2.1.2                memoise_2.0.1              
+    ## [101] htmltools_0.5.9             lifecycle_1.0.5            
+    ## [103] httr_1.4.7                  fontLiberation_0.1.0       
+    ## [105] bit64_4.6.0-1               MASS_7.3-65

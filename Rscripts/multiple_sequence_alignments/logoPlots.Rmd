@@ -56,7 +56,7 @@ See [ggseqlogo documentation](https://omarwagih.github.io/ggseqlogo/).
 
 Nice.
 
-Looks like you can make custom color scheme (see `?make_col_scheme`) but I haven't tried it.
+You can make custom color scheme (see `?make_col_scheme`, and example below).
 
 You can make 'custom height' logos that allow negative values. This may provide a way to make difference logos, but I think we'd have to do the calculations ourselves about letter heights.
 
