@@ -81,12 +81,16 @@ data.frame). That works to avoid the small sample correction.
 # ?geom_logo
 # ?list_col_schemes
 # ?make_col_scheme
+## same but add y axis line and tick marks
 ggseqlogo(as.character(shortH2Aaln),
           col_scheme="chemistry2") +
-    # turn the x axis labels 90 degrees and change font size
-    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    theme(# turn the x axis labels 90 degrees and change font size
+        axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7), 
+        # add y axis:
+        axis.line.y=element_line(linewidth=0.25), 
+        axis.ticks.y=element_line(linewidth=0.25)) +
     # suppress the color scheme legend:
-    guides(fill = "none")  
+    guides(fill = "none")    
 ```
 
     ## Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
@@ -108,7 +112,10 @@ The default is to scale the plot by the information content
 ggseqlogo(as.character(shortH2Aaln),
           method="probability",
           col_scheme="chemistry2") +
-    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7), 
+        # add y axis:
+        axis.line.y=element_line(linewidth=0.25), 
+        axis.ticks.y=element_line(linewidth=0.25)) +
     guides(fill = "none")  
 ```
 
@@ -125,7 +132,10 @@ ASN_ggseqlogo_color_scheme <- make_col_scheme(chars=ASN$chars,
 
 ggseqlogo(as.character(shortH2Aaln),
           col_scheme=ASN_ggseqlogo_color_scheme) +
-    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7), 
+        # add y axis:
+        axis.line.y=element_line(linewidth=0.25), 
+        axis.ticks.y=element_line(linewidth=0.25)) +
     guides(fill = "none") 
 ```
 
@@ -145,7 +155,10 @@ Example using a frequency matrix as input to ggseqlogo:
 Biostrings::consensusMatrix(shortH2Aaln)[1:20,] |> 
     motifStack::pcm2pfm() |> 
     ggseqlogo()  +
-    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7)) +
+    theme(axis.text.x=element_text(angle = 90, hjust=1, vjust=0.5, size=7), 
+        # add y axis:
+        axis.line.y=element_line(linewidth=0.25), 
+        axis.ticks.y=element_line(linewidth=0.25)) +
     guides(fill = "none") 
 ```
 
