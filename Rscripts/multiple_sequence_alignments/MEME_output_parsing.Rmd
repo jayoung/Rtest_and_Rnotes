@@ -1,0 +1,199 @@
+---
+title: "MEME_output_parsing"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+# Goal 
+
+Understand how to parse output files from MEME motif finder.
+
+Several R packages exist for this, incluing `memes`, `ggmotif`, and `universalmotif`
+
+For EZHIP I decided I preferred to use the `universalmotif::read_meme` function, with custom downstream analysis. See script  [here](https://github.com/jayoung/EZHIP_janet/tree/main/Rscripts/EZHIP_motifStuff.md)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here) # for tracking project home dir location
+library(patchwork) # for showing >1 ggplot together
+library(janitor)
+library(kableExtra)
+library(Biostrings)
+library(GenomicRanges)
+library(ggseqlogo)
+
+# remotes::install_github("bioc/memes")
+# remotes::install_github("cran/ggmotif")
+library(memes)
+library(ggmotif)
+library(universalmotif)
+
+
+# malik_h_dir <- "/fh/fast/malik_h/"
+# if (Sys.info()[["sysname"]]=="Darwin") { malik_h_dir <- "/Volumes/malik_h/" }
+# source( paste0(malik_h_dir, "user/jayoung/git_more_repos/Rtest_and_Rnotes/useful_functions/general_sequence_functions.R") )
+```
+
+
+
+# Motif package documentation links:
+
+`universalmotif` package:
+
+- [github page](https://github.com/bjmt/universalmotif) 
+- [motif manipulation vignette](https://bioconductor.org/packages/release/bioc/vignettes/universalmotif/inst/doc/MotifManipulation.pdf)
+
+`memes` package:
+
+- [vignettes](https://bioconductor.org/packages//release/bioc/html/memes.html) 
+- [manual](https://snystrom.com/memes-manual/)
+- [github](https://github.com/snystrom/memes)
+
+
+`ggmotif` package:
+
+- [PLoS paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0276979) by Li et al, 2022
+
+
+
+
+
+# Try memes::importMeme to read meme.txt
+
+Test `memes` function called `importMeme`. It is able to import the `meme.txt` example file from `ggmotif` but not the `meme.xml` file.  The help page says that `memes::importMeme` is a wrapper for `universalmotif::read_meme()` - I think it may just help in cases where query seq names need to be parsed further (e.g. "chr:start-end" style names)
+
+It returns an object of class `universalmotif_df`, with 10 rows and 19 columns. One row per motif. Every column is a list.
+
+`motif_info_memes_txt$sites_hits` contains a tibble for each motif specifying the locations of every motif instance (nice).
+
+```{r}
+filepath <- system.file("examples", "meme.txt", package = "ggmotif")
+motif_info_memes_txt <- importMeme(filepath)
+
+## import meme.xml - doesn't work. Get a bunch of warnings and errors
+# filepath <- system.file("examples", "meme.xml", package = "ggmotif")
+# motif_info_memes_xml <- importMeme(filepath)
+```
+
+
+# Try universalmotif::read_meme to read meme.txt
+
+Now use `universalmotif::read_meme()` directly rather than through `memes::importMeme`. This returns a list, one `universalmotif` item per motif found, but I think .
+
+
+```{r}
+filepath <- system.file("examples", "meme.txt", package = "ggmotif")
+read_memes_txt <- universalmotif::read_meme(filepath)
+```
+
+
+Adding the `readsites=TRUE, readsites.meta = TRUE` options returns more info:
+
+```{r}
+read_memes_txt_plus <- universalmotif::read_meme(filepath,
+                                                 readsites=TRUE, readsites.meta = TRUE)
+```
+
+Show universalmotif::view_motifs plot function:
+
+```{r, fig.height=1.5, fig.width=4}
+view_motifs(read_memes_txt_plus[["motifs"]][[1]], 
+            tryRC=FALSE)
+```
+
+Or, plot using ggseqlogo:
+
+```{r, fig.height=1.5, fig.width=4}
+convert_type(read_memes_txt_plus[["motifs"]][[1]],"PPM")["motif"] |> 
+    ggseqlogo() +
+    guides(fill = "none") 
+```
+
+
+# Explore more functions from the memes package
+
+
+load `example_fimo` data -  GRanges object with 1542 ranges - motif matches from fimo output
+
+```{r}
+data(example_fimo, package = "memes") 
+```
+
+
+`add_sequence()` obtains the actual sequence of each motif, and add it as another column to the GRanges
+
+```{r}
+genome <- BSgenome.Dmelanogaster.UCSC.dm3::BSgenome.Dmelanogaster.UCSC.dm3 
+motifs <- add_sequence(example_fimo, genome) 
+```
+
+
+(plot_sequence_heatmap) - I think each row is a motif instance, with colors showing which residue it contains
+
+```{r}
+plot_sequence_heatmap(motifs$sequence) 
+```
+
+
+
+# Explore ggmotif package
+
+Explore the ggmotif package and its example data. 
+
+Use `getMotifFromMEME()` to read `meme.txt` (a file with 10 motifs in it). 
+
+It returns a data.frame with 291 rows, 4 columns: 
+- raw (strings like this: "AT1G16060.1              (   59) HRGVTRH  1 ") - presumably some unparsed version of the meme output for each motif instance
+- motif.num (Motif.1 - Motif.10)
+- input.seq.name (e.g. AT5G67180.1)
+- input.seq.motif (the amino acid sequence for each instance)
+
+```{r}
+filepath <- system.file("examples", "meme.txt", package = "ggmotif")
+meme_txt_tbl <- getMotifFromMEME(data = filepath, format = "txt") |> 
+    as_tibble()
+```
+
+Now use `getMotifFromMEME()` to read `meme.xml` (also contains 10 motifs). It returns a data.frame with 335 rows, 16 columns. This is much more complete - better to do this than use the meme.txt output, I think.
+
+
+
+```{r}
+## getMotifFromMEME and motifLocation
+# use getMotifFromMEME to read meme.xml
+# motif_extract is a data.frame, 335 rows, 16 cols
+# motifLocation takes the information in 
+# plot without phylogenetic tree - we get the cartoon layout of where each motif is within each of the training seqs
+filepath <- system.file("examples", "meme.xml", package = "ggmotif")
+meme_xml_tbl <- getMotifFromMEME(data = filepath, format="xml")|> 
+    as_tibble()
+```
+
+
+It's weird that why does meme_xml_tbl has 335 rows and meme_txt_tbl only has 291 rows, but I won't worry about it for now. I don't even know whether they come from the same meme analysis.
+
+```{r}
+# meme_xml_tbl |> 
+#     count(orig_id)
+# meme_txt_tbl |> 
+#     count(motif.num)
+```
+
+
+Use `motifLocation()` to plot motif locations from the meme_xml_tbl
+
+```{r}
+motif_plot <- motifLocation(data = meme_xml_tbl)
+motif_plot
+```
+
+# Finished
+
+```{r}
+sessionInfo()
+```
+
