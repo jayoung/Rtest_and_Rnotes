@@ -506,3 +506,68 @@ alignedStringDistMatrix <- function(x, weightmat=NULL, indel.weight=1L)
 }
 
 
+
+######## these functions are from jensenShannonDistance.Rmd (and also defined there, so I don't want to change one without the other. I'm sure there's a better way to handle that)
+
+# a tiny function that makes sure all seqs in an alignment are the same length as each other
+checkAlnLengths <- function(aln) {
+    if(length(unique(width(aln))) != 1) {
+        stop("\n\nERROR - you supplied a ragged alignment (seqs not all the same length)\n\n")
+    } else {
+        return(TRUE)
+    } 
+}
+
+## define the letters we want to count
+# AA_STANDARD is defined in the Biostrings package and includes the usual 20 amino acids. I want to add the gap character ("-")
+myAAtoTabulate <- c("-", AA_STANDARD)
+
+## define the function
+getAlnCounts <- function(aln, letters=myAAtoTabulate, as.prob=FALSE) {
+    # check for ragged alns (seqs not all the same length)
+    checkAlnLengths(aln)
+    
+    ## for each sequence, get matrix of 0 and 1 representing the letter at each position. Returns a list of matrices, one for each input seq, with num_rows= num aln positions, and num_columns=21 (- plus each AA)  
+    countsEachSeq <- lapply(1:length(aln), function(i) {
+        letterFrequencyInSlidingView(aln[[i]], view.width = 1, letters=letters)
+    })
+    
+    # if there were letters in the alignment that are not accounted for in the letters argument, the totals won't be correct.
+    expectedTotals <- width(aln)[1]
+    totalCountsEachSeq <- sapply(countsEachSeq, sum)
+    if ( sum(totalCountsEachSeq != expectedTotals) > 0) {
+        ## generate an informative error message:
+        problem_seqs <- which(totalCountsEachSeq != expectedTotals)
+        problem_seq_letters <- aln[problem_seqs] |> 
+            as.character() |> 
+            strsplit(split="")
+        problem_seq_letters <- lapply(problem_seq_letters, function(x) {
+            setdiff(x, myAAtoTabulate) |> 
+                unique() |> 
+                paste0()
+        }) |> 
+            paste(collapse=",")
+        err_msg <- paste0("\n\nERROR - the total counts didn't add up correctly.\n",
+                          "These sequences contain unexpected letters: " , 
+                          paste(problem_seqs, collapse=","),
+                          "\nAnd those letters are: ",
+                          problem_seq_letters,
+                          "\n\n")
+        stop(err_msg)
+    }
+    
+    # get total counts by position - the Reduce function takes a list object and uses the specified function on all the elements
+    countTotals <- Reduce("+", countsEachSeq)
+    
+    # transpose so columns are positions and rows are each letter type
+    countTotals <- t(countTotals)
+    
+    # perhaps get frequencies not counts
+    if(as.prob) {
+        freqs <- countTotals / colSums(countTotals)
+        return(freqs)
+    } else {
+        return(countTotals)
+    }
+}
+

@@ -127,6 +127,9 @@ Get amino acid (plus gap) count and frequency matrices for each alignment
 First we define a function called `getAlnCounts()` that takes an alignment and returns a count or frequency matrix
 
 ```{r}
+## there are also copies of these functions in useful_functions/multiple_sequence_alignments_functions.R
+## if I edit one copy I should edit the other.
+## I know there is a better way to handle it than having it in two places but I'm not tidying up for now.
 # a tiny function that makes sure all seqs in an alignment are the same length as each other
 checkAlnLengths <- function(aln) {
     if(length(unique(width(aln))) != 1) {
