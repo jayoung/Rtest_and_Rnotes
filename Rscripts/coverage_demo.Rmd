@@ -1,5 +1,5 @@
 ---
-title: "bioconductor_demo"
+title: "coverage_demo"
 author: "Janet Young\n"
 date: "`r Sys.Date()`\n"
 output: github_document
