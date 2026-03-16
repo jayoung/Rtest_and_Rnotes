@@ -1,0 +1,99 @@
+---
+title: "bioconductor_demo"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+
+
+```{r setup, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+## the above is a good chunk header for chunks that load libraries
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+
+library(GenomicRanges)
+library(GenomicAlignments)
+
+# example data
+library(pasillaBamSubset)
+```
+
+# Coverage demo
+
+Explore code from [GenomicRanges vignette](https://bioconductor.org/packages/release/bioc/vignettes/GenomicRanges/inst/doc/GenomicRangesHOWTOs.pdf)
+
+We use example data from the pasillaBamSubset - a bam file containing reads mapped to the Drosophila genome.
+
+First, get the bam file name (`un1`), read it in as a `GAlignments` object (`reads1`), and get coverage at each base (`cvg1`) using `GenomicAlignments::coverage()` function.
+
+The result is an RleList object (one item per chromosome). Can get a similar coverage object by importing a bigwig file.
+
+```{r}
+un1 <- untreated1_chr4() 
+reads1 <- readGAlignments(un1)
+cvg1 <- coverage(reads1)
+```
+
+This RleList stores coverage for each chromosome, each as a simple Rle object (see `?Rle`):
+
+```{r}
+cvg1[["chr4"]]
+```
+
+We can get genome info (chromosome lengths) and turn it into a GRanges object representing each chromosome's full length: `genome_gr`
+
+```{r}
+genome_gr <- reads1 |> seqinfo() |> GRanges()
+genome_gr
+```
+
+Use `genome_gr` to get sliding windows for the whole genome (1Mb, sliding by 0.5Mb):
+
+```{r}
+genome_1mb_windows <- slidingWindows(genome_gr, width=10^6, step=0.5*10^6) |> 
+    unlist()
+# The names for each window can be annoying later so I'll strip them off
+names(genome_1mb_windows) <- NULL
+```
+
+
+Now we can use the `Views` function to consider coverage for each 1mb window separately
+
+```{r}
+Views(cvg1, genome_1mb_windows)
+```
+
+And we can feed the result into the `viewMeans()` function to get mean for each window (it returns a list, one per chromosome).
+
+There's also `viewSums()`, `viewMins()`, `viewMaxs()`, and then `viewApply` to do more complex functions for each window.
+
+```{r}
+Views(cvg1, genome_1mb_windows) |> 
+    viewMeans()
+```
+
+
+I like to store the output (mean coverage) as a column on the original GRanges object - the `unlist` function is useful here:
+
+```{r}
+genome_1mb_windows$cov_mean <- Views(cvg1, genome_1mb_windows) |> 
+    viewMeans() |> 
+    unlist(use.names = FALSE)
+```
+
+Show results for just the chr4 windows:
+
+```{r}
+genome_1mb_windows[which(seqnames(genome_1mb_windows)=="chr4")]
+```
+
+
+# Finished
+
+```{r}
+sessionInfo()
+```
+
