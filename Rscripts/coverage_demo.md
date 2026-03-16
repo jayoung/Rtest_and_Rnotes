@@ -1,4 +1,4 @@
-bioconductor_demo
+coverage_demo
 ================
 Janet Young
 
