@@ -2,7 +2,7 @@ ggplot_tips_and_tricks
 ================
 Janet Young
 
-2025-12-08
+2026-03-16
 
 # Goal
 
@@ -470,6 +470,25 @@ p1 + p2
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
+## Add labels to a plot that are closer to the data
+
+The `directlabels` package looks nice - can put labels directly on the
+plot instead of in the legend, like this:
+
+``` r
+iris_tbl |> 
+    ggplot(aes(x=sepal_length, y=petal_length, 
+               label=species,
+               color=species)) +
+    geom_point() + 
+    directlabels::geom_dl(method = "smart.grid") +
+    theme_classic() +
+    labs(title="Color points by species") +
+    theme(legend.position = "none")
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
 ## Adding individual data points to grouped/filled boxplots and getting the aligned
 
 The trick is that we need to ‘dodge’ the points, using
@@ -489,7 +508,7 @@ iris_plus_groups |>
     theme_classic()
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 If there’s an empty group, widths and spacing get weird (see left plot
 below), so we do
@@ -511,7 +530,7 @@ p2 <- iris_plus_groups |>
     plot_layout(guides="collect")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 The `position_dodge2` function gives ALMOST the same outputas
 `position_dodge`, but the alignment of the ‘versicolor’ box is
@@ -525,7 +544,7 @@ iris_plus_groups |>
     theme_classic()
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 To ALSO add geom_point and keep them lined up is tricky! This might be
 fixed in newer versions of ggplot2 - there are a few related bug
@@ -543,7 +562,7 @@ iris_plus_groups |>
     theme_classic()
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ## Violin plots
 
@@ -574,7 +593,7 @@ penguins |>
     guides(fill="none")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 Note: I sometimes have trouble getting the statistical summary (median
 dot) to line up correctly if I’ve got subgroupings for the violins. The
@@ -623,7 +642,7 @@ scatterplot +
     )
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 Here we use `annotate()` instead and it ignores the data
 
@@ -639,7 +658,29 @@ scatterplot +
     )
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+Even better, we can use `I()` to get coordinates relative to the plot
+space rather than relative to the data, for example if we always want to
+put an annotation in the top-left corner, regardless of the range of the
+data:
+
+(this was a tip from [Evangeline ‘Gina’
+Reynolds](https://www.linkedin.com/feed/update/urn:li:share:7427856249284919296/)
+via R for the Rest of Us)
+
+``` r
+scatterplot +
+    annotate(
+        'text',
+        x = I(0), hjust=0,
+        y = I(1), vjust=1,
+        label = 'Important penguins',
+        fontface = 'bold', 
+        size = 4.5
+    )
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ## Explore `shadowtext` package
 
@@ -697,7 +738,7 @@ penguins |>
     theme(legend.position = 'none')
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ## Wrapping text over \>1 line in ggplot
 
@@ -713,7 +754,7 @@ penguins |>
          subtitle=str_wrap("a really long title. kasjdhf ;isjdghf khg kajsxdhf khg alsidgf kjhg ljhags dfj hgkjahsdgfkjhg a  ljhsdgf ljhglsdjhfg", width=50))
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 Instead use `ggtext` package - the element_textbox_simple will
 automatically wrap text to fit whatever space is available.
@@ -728,7 +769,7 @@ penguins |>
     theme(plot.subtitle = element_textbox_simple())
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 Maybe we need to wrap facet labels - we can use the label_wrap_gen
 function
@@ -747,7 +788,7 @@ df |>
     theme(legend.position="none")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 ## Discontinuous axes using `ggbreak` package
 
@@ -775,7 +816,7 @@ p2 <- p1 +
 p1 + p2
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 ## Add marginal density plots
 
@@ -806,7 +847,7 @@ p1a <- ggMarginal(p1, type="density", groupColour = TRUE)
 p1a
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 If we want to use patchwork to combine \>1 ggMarginal plot, we need to
 use the `wrap_elements()` function:
@@ -815,7 +856,7 @@ use the `wrap_elements()` function:
 patchwork::wrap_elements(p1a) + patchwork::wrap_elements(p1a)
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 [A known issue with
 ggMarginal](https://github.com/daattali/ggExtra/issues/128) - it doesn’t
@@ -831,7 +872,7 @@ p1b <- ggMarginal(p1b, type="density", groupColour = TRUE)
 p1b
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 A workaround is to use `xlim` rather than coord_cartesian. The downside
 of that is that it actually REMOVES data outside the specified range, so
@@ -847,7 +888,7 @@ p1b <- ggMarginal(p1b, type="density", groupColour = TRUE)
 p1b
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
 
 We can also do it in basic ggplot (including changing the axis limits).
 I made a function to do that - it’s called `my_ggMarginal()` and is in
@@ -876,16 +917,16 @@ print(my_ggMarginal)
     ##         stop("\n\nYour colors variable name ", color_var, " is not in the data frame you supplied\n\n")
     ##     }
     ##     if (is.null(color_var)) {
-    ##         p1 <- df |> ggplot(aes(x = .data[[x_var]], y = .data[[y_var]]))
-    ##         dens_x <- df |> ggplot(aes(x = .data[[x_var]]))
-    ##         dens_y <- df |> ggplot(aes(y = .data[[y_var]]))
+    ##         p1 <- ggplot(df, aes(x = .data[[x_var]], y = .data[[y_var]]))
+    ##         dens_x <- ggplot(df, aes(x = .data[[x_var]]))
+    ##         dens_y <- ggplot(df, aes(y = .data[[y_var]]))
     ##     }
     ##     else {
-    ##         p1 <- df |> ggplot(aes(x = .data[[x_var]], y = .data[[y_var]], 
+    ##         p1 <- ggplot(df, aes(x = .data[[x_var]], y = .data[[y_var]], 
     ##             color = .data[[color_var]]))
-    ##         dens_x <- df |> ggplot(aes(x = .data[[x_var]], color = .data[[color_var]], 
+    ##         dens_x <- ggplot(df, aes(x = .data[[x_var]], color = .data[[color_var]], 
     ##             fill = .data[[color_var]]))
-    ##         dens_y <- df |> ggplot(aes(y = .data[[y_var]], color = .data[[color_var]], 
+    ##         dens_y <- ggplot(df, aes(y = .data[[y_var]], color = .data[[color_var]], 
     ##             fill = .data[[color_var]]))
     ##     }
     ##     p1 <- p1 + geom_point(...) + theme_classic()
@@ -941,7 +982,7 @@ penguins |>
                   my_subtitle = "by species")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
 
 If we want to show \>1 of those plots together (from `my_ggMarginal`),
 we need a special function. First we add the `combine_plots = FALSE`
@@ -965,7 +1006,7 @@ p1 <- penguins |>
 combine_myGGmarginal_plots(list(p1,p1))
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
 `geom_rug()` is an alternative way to show the marginal distributions:
 
@@ -1001,7 +1042,7 @@ p1 <- ggplot(mpg, aes(hwy)) +
 p1
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
 Maybe we want to look at the counts, or the x-axis bin boundaries - we
 can use `layer_data()`
@@ -1018,11 +1059,6 @@ layer_data(p1, i = 1) |>
 <thead>
 
 <tr>
-
-<th style="text-align:right;">
-
-y
-</th>
 
 <th style="text-align:right;">
 
@@ -1076,6 +1112,11 @@ group
 
 <th style="text-align:right;">
 
+y
+</th>
+
+<th style="text-align:right;">
+
 ymin
 </th>
 
@@ -1109,6 +1150,11 @@ linetype
 alpha
 </th>
 
+<th style="text-align:right;">
+
+width
+</th>
+
 </tr>
 
 </thead>
@@ -1124,398 +1170,22 @@ alpha
 
 <td style="text-align:right;">
 
-5
+12.00
 </td>
 
 <td style="text-align:right;">
 
-10.67
+10.22
 </td>
 
 <td style="text-align:right;">
 
-8.89
-</td>
-
-<td style="text-align:right;">
-
-12.44
+13.78
 </td>
 
 <td style="text-align:right;">
 
 0.01
-</td>
-
-<td style="text-align:right;">
-
-0.08
-</td>
-
-<td style="text-align:right;">
-
-0.08
-</td>
-
-<td style="text-align:left;">
-
-FALSE
-</td>
-
-<td style="text-align:left;">
-
-1
-</td>
-
-<td style="text-align:right;">
-
--1
-</td>
-
-<td style="text-align:right;">
-
-0
-</td>
-
-<td style="text-align:right;">
-
-5
-</td>
-
-<td style="text-align:left;">
-
-black
-</td>
-
-<td style="text-align:left;">
-
-grey35
-</td>
-
-<td style="text-align:right;">
-
-0.5
-</td>
-
-<td style="text-align:right;">
-
-1
-</td>
-
-<td style="text-align:left;">
-
-NA
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-19
-</td>
-
-<td style="text-align:right;">
-
-19
-</td>
-
-<td style="text-align:right;">
-
-14.22
-</td>
-
-<td style="text-align:right;">
-
-12.44
-</td>
-
-<td style="text-align:right;">
-
-16.00
-</td>
-
-<td style="text-align:right;">
-
-0.02
-</td>
-
-<td style="text-align:right;">
-
-0.32
-</td>
-
-<td style="text-align:right;">
-
-0.32
-</td>
-
-<td style="text-align:left;">
-
-FALSE
-</td>
-
-<td style="text-align:left;">
-
-1
-</td>
-
-<td style="text-align:right;">
-
--1
-</td>
-
-<td style="text-align:right;">
-
-0
-</td>
-
-<td style="text-align:right;">
-
-19
-</td>
-
-<td style="text-align:left;">
-
-black
-</td>
-
-<td style="text-align:left;">
-
-grey35
-</td>
-
-<td style="text-align:right;">
-
-0.5
-</td>
-
-<td style="text-align:right;">
-
-1
-</td>
-
-<td style="text-align:left;">
-
-NA
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-54
-</td>
-
-<td style="text-align:right;">
-
-54
-</td>
-
-<td style="text-align:right;">
-
-17.78
-</td>
-
-<td style="text-align:right;">
-
-16.00
-</td>
-
-<td style="text-align:right;">
-
-19.56
-</td>
-
-<td style="text-align:right;">
-
-0.06
-</td>
-
-<td style="text-align:right;">
-
-0.90
-</td>
-
-<td style="text-align:right;">
-
-0.90
-</td>
-
-<td style="text-align:left;">
-
-FALSE
-</td>
-
-<td style="text-align:left;">
-
-1
-</td>
-
-<td style="text-align:right;">
-
--1
-</td>
-
-<td style="text-align:right;">
-
-0
-</td>
-
-<td style="text-align:right;">
-
-54
-</td>
-
-<td style="text-align:left;">
-
-black
-</td>
-
-<td style="text-align:left;">
-
-grey35
-</td>
-
-<td style="text-align:right;">
-
-0.5
-</td>
-
-<td style="text-align:right;">
-
-1
-</td>
-
-<td style="text-align:left;">
-
-NA
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-27
-</td>
-
-<td style="text-align:right;">
-
-27
-</td>
-
-<td style="text-align:right;">
-
-21.33
-</td>
-
-<td style="text-align:right;">
-
-19.56
-</td>
-
-<td style="text-align:right;">
-
-23.11
-</td>
-
-<td style="text-align:right;">
-
-0.03
-</td>
-
-<td style="text-align:right;">
-
-0.45
-</td>
-
-<td style="text-align:right;">
-
-0.45
-</td>
-
-<td style="text-align:left;">
-
-FALSE
-</td>
-
-<td style="text-align:left;">
-
-1
-</td>
-
-<td style="text-align:right;">
-
--1
-</td>
-
-<td style="text-align:right;">
-
-0
-</td>
-
-<td style="text-align:right;">
-
-27
-</td>
-
-<td style="text-align:left;">
-
-black
-</td>
-
-<td style="text-align:left;">
-
-grey35
-</td>
-
-<td style="text-align:right;">
-
-0.5
-</td>
-
-<td style="text-align:right;">
-
-1
-</td>
-
-<td style="text-align:left;">
-
-NA
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:right;">
-
-60
-</td>
-
-<td style="text-align:right;">
-
-60
-</td>
-
-<td style="text-align:right;">
-
-24.89
-</td>
-
-<td style="text-align:right;">
-
-23.11
-</td>
-
-<td style="text-align:right;">
-
-26.67
 </td>
 
 <td style="text-align:right;">
@@ -1525,12 +1195,7 @@ NA
 
 <td style="text-align:right;">
 
-1.00
-</td>
-
-<td style="text-align:right;">
-
-1.00
+0.07
 </td>
 
 <td style="text-align:left;">
@@ -1550,12 +1215,17 @@ FALSE
 
 <td style="text-align:right;">
 
+5
+</td>
+
+<td style="text-align:right;">
+
 0
 </td>
 
 <td style="text-align:right;">
 
-60
+5
 </td>
 
 <td style="text-align:left;">
@@ -1565,7 +1235,7 @@ black
 
 <td style="text-align:left;">
 
-grey35
+\#595959FF
 </td>
 
 <td style="text-align:right;">
@@ -1583,33 +1253,33 @@ grey35
 NA
 </td>
 
+<td style="text-align:right;">
+
+0.9
+</td>
+
 </tr>
 
 <tr>
 
 <td style="text-align:right;">
 
-47
+50
 </td>
 
 <td style="text-align:right;">
 
-47
+15.56
 </td>
 
 <td style="text-align:right;">
 
-28.44
+13.78
 </td>
 
 <td style="text-align:right;">
 
-26.67
-</td>
-
-<td style="text-align:right;">
-
-30.22
+17.33
 </td>
 
 <td style="text-align:right;">
@@ -1619,12 +1289,12 @@ NA
 
 <td style="text-align:right;">
 
-0.78
+0.74
 </td>
 
 <td style="text-align:right;">
 
-0.78
+0.74
 </td>
 
 <td style="text-align:left;">
@@ -1644,12 +1314,17 @@ FALSE
 
 <td style="text-align:right;">
 
+50
+</td>
+
+<td style="text-align:right;">
+
 0
 </td>
 
 <td style="text-align:right;">
 
-47
+50
 </td>
 
 <td style="text-align:left;">
@@ -1659,7 +1334,7 @@ black
 
 <td style="text-align:left;">
 
-grey35
+\#595959FF
 </td>
 
 <td style="text-align:right;">
@@ -1677,48 +1352,48 @@ grey35
 NA
 </td>
 
+<td style="text-align:right;">
+
+0.9
+</td>
+
 </tr>
 
 <tr>
 
 <td style="text-align:right;">
 
-13
+34
 </td>
 
 <td style="text-align:right;">
 
-13
+19.11
 </td>
 
 <td style="text-align:right;">
 
-32.00
+17.33
 </td>
 
 <td style="text-align:right;">
 
-30.22
+20.89
 </td>
 
 <td style="text-align:right;">
 
-33.78
+0.04
 </td>
 
 <td style="text-align:right;">
 
-0.02
+0.50
 </td>
 
 <td style="text-align:right;">
 
-0.22
-</td>
-
-<td style="text-align:right;">
-
-0.22
+0.50
 </td>
 
 <td style="text-align:left;">
@@ -1738,12 +1413,17 @@ FALSE
 
 <td style="text-align:right;">
 
+34
+</td>
+
+<td style="text-align:right;">
+
 0
 </td>
 
 <td style="text-align:right;">
 
-13
+34
 </td>
 
 <td style="text-align:left;">
@@ -1753,7 +1433,7 @@ black
 
 <td style="text-align:left;">
 
-grey35
+\#595959FF
 </td>
 
 <td style="text-align:right;">
@@ -1771,33 +1451,330 @@ grey35
 NA
 </td>
 
+<td style="text-align:right;">
+
+0.9
+</td>
+
 </tr>
 
 <tr>
 
 <td style="text-align:right;">
 
-6
+29
 </td>
 
 <td style="text-align:right;">
 
-6
+22.67
 </td>
 
 <td style="text-align:right;">
 
-35.56
+20.89
 </td>
 
 <td style="text-align:right;">
 
-33.78
+24.44
 </td>
 
 <td style="text-align:right;">
 
-37.33
+0.03
+</td>
+
+<td style="text-align:right;">
+
+0.43
+</td>
+
+<td style="text-align:right;">
+
+0.43
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+29
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+29
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+\#595959FF
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+<td style="text-align:right;">
+
+0.9
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+68
+</td>
+
+<td style="text-align:right;">
+
+26.22
+</td>
+
+<td style="text-align:right;">
+
+24.44
+</td>
+
+<td style="text-align:right;">
+
+28.00
+</td>
+
+<td style="text-align:right;">
+
+0.08
+</td>
+
+<td style="text-align:right;">
+
+1.00
+</td>
+
+<td style="text-align:right;">
+
+1.00
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+68
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+68
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+\#595959FF
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+<td style="text-align:right;">
+
+0.9
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+33
+</td>
+
+<td style="text-align:right;">
+
+29.78
+</td>
+
+<td style="text-align:right;">
+
+28.00
+</td>
+
+<td style="text-align:right;">
+
+31.56
+</td>
+
+<td style="text-align:right;">
+
+0.04
+</td>
+
+<td style="text-align:right;">
+
+0.49
+</td>
+
+<td style="text-align:right;">
+
+0.49
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+33
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+33
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+\#595959FF
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+<td style="text-align:right;">
+
+0.9
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+9
+</td>
+
+<td style="text-align:right;">
+
+33.33
+</td>
+
+<td style="text-align:right;">
+
+31.56
+</td>
+
+<td style="text-align:right;">
+
+35.11
 </td>
 
 <td style="text-align:right;">
@@ -1807,12 +1784,12 @@ NA
 
 <td style="text-align:right;">
 
-0.10
+0.13
 </td>
 
 <td style="text-align:right;">
 
-0.10
+0.13
 </td>
 
 <td style="text-align:left;">
@@ -1832,12 +1809,17 @@ FALSE
 
 <td style="text-align:right;">
 
+9
+</td>
+
+<td style="text-align:right;">
+
 0
 </td>
 
 <td style="text-align:right;">
 
-6
+9
 </td>
 
 <td style="text-align:left;">
@@ -1847,7 +1829,7 @@ black
 
 <td style="text-align:left;">
 
-grey35
+\#595959FF
 </td>
 
 <td style="text-align:right;">
@@ -1865,98 +1847,9 @@ grey35
 NA
 </td>
 
-</tr>
-
-<tr>
-
 <td style="text-align:right;">
 
-0
-</td>
-
-<td style="text-align:right;">
-
-0
-</td>
-
-<td style="text-align:right;">
-
-39.11
-</td>
-
-<td style="text-align:right;">
-
-37.33
-</td>
-
-<td style="text-align:right;">
-
-40.89
-</td>
-
-<td style="text-align:right;">
-
-0.00
-</td>
-
-<td style="text-align:right;">
-
-0.00
-</td>
-
-<td style="text-align:right;">
-
-0.00
-</td>
-
-<td style="text-align:left;">
-
-FALSE
-</td>
-
-<td style="text-align:left;">
-
-1
-</td>
-
-<td style="text-align:right;">
-
--1
-</td>
-
-<td style="text-align:right;">
-
-0
-</td>
-
-<td style="text-align:right;">
-
-0
-</td>
-
-<td style="text-align:left;">
-
-black
-</td>
-
-<td style="text-align:left;">
-
-grey35
-</td>
-
-<td style="text-align:right;">
-
-0.5
-</td>
-
-<td style="text-align:right;">
-
-1
-</td>
-
-<td style="text-align:left;">
-
-NA
+0.9
 </td>
 
 </tr>
@@ -1970,22 +1863,17 @@ NA
 
 <td style="text-align:right;">
 
-3
+36.89
 </td>
 
 <td style="text-align:right;">
 
-42.67
+35.11
 </td>
 
 <td style="text-align:right;">
 
-40.89
-</td>
-
-<td style="text-align:right;">
-
-44.44
+38.67
 </td>
 
 <td style="text-align:right;">
@@ -1995,12 +1883,12 @@ NA
 
 <td style="text-align:right;">
 
-0.05
+0.04
 </td>
 
 <td style="text-align:right;">
 
-0.05
+0.04
 </td>
 
 <td style="text-align:left;">
@@ -2020,6 +1908,11 @@ FALSE
 
 <td style="text-align:right;">
 
+3
+</td>
+
+<td style="text-align:right;">
+
 0
 </td>
 
@@ -2035,7 +1928,7 @@ black
 
 <td style="text-align:left;">
 
-grey35
+\#595959FF
 </td>
 
 <td style="text-align:right;">
@@ -2051,6 +1944,209 @@ grey35
 <td style="text-align:left;">
 
 NA
+</td>
+
+<td style="text-align:right;">
+
+0.9
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+40.44
+</td>
+
+<td style="text-align:right;">
+
+38.67
+</td>
+
+<td style="text-align:right;">
+
+42.22
+</td>
+
+<td style="text-align:right;">
+
+0.00
+</td>
+
+<td style="text-align:right;">
+
+0.01
+</td>
+
+<td style="text-align:right;">
+
+0.01
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+\#595959FF
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+<td style="text-align:right;">
+
+0.9
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+2
+</td>
+
+<td style="text-align:right;">
+
+44.00
+</td>
+
+<td style="text-align:right;">
+
+42.22
+</td>
+
+<td style="text-align:right;">
+
+45.78
+</td>
+
+<td style="text-align:right;">
+
+0.00
+</td>
+
+<td style="text-align:right;">
+
+0.03
+</td>
+
+<td style="text-align:right;">
+
+0.03
+</td>
+
+<td style="text-align:left;">
+
+FALSE
+</td>
+
+<td style="text-align:left;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+-1
+</td>
+
+<td style="text-align:right;">
+
+2
+</td>
+
+<td style="text-align:right;">
+
+0
+</td>
+
+<td style="text-align:right;">
+
+2
+</td>
+
+<td style="text-align:left;">
+
+black
+</td>
+
+<td style="text-align:left;">
+
+\#595959FF
+</td>
+
+<td style="text-align:right;">
+
+0.5
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:left;">
+
+NA
+</td>
+
+<td style="text-align:right;">
+
+0.9
 </td>
 
 </tr>
@@ -2058,6 +2154,29 @@ NA
 </tbody>
 
 </table>
+
+# Random test code that should go elsewhere
+
+``` r
+df <- data.frame(id = 1:3, x = c("x", "x y z", NA))
+df
+```
+
+    ##   id     x
+    ## 1  1     x
+    ## 2  2 x y z
+    ## 3  3  <NA>
+
+``` r
+df |> tidyr::separate_longer_delim(x, delim = " ")
+```
+
+    ##   id    x
+    ## 1  1    x
+    ## 2  2    x
+    ## 3  2    y
+    ## 4  2    z
+    ## 5  3 <NA>
 
 # Finished
 
@@ -2067,7 +2186,7 @@ sessionInfo()
 
     ## R version 4.5.2 (2025-10-31)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Tahoe 26.1
+    ## Running under: macOS Tahoe 26.3.1
     ## 
     ## Matrix products: default
     ## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
@@ -2084,26 +2203,34 @@ sessionInfo()
     ## 
     ## other attached packages:
     ##  [1] palmerpenguins_0.1.1 ggbreak_0.1.6        ggtext_0.1.2        
-    ##  [4] shadowtext_0.1.4     ggExtra_0.11.0       kableExtra_1.4.0    
+    ##  [4] shadowtext_0.1.6     ggExtra_0.11.0       kableExtra_1.4.0    
     ##  [7] janitor_2.2.1        here_1.0.2           patchwork_1.3.2     
-    ## [10] lubridate_1.9.4      forcats_1.0.0        stringr_1.5.2       
-    ## [13] dplyr_1.1.4          purrr_1.1.0          readr_2.1.5         
-    ## [16] tidyr_1.3.1          tibble_3.3.0         ggplot2_3.5.2       
+    ## [10] lubridate_1.9.5      forcats_1.0.1        stringr_1.6.0       
+    ## [13] dplyr_1.2.0          purrr_1.2.1          readr_2.1.6         
+    ## [16] tidyr_1.3.2          tibble_3.3.1         ggplot2_4.0.2       
     ## [19] tidyverse_2.0.0     
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6       xfun_0.53          tzdb_0.5.0         vctrs_0.6.5       
-    ##  [5] tools_4.5.2        generics_0.1.4     yulab.utils_0.2.1  pkgconfig_2.0.3   
-    ##  [9] ggplotify_0.1.3    RColorBrewer_1.1-3 lifecycle_1.0.4    compiler_4.5.2    
-    ## [13] farver_2.1.2       textshaping_1.0.3  snakecase_0.11.1   litedown_0.7      
-    ## [17] ggfun_0.2.0        httpuv_1.6.16      htmltools_0.5.8.1  yaml_2.3.10       
-    ## [21] pillar_1.11.1      later_1.4.4        mime_0.13          commonmark_2.0.0  
-    ## [25] aplot_0.2.9        tidyselect_1.2.1   digest_0.6.37      stringi_1.8.7     
-    ## [29] labeling_0.4.3     rprojroot_2.1.1    fastmap_1.2.0      grid_4.5.2        
-    ## [33] cli_3.6.5          magrittr_2.0.4     withr_3.0.2        scales_1.4.0      
-    ## [37] promises_1.3.3     rappdirs_0.3.3     timechange_0.3.0   rmarkdown_2.29    
-    ## [41] hms_1.1.3          shiny_1.11.1       evaluate_1.0.5     knitr_1.50        
-    ## [45] miniUI_0.1.2       viridisLite_0.4.2  markdown_2.0       gridGraphics_0.5-1
-    ## [49] rlang_1.1.6        gridtext_0.1.5     Rcpp_1.1.0         xtable_1.8-4      
-    ## [53] glue_1.8.0         xml2_1.4.0         svglite_2.2.1      rstudioapi_0.17.1 
-    ## [57] R6_2.6.1           systemfonts_1.3.1  fs_1.6.6
+    ##  [1] gtable_0.3.6            xfun_0.56               htmlwidgets_1.6.4      
+    ##  [4] tzdb_0.5.0              quadprog_1.5-8          yulab.utils_0.2.2      
+    ##  [7] vctrs_0.7.1             tools_4.5.2             generics_0.1.4         
+    ## [10] pkgconfig_2.0.3         ggplotify_0.1.3         RColorBrewer_1.1-3     
+    ## [13] S7_0.2.1                lifecycle_1.0.5         compiler_4.5.2         
+    ## [16] farver_2.1.2            textshaping_1.0.4       snakecase_0.11.1       
+    ## [19] litedown_0.8            ggfun_0.2.0             httpuv_1.6.16          
+    ## [22] fontquiver_0.2.1        fontLiberation_0.1.0    htmltools_0.5.9        
+    ## [25] yaml_2.3.12             pillar_1.11.1           later_1.4.4            
+    ## [28] mime_0.13               fontBitstreamVera_0.1.1 commonmark_2.0.0       
+    ## [31] aplot_0.2.9             tidyselect_1.2.1        digest_0.6.39          
+    ## [34] stringi_1.8.7           labeling_0.4.3          rprojroot_2.1.1        
+    ## [37] fastmap_1.2.0           grid_4.5.2              cli_3.6.5              
+    ## [40] magrittr_2.0.4          withr_3.0.2             rappdirs_0.3.4         
+    ## [43] gdtools_0.4.4           scales_1.4.0            promises_1.5.0         
+    ## [46] timechange_0.4.0        rmarkdown_2.30          otel_0.2.0             
+    ## [49] hms_1.1.4               shiny_1.12.1            evaluate_1.0.5         
+    ## [52] knitr_1.51              miniUI_0.1.2            viridisLite_0.4.3      
+    ## [55] markdown_2.0            gridGraphics_0.5-1      rlang_1.1.7            
+    ## [58] gridtext_0.1.5          ggiraph_0.9.2           Rcpp_1.1.1             
+    ## [61] xtable_1.8-4            glue_1.8.0              xml2_1.5.2             
+    ## [64] directlabels_2025.6.24  svglite_2.2.2           rstudioapi_0.18.0      
+    ## [67] R6_2.6.1                fs_1.6.6                systemfonts_1.3.1

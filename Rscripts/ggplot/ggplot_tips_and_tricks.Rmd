@@ -311,8 +311,24 @@ scatterplot +
         fontface = 'bold', 
         size = 4.5
     )
-
 ```
+Even better, we can use `I()` to get coordinates relative to the plot space rather than relative to the data, for example if we always want to put an annotation in the top-left corner, regardless of the range of the data:
+
+(this was a tip from 
+[Evangeline 'Gina' Reynolds](https://www.linkedin.com/feed/update/urn:li:share:7427856249284919296/) via R for the Rest of Us)
+
+```{r, fig.height=5, fig.width=5}
+scatterplot +
+    annotate(
+        'text',
+        x = I(0), hjust=0,
+        y = I(1), vjust=1,
+        label = 'Important penguins',
+        fontface = 'bold', 
+        size = 4.5
+    )
+```
+
 
 
 ## Explore `shadowtext` package

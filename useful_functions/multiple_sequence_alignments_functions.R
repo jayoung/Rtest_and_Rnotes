@@ -3,7 +3,38 @@
 # if (Sys.info()[["sysname"]]=="Darwin") { malik_h_dir <- "/Volumes/malik_h/" }
 # source( paste0(malik_h_dir, "user/jayoung/git_more_repos/Rtest_and_Rnotes/useful_functions/multiple_sequence_alignments_functions.R") )
 
-### degapAln - wrapper around maskGaps. Degaps alignment by columns
+
+
+#### getUngappedSeqs: remove all gaps from a collection of sequences
+getUngappedSeqs <- function(aln, 
+                            gapChars = c("-")) {
+    seqs <- aln |> as.character()
+    for (gapChar in gapChars) {
+        seqs <- gsub(gapChar, "", seqs)
+    }
+    if(class(aln)=="DNAStringSet") {
+        seqs <- DNAStringSet(seqs)
+    }
+    if(class(aln)=="AAStringSet") {
+        seqs <- AAStringSet(seqs)
+    }
+    if(class(aln)=="BStringSet") {
+        seqs <- BStringSet(seqs)
+    }
+    names(seqs) <- names(aln)
+    return(seqs)
+}
+## get ungapped length of each seq as a named integer vector
+getUngappedLengths <- function(aln, 
+                               gapChars = c("-")) {
+    ungapped_aln <- getUngappedSeqs(aln, gapChars=gapChars)
+    lens <- width(ungapped_aln)
+    names(lens) <- names(aln)
+    return(lens)
+}
+
+
+###### degapAln - wrapper around Biostrings::maskGaps. Degaps alignment by columns (i.e. if more than a certain fraction of seqs have a gap at a given position, that position will be removed)
 degapAln <- function(myAln, fractionOfSeqsWithGap=1) {
     maskedAln <- NULL
     if(class(myAln)=="AAStringSet") {

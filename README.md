@@ -89,6 +89,8 @@ R learning - data cleaning: [a primer](https://rfortherestofus.com/2019/12/how-t
 
 check out these two packages for making interactive graphs: ggiraph and plotly. video tutorial https://rfortherestofus.com/2021/03/interactive-graphs-in-r/
 
+investigate [`targets` package](https://books.ropensci.org/targets/), for workflows - a bit like snakemake but for R. Replaces an older package called `drake` 
+
 ## Resources
 
 [R primers](https://r-primers.andrewheiss.com)

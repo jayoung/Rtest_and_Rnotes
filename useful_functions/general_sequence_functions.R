@@ -126,3 +126,90 @@ GCcontent <- function (myseqs) {
 # GCcontent(myseqs[2])
 # GCcontent(myseqs)
 ## correct answers: 0.4375, 0.526
+
+
+
+
+
+####### readBlast reads a processed blast file (processed via blastparsenew.bioperl )
+# I include numLinesToRead option so I can do smaller tests on large files
+readBlast <- function(procBlastFile, numLinesToRead=Inf) {
+    ## first, check for the case where there were absolutely no hits in blast
+    first_line_fields <- procBlastFile |> 
+        scan(what="character", sep="\n", nmax=1, quiet = TRUE) |> 
+        strsplit("\t")
+    first_line_fields <- first_line_fields[[1]]
+    if (first_line_fields[2] == "no_hits_in_blast") {
+        cat("    WARNING - absolutely no blast hits in file",
+            procBlastFile,
+            " - it won't appear in the output tibble\n\n")
+        return(NULL)
+    }
+    
+    ## get header
+    header <- read_delim(procBlastFile, n_max=3, show_col_types=FALSE)
+    
+    ## get the rest of the data
+    dat <- read_delim(procBlastFile, skip=2, col_names=FALSE, 
+                      show_col_types=FALSE, n_max=numLinesToRead)
+    colnames(dat) <- colnames(header)
+    dat <- dat %>% clean_names()
+    ## deal with the case where there were no hits with good enough score to make it into the parsed blast file:
+    if(nrow(dat)==0) {
+        dat <- header |> 
+            clean_names() |> 
+            filter(query != "-----")
+        ## when there's no actual data, read_delim doesn't understand what class to make the columns
+        ## these columns should have class character, the rest should have class numeric.
+        # it only matters if I'm going to use bind_rows
+        character_cols <- c("genome", "query", "hit", "desc_h", "strand_forGR")
+        for (x in colnames(dat)) {
+            if(x %in% character_cols) {
+                dat[,x] <- as.character(dat[,x])
+            } else {
+                dat[,x] <- as.numeric(dat[,x])
+            }
+        }
+        return(dat)
+    }
+    
+    # convert strand to +/- so it's compatible with GRanges
+    dat$strand_forGR <- NA
+    dat[which(dat$strnd_h==1),"strand_forGR"] <- "+"
+    dat[which(dat$strnd_h==-1),"strand_forGR"] <- "-"
+    return(dat)
+}
+
+
+##### parsed_blast_output_to_gr = a function to make a GRanges for blast hits, parsed by the readBlast function. 
+# Usually we want to get GRanges on the SUBJECT, not the QUERY, but I might provide the option later
+parsed_blast_output_to_gr <- function(parsed_blast, 
+                                      focus="subject") {
+    if (focus=="subject") {
+        
+        # get seqlengths
+        seqlen <- parsed_blast |> 
+            select(seqnames=hit,
+                   seqlengths=len_h) |> 
+            unique() |> 
+            as.data.frame() 
+        seqlen <- Seqinfo(seqnames=seqlen$seqnames,
+                          seqlengths=seqlen$seqlengths)
+        
+        # get hit regions
+        parsed_blast_gr <- parsed_blast |> 
+            dplyr::rename(seqnames=hit,
+                          start=start_h, 
+                          end=end_h,
+                          strand=strand_forGR, 
+                          identical=fr_idq,
+                          conserved=fr_cnq) |> 
+            select(-strnd_h, -strnd_q) |> 
+            GRanges(seqinfo=seqlen)
+        return(parsed_blast_gr)
+    }
+    if (focus=="query") {
+        stop("\n\nERROR - haven't yet written code for this option\n\n")
+    }
+}
+
