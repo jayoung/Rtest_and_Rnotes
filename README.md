@@ -53,7 +53,7 @@ Use `janitor::tabyl` more for cross-tables (see [demo](https://github.com/jayoun
 
 Use native pipe (switch default in Rstudio)
 
-Use renv for new projects
+Use `renv` for new projects
 
 ## Current learning to do list
 
@@ -73,6 +73,7 @@ data <- files |>
     map_df(~read_csv(file=here("data", "particants", .x)))
 ```
 
+Next time I want to make an Rscript I can invoke from the command line, check out the [`Rapp` package](https://tidyverse.org/blog/2026/02/rapp-0-3-0/)
 
 there's a package called 'readxl' - it's part of tidyverse, but not core tidyverse. Has a function called `readxl::read_excel()` with sheet option.
 
