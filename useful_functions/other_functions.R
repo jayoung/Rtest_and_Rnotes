@@ -3,6 +3,25 @@
 # if (Sys.info()[["sysname"]]=="Darwin") { malik_h_dir <- "/Volumes/malik_h/" }
 # source( paste0(malik_h_dir, "user/jayoung/git_more_repos/Rtest_and_Rnotes/useful_functions/other_functions.R") )
 
+######## getUCSCcoords - a utility function to get UCSC-style coords from GRanges
+getUCSCcoords <- function(gr) {
+  paste( as.character(seqnames(gr)), ":",
+         as.character(start(gr)), "-", 
+         as.character(end(gr)),
+         sep="")
+}
+
+####### expandRanges - a utility function to add defined amounts on each side of GRanges objects
+expandRanges <- function(gr, 
+                         left=0, 
+                         ## by default we'll do the same on both sides:
+                         right=left) {
+    start(gr) <- start(gr) - left
+    end(gr) <- end(gr) + right
+    return(gr)
+}
+
+
 ### my_ggMarginal function
 ### inspired by https://stackoverflow.com/questions/8545035/scatterplot-with-marginal-histograms-in-ggplot2
 my_ggMarginal <- function(

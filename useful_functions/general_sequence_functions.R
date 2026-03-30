@@ -133,16 +133,21 @@ GCcontent <- function (myseqs) {
 
 ####### readBlast reads a processed blast file (processed via blastparsenew.bioperl )
 # I include numLinesToRead option so I can do smaller tests on large files
-readBlast <- function(procBlastFile, numLinesToRead=Inf) {
+readBlast <- function(procBlastFile, numLinesToRead=Inf, quiet=FALSE) {
+    if (!file.exists(procBlastFile)) {
+        stop("\n\nERROR - input file doesn't exist: ",procBlastFile,"\n\n")
+    }
     ## first, check for the case where there were absolutely no hits in blast
     first_line_fields <- procBlastFile |> 
         scan(what="character", sep="\n", nmax=1, quiet = TRUE) |> 
         strsplit("\t")
     first_line_fields <- first_line_fields[[1]]
     if (first_line_fields[2] == "no_hits_in_blast") {
-        cat("    WARNING - absolutely no blast hits in file",
+        if(!quiet) {
+            cat("    WARNING - absolutely no blast hits in file",
             procBlastFile,
             " - it won't appear in the output tibble\n\n")
+        }
         return(NULL)
     }
     
