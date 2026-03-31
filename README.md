@@ -33,7 +33,7 @@ Insert an image into a .md or .Rmd document:
 
 Rotate x axis labels on a ggplot:
 ```
-+ theme(axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 0.5))
++ theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
 
 Violin plot with median dots
