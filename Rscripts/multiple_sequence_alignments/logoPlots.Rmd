@@ -127,9 +127,52 @@ Biostrings::consensusMatrix(shortH2Aaln)[1:20,] |>
     guides(fill = "none") 
 ```
 
-ggseqlogo can make [two-sided (up-down) logo plots](https://omarwagih.github.io/ggseqlogo/#custom-height_logos) that look a bit like DiffLogo plots, although you have to calculate the heights yourself.
+ggseqlogo can make [two-sided (up-down) logo plots](https://omarwagih.github.io/ggseqlogo/#custom-height_logos) that look a bit like DiffLogo plots, although you have to calculate the heights yourself. See below.
 
-xxx how?
+
+### Including gap characters in a ggseqlogo
+
+By default, if the alignment includes gap characters, they will not show up in a ggseqlogo.  But there is a way to force them to show up:
+
+First, make a test amino acid alignment that includes some gapss. One position contains a majority gap, another a minority gap.
+
+```{r}
+my_seqs <- c(
+    "SINW-LTGFA",
+    "SINW-LTGFA",
+    "SINW-LTGFA",
+    "SINW-LT-FA",
+    "SINWSLTGFA"
+) |> 
+    AAStringSet()
+names(my_seqs) <- paste0("seq", 1:length(my_seqs))
+```
+
+
+
+In a ggseqlogo using the defaults, the gap character simply does not show up:
+
+```{r, fig.height=1.5, fig.width=9}
+ggseqlogo(as.character(my_seqs)) +
+    guides(fill = "none")    
+```
+
+To make the gap show up, we replace the gap character (-) with X (or another letter), and then using a custom color scheme and namespace that includes X
+
+```{r, fig.height=1.5, fig.width=9}
+my_seqs_x <- gsub("-","X",my_seqs) |> 
+    AAStringSet()
+
+custom_color_scheme <- make_col_scheme(chars=c(DiffLogo::ASN$chars, "X"),
+                                       cols=c(DiffLogo::ASN$cols, "grey"))
+
+ggseqlogo(as.character(my_seqs_x),
+          col_scheme=custom_color_scheme,
+          seq_type="other",
+          namespace=c(DiffLogo::ASN$chars, "X")) +
+    guides(fill = "none") 
+```
+
 
 
 ## ggmsa quick demo 
@@ -344,8 +387,9 @@ DiffLogo::seqLogo(pwm=as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A.B"]]),
 
 
 
-# Now show difference logos
+## Now show difference logos
 
+Here I use DiffLogo::diffLogoFromPwm
 
 ```{r, fig.height=3, fig.width=9}
 ## include as.data.frame() to avoid warnings
@@ -356,7 +400,9 @@ diffLogoFromPwm(
     alphabet = ASN_JYchemistryColors)
 ```
 
-Try to mimic DiffLogo plots using ggseqlogo. This works sort of, but I still want to figure out how to scale the heights correctly. In order to match DiffLogo heights, I think we need to scale the total (absolute) stack height by JS divergence, rather than using the absolute diffs for each letter.
+##  DiffLogo-like plots using ggseqlogo.
+
+I also try to mimic DiffLogo plots using ggseqlogo. This sort of works, but I still want to figure out how to scale the heights correctly. In order to match DiffLogo heights, I think we need to scale the total (absolute) stack height by JS divergence, rather than using the absolute diffs for each letter.
 
 
 ```{r, fig.height=1.5, fig.width=9}
@@ -375,6 +421,9 @@ diffs |>
     guides(fill = "none") +
     geom_hline(yintercept = 0, color="gray")
 ```
+
+
+
 
 
 # Finished

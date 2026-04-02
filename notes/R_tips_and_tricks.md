@@ -483,7 +483,7 @@ Things to set up again after that (in Tools-Global Options)
 
 I found that deleting ONLY `~/.local/share/rstudio` seems to be enough to speed things up, and it allows me to keep saved Rstudio preferences.
 
-Also on Jan 22 Dan made a change to Rstudio's settings so that it should no longer suspend a session and save the environment when it's idel for >2hrs.
+Also on Jan 22 Dan made a change to Rstudio's settings so that it should no longer suspend a session and save the environment when it's idle for >2hrs.
 
 Rstudio server version via OnDemand, as of Jan 23 2026:
 ```

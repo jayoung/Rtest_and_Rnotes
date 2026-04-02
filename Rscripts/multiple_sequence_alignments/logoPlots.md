@@ -2,7 +2,7 @@ sequence logo plots
 ================
 Janet Young
 
-2026-02-12
+2026-04-01
 
 Goal - show how to make logo plots
 
@@ -167,9 +167,57 @@ Biostrings::consensusMatrix(shortH2Aaln)[1:20,] |>
 ggseqlogo can make [two-sided (up-down) logo
 plots](https://omarwagih.github.io/ggseqlogo/#custom-height_logos) that
 look a bit like DiffLogo plots, although you have to calculate the
-heights yourself.
+heights yourself. See below.
 
-xxx how?
+### Including gap characters in a ggseqlogo
+
+By default, if the alignment includes gap characters, they will not show
+up in a ggseqlogo. But there is a way to force them to show up:
+
+First, make a test amino acid alignment that includes some gapss. One
+position contains a majority gap, another a minority gap.
+
+``` r
+my_seqs <- c(
+    "SINW-LTGFA",
+    "SINW-LTGFA",
+    "SINW-LTGFA",
+    "SINW-LT-FA",
+    "SINWSLTGFA"
+) |> 
+    AAStringSet()
+names(my_seqs) <- paste0("seq", 1:length(my_seqs))
+```
+
+In a ggseqlogo using the defaults, the gap character simply does not
+show up:
+
+``` r
+ggseqlogo(as.character(my_seqs)) +
+    guides(fill = "none")    
+```
+
+![](logoPlots_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+To make the gap show up, we replace the gap character (-) with X (or
+another letter), and then using a custom color scheme and namespace that
+includes X
+
+``` r
+my_seqs_x <- gsub("-","X",my_seqs) |> 
+    AAStringSet()
+
+custom_color_scheme <- make_col_scheme(chars=c(DiffLogo::ASN$chars, "X"),
+                                       cols=c(DiffLogo::ASN$cols, "grey"))
+
+ggseqlogo(as.character(my_seqs_x),
+          col_scheme=custom_color_scheme,
+          seq_type="other",
+          namespace=c(DiffLogo::ASN$chars, "X")) +
+    guides(fill = "none") 
+```
+
+![](logoPlots_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ## ggmsa quick demo
 
@@ -188,7 +236,7 @@ ggmsa(shortH2Aaln,
     geom_seqlogo(adaptive=FALSE)  # adaptive=FALSE makes the logo plot taller, but whether T or F the overall heights of each stack are the same
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ## Comparing several alignments
 
@@ -223,7 +271,7 @@ ggseqlogo(shortH2AalnSplit_chars, ncol=1) +
     guides(fill = "none")  
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ## DiffLogo demo, default color scheme
 
@@ -319,7 +367,7 @@ DiffLogo::seqLogo(pwm=as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A.B"]]),
                   main="H2A.B") 
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 IMPORTANT NOTE - if our frequency matrix has the rows (each amino acid)
 in a different order than the alphabet supplied, it produces a logo plot
@@ -401,9 +449,11 @@ DiffLogo::seqLogo(pwm=as.data.frame(shortH2AalnSplit_freqs_justASN[["H2A.B"]]),
                   drawLines=20) 
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
-# Now show difference logos
+## Now show difference logos
+
+Here I use DiffLogo::diffLogoFromPwm
 
 ``` r
 ## include as.data.frame() to avoid warnings
@@ -414,13 +464,15 @@ diffLogoFromPwm(
     alphabet = ASN_JYchemistryColors)
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
-Try to mimic DiffLogo plots using ggseqlogo. This works sort of, but I
-still want to figure out how to scale the heights correctly. In order to
-match DiffLogo heights, I think we need to scale the total (absolute)
-stack height by JS divergence, rather than using the absolute diffs for
-each letter.
+## DiffLogo-like plots using ggseqlogo.
+
+I also try to mimic DiffLogo plots using ggseqlogo. This sort of works,
+but I still want to figure out how to scale the heights correctly. In
+order to match DiffLogo heights, I think we need to scale the total
+(absolute) stack height by JS divergence, rather than using the absolute
+diffs for each letter.
 
 ``` r
 ### tried ratios too. Definitely need a pseudocount so we don't divide by zero, and pseudocount choice would make a big difference to the ratio.
@@ -438,7 +490,7 @@ diffs |>
     geom_hline(yintercept = 0, color="gray")
 ```
 
-![](logoPlots_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](logoPlots_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 # Finished
 
@@ -448,12 +500,12 @@ show R version used, and package versions
 sessionInfo()
 ```
 
-    ## R version 4.5.2 (2025-10-31)
+    ## R version 4.5.3 (2026-03-11)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Tahoe 26.2
+    ## Running under: macOS Tahoe 26.4
     ## 
     ## Matrix products: default
-    ## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
     ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     ## 
     ## locale:
@@ -468,65 +520,65 @@ sessionInfo()
     ## 
     ## other attached packages:
     ##  [1] ggmsa_1.16.0        DiffLogo_2.34.0     cba_0.2-25         
-    ##  [4] proxy_0.4-28        ggseqlogo_0.2.2     Biostrings_2.78.0  
+    ##  [4] proxy_0.4-29        ggseqlogo_0.2.2     Biostrings_2.78.0  
     ##  [7] Seqinfo_1.0.0       XVector_0.50.0      IRanges_2.44.0     
     ## [10] S4Vectors_0.48.0    BiocGenerics_0.56.0 generics_0.1.4     
     ## [13] lubridate_1.9.5     forcats_1.0.1       stringr_1.6.0      
-    ## [16] dplyr_1.2.0         purrr_1.2.1         readr_2.1.6        
+    ## [16] dplyr_1.2.0         purrr_1.2.1         readr_2.2.0        
     ## [19] tidyr_1.3.2         tibble_3.3.1        ggplot2_4.0.2      
     ## [22] tidyverse_2.0.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##   [1] DBI_1.2.3                   bitops_1.0-9               
+    ##   [1] DBI_1.3.0                   bitops_1.0-9               
     ##   [3] rlang_1.1.7                 magrittr_2.0.4             
-    ##   [5] ade4_1.7-23                 otel_0.2.0                 
-    ##   [7] matrixStats_1.5.0           compiler_4.5.2             
-    ##   [9] RSQLite_2.4.5               systemfonts_1.3.1          
-    ##  [11] vctrs_0.7.1                 pwalign_1.6.0              
+    ##   [5] ade4_1.7-24                 otel_0.2.0                 
+    ##   [7] matrixStats_1.5.0           compiler_4.5.3             
+    ##   [9] RSQLite_2.4.6               systemfonts_1.3.2          
+    ##  [11] vctrs_0.7.2                 pwalign_1.6.0              
     ##  [13] pkgconfig_2.0.3             crayon_1.5.3               
     ##  [15] fastmap_1.2.0               motifStack_1.54.0          
     ##  [17] labeling_0.4.3              caTools_1.18.3             
-    ##  [19] Rsamtools_2.26.0            rmarkdown_2.30             
-    ##  [21] tzdb_0.5.0                  seqmagick_0.1.7            
+    ##  [19] Rsamtools_2.26.0            rmarkdown_2.31             
+    ##  [21] tzdb_0.5.0                  seqmagick_0.1.8            
     ##  [23] DirichletMultinomial_1.52.0 bit_4.6.0                  
-    ##  [25] xfun_0.56                   cachem_1.1.0               
+    ##  [25] xfun_0.57                   cachem_1.1.0               
     ##  [27] cigarillo_1.0.0             aplot_0.2.9                
     ##  [29] jsonlite_2.0.0              blob_1.3.0                 
     ##  [31] DelayedArray_0.36.0         BiocParallel_1.44.0        
-    ##  [33] tweenr_2.0.3                parallel_4.5.2             
+    ##  [33] tweenr_2.0.3                parallel_4.5.3             
     ##  [35] R6_2.6.1                    stringi_1.8.7              
-    ##  [37] RColorBrewer_1.1-3          rtracklayer_1.70.0         
+    ##  [37] RColorBrewer_1.1-3          rtracklayer_1.70.1         
     ##  [39] GenomicRanges_1.62.1        SummarizedExperiment_1.40.0
     ##  [41] Rcpp_1.1.1                  knitr_1.51                 
-    ##  [43] Matrix_1.7-4                timechange_0.4.0           
+    ##  [43] Matrix_1.7-5                timechange_0.4.0           
     ##  [45] tidyselect_1.2.1            abind_1.4-8                
     ##  [47] rstudioapi_0.18.0           yaml_2.3.12                
     ##  [49] codetools_0.2-20            curl_7.0.0                 
-    ##  [51] lattice_0.22-7              Biobase_2.70.0             
+    ##  [51] lattice_0.22-9              Biobase_2.70.0             
     ##  [53] treeio_1.34.0               withr_3.0.2                
     ##  [55] S7_0.2.1                    evaluate_1.0.5             
     ##  [57] gridGraphics_0.5-1          polyclip_1.10-7            
-    ##  [59] pillar_1.11.1               ggtree_4.0.1               
+    ##  [59] pillar_1.11.1               ggtree_4.0.5               
     ##  [61] MatrixGenerics_1.22.0       ggfun_0.2.0                
-    ##  [63] RCurl_1.98-1.17             hms_1.1.4                  
-    ##  [65] scales_1.4.0                tidytree_0.4.6             
+    ##  [63] RCurl_1.98-1.18             hms_1.1.4                  
+    ##  [65] scales_1.4.0                tidytree_0.4.7             
     ##  [67] gtools_3.9.5                glue_1.8.0                 
-    ##  [69] gdtools_0.4.4               lazyeval_0.2.2             
-    ##  [71] seqLogo_1.76.0              tools_4.5.2                
-    ##  [73] TFMPvalue_0.0.9             BiocIO_1.20.0              
+    ##  [69] gdtools_0.5.0               lazyeval_0.2.2             
+    ##  [71] seqLogo_1.76.0              tools_4.5.3                
+    ##  [73] TFMPvalue_1.0.0             BiocIO_1.20.0              
     ##  [75] BSgenome_1.78.0             GenomicAlignments_1.46.0   
-    ##  [77] ggiraph_0.9.2               fs_1.6.6                   
-    ##  [79] XML_3.99-0.22               TFBSTools_1.48.0           
+    ##  [77] ggiraph_0.9.6               fs_2.0.1                   
+    ##  [79] XML_3.99-0.23               TFBSTools_1.48.0           
     ##  [81] ape_5.8-1                   R4RNA_1.38.0               
     ##  [83] nlme_3.1-168                patchwork_1.3.2            
     ##  [85] ggforce_0.5.0               restfulr_0.0.16            
     ##  [87] cli_3.6.5                   rappdirs_0.3.4             
     ##  [89] fontBitstreamVera_0.1.1     S4Arrays_1.10.1            
-    ##  [91] gtable_0.3.6                yulab.utils_0.2.2          
+    ##  [91] gtable_0.3.6                yulab.utils_0.2.4          
     ##  [93] digest_0.6.39               fontquiver_0.2.1           
-    ##  [95] SparseArray_1.10.6          ggplotify_0.1.3            
+    ##  [95] SparseArray_1.10.9          ggplotify_0.1.3            
     ##  [97] rjson_0.2.23                htmlwidgets_1.6.4          
     ##  [99] farver_2.1.2                memoise_2.0.1              
     ## [101] htmltools_0.5.9             lifecycle_1.0.5            
-    ## [103] httr_1.4.7                  fontLiberation_0.1.0       
+    ## [103] httr_1.4.8                  fontLiberation_0.1.0       
     ## [105] bit64_4.6.0-1               MASS_7.3-65

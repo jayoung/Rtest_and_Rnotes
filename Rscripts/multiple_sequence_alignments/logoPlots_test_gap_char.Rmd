@@ -1,0 +1,120 @@
+---
+title: "logoPlots_test_gap_char"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+Goal - test how ggseqlogo behaves with gap characters, and whether I can make it show up as a visible character in the logo plot
+
+Most of this code is in logoPlots.Rmd but the bit where I test the possible bug isn't, so I'll keep this code around for a bit. 
+
+# Load libraries
+
+```{r setup, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo=TRUE)
+library(tidyverse)
+library(Biostrings)
+library(ggseqlogo)
+# library(DiffLogo)
+# library(ggmsa)
+```
+
+
+# Make a test amino acid alignment
+
+One position contains majority gap, another minority gap
+
+```{r}
+my_seqs <- c(
+    "SINW-LTGFA",
+    "SINW-LTGFA",
+    "SINW-LTGFA",
+    "SINW-LT-FA",
+    "SINWSLTGFA"
+) |> 
+    AAStringSet()
+names(my_seqs) <- paste0("seq", 1:length(my_seqs))
+```
+
+
+
+In a ggseqlogo using the defaults, the gap character simply does not show up
+
+
+```{r, fig.height=1.5, fig.width=9}
+ggseqlogo(as.character(my_seqs)) +
+    guides(fill = "none")    
+```
+
+
+The solution is to replace the gap character (-) with X (or something else), and then using a custom color scheme and namespace
+
+
+```{r, fig.height=1.5, fig.width=9}
+my_seqs_x <- gsub("-","X",my_seqs) |> 
+    AAStringSet()
+
+custom_color_scheme <- make_col_scheme(chars=c(DiffLogo::ASN$chars, "X"),
+                                       cols=c(DiffLogo::ASN$cols, "grey"))
+
+ggseqlogo(as.character(my_seqs_x),
+          col_scheme=custom_color_scheme,
+          seq_type="other",
+          namespace=c(DiffLogo::ASN$chars, "X")) +
+    guides(fill = "none") 
+```
+
+I tried using custom color scheme and namespace where I keep the gap character as "-" but it yields an error: 
+
+```
+Error in findNamespace(letter_mat, seq_type, namespace = namespace) :
+All letters in the namespace must be alphanumeric
+```
+
+```{r, fig.height=1.5, fig.width=9}
+# custom_color_scheme <- make_col_scheme(chars=c(DiffLogo::ASN$chars, "-"),
+#                                        cols=c(DiffLogo::ASN$cols, "black"))
+# 
+# ggseqlogo(as.character(my_seqs),
+#           col_scheme=custom_color_scheme,
+#           seq_type="other",
+#           namespace=c(DiffLogo::ASN$chars, "-")) +
+#     guides(fill = "none") 
+```
+
+Bug? If the number of sequences is very small, position 8 in this alignment disappears (it's the only one that's not 100% conserved). It only disappears if I use the custom setup that allows me to include the gap character. Maybe the expanded namespace made the stack so small it could not be seen any more. THe information content using a 21-letter alphabet would be a bit different than using a 20-letter alphabet
+
+Show disappearing position 8:
+
+```{r, fig.height=1.5, fig.width=9}
+my_seqs_c <- gsub("-","C",my_seqs) |> 
+    AAStringSet()
+
+custom_color_scheme <- make_col_scheme(chars=c(DiffLogo::ASN$chars, "X"),
+                                       cols=c(DiffLogo::ASN$cols, "grey"))
+
+ggseqlogo(as.character(my_seqs_c[1:4]),
+          col_scheme=custom_color_scheme,
+          seq_type="other",
+          namespace=c(DiffLogo::ASN$chars, "X")) +
+    guides(fill = "none") 
+```
+
+And now it's back:
+
+```{r, fig.height=1.5, fig.width=9}
+ggseqlogo(as.character(my_seqs_c[1:4]) ) +
+    guides(fill = "none") 
+```
+
+
+# Finished
+
+show R version used, and package versions
+
+```{r sessionInfo}
+sessionInfo()
+```
+
