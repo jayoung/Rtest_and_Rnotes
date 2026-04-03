@@ -40,29 +40,28 @@ source(here("useful_functions/other_functions.R"))
 
 [ggplot2 gallery](https://www.r-graph-gallery.com/ggplot2-package.html)
 
-[ggplot2 extensions gallery](https://exts.ggplot2.tidyverse.org/gallery/) - shows various packages that extent ggplot. Examples (but there are many many more):
-- patchwork and cowplot to combine plots 
-- gganimate 
-- ggstatsplot (and ggsignif) to add results of statistical tests, 
-- gggenomes and gggenes
+[ggplot2 extensions gallery](https://exts.ggplot2.tidyverse.org/gallery/) - shows various packages that extend ggplot. Examples (but there are many many more):    
+
+- `patchwork` and `cowplot` to combine plots 
+- `gganimate` 
+- `ggstatsplot` (and `ggsignif`) to add results of statistical tests, 
+- `gggenomes` and `gggenes`
 
 A ggplot [tutorial](https://rgup.gitlab.io/research_cycle/02_ggplot.html)
 
 [Demos](https://www.datanovia.com/en/lessons/combine-multiple-ggplots-into-a-figure/#google_vignette) of how to combine >1 plot into a figure. Packages: 
 
-- gridExtra::grid.arrange() 
-- cowplot::plot_grid() 
-- patchwork::plot_layout() 
-- ggpubr::ggarrange() 
-
-https://www.thoughtworks.com/insights/blog/coding-habits-data-scientists
+- `gridExtra::grid.arrange()`
+- `cowplot::plot_grid()`
+- `patchwork::plot_layout()`
+- `ggpubr::ggarrange()`
 
 
 # ggplot2 version notes
 
 ggplot2 version 4.0.0 is a big change, and may break some things in other packages. See notes from the Bioconductor team [here](https://blog.bioconductor.org/posts/2025-07-07-ggplot2-update/).
 
-I don't want to update to it yet.  That may mean I need to use older versions of some other packages.
+I am using it now - might break some old code, but so far, so good.
 
 Here's how I can install a particular archive version of a package once I identify the URL on CRAN:
 

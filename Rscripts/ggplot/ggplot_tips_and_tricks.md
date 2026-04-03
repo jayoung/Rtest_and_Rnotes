@@ -2,7 +2,7 @@ ggplot_tips_and_tricks
 ================
 Janet Young
 
-2026-03-16
+2026-04-03
 
 # Goal
 
@@ -37,9 +37,12 @@ source(here("useful_functions/other_functions.R"))
 
 [ggplot2 extensions
 gallery](https://exts.ggplot2.tidyverse.org/gallery/) - shows various
-packages that extent ggplot. Examples (but there are many many more): -
-patchwork and cowplot to combine plots - gganimate - ggstatsplot (and
-ggsignif) to add results of statistical tests, - gggenomes and gggenes
+packages that extend ggplot. Examples (but there are many many more):
+
+- `patchwork` and `cowplot` to combine plots
+- `gganimate`
+- `ggstatsplot` (and `ggsignif`) to add results of statistical tests,
+- `gggenomes` and `gggenes`
 
 A ggplot
 [tutorial](https://rgup.gitlab.io/research_cycle/02_ggplot.html)
@@ -47,12 +50,10 @@ A ggplot
 [Demos](https://www.datanovia.com/en/lessons/combine-multiple-ggplots-into-a-figure/#google_vignette)
 of how to combine \>1 plot into a figure. Packages:
 
-- gridExtra::grid.arrange()
-- cowplot::plot_grid()
-- patchwork::plot_layout()
-- ggpubr::ggarrange()
-
-<https://www.thoughtworks.com/insights/blog/coding-habits-data-scientists>
+- `gridExtra::grid.arrange()`
+- `cowplot::plot_grid()`
+- `patchwork::plot_layout()`
+- `ggpubr::ggarrange()`
 
 # ggplot2 version notes
 
@@ -60,8 +61,7 @@ ggplot2 version 4.0.0 is a big change, and may break some things in
 other packages. See notes from the Bioconductor team
 [here](https://blog.bioconductor.org/posts/2025-07-07-ggplot2-update/).
 
-I don’t want to update to it yet. That may mean I need to use older
-versions of some other packages.
+I am using it now - might break some old code, but so far, so good.
 
 Here’s how I can install a particular archive version of a package once
 I identify the URL on CRAN:
@@ -2184,12 +2184,12 @@ df |> tidyr::separate_longer_delim(x, delim = " ")
 sessionInfo()
 ```
 
-    ## R version 4.5.2 (2025-10-31)
+    ## R version 4.5.3 (2026-03-11)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Tahoe 26.3.1
+    ## Running under: macOS Tahoe 26.4
     ## 
     ## Matrix products: default
-    ## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
     ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     ## 
     ## locale:
@@ -2202,35 +2202,36 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] palmerpenguins_0.1.1 ggbreak_0.1.6        ggtext_0.1.2        
+    ##  [1] palmerpenguins_0.1.1 ggbreak_0.1.7        ggtext_0.1.2        
     ##  [4] shadowtext_0.1.6     ggExtra_0.11.0       kableExtra_1.4.0    
     ##  [7] janitor_2.2.1        here_1.0.2           patchwork_1.3.2     
     ## [10] lubridate_1.9.5      forcats_1.0.1        stringr_1.6.0       
-    ## [13] dplyr_1.2.0          purrr_1.2.1          readr_2.1.6         
+    ## [13] dplyr_1.2.0          purrr_1.2.1          readr_2.2.0         
     ## [16] tidyr_1.3.2          tibble_3.3.1         ggplot2_4.0.2       
     ## [19] tidyverse_2.0.0     
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6            xfun_0.56               htmlwidgets_1.6.4      
-    ##  [4] tzdb_0.5.0              quadprog_1.5-8          yulab.utils_0.2.2      
-    ##  [7] vctrs_0.7.1             tools_4.5.2             generics_0.1.4         
+    ##  [1] gtable_0.3.6            xfun_0.57               htmlwidgets_1.6.4      
+    ##  [4] tzdb_0.5.0              quadprog_1.5-8          yulab.utils_0.2.4      
+    ##  [7] vctrs_0.7.2             tools_4.5.3             generics_0.1.4         
     ## [10] pkgconfig_2.0.3         ggplotify_0.1.3         RColorBrewer_1.1-3     
-    ## [13] S7_0.2.1                lifecycle_1.0.5         compiler_4.5.2         
-    ## [16] farver_2.1.2            textshaping_1.0.4       snakecase_0.11.1       
-    ## [19] litedown_0.8            ggfun_0.2.0             httpuv_1.6.16          
-    ## [22] fontquiver_0.2.1        fontLiberation_0.1.0    htmltools_0.5.9        
-    ## [25] yaml_2.3.12             pillar_1.11.1           later_1.4.4            
-    ## [28] mime_0.13               fontBitstreamVera_0.1.1 commonmark_2.0.0       
-    ## [31] aplot_0.2.9             tidyselect_1.2.1        digest_0.6.39          
-    ## [34] stringi_1.8.7           labeling_0.4.3          rprojroot_2.1.1        
-    ## [37] fastmap_1.2.0           grid_4.5.2              cli_3.6.5              
-    ## [40] magrittr_2.0.4          withr_3.0.2             rappdirs_0.3.4         
-    ## [43] gdtools_0.4.4           scales_1.4.0            promises_1.5.0         
-    ## [46] timechange_0.4.0        rmarkdown_2.30          otel_0.2.0             
-    ## [49] hms_1.1.4               shiny_1.12.1            evaluate_1.0.5         
-    ## [52] knitr_1.51              miniUI_0.1.2            viridisLite_0.4.3      
-    ## [55] markdown_2.0            gridGraphics_0.5-1      rlang_1.1.7            
-    ## [58] gridtext_0.1.5          ggiraph_0.9.2           Rcpp_1.1.1             
-    ## [61] xtable_1.8-4            glue_1.8.0              xml2_1.5.2             
-    ## [64] directlabels_2025.6.24  svglite_2.2.2           rstudioapi_0.18.0      
-    ## [67] R6_2.6.1                fs_1.6.6                systemfonts_1.3.1
+    ## [13] S7_0.2.1                lifecycle_1.0.5         compiler_4.5.3         
+    ## [16] farver_2.1.2            textshaping_1.0.5       snakecase_0.11.1       
+    ## [19] litedown_0.9            ggfun_0.2.0             fontLiberation_0.1.0   
+    ## [22] httpuv_1.6.17           fontquiver_0.2.1        htmltools_0.5.9        
+    ## [25] yaml_2.3.12             pillar_1.11.1           later_1.4.8            
+    ## [28] MASS_7.3-65             mime_0.13               fontBitstreamVera_0.1.1
+    ## [31] commonmark_2.0.0        aplot_0.2.9             tidyselect_1.2.1       
+    ## [34] digest_0.6.39           stringi_1.8.7           labeling_0.4.3         
+    ## [37] rprojroot_2.1.1         fastmap_1.2.0           grid_4.5.3             
+    ## [40] cli_3.6.5               magrittr_2.0.4          withr_3.0.2            
+    ## [43] rappdirs_0.3.4          gdtools_0.5.0           scales_1.4.0           
+    ## [46] promises_1.5.0          timechange_0.4.0        rmarkdown_2.31         
+    ## [49] otel_0.2.0              hms_1.1.4               shiny_1.13.0           
+    ## [52] evaluate_1.0.5          knitr_1.51              miniUI_0.1.2           
+    ## [55] viridisLite_0.4.3       markdown_2.0            gridGraphics_0.5-1     
+    ## [58] rlang_1.1.7             gridtext_0.1.6          ggiraph_0.9.6          
+    ## [61] Rcpp_1.1.1              xtable_1.8-8            glue_1.8.0             
+    ## [64] xml2_1.5.2              directlabels_2025.6.24  svglite_2.2.2          
+    ## [67] rstudioapi_0.18.0       R6_2.6.1                fs_2.0.1               
+    ## [70] systemfonts_1.3.2
