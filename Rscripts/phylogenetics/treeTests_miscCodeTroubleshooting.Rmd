@@ -29,9 +29,67 @@ library(TDbook)
 ```
 
 
+# rotate_tree equal_angle?
+
+Messing around with an equal_angle tree, looking at clipping of taxon labels and rotation
+
+```{r, fig.height=11, fig.width=11}
+set.seed(76824375)
+tree <- rtree(50)
+
+## make one edge long, to make the tree longer than it is wide
+tree$edge.length[1] <- 5
+
+p <- ggtree(tree, layout="equal_angle") + 
+    geom_tiplab() +
+    labs(title="my_tree")
+p
+```
+
+ggtree::rotate_tree is not intended for this...
+
+```{r}
+rotate_tree(p, 180)
+```
 
 
 
+
+I saw a suggestion that in a Rmd doc we can use out.extra='angle=90' to rotate the end result of the plot, but it doesn't seem to work for me:
+
+```{r, out.extra='angle=90'}
+p
+```
+There is a solution using grid newports. Need to mess around more to get it looking right but it's a start
+
+
+```{r}
+library(grid)
+
+### based on 
+### https://stackoverflow.com/questions/39712801/how-to-combine-two-ggplots-with-one-rotated
+
+# want to rotate the plot title for this to look good
+p2 <- p +
+    theme(plot.title = element_text(
+        # hjust = 1000, ## hjust seems to have no effect here
+        vjust = 1.2,  ## vjust does have an effect though
+        angle=270))
+
+grid.newpage()
+print(p2, vp=viewport(angle = 90))
+```
+
+
+
+
+# Mess around with longer tip labels
+
+```{r}
+## make the tip labels longer
+tree$tip.label <- paste0("sequence_", tree$tip.label)
+
+```
 
 # other stuff
 

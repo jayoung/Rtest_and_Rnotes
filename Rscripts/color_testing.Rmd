@@ -67,11 +67,6 @@ p2
 
 I think `scale_fill_oi` and `scale_fill_okabeito` are the same (?)
 
-```{r}
-```
-
-
-
 
 ```{r, fig.height=4, fig.width=9}
 p3 <- dat |> 
@@ -118,12 +113,24 @@ par(mar=c(3,4,2,2))
 display.brewer.all()
 ```
 
+# scales::show_col
 
-
-# rcolorutils::nearRcolor to identify colors
+`scales::show_col()` displays colors of your choice:
 
 ```{r}
+scales::show_col(scales::pal_hue()(9))
+```
+
+
+
+# rcolorutils::nearRcolor to identify colors, and show similar colors
+
+```{r}
+## old way to install a github package. Works but deprecated. Try pak next time
 # devtools::install_github("smach/rcolorutils", build_vignettes = TRUE)
+## untested:
+# pak::pak("smach/rcolorutils")
+
 library(rcolorutils)
 ```
 

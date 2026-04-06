@@ -2,7 +2,7 @@ color_testing
 ================
 Janet Young
 
-2024-12-27
+2026-04-06
 
 Show all color names
 
@@ -292,7 +292,7 @@ p3 <- dat |>
 p3
 ```
 
-![](color_testing_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](color_testing_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ## RColorBrewer Dark2 (recommended by Claus Wilke)
 
@@ -308,7 +308,7 @@ dat |>
     coord_cartesian(ylim=c(-1.5, 1.5))
 ```
 
-![](color_testing_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](color_testing_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 dat |> 
@@ -320,7 +320,7 @@ dat |>
     coord_cartesian(ylim=c(-1.5, 1.5))
 ```
 
-![](color_testing_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](color_testing_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ## all Rcolorbrewer schemes
 
@@ -329,12 +329,26 @@ par(mar=c(3,4,2,2))
 display.brewer.all()
 ```
 
-![](color_testing_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](color_testing_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-# rcolorutils::nearRcolor to identify colors
+# scales::show_col
+
+`scales::show_col()` displays colors of your choice:
 
 ``` r
+scales::show_col(scales::pal_hue()(9))
+```
+
+![](color_testing_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+# rcolorutils::nearRcolor to identify colors, and show similar colors
+
+``` r
+## old way to install a github package. Works but deprecated. Try pak next time
 # devtools::install_github("smach/rcolorutils", build_vignettes = TRUE)
+## untested:
+# pak::pak("smach/rcolorutils")
+
 library(rcolorutils)
 ```
 
