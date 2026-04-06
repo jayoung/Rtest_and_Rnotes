@@ -2,7 +2,8 @@
 title: "MSAdist_demo"
 author: "Janet Young\n"
 date: "`r Sys.Date()`\n"
-output: html_document
+output: github_document
+always_allow_html: true
 ---
 
 
