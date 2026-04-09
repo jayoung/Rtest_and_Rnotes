@@ -130,6 +130,12 @@ Seems like that worked, and I can load those libraries within Rstudio-server wit
 
 ## ggmsa install (Feb 2025)
 
+NEW: Apr 2026
+
+Using Rstudio server 4.5.2 apptainer, it worked totally fine to do this: `BiocManager::install("ggmsa")`
+
+OLD: Feb 2025:
+
 when trying to install ggmsa in rhino/gizmo Rstudio, I got an error
 
 the error was with one of the dependencies = proj4 package, needed by a different dependency called ggalt. Here's the proj4 error:

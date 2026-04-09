@@ -490,3 +490,30 @@ Rstudio server version via OnDemand, as of Jan 23 2026:
 RStudio 2024.05.999-dev+999 "Chocolate Cosmos" Release (3ada7c6ddc8fcdb86a727a4f0ae467b9d9a7296c, 2024-05-19) for Linux
 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36
 ```
+
+### Hutch Rstudio server via Apptainer
+
+I'm trying out the newer version of R, also available through the ['OnDemand' interface](https://openondemand.fredhutch.org/pun/sys/dashboard/batch_connect/sessions) (2026).
+
+Using `install.packages`, it puts packages in `~/R/x86_64-pc-linux-gnu-library/4.5-apptainer/`. 
+
+I WAS setting .libPaths in ~/.Rprofile but not I don't think I need to.
+
+I think the only minor issue with `.libPaths()` is that when Bioconductor tries to update base packages that were installed as part of the base installation it complains that the directory is not writeable (e.g. `/usr/local/lib/R/library`). I think I can get around that by installing my own copy of the package.
+
+I think this is working OK.
+
+Perhaps the only snag is that because there's no module associated with this (it runs in a container instead), I cannot use my `render_Rmd_series.perl` script, because that relies on the module. To solve that I should be able to mimic what my runPAML.pl script does - that is running things inside an apptainer. I may need to play with how the apptainer mounts
+
+There will be a temporary directory associated with the server session, in 
+`/home/jayoung/ondemand/data/sys/dashboard/batch_connect/sys/ood_rstudio_server_apptainer` (path is available through the OnDemand interface)
+
+
+There's a file called script.sh in there (`/home/jayoung/ondemand/data/sys/dashboard/batch_connect/sys/ood_rstudio_server_apptainer/output/895a8e51-ef77-4082-a726-c7be08644ead/script.sh`, on April 7 2026) which suggests the `sif` file comes from here:  `https://sif-registry.fredhutch.org/bioconductor_docker_RELEASE_3_22-R-4.5.2.sif`
+
+I used `wget` to put a copy of that `sif` file here: `/fh/fast/malik_h/grp/malik_lab_shared/singularityImages`
+
+I think I could use that in my `render_Rmd_series.perl` script.
+
+I'm working on that in `~/homing_endonuclease_ancestors/bin/render_Rmd_series_apptainer.pl`
+

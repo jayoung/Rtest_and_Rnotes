@@ -7,128 +7,19 @@ Janet Young
 # Play with MSA2dist package
 
 See
-[documentation](https://bioconductor.org/packages/release/bioc/vignettes/MSA2dist/inst/doc/MSA2dist.html)
+[documentation](https://bioconductor.org/packages/release/bioc/vignettes/MSA2dist/inst/doc/MSA2dist.html).
+
+Load libraries:
 
 ``` r
 library(tidyverse)
-```
-
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.2.1     ✔ readr     2.2.0
-    ## ✔ forcats   1.0.1     ✔ stringr   1.6.0
-    ## ✔ ggplot2   4.0.2     ✔ tibble    3.3.1
-    ## ✔ lubridate 1.9.5     ✔ tidyr     1.3.2
-    ## ✔ purrr     1.2.1     
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-``` r
 library(MSA2dist)
 library(Biostrings)
 ```
 
-    ## Loading required package: BiocGenerics
-    ## Loading required package: generics
-    ## 
-    ## Attaching package: 'generics'
-    ## 
-    ## The following object is masked from 'package:lubridate':
-    ## 
-    ##     as.difftime
-    ## 
-    ## The following object is masked from 'package:dplyr':
-    ## 
-    ##     explain
-    ## 
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
-    ##     setequal, union
-    ## 
-    ## 
-    ## Attaching package: 'BiocGenerics'
-    ## 
-    ## The following object is masked from 'package:dplyr':
-    ## 
-    ##     combine
-    ## 
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     IQR, mad, sd, var, xtabs
-    ## 
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     anyDuplicated, aperm, append, as.data.frame, basename, cbind,
-    ##     colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
-    ##     get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
-    ##     order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
-    ##     rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
-    ##     unsplit, which.max, which.min
-    ## 
-    ## Loading required package: S4Vectors
-    ## Loading required package: stats4
-    ## 
-    ## Attaching package: 'S4Vectors'
-    ## 
-    ## The following objects are masked from 'package:lubridate':
-    ## 
-    ##     second, second<-
-    ## 
-    ## The following objects are masked from 'package:dplyr':
-    ## 
-    ##     first, rename
-    ## 
-    ## The following object is masked from 'package:tidyr':
-    ## 
-    ##     expand
-    ## 
-    ## The following object is masked from 'package:utils':
-    ## 
-    ##     findMatches
-    ## 
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     expand.grid, I, unname
-    ## 
-    ## Loading required package: IRanges
-    ## 
-    ## Attaching package: 'IRanges'
-    ## 
-    ## The following object is masked from 'package:lubridate':
-    ## 
-    ##     %within%
-    ## 
-    ## The following objects are masked from 'package:dplyr':
-    ## 
-    ##     collapse, desc, slice
-    ## 
-    ## The following object is masked from 'package:purrr':
-    ## 
-    ##     reduce
-    ## 
-    ## Loading required package: XVector
-    ## 
-    ## Attaching package: 'XVector'
-    ## 
-    ## The following object is masked from 'package:purrr':
-    ## 
-    ##     compact
-    ## 
-    ## Loading required package: Seqinfo
-    ## 
-    ## Attaching package: 'Biostrings'
-    ## 
-    ## The following object is masked from 'package:base':
-    ## 
-    ##     strsplit
+Load example data:
 
 ``` r
-# output: github_document
-# always_allow_html: true
-
-# load example data
 data(hiv, package="MSA2dist")
 data(AAMatrix, package="MSA2dist")
 data(woodmouse, package="ape")

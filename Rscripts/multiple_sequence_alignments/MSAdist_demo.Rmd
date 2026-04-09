@@ -9,17 +9,20 @@ always_allow_html: true
 
 # Play with MSA2dist package
 
-See [documentation](https://bioconductor.org/packages/release/bioc/vignettes/MSA2dist/inst/doc/MSA2dist.html)
+See [documentation](https://bioconductor.org/packages/release/bioc/vignettes/MSA2dist/inst/doc/MSA2dist.html).
 
-```{r}
+Load libraries:
+
+```{r setup, warnings=FALSE, message=FALSE}
 library(tidyverse)
 library(MSA2dist)
 library(Biostrings)
+```
 
-# output: github_document
-# always_allow_html: true
 
-# load example data
+Load example data:
+
+```{r}
 data(hiv, package="MSA2dist")
 data(AAMatrix, package="MSA2dist")
 data(woodmouse, package="ape")

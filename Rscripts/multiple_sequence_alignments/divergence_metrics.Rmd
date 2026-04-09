@@ -229,7 +229,9 @@ aln_capsid_one_pair <- aln_capsid_small[1:2] |>
 
 ```{r define getPairAlnStatsByResidue}
 
-#### getPairAlnStatsByResidue is a function that takes individual pairwise alignments, and for each position returns various scores (matrix_score, identical, positive) as well as a tbl formatted alignment
+#### getPairAlnStatsByResidue is a function that takes individual pairwise alignments
+# for each position we return various scores (matrix_score, identical, positive) 
+# as well as a tbl formatted alignment showing what's going on at each position
 ### not sure how I would normalize. maybe I need to get the max possible score at each position?
 getPairAlnStatsByResidue <- function(twoSeqAln, 
                                      gapScore=NA_integer_,
@@ -300,9 +302,13 @@ aln_capsid_one_pair_position_scores_gapNA
 # aln_capsid_one_pair_position_scores_gap0 
 ```
 
+
+
+
 ```{r define alnStats_toSlidingWindowResults function}
 
-#### alnStats_toSlidingWindowResults is a function that takes the output of getPairAlnStatsByResidue and generates sliding window stats
+#### alnStats_toSlidingWindowResults is a function that takes the output of getPairAlnStatsByResidue
+# and generates sliding window stats
 ## you could imagine wanting different stats (e.g. divergence rather than identity)
 
 ### for now we deal with 0/1 scores (e.g. identical or positive) and divide by the number of positions

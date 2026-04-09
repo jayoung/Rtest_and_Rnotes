@@ -2,7 +2,7 @@ ggtree_demo
 ================
 Janet Young
 
-2025-12-08
+2026-04-08
 
 The rendered version of this Rmd script is
 [here](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/phylogenetics/ggtree_demo.md).
@@ -88,19 +88,19 @@ nwk_tree_tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A            60.8 teeth          spikes         
-    ##  2 B            95.8 teeth          scales         
-    ##  3 C            60.6 teeth          fur            
-    ##  4 D            70.9 tail           fur            
-    ##  5 E            35.9 teeth          scales         
-    ##  6 F           111.  tail           spikes         
-    ##  7 G            90.7 nose           spikes         
-    ##  8 H           128.  nose           fur            
-    ##  9 I            49.4 tail           spikes         
-    ## 10 J           102.  tail           scales         
-    ## 11 K            93.4 tail           fur            
-    ## 12 L           101.  teeth          scales         
-    ## 13 M           151.  teeth          scales
+    ##  1 A            91.9 nose           scales         
+    ##  2 B            82.5 teeth          fur            
+    ##  3 C            74.3 teeth          fur            
+    ##  4 D           118.  teeth          spikes         
+    ##  5 E           195.  nose           fur            
+    ##  6 F           101.  nose           scales         
+    ##  7 G            81.1 tail           scales         
+    ##  8 H           105.  tail           spikes         
+    ##  9 I           143.  teeth          scales         
+    ## 10 J           129.  tail           fur            
+    ## 11 K           128.  nose           scales         
+    ## 12 L            90.3 nose           scales         
+    ## 13 M            85.9 tail           scales
 
 ## Combine tree and tbl
 
@@ -162,16 +162,16 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE         60.8 teeth          spikes         
-    ##  2     2 B     TRUE         95.8 teeth          scales         
-    ##  3     3 C     TRUE         60.6 teeth          fur            
-    ##  4     4 D     TRUE         70.9 tail           fur            
-    ##  5     5 E     TRUE         35.9 teeth          scales         
-    ##  6     6 F     TRUE        111.  tail           spikes         
-    ##  7     7 G     TRUE         90.7 nose           spikes         
-    ##  8     8 H     TRUE        128.  nose           fur            
-    ##  9     9 I     TRUE         49.4 tail           spikes         
-    ## 10    10 J     TRUE        102.  tail           scales         
+    ##  1     1 A     TRUE         91.9 nose           scales         
+    ##  2     2 B     TRUE         82.5 teeth          fur            
+    ##  3     3 C     TRUE         74.3 teeth          fur            
+    ##  4     4 D     TRUE        118.  teeth          spikes         
+    ##  5     5 E     TRUE        195.  nose           fur            
+    ##  6     6 F     TRUE        101.  nose           scales         
+    ##  7     7 G     TRUE         81.1 tail           scales         
+    ##  8     8 H     TRUE        105.  tail           spikes         
+    ##  9     9 I     TRUE        143.  teeth          scales         
+    ## 10    10 J     TRUE        129.  tail           fur            
     ## # ℹ 15 more rows
 
 Demo using `addInfoToTree` (by default it looks for the tip labels in
@@ -213,16 +213,16 @@ nwk_tree_with_info_2
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE         60.8 teeth          spikes         
-    ##  2     2 B     TRUE         95.8 teeth          scales         
-    ##  3     3 C     TRUE         60.6 teeth          fur            
-    ##  4     4 D     TRUE         70.9 tail           fur            
-    ##  5     5 E     TRUE         35.9 teeth          scales         
-    ##  6     6 F     TRUE        111.  tail           spikes         
-    ##  7     7 G     TRUE         90.7 nose           spikes         
-    ##  8     8 H     TRUE        128.  nose           fur            
-    ##  9     9 I     TRUE         49.4 tail           spikes         
-    ## 10    10 J     TRUE        102.  tail           scales         
+    ##  1     1 A     TRUE         91.9 nose           scales         
+    ##  2     2 B     TRUE         82.5 teeth          fur            
+    ##  3     3 C     TRUE         74.3 teeth          fur            
+    ##  4     4 D     TRUE        118.  teeth          spikes         
+    ##  5     5 E     TRUE        195.  nose           fur            
+    ##  6     6 F     TRUE        101.  nose           scales         
+    ##  7     7 G     TRUE         81.1 tail           scales         
+    ##  8     8 H     TRUE        105.  tail           spikes         
+    ##  9     9 I     TRUE        143.  teeth          scales         
+    ## 10    10 J     TRUE        129.  tail           fur            
     ## # ℹ 15 more rows
 
 ## Manipulating info tibble in treedata objects
@@ -264,16 +264,16 @@ as_tibble(nwk_tree_with_info_2)
     ## # via as.treedata or as.phylo
     ##    parent  node branch.length label fake_height fake_phenotype fake_phenotype2
     ##     <int> <int>         <dbl> <chr>       <dbl> <chr>          <chr>          
-    ##  1     20     1             4 A            60.8 teeth          spikes         
-    ##  2     20     2             4 B            95.8 teeth          scales         
-    ##  3     19     3             5 C            60.6 teeth          fur            
-    ##  4     18     4             6 D            70.9 tail           fur            
-    ##  5     17     5            21 E            35.9 teeth          scales         
-    ##  6     22     6             4 F           111.  tail           spikes         
-    ##  7     22     7            12 G            90.7 nose           spikes         
-    ##  8     21     8             8 H           128.  nose           fur            
-    ##  9     24     9             5 I            49.4 tail           spikes         
-    ## 10     24    10             2 J           102.  tail           scales         
+    ##  1     20     1             4 A            91.9 nose           scales         
+    ##  2     20     2             4 B            82.5 teeth          fur            
+    ##  3     19     3             5 C            74.3 teeth          fur            
+    ##  4     18     4             6 D           118.  teeth          spikes         
+    ##  5     17     5            21 E           195.  nose           fur            
+    ##  6     22     6             4 F           101.  nose           scales         
+    ##  7     22     7            12 G            81.1 tail           scales         
+    ##  8     21     8             8 H           105.  tail           spikes         
+    ##  9     24     9             5 I           143.  teeth          scales         
+    ## 10     24    10             2 J           129.  tail           fur            
     ## # ℹ 15 more rows
 
 We can also directly access extraInfo, but that doesn’t contain a column
@@ -287,16 +287,16 @@ nwk_tree_with_info_2@extraInfo
     ## # A tibble: 25 × 4
     ##     node fake_height fake_phenotype fake_phenotype2
     ##    <int>       <dbl> <chr>          <chr>          
-    ##  1     1        60.8 teeth          spikes         
-    ##  2     2        95.8 teeth          scales         
-    ##  3     3        60.6 teeth          fur            
-    ##  4     4        70.9 tail           fur            
-    ##  5     5        35.9 teeth          scales         
-    ##  6     6       111.  tail           spikes         
-    ##  7     7        90.7 nose           spikes         
-    ##  8     8       128.  nose           fur            
-    ##  9     9        49.4 tail           spikes         
-    ## 10    10       102.  tail           scales         
+    ##  1     1        91.9 nose           scales         
+    ##  2     2        82.5 teeth          fur            
+    ##  3     3        74.3 teeth          fur            
+    ##  4     4       118.  teeth          spikes         
+    ##  5     5       195.  nose           fur            
+    ##  6     6       101.  nose           scales         
+    ##  7     7        81.1 tail           scales         
+    ##  8     8       105.  tail           spikes         
+    ##  9     9       143.  teeth          scales         
+    ## 10    10       129.  tail           fur            
     ## # ℹ 15 more rows
 
 ## Plot tree with annotations
@@ -363,7 +363,17 @@ Now plot:
 p <- ggtree(beast_tree, mrsd="2013-01-01") + 
     geom_treescale(x=2008, y=1, offset=2) + 
     geom_tiplab(size=2)
+```
 
+    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+    ## ℹ Please use `linewidth` instead.
+    ## ℹ The deprecated feature was likely used in the ggtree package.
+    ##   Please report the issue at <https://github.com/YuLab-SMU/ggtree/issues>.
+    ## This warning is displayed once per session.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+``` r
 ## add the heatmap to the righthand side. 
 gheatmap(p, genotype, offset=15, width=1.5, font.size=3,
          colnames_offset_y= -1) + 
@@ -502,6 +512,730 @@ gheatmap(p, tip_dat_for_heatmap3,
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
+# Understanding the x/y coordinates of a ggtree plot
+
+Useful when we want to calculate positions for other annotations, or to
+understand what order the tiplabels are in
+
+Show the a very simple plot for the small tree (`nwk_tree`):
+
+``` r
+simple_tree_plot <- nwk_tree |> 
+    ggtree() +
+    geom_tiplab()
+simple_tree_plot
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+and use `simple_tree_plot@data` to show the data:
+
+``` r
+simple_tree_plot@data |> 
+    arrange(desc(y)) |> 
+    filter(isTip) |> 
+    kable() |> 
+    kable_styling(full_width=TRUE)
+```
+
+<table class="table" style="margin-left: auto; margin-right: auto;">
+
+<thead>
+
+<tr>
+
+<th style="text-align:right;">
+
+parent
+</th>
+
+<th style="text-align:right;">
+
+node
+</th>
+
+<th style="text-align:right;">
+
+branch.length
+</th>
+
+<th style="text-align:left;">
+
+label
+</th>
+
+<th style="text-align:left;">
+
+isTip
+</th>
+
+<th style="text-align:right;">
+
+x
+</th>
+
+<th style="text-align:right;">
+
+y
+</th>
+
+<th style="text-align:right;">
+
+branch
+</th>
+
+<th style="text-align:right;">
+
+angle
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td style="text-align:right;">
+
+20
+</td>
+
+<td style="text-align:right;">
+
+2
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:left;">
+
+B
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+48
+</td>
+
+<td style="text-align:right;">
+
+13
+</td>
+
+<td style="text-align:right;">
+
+46.0
+</td>
+
+<td style="text-align:right;">
+
+360.00000
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+20
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:left;">
+
+A
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+48
+</td>
+
+<td style="text-align:right;">
+
+12
+</td>
+
+<td style="text-align:right;">
+
+46.0
+</td>
+
+<td style="text-align:right;">
+
+332.30769
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+19
+</td>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:right;">
+
+5
+</td>
+
+<td style="text-align:left;">
+
+C
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+43
+</td>
+
+<td style="text-align:right;">
+
+11
+</td>
+
+<td style="text-align:right;">
+
+40.5
+</td>
+
+<td style="text-align:right;">
+
+304.61538
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+18
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+6
+</td>
+
+<td style="text-align:left;">
+
+D
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+36
+</td>
+
+<td style="text-align:right;">
+
+10
+</td>
+
+<td style="text-align:right;">
+
+33.0
+</td>
+
+<td style="text-align:right;">
+
+276.92308
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+17
+</td>
+
+<td style="text-align:right;">
+
+5
+</td>
+
+<td style="text-align:right;">
+
+21
+</td>
+
+<td style="text-align:left;">
+
+E
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+48
+</td>
+
+<td style="text-align:right;">
+
+9
+</td>
+
+<td style="text-align:right;">
+
+37.5
+</td>
+
+<td style="text-align:right;">
+
+249.23077
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+22
+</td>
+
+<td style="text-align:right;">
+
+7
+</td>
+
+<td style="text-align:right;">
+
+12
+</td>
+
+<td style="text-align:left;">
+
+G
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+56
+</td>
+
+<td style="text-align:right;">
+
+8
+</td>
+
+<td style="text-align:right;">
+
+50.0
+</td>
+
+<td style="text-align:right;">
+
+221.53846
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+22
+</td>
+
+<td style="text-align:right;">
+
+6
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:left;">
+
+F
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+48
+</td>
+
+<td style="text-align:right;">
+
+7
+</td>
+
+<td style="text-align:right;">
+
+46.0
+</td>
+
+<td style="text-align:right;">
+
+193.84615
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+21
+</td>
+
+<td style="text-align:right;">
+
+8
+</td>
+
+<td style="text-align:right;">
+
+8
+</td>
+
+<td style="text-align:left;">
+
+H
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+38
+</td>
+
+<td style="text-align:right;">
+
+6
+</td>
+
+<td style="text-align:right;">
+
+34.0
+</td>
+
+<td style="text-align:right;">
+
+166.15385
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+25
+</td>
+
+<td style="text-align:right;">
+
+12
+</td>
+
+<td style="text-align:right;">
+
+11
+</td>
+
+<td style="text-align:left;">
+
+L
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+34
+</td>
+
+<td style="text-align:right;">
+
+5
+</td>
+
+<td style="text-align:right;">
+
+28.5
+</td>
+
+<td style="text-align:right;">
+
+138.46154
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+25
+</td>
+
+<td style="text-align:right;">
+
+11
+</td>
+
+<td style="text-align:right;">
+
+11
+</td>
+
+<td style="text-align:left;">
+
+K
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+34
+</td>
+
+<td style="text-align:right;">
+
+4
+</td>
+
+<td style="text-align:right;">
+
+28.5
+</td>
+
+<td style="text-align:right;">
+
+110.76923
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+24
+</td>
+
+<td style="text-align:right;">
+
+10
+</td>
+
+<td style="text-align:right;">
+
+2
+</td>
+
+<td style="text-align:left;">
+
+J
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+53
+</td>
+
+<td style="text-align:right;">
+
+3
+</td>
+
+<td style="text-align:right;">
+
+52.0
+</td>
+
+<td style="text-align:right;">
+
+83.07692
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+24
+</td>
+
+<td style="text-align:right;">
+
+9
+</td>
+
+<td style="text-align:right;">
+
+5
+</td>
+
+<td style="text-align:left;">
+
+I
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+56
+</td>
+
+<td style="text-align:right;">
+
+2
+</td>
+
+<td style="text-align:right;">
+
+53.5
+</td>
+
+<td style="text-align:right;">
+
+55.38462
+</td>
+
+</tr>
+
+<tr>
+
+<td style="text-align:right;">
+
+14
+</td>
+
+<td style="text-align:right;">
+
+13
+</td>
+
+<td style="text-align:right;">
+
+56
+</td>
+
+<td style="text-align:left;">
+
+M
+</td>
+
+<td style="text-align:left;">
+
+TRUE
+</td>
+
+<td style="text-align:right;">
+
+56
+</td>
+
+<td style="text-align:right;">
+
+1
+</td>
+
+<td style="text-align:right;">
+
+28.0
+</td>
+
+<td style="text-align:right;">
+
+27.69231
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
 # Tree plus data to the right
 
 geom_point to the right
@@ -524,7 +1258,7 @@ p <- ggtree(tr) +
 p
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 geom_col to the right
 
@@ -540,7 +1274,11 @@ p <- ggtree(tr) +
 p
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 It CAN handle missing data:
 
@@ -557,7 +1295,11 @@ ggtree(tr) +
     xlim_expand(c(0, 3), "Data") # alter col x scale
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 Simple geom_fruit demo:
 
@@ -571,7 +1313,7 @@ ggtree(tr) +
     ) 
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 Now control how it looks more
 
@@ -595,7 +1337,7 @@ ggtree(tr) +
     ) 
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 # Turning a tibble back into a tree
 
@@ -633,7 +1375,7 @@ tree.owls |>
     labs(title="tree.owls coerced")
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 ``` r
 (tree.owls |> 
@@ -658,7 +1400,7 @@ tree.owls |>
     labs(title="tree.owls coerced")
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
 
 But we can avoid losing branch lengths by supplying a couple of
 arguments to `as.treedata()`:
@@ -675,7 +1417,7 @@ tree.owls |>
     labs(title="tree.owls coerced")
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
 
 # ggtree layouts
 
@@ -752,14 +1494,14 @@ wrap_plots(ggtree_plots) +
     plot_annotation(title="Rooted tree layouts")
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
 
 ``` r
 wrap_plots(ggtree_plots_unrooted) +
     plot_annotation(title="Unrooted tree layouts")
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
 Same plots, but focus just on the circular layout versus the daylight
 layout, for both rooted and unrooted trees.
@@ -775,7 +1517,7 @@ ggtree_plots_unrooted[["daylight"]] + labs(title="Unrooted daylight")) +
     plot_annotation(caption="Red dot = MRCA of all tips")
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
 # Adjusting position of geom_tippoint symbols
 
@@ -790,7 +1532,7 @@ nwk_tree |>
     geom_treescale()
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
 But for equal_angle (and daylight) we have to use the `angle` parameter
 created under the hood when ggtree runs (thank you to Brad Jones for the
@@ -805,7 +1547,7 @@ nwk_tree |>
                   color="red") 
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
 # Finished
 
@@ -813,12 +1555,12 @@ nwk_tree |>
 sessionInfo()
 ```
 
-    ## R version 4.5.2 (2025-10-31)
+    ## R version 4.5.3 (2026-03-11)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Tahoe 26.1
+    ## Running under: macOS Tahoe 26.4
     ## 
     ## Matrix products: default
-    ## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
     ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     ## 
     ## locale:
@@ -831,21 +1573,31 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] tidytree_0.4.6     treeio_1.32.0      ggtreeExtra_1.18.0 ggtree_3.16.3     
-    ##  [5] ape_5.8-1          patchwork_1.3.2    lubridate_1.9.4    forcats_1.0.0     
-    ##  [9] stringr_1.5.2      dplyr_1.1.4        purrr_1.1.0        readr_2.1.5       
-    ## [13] tidyr_1.3.1        tibble_3.3.0       ggplot2_3.5.2      tidyverse_2.0.0   
+    ##  [1] kableExtra_1.4.0   tidytree_0.4.7     treeio_1.34.0      ggtreeExtra_1.20.1
+    ##  [5] ggtree_4.0.5       ape_5.8-1          patchwork_1.3.2    lubridate_1.9.5   
+    ##  [9] forcats_1.0.1      stringr_1.6.0      dplyr_1.2.1        purrr_1.2.1       
+    ## [13] readr_2.2.0        tidyr_1.3.2        tibble_3.3.1       ggplot2_4.0.2     
+    ## [17] tidyverse_2.0.0   
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] yulab.utils_0.2.1  utf8_1.2.6         rappdirs_0.3.3     generics_0.1.4    
-    ##  [5] ggplotify_0.1.3    stringi_1.8.7      lattice_0.22-7     hms_1.1.3         
-    ##  [9] digest_0.6.37      magrittr_2.0.4     evaluate_1.0.5     grid_4.5.2        
-    ## [13] timechange_0.3.0   RColorBrewer_1.1-3 fastmap_1.2.0      jsonlite_2.0.0    
-    ## [17] ggnewscale_0.5.2   aplot_0.2.9        scales_1.4.0       lazyeval_0.2.2    
-    ## [21] cli_3.6.5          rlang_1.1.6        withr_3.0.2        yaml_2.3.10       
-    ## [25] tools_4.5.2        parallel_4.5.2     tzdb_0.5.0         gridGraphics_0.5-1
-    ## [29] vctrs_0.6.5        R6_2.6.1           lifecycle_1.0.4    ggfun_0.2.0       
-    ## [33] fs_1.6.6           pkgconfig_2.0.3    pillar_1.11.1      gtable_0.3.6      
-    ## [37] glue_1.8.0         Rcpp_1.1.0         xfun_0.53          tidyselect_1.2.1  
-    ## [41] rstudioapi_0.17.1  knitr_1.50         farver_2.1.2       htmltools_0.5.8.1 
-    ## [45] nlme_3.1-168       labeling_0.4.3     rmarkdown_2.29     compiler_4.5.2
+    ##  [1] gtable_0.3.6            xfun_0.57               htmlwidgets_1.6.4      
+    ##  [4] lattice_0.22-9          tzdb_0.5.0              vctrs_0.7.2            
+    ##  [7] tools_4.5.3             generics_0.1.4          yulab.utils_0.2.4      
+    ## [10] parallel_4.5.3          pkgconfig_2.0.3         ggnewscale_0.5.2       
+    ## [13] ggplotify_0.1.3         RColorBrewer_1.1-3      S7_0.2.1               
+    ## [16] lifecycle_1.0.5         compiler_4.5.3          farver_2.1.2           
+    ## [19] textshaping_1.0.5       ggfun_0.2.0             fontquiver_0.2.1       
+    ## [22] fontLiberation_0.1.0    htmltools_0.5.9         yaml_2.3.12            
+    ## [25] lazyeval_0.2.3          pillar_1.11.1           MASS_7.3-65            
+    ## [28] nlme_3.1-169            fontBitstreamVera_0.1.1 tidyselect_1.2.1       
+    ## [31] aplot_0.2.9             digest_0.6.39           stringi_1.8.7          
+    ## [34] labeling_0.4.3          fastmap_1.2.0           grid_4.5.3             
+    ## [37] cli_3.6.5               magrittr_2.0.5          utf8_1.2.6             
+    ## [40] withr_3.0.2             gdtools_0.5.0           scales_1.4.0           
+    ## [43] rappdirs_0.3.4          timechange_0.4.0        rmarkdown_2.31         
+    ## [46] otel_0.2.0              hms_1.1.4               evaluate_1.0.5         
+    ## [49] knitr_1.51              viridisLite_0.4.3       gridGraphics_0.5-1     
+    ## [52] rlang_1.1.7             ggiraph_0.9.6           Rcpp_1.1.1             
+    ## [55] glue_1.8.0              xml2_1.5.2              svglite_2.2.2          
+    ## [58] rstudioapi_0.18.0       jsonlite_2.0.0          R6_2.6.1               
+    ## [61] systemfonts_1.3.2       fs_2.0.1

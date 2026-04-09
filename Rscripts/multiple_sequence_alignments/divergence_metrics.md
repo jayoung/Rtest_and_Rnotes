@@ -2,7 +2,7 @@ divergence_metrics
 ================
 Janet Young
 
-2025-10-24
+2026-04-06
 
 # Goal
 
@@ -368,7 +368,9 @@ aln_capsid_one_pair <- aln_capsid_small[1:2] |>
 ```
 
 ``` r
-#### getPairAlnStatsByResidue is a function that takes individual pairwise alignments, and for each position returns various scores (matrix_score, identical, positive) as well as a tbl formatted alignment
+#### getPairAlnStatsByResidue is a function that takes individual pairwise alignments
+# for each position we return various scores (matrix_score, identical, positive) 
+# as well as a tbl formatted alignment showing what's going on at each position
 ### not sure how I would normalize. maybe I need to get the max possible score at each position?
 getPairAlnStatsByResidue <- function(twoSeqAln, 
                                      gapScore=NA_integer_,
@@ -459,7 +461,8 @@ aln_capsid_one_pair_position_scores_gapNA
 ```
 
 ``` r
-#### alnStats_toSlidingWindowResults is a function that takes the output of getPairAlnStatsByResidue and generates sliding window stats
+#### alnStats_toSlidingWindowResults is a function that takes the output of getPairAlnStatsByResidue
+# and generates sliding window stats
 ## you could imagine wanting different stats (e.g. divergence rather than identity)
 
 ### for now we deal with 0/1 scores (e.g. identical or positive) and divide by the number of positions
@@ -752,9 +755,9 @@ sequences
 sessionInfo()
 ```
 
-    ## R version 4.5.1 (2025-06-13)
+    ## R version 4.5.3 (2026-03-11)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Sequoia 15.6.1
+    ## Running under: macOS Tahoe 26.4
     ## 
     ## Matrix products: default
     ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
@@ -772,26 +775,22 @@ sessionInfo()
     ## 
     ## other attached packages:
     ##  [1] protr_1.7-5         patchwork_1.3.2     here_1.0.2         
-    ##  [4] pwalign_1.4.0       Biostrings_2.76.0   GenomeInfoDb_1.44.1
-    ##  [7] XVector_0.48.0      IRanges_2.42.0      S4Vectors_0.46.0   
-    ## [10] BiocGenerics_0.54.0 generics_0.1.4      lubridate_1.9.4    
-    ## [13] forcats_1.0.0       stringr_1.5.2       dplyr_1.1.4        
-    ## [16] purrr_1.1.0         readr_2.1.5         tidyr_1.3.1        
-    ## [19] tibble_3.3.0        ggplot2_3.5.2       tidyverse_2.0.0    
+    ##  [4] pwalign_1.6.0       Biostrings_2.78.0   Seqinfo_1.0.0      
+    ##  [7] XVector_0.50.0      IRanges_2.44.0      S4Vectors_0.48.0   
+    ## [10] BiocGenerics_0.56.0 generics_0.1.4      lubridate_1.9.5    
+    ## [13] forcats_1.0.1       stringr_1.6.0       dplyr_1.2.1        
+    ## [16] purrr_1.2.1         readr_2.2.0         tidyr_1.3.2        
+    ## [19] tibble_3.3.1        ggplot2_4.0.2       tidyverse_2.0.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] utf8_1.2.6              stringi_1.8.7           hms_1.1.3              
-    ##  [4] digest_0.6.37           magrittr_2.0.4          evaluate_1.0.5         
-    ##  [7] grid_4.5.1              timechange_0.3.0        RColorBrewer_1.1-3     
-    ## [10] iterators_1.0.14        fastmap_1.2.0           foreach_1.5.2          
-    ## [13] doParallel_1.0.17       rprojroot_2.1.1         jsonlite_2.0.0         
-    ## [16] httr_1.4.7              UCSC.utils_1.4.0        scales_1.4.0           
-    ## [19] codetools_0.2-20        cli_3.6.5               rlang_1.1.6            
-    ## [22] crayon_1.5.3            withr_3.0.2             yaml_2.3.10            
-    ## [25] parallel_4.5.1          tools_4.5.1             tzdb_0.5.0             
-    ## [28] GenomeInfoDbData_1.2.14 vctrs_0.6.5             R6_2.6.1               
-    ## [31] lifecycle_1.0.4         pkgconfig_2.0.3         pillar_1.11.1          
-    ## [34] gtable_0.3.6            glue_1.8.0              xfun_0.53              
-    ## [37] tidyselect_1.2.1        rstudioapi_0.17.1       knitr_1.50             
-    ## [40] farver_2.1.2            htmltools_0.5.8.1       labeling_0.4.3         
-    ## [43] rmarkdown_2.29          compiler_4.5.1
+    ##  [1] utf8_1.2.6         stringi_1.8.7      hms_1.1.4          digest_0.6.39     
+    ##  [5] magrittr_2.0.5     evaluate_1.0.5     grid_4.5.3         timechange_0.4.0  
+    ##  [9] RColorBrewer_1.1-3 iterators_1.0.14   fastmap_1.2.0      foreach_1.5.2     
+    ## [13] doParallel_1.0.17  rprojroot_2.1.1    scales_1.4.0       codetools_0.2-20  
+    ## [17] cli_3.6.5          rlang_1.1.7        crayon_1.5.3       withr_3.0.2       
+    ## [21] yaml_2.3.12        otel_0.2.0         parallel_4.5.3     tools_4.5.3       
+    ## [25] tzdb_0.5.0         vctrs_0.7.2        R6_2.6.1           lifecycle_1.0.5   
+    ## [29] pkgconfig_2.0.3    pillar_1.11.1      gtable_0.3.6       glue_1.8.0        
+    ## [33] xfun_0.57          tidyselect_1.2.1   rstudioapi_0.18.0  knitr_1.51        
+    ## [37] farver_2.1.2       htmltools_0.5.9    labeling_0.4.3     rmarkdown_2.31    
+    ## [41] compiler_4.5.3     S7_0.2.1

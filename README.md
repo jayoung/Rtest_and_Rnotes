@@ -279,6 +279,8 @@ See also [here](http://www.sthda.com/english/wiki/ggplot2-violin-plot-easy-funct
 
 `ggarrow` and `arrowheadr` packages for nicer looking arrows
 
+[`ggpattern`](https://coolbutuseless.github.io/package/ggpattern/index.html) for using patterns (or images) as fill in ggplots
+
 [`gcplyr` package](https://mikeblazanin.github.io/gcplyr/) for microbial growth curves. Can help read platereader data (with metadata) in and get it in a tidy format. Can model various parameters of growth curves, "like growth rate/doubling time, maximum density (carrying capacity), lag time, area under the curve, diauxic shifts, extinction, and more without fitting an equation for growth to your data."
 
 ### ggplot themes

@@ -18,6 +18,7 @@ library(ggtree)
 library(ggtreeExtra)
 library(treeio)
 library(tidytree)
+library(kableExtra) # for displaying tables nicely
 ```
 
 # Useful links, general advice
@@ -309,6 +310,33 @@ gheatmap(p, tip_dat_for_heatmap3,
                       values=c("lightgray", "firebrick"), 
                       name="")
 ```
+
+# Understanding the x/y coordinates of a ggtree plot
+
+Useful when we want to calculate positions for other annotations, or to understand what order the tiplabels are in
+
+Show the a very simple plot for the small tree (`nwk_tree`):
+
+```{r, fig.height=4, fig.width=4}
+simple_tree_plot <- nwk_tree |> 
+    ggtree() +
+    geom_tiplab()
+simple_tree_plot
+```
+
+and use `simple_tree_plot@data` to show the data:
+
+```{r}
+simple_tree_plot@data |> 
+    arrange(desc(y)) |> 
+    filter(isTip) |> 
+    kable() |> 
+    kable_styling(full_width=TRUE)
+```
+
+
+
+
 
 # Tree plus data to the right
 
