@@ -46,6 +46,12 @@ Violin plot with median dots
                  show.legend = FALSE) 
 ```
 
+Drop empty columns:
+
+```
+my_tbl |> 
+    janitor::remove_empty("cols") 
+```
 
 ## My coding intentions
 
