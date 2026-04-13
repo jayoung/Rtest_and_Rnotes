@@ -18,6 +18,20 @@ The names of the efficient cars are:
 
 Fiat 128,Honda Civic,Toyota Corolla,Lotus Europa
 
+And let’s make a graph
+
+``` r
+mtcars_efficient |> 
+    as_tibble(rownames="car_id") |> 
+    ggplot(aes(x=car_id, y=disp)) +
+    geom_col(stat="identity") +
+    theme_classic() + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    labs(x="")
+```
+
+![](script2_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
 Now we remove the file with the object that was saved by script1, so
 that we can run afresh next time, meaning that this script can only be
 run after a successful script1 run.
@@ -56,9 +70,18 @@ sessionInfo()
     ## attached base packages:
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
+    ## other attached packages:
+    ##  [1] lubridate_1.9.5 forcats_1.0.1   stringr_1.5.2   dplyr_1.2.1    
+    ##  [5] purrr_1.1.0     readr_2.2.0     tidyr_1.3.2     tibble_3.3.1   
+    ##  [9] ggplot2_4.0.2   tidyverse_2.0.0
+    ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] compiler_4.5.2    fastmap_1.2.0     cli_3.6.3         ragg_1.5.0       
-    ##  [5] htmltools_0.5.8.1 tools_4.5.2       otel_0.2.0        yaml_2.3.10      
-    ##  [9] rmarkdown_2.30    knitr_1.51        digest_0.6.37     xfun_0.57        
-    ## [13] textshaping_1.0.4 lifecycle_1.0.5   systemfonts_1.3.1 rlang_1.1.5      
-    ## [17] evaluate_1.0.5
+    ##  [1] gtable_0.3.6       compiler_4.5.2     tidyselect_1.2.1   systemfonts_1.3.1 
+    ##  [5] scales_1.4.0       textshaping_1.0.4  yaml_2.3.10        fastmap_1.2.0     
+    ##  [9] R6_2.6.1           labeling_0.4.3     generics_0.1.4     knitr_1.50        
+    ## [13] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+    ## [17] stringi_1.8.7      xfun_0.54          S7_0.2.1           timechange_0.4.0  
+    ## [21] cli_3.6.5          withr_3.0.2        magrittr_2.0.4     digest_0.6.37     
+    ## [25] grid_4.5.2         hms_1.1.4          lifecycle_1.0.5    vctrs_0.7.2       
+    ## [29] evaluate_1.0.5     glue_1.8.0         farver_2.1.2       ragg_1.5.0        
+    ## [33] rmarkdown_2.30     tools_4.5.2        pkgconfig_2.0.3    htmltools_0.5.8.1

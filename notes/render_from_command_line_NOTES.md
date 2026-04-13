@@ -29,7 +29,7 @@ cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using
 ../../render_Rmd_series_apptainer.pl script1.Rmd script2.Rmd 
 
 # reset, after a test
-rm zzz_Rmd_series.Rrender.apptainerWrap.sh zzz_Rmd_series.Rrender.log.txt zzz_Rmd_series.Rrender.Rcode.sh script*.Rerr.txt script*.Rout.txt slurm-*.out script1.md script2.md 
+rm -r zzz_Rmd_series.Rrender.apptainerWrap.sh zzz_Rmd_series.Rrender.log.txt zzz_Rmd_series.Rrender.Rcode.sh script*.Rerr.txt script*.Rout.txt slurm-*.out script1.md script2.md script2_files
 ```
 
 

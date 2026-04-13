@@ -9,6 +9,7 @@ always_allow_html: true
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
 ```
 
 Load the `mtcars_efficient` object, saved by script1.
@@ -25,6 +26,21 @@ efficient_car_names <- paste(rownames(mtcars_efficient), collapse = ",")
 The names of the efficient cars are:
 
 `r efficient_car_names`
+
+And let's make a graph
+
+```{r, fig.height=3.5, fig.width=2.5}
+mtcars_efficient |> 
+    as_tibble(rownames="car_id") |> 
+    ggplot(aes(x=car_id, y=disp)) +
+    geom_col(stat="identity") +
+    theme_classic() + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    labs(x="")
+```
+
+
+
 
 
 Now we remove the file with the object that was saved by script1, so that we can run afresh next time, meaning that this script can only be run after a successful script1 run.

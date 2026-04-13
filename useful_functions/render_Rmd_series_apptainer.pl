@@ -95,6 +95,16 @@ print APP "source /app/lmod/lmod/init/profile\n";
 print APP "module purge\n";
 print APP "module load $apptainer_module\n";
 
+### figure out .libPaths()
+### .libPaths() should be figured out by .Rprofile
+## because I am setting this using ~/gizmo_login_items.bash to 
+# export R_LIBS_USER=$HOME/malik_lab_shared/linux_gizmo/R_packages/v_fh_4.4.0-foss-2023b
+## see also https://github.com/FredHutch/wiki/blob/r-apptainer-cmdline/_scicomputing/software_R.md#notes-about-these-r-containers
+## I could instead add this to my ~/.Rprofile - that will set the libPaths appropriately
+# source("https://sciwiki.fredhutch.org/assets/apptainer_config.R")
+# print APP "unset R_LIBS_USER\n";
+# print APP "export R_LIBS_USER=/home/jayoung/R/x86_64-pc-linux-gnu-library/4.5-apptainer\n";
+
 print APP "\necho 'Running apptainer' >> $logfile\n\n";
 
 print APP "apptainer run \\\n";
@@ -102,6 +112,7 @@ print APP "apptainer run \\\n";
 # FATAL:   container creation failed: while applying cgroups config: rootless cgroups require a D-Bus session - check that XDG_RUNTIME_DIR and DBUS_SESSION_BUS_ADDRESS are set
 
 print APP "    --bind /fh/fast:/fh/fast \\\n";
+print APP "    --bind /home/jayoung/R:/home/jayoung/R \\\n";
 print APP "    $sif \\\n";
 print APP "    bash $shellScript >> $logfile\n";
 

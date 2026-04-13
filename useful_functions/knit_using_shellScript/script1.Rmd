@@ -26,6 +26,12 @@ Save `mtcars_efficient` for use in script2.
 save(mtcars_efficient, file="mtcars_efficient.Rdata")
 ```
 
+Show .libPaths
+
+```{r}
+.libPaths()
+```
+
 
 Show R and package version information
 

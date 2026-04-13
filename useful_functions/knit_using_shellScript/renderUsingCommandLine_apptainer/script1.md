@@ -18,6 +18,16 @@ Save `mtcars_efficient` for use in script2.
 save(mtcars_efficient, file="mtcars_efficient.Rdata")
 ```
 
+Show .libPaths
+
+``` r
+.libPaths()
+```
+
+    ## [1] "/home/jayoung/R/x86_64-pc-linux-gnu-library/4.5-apptainer"
+    ## [2] "/usr/local/lib/R/site-library"                            
+    ## [3] "/usr/local/lib/R/library"
+
 Show R and package version information
 
 ``` r
@@ -47,8 +57,7 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] compiler_4.5.2    fastmap_1.2.0     cli_3.6.3         ragg_1.5.0       
-    ##  [5] htmltools_0.5.8.1 tools_4.5.2       otel_0.2.0        yaml_2.3.10      
-    ##  [9] rmarkdown_2.30    knitr_1.51        digest_0.6.37     xfun_0.57        
-    ## [13] textshaping_1.0.4 lifecycle_1.0.5   systemfonts_1.3.1 rlang_1.1.5      
-    ## [17] evaluate_1.0.5
+    ##  [1] compiler_4.5.2    fastmap_1.2.0     cli_3.6.5         ragg_1.5.0       
+    ##  [5] htmltools_0.5.8.1 tools_4.5.2       yaml_2.3.10       rmarkdown_2.30   
+    ##  [9] knitr_1.50        digest_0.6.37     xfun_0.54         textshaping_1.0.4
+    ## [13] lifecycle_1.0.5   systemfonts_1.3.1 rlang_1.2.0       evaluate_1.0.5
