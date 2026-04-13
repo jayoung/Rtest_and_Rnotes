@@ -1,0 +1,44 @@
+---
+title: "script2"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load the `mtcars_efficient` object, saved by script1.
+
+```{r}
+load(file="mtcars_efficient.Rdata")
+```
+
+```{r}
+efficient_car_names <- paste(rownames(mtcars_efficient), collapse = ",")
+```
+
+
+The names of the efficient cars are:
+
+`r efficient_car_names`
+
+
+Now we remove the file with the object that was saved by script1, so that we can run afresh next time, meaning that this script can only be run after a successful script1 run.
+
+```{r}
+unlink("mtcars_efficient.Rdata")
+```
+
+
+# Finished
+
+Show R and package version information
+
+```{r}
+sessionInfo()
+```
+

@@ -10,6 +10,53 @@ Easiest way: on gizmo/rhino:
 
 Demo script and output, in `useful_functions/knit_using_shellScript`.
 
+Test render_Rmd_series.pl (uses the fhR/4.4.1-foss-2023b module)
+
+```
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript
+../render_Rmd_series.pl script1.Rmd script2.Rmd 
+
+# reset, after a test:
+rm *Rerr.txt *Rout.txt slurm-*.out zzz_Rmd_series.Rrender.log.txt zzz_Rmd_series.Rrender.sh script1.md script2.md
+
+```
+
+I also have a script that does the same thing using newer R (4.5.2) via the Apptainer:
+
+```
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript/renderUsingCommandLine_apptainer
+
+../../render_Rmd_series_apptainer.pl script1.Rmd script2.Rmd 
+
+# reset, after a test
+rm zzz_Rmd_series.Rrender.apptainerWrap.sh zzz_Rmd_series.Rrender.log.txt zzz_Rmd_series.Rrender.Rcode.sh script*.Rerr.txt script*.Rout.txt slurm-*.out script1.md script2.md 
+```
+
+
+
+
+Some troubleshooting on num CPUs - I don't have it working yet:
+```
+mkdir test
+cp script1.Rmd  script2.Rmd  zzz_Rmd_series.Rrender.Rcode.sh test
+cd test
+
+module purge
+module load Apptainer/1.1.6
+
+### works with 1 CPU:
+apptainer run --bind /fh/fast:/fh/fast https://sif-registry.fredhutch.org/bioconductor_docker_RELEASE_3_22-R-4.5.2.sif \
+    bash zzz_Rmd_series.Rrender.Rcode.sh >> zzz_Rmd_series.Rrender.log.txt
+
+#### doesn't work with --cpus 2:
+apptainer run --cpus 2 --bind /fh/fast:/fh/fast https://sif-registry.fredhutch.org/bioconductor_docker_RELEASE_3_22-R-4.5.2.sif \
+    bash zzz_Rmd_series.Rrender.Rcode.sh >> zzz_Rmd_series.Rrender.log.txt
+
+module purge
+```
+
+## more details on knitting/rendering from command line:
+
 By default, if I render that way, plot images are saved as svg files, and those can be too big to sync to github.  Rendering using Rstudio saves png files, which are smaller. Dan Tenenbaum told me how to fix that, by adding this code in my Rmd doc:
 ```{r setup, include=FALSE}
 ragg_png = function(..., res = 192) {

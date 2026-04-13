@@ -5,6 +5,12 @@ StudentGWAS
 .vscode
 temp
 
+*Rerr.txt
+*Rout.txt
+slurm-*.out
+zzz_Rmd_series.Rrender.log.txt
+zzz_Rmd_series.Rrender.sh
+
 # wierd mac files:
 ._*
 .DS_Store
