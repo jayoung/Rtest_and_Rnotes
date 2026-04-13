@@ -2,34 +2,34 @@
 
 Easiest way: on gizmo/rhino:
 
-- `useful_functions/render_Rmd.pl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each (in parallel, i.e. scripts are not linked).
+- `useful_functions/render_Rmd_parallel_apptainer.pl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each (in parallel, i.e. scripts are not linked).
 
-- `useful_functions/render_Rmd_series.pl` is a generic perl script that will take the name of several Rmd scripts as input, and make and run an sbatch script to render the report for each, one after the other, stopping if any of them fail (scripts are in a linked series).
+- `useful_functions/render_Rmd_series_apptainer.pl` is a generic perl script that will take the name of several Rmd scripts as input, and make and run an sbatch script to render the report for each, one after the other, stopping if any of them fail (scripts are in a linked series).
 
 (there are also links to those scripts in `~/bin`)
 
 Demo script and output, in `useful_functions/knit_using_shellScript`.
 
-Test render_Rmd_series.pl (uses the fhR/4.4.1-foss-2023b module)
+Use newer R (4.5.2), via the Apptainer:
 
 ```
-cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript
-../render_Rmd_series.pl script1.Rmd script2.Rmd 
-
-# reset, after a test:
-rm *Rerr.txt *Rout.txt slurm-*.out zzz_Rmd_series.Rrender.log.txt zzz_Rmd_series.Rrender.sh script1.md script2.md
-
-```
-
-I also have a script that does the same thing using newer R (4.5.2) via the Apptainer:
-
-```
-cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript/renderUsingCommandLine_apptainer
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript/renderUsingCommandLine_apptainer_series
 
 ../../render_Rmd_series_apptainer.pl script1.Rmd script2.Rmd 
 
 # reset, after a test
 rm -r zzz_Rmd_series.Rrender.apptainerWrap.sh zzz_Rmd_series.Rrender.log.txt zzz_Rmd_series.Rrender.Rcode.sh script*.Rerr.txt script*.Rout.txt slurm-*.out script1.md script2.md script2_files
+```
+
+I also have a script that does the same thing using newer R (4.5.2) via the Apptainer:
+
+```
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript/renderUsingCommandLine_apptainer_parallel
+
+../../render_Rmd_parallel_apptainer.pl script1.Rmd scriptA.Rmd 
+
+# reset, after a test
+rm -r *.Rrender.apptainerWrap.sh *.Rrender.log.txt *.Rrender.Rcode.sh slurm-*.out script1.md scriptA.md *Rrender.Rerr.txt *Rrender.Rout.txt *Rdata
 ```
 
 
@@ -54,6 +54,21 @@ apptainer run --cpus 2 --bind /fh/fast:/fh/fast https://sif-registry.fredhutch.o
 
 module purge
 ```
+
+
+## older rendering (not using apptainer)
+
+Test render_Rmd_series.pl (uses the fhR/4.4.1-foss-2023b module)
+
+```
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript
+../render_Rmd_series.pl script1.Rmd script2.Rmd 
+
+# reset, after a test:
+rm *Rerr.txt *Rout.txt slurm-*.out zzz_Rmd_series.Rrender.log.txt zzz_Rmd_series.Rrender.sh script1.md script2.md
+
+```
+
 
 ## more details on knitting/rendering from command line:
 

@@ -8,7 +8,7 @@ use Getopt::Long;
 
 my $series_name = "zzz_Rmd_series"; ## this will be used as the start of the output file names for those files that relate to all Rmd files in the series
 
-my $R_module = "fhR/4.4.1-foss-2023b";
+my $R_module = "fhR/4.4.1-foss-2023b-R-4.4.1";
 my $pandoc_module = "Pandoc/2.13";
 my $keep_html = 0;
 

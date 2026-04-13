@@ -1,0 +1,41 @@
+---
+title: "scriptA"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+mtcars_efficient <- mtcars[which(mtcars$mpg >= 30),]
+```
+
+This script filters the `mtcars` dataset (contains `r nrow(mtcars)` rows) to keep only cars where mpg is >= 30. There are `r nrow(mtcars_efficient)` rows after this filtering. 
+
+
+Save `mtcars_efficient` for use in script2.
+
+```{r}
+# it is saved in the same location as the script
+save(mtcars_efficient, file="mtcars_efficient_scriptA.Rdata")
+```
+
+Show .libPaths
+
+```{r}
+.libPaths()
+```
+
+
+Show R and package version information
+
+```{r}
+sessionInfo()
+```
+
