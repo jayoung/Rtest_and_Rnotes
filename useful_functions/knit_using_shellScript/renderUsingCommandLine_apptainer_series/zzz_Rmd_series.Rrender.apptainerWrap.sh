@@ -7,7 +7,6 @@ echo 'Running apptainer' >> zzz_Rmd_series.Rrender.log.txt
 
 apptainer run \
     --bind /fh/fast:/fh/fast \
-    --bind /home/jayoung/R:/home/jayoung/R \
     https://sif-registry.fredhutch.org/bioconductor_docker_RELEASE_3_22-R-4.5.2.sif \
     bash zzz_Rmd_series.Rrender.Rcode.sh >> zzz_Rmd_series.Rrender.log.txt
 

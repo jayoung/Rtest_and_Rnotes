@@ -92,7 +92,7 @@ countAmbiguitiesEachSeq <- function(dna_seqs) {
         rowSums()
 }
 
-###### GCcontent - returns GC content values on a single sequence which is a Biostrings object
+###### GCcontent - returns GC content values on one or more DNA sequences (DNAString or DNAStringSet objects)
 ## returns num GCs / num ACGTs (i.e. ignores other nucleotides in numerator and denominator)
 GCcontent <- function (myseqs) {
     if (class(myseqs)=="DNAString") { myseqs <- DNAStringSet(myseqs) }

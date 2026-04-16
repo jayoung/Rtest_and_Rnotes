@@ -112,7 +112,6 @@ print APP "apptainer run \\\n";
 # FATAL:   container creation failed: while applying cgroups config: rootless cgroups require a D-Bus session - check that XDG_RUNTIME_DIR and DBUS_SESSION_BUS_ADDRESS are set
 
 print APP "    --bind /fh/fast:/fh/fast \\\n";
-print APP "    --bind /home/jayoung/R:/home/jayoung/R \\\n";
 print APP "    $sif \\\n";
 print APP "    bash $shellScript >> $logfile\n";
 

@@ -11,7 +11,7 @@ addInfoToTree <- function(tree, info, colnameForTaxonLabels="taxon") {
     if (! colnameForTaxonLabels %in% colnames(info)) {
         stop("\n\nERROR - there should be a ",colnameForTaxonLabels," column in the info table\n\n")
     }
-    ## check all taxa are in the info table
+    ## check all taxa are in the info table (it doesn't matter if the info table contains additional taxa - they will be dropped)
     tipLabelsInInfoTable <- info |> 
         select(all_of(colnameForTaxonLabels)) |> 
         deframe()

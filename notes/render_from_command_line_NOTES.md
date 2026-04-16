@@ -2,7 +2,7 @@
 
 Easiest way: on gizmo/rhino:
 
-- `useful_functions/render_Rmd_parallel_apptainer.pl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each (in parallel, i.e. scripts are not linked).
+- `useful_functions/render_Rmd_parallel_apptainer.pl` is a generic perl script that will take the name of one or more Rmd scripts as input, and make and run an sbatch script to render the report for each (in parallel, i.e. scripts are not linked).   If running on the Mac, use `useful_functions/render_Rmd_series_forMac.perl`
 
 - `useful_functions/render_Rmd_series_apptainer.pl` is a generic perl script that will take the name of several Rmd scripts as input, and make and run an sbatch script to render the report for each, one after the other, stopping if any of them fail (scripts are in a linked series).
 
@@ -15,7 +15,11 @@ Use newer R (4.5.2), via the Apptainer:
 ```
 cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript/renderUsingCommandLine_apptainer_series
 
+# with sbatch - works
 ../../render_Rmd_series_apptainer.pl script1.Rmd script2.Rmd 
+
+# without sbatch - works
+../../render_Rmd_series_apptainer.pl --sbatch=0 script1.Rmd script2.Rmd 
 
 # reset, after a test
 rm -r zzz_Rmd_series.Rrender.apptainerWrap.sh zzz_Rmd_series.Rrender.log.txt zzz_Rmd_series.Rrender.Rcode.sh script*.Rerr.txt script*.Rout.txt slurm-*.out script1.md script2.md script2_files
