@@ -194,7 +194,7 @@ simple_aa_aln |>
     ## seq4     2     1     1    1    0
 
 ``` r
-## here's how we make BLOSUM62 available (it's from the ppwalign package)
+## here's how we make BLOSUM62 available (it's from the pwalign package)
 data(BLOSUM62)
 ```
 

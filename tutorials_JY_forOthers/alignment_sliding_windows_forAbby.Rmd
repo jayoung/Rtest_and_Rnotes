@@ -1,0 +1,291 @@
+---
+title: "alignment_sliding_windows_forAbby"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+# Goals
+
+Given a multiple sequence alignment, and some sort of per-residue statistic (like a CONSURF score), how do we get sliding-window statistics?
+
+Also, we might need to know how to convert position in the alignment to position in a reference sequence (which differ when the alignment contains gaps).
+
+Probably best to talk through this code together at some point and that'll help me see where you are with your R knowledge and fluency, and how best to deliver info like this to you.  We can talk about any functions you're not familiar with, ways to troubleshoot, ways to learn about new packages.
+
+# Note about ways to use R
+
+1. Rmd documents:  I'm a big fan of putting my code in Rmd documents for reproducibility and ease of displaying code, notes and output all together (including displaying code output via github). I think Maria does a different thing (maybe python notebooks?) that probably achieves the same end results. 
+
+2. R projects: I'm a big fan of these, too. When working in Rprojects, I've also found the `here` package and the `here()` function to be very helpful for navigating file paths.
+
+# Setup
+
+Load libraries etc
+
+```{r setup, warning=FALSE, message=FALSE}
+
+## setting echo=TRUE means code will be shown in the final rendered output. Sometimes you want this and sometimes you don't
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+
+## Biostrings is a bioconductor package, not a regular R package. This page has instructions on how to install it (or other bioconductor packages):
+## https://bioconductor.org/packages/release/bioc/html/Biostrings.html
+
+library(Biostrings)     ## functions to handle sequences and alignments
+library(GenomicRanges)  ## functions to handle regions
+library(ggseqlogo)      ## logo plots
+```
+
+# Reading alignments into R
+
+Fasta-formatted alignments are my go-to for most uses. I'm also a fan of the Mac 'seaview' alignment viewer for times I need a very lightweight way to just look around an alignment.
+
+Here I use the Biostrings library to read in an amino acid alignment. It's the histone fold domain of four or five different short H2A variant genes, several orthologs of each.
+
+```{r}
+
+## using here() means file path is relative to the top level project directory
+## (otherwise it's relative to the location of the Rmd script we are in). 
+## This is helpful if you end up moving scripts around, 
+## and/or your script and data are in different folders (that's common for me)
+
+aln_file <- here("Rscripts/multiple_sequence_alignments/example_alignment_files/exampleProtAln_shortH2As_histoneFoldDomain.fa")
+
+
+## use readAAStringSet (there's an equivalent readDNAStringSet)
+shortH2Aaln <- readAAStringSet(aln_file)
+
+shortH2Aaln
+```
+
+Show first 6 sequences names
+
+```{r}
+names(shortH2Aaln) |> head()
+```
+Those are hard to deal with - I usually like to simplify the sequence names by removing any description field that's present (after the first space)
+
+```{r}
+names(shortH2Aaln) <- sapply(strsplit(names(shortH2Aaln), " "), "[[", 1)
+
+names(shortH2Aaln) |> head()
+```
+
+
+
+Learn how many positions are in our alignment: it's 82aa
+
+```{r}
+width(shortH2Aaln) |> unique()
+```
+
+Learn how many sequences are in our alignment: it's 37
+
+```{r}
+length(shortH2Aaln) 
+```
+
+
+Demonstrate a couple of things:
+
+- the `narrow()` function lets us take a certain region of a Biostrings object
+- `ggseqlogo()` is nice (but cannot handle AAStringSet object as input, as we use as.character first). I' have some scripts where I've used this quite a bit now so can help with any troubleshooting
+
+```{r, fig.height=3, fig.width=11, warning=FALSE}
+## ggseqlogo package code will generate some warnings (because it uses outdated ways to interact with ggplot) so notice the code chunk header above to suppress the warning
+shortH2Aaln |> 
+    narrow(start=1, end=20) |> 
+    as.character() |> 
+    ggseqlogo() +
+    labs(title="First 20aa of short H2A variant alignment")
+```
+
+
+
+
+# Generate an example statistic for each alignment position
+
+Let's say we want to count the number of positively charged amino acids per position (R and K):
+
+Step 1 - Biostrings has a nice function called `consensusMatrix()` that tabulates amino acid counts at each position (note that it tabulates all characters, including gaps, not just the 20 standard amino acids. There are ways to control what it counts or, you can subset the results)
+
+I show results for the first 10 positions:
+
+```{r}
+shortH2Aaln_aa_counts <- shortH2Aaln |> 
+    consensusMatrix()
+
+shortH2Aaln_aa_counts[,1:10]
+```
+
+
+Step 2 - get total R+K counts at each position:
+
+```{r}
+shortH2Aaln_RK_counts <- shortH2Aaln_aa_counts[c("R","K"), ] |> 
+    colSums()
+
+shortH2Aaln_RK_counts |> head()
+```
+
+
+# Make our sliding windows
+
+Uses code and object types from the GenomicRanges package
+
+We could figure out the window coordinates ourselves, but the GenomicRanges package offers us a nice shortcut.
+
+First we make a GRanges object that represents the entire alignment:
+
+```{r}
+# IRanges kind of works but I've had better luck with GRanges (they're used more)
+shortH2Aaln_gr <- GRanges(seqnames="shortH2Aaln",
+                          ranges=IRanges(start=1, end= unique(width(shortH2Aaln)) ))
+shortH2Aaln_gr
+```
+
+
+Then we use that GRanges object to make 20aa windows, sliding by 5aa (notice that the last window is incomplete. Sometimes we keep those, sometimes we filter out smaller-than-desired windows, or we could replace by a full-length window that ends at the last position but wouldn't normally fit with the slide amount)
+
+```{r}
+shortH2Aaln_windows <- slidingWindows(shortH2Aaln_gr, width=20, step=5)
+
+## slidingWindows returns a list but we just want the first (and only) item.
+## I think the list might come into play e.g. if you have >1 chromosome 
+shortH2Aaln_windows <- shortH2Aaln_windows[[1]]
+
+shortH2Aaln_windows
+```
+
+Use the `Views()` function to get data to consider for each window 
+
+```{r}
+shortH2Aaln_RK_counts_windows <- Views(shortH2Aaln_RK_counts,
+                                       ranges(shortH2Aaln_windows))
+shortH2Aaln_RK_counts_windows
+```
+
+Get mean and median in each window and add them to the windows object, to keep track of window positions and statistics together.
+
+```{r}
+shortH2Aaln_windows$meanRKcount <- shortH2Aaln_RK_counts_windows |> 
+    viewMeans()
+
+shortH2Aaln_windows$medianRKcount <- shortH2Aaln_RK_counts_windows |> 
+    viewApply(median)
+```
+
+Now you could make plots, or export that data.  I often do something like this to get a tibble, which we can use more easily in ggplot. Window midpoint can be useful for plotting so let's add that.
+
+```{r}
+shortH2Aaln_windows_tbl <- shortH2Aaln_windows |> 
+    as.data.frame() |> 
+    as_tibble() |> 
+    mutate(midpoint = start + width/2 ) |> 
+    ## picky detail but the true midpoint is actually 
+    ## in between bases 10 and 11 of each window
+    mutate(midpoint = midpoint - 0.5 ) |> 
+    relocate(midpoint, .after=end)
+
+shortH2Aaln_windows_tbl
+```
+
+
+
+# Understanding relationship between alignment position and individual sequence 
+
+Let's say one of the sequences in the alignment is our "reference" sequence (e.g. in your case it'll be VSV).  Maybe (probably) there are gaps in the aligned reference sequence, meaning alignment coordinates don't match reference coordinates. 
+
+In this example, we'll use "H2A.P_rhino" as the reference (has a 3aa gap at position 56-58).
+
+Show alignment from position 45 to the end, showing reference seq and two others:
+
+```{r}
+narrow( shortH2Aaln[c("H2A.P_panda", "H2A.P_rhino", "H2A.P_armadillo")],
+        start=45)
+```
+
+
+Here's how we can handle the gaps and positions.
+
+First let's make a lookup tbl - containing alignment position, ref amino acid, and ref position. We'll add our statistic of interest (num RKs at each position) to it
+
+```{r}
+shortH2Aaln_lookup_tbl <- tibble(
+    aln_pos = 1: unique(width(shortH2Aaln)),
+    ref_aa = strsplit( as.character(shortH2Aaln[["H2A.P_rhino"]]), 
+                       split="" )[[1]] )  |> 
+    mutate(ref_pos = cumsum(ref_aa != "-")) |> 
+    mutate(ref_pos = case_when(ref_aa=="-" ~ NA,
+                               TRUE ~ ref_pos) ) |> 
+    mutate(tot_RK = shortH2Aaln_RK_counts)
+shortH2Aaln_lookup_tbl
+```
+
+Now, let's make a GRanges object that represents the entire ungapped reference sequence (not the alignment). Then (as before) we will make sliding windows and get the scores in each window.
+
+```{r}
+H2AP_rhino_gr <- GRanges(
+    seqnames="H2A.P_rhino",
+    ranges=IRanges(start=1, 
+                   end = max(shortH2Aaln_lookup_tbl$ref_pos, na.rm=TRUE)))
+H2AP_rhino_gr
+```
+Get sliding window coordinates
+
+```{r}
+H2AP_rhino_windows_gr <- slidingWindows(H2AP_rhino_gr, width=20, step=5)[[1]]
+H2AP_rhino_windows_gr
+```
+
+We'll also turn `shortH2Aaln_lookup_tbl` into a GRanges object (called `H2AP_rhino_data_gr`), with one 'range' per position of the reference seq (ignoring positions that are gaps in the ref):
+
+```{r}
+H2AP_rhino_data_gr <- shortH2Aaln_lookup_tbl |> 
+    ## ignore positions that are gaps in the reference sequence
+    filter(!is.na(ref_pos)) |> 
+    ## get the columns that we want to keep in our GRanges object
+    select(start=ref_pos, ref_aa, tot_RK) |> 
+    ## add more columns that GRanges needs
+    mutate(seqnames="H2A.P_rhino") |> 
+    mutate(end=start) |> 
+    ## convert to GRanges
+    GRanges()
+H2AP_rhino_data_gr
+```
+
+
+
+
+Get all of the RK counts in each window 
+
+```{r}
+H2AP_rhino_RK_counts_windows <- Views(H2AP_rhino_data_gr$tot_RK,
+                                       ranges(H2AP_rhino_windows_gr))
+H2AP_rhino_RK_counts_windows
+```
+
+Get mean (etc) in each window and add it to the object
+
+```{r}
+H2AP_rhino_windows_gr$meanRKcount <- H2AP_rhino_RK_counts_windows |> 
+    viewMeans()
+
+H2AP_rhino_windows_gr$medianRKcount <- H2AP_rhino_RK_counts_windows |> 
+    viewApply(median)
+
+H2AP_rhino_windows_gr
+```
+
+
+# Finished
+
+I like to put `sessionInfo()` at the end of my code, for reproducibility purposes.  If the code breaks when I update to a newer version of R or new R packages, it's helpful to know the version that worked the last time I successfully rendered the Rmd document. Or if I'm giving code to someone else.
+
+```{r}
+sessionInfo()
+```

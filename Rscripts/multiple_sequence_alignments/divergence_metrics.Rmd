@@ -127,7 +127,7 @@ simple_aa_aln |>
 ```
 
 ```{r}
-## here's how we make BLOSUM62 available (it's from the ppwalign package)
+## here's how we make BLOSUM62 available (it's from the pwalign package)
 data(BLOSUM62)
 ```
 
@@ -150,7 +150,7 @@ simple_aa_aln |>
     alignedStringDistMatrix(weightmat=-BLOSUM62, indel.weight = 10)
 ```
 
-# Protein idenity versus similarity 
+# Protein identity versus similarity 
 
 For Priya Shah's YFV project we talked about sliding window similarity rather than identity.
 

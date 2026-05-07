@@ -5,7 +5,10 @@ To use a function that's not exported from a package (it's hidden), use three ::
 
 # Random bits and pieces
 
-BEWARE: partial row name matching when using [ to subset.
+BEWARE of partial row name matching when using [ to subset.
+
+`row_number()` is a useful function to get the row index, e.g. within each group, perhaps to create replicate IDs
+
 
 Interpreting strings as variable names
 
