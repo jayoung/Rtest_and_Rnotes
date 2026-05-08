@@ -2,7 +2,7 @@ ggplot_tips_and_tricks
 ================
 Janet Young
 
-2026-04-03
+2026-05-08
 
 # Goal
 
@@ -470,6 +470,27 @@ p1 + p2
 
 ![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
+## Using a subset of the data within a layer
+
+Syntax is unintuitive.
+
+Here I overlay the species==setosa points in orange:
+
+``` r
+p1 <- iris_tbl |> 
+    ggplot(aes(x=sepal_length, y=petal_length)) +
+    ## all data points:
+    geom_point(color="gray") + 
+    geom_point(data= ~ subset(.x, species=="setosa"),
+               color="orange") +
+    theme_classic() +
+    labs(title="Color points by species")
+
+p1 
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
 ## Add labels to a plot that are closer to the data
 
 The `directlabels` package looks nice - can put labels directly on the
@@ -487,7 +508,7 @@ iris_tbl |>
     theme(legend.position = "none")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ## Adding individual data points to grouped/filled boxplots and getting the aligned
 
@@ -508,7 +529,7 @@ iris_plus_groups |>
     theme_classic()
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 If there’s an empty group, widths and spacing get weird (see left plot
 below), so we do
@@ -530,7 +551,7 @@ p2 <- iris_plus_groups |>
     plot_layout(guides="collect")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 The `position_dodge2` function gives ALMOST the same outputas
 `position_dodge`, but the alignment of the ‘versicolor’ box is
@@ -544,7 +565,7 @@ iris_plus_groups |>
     theme_classic()
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 To ALSO add geom_point and keep them lined up is tricky! This might be
 fixed in newer versions of ggplot2 - there are a few related bug
@@ -562,7 +583,7 @@ iris_plus_groups |>
     theme_classic()
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ## Violin plots
 
@@ -593,7 +614,7 @@ penguins |>
     guides(fill="none")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 Note: I sometimes have trouble getting the statistical summary (median
 dot) to line up correctly if I’ve got subgroupings for the violins. The
@@ -642,7 +663,7 @@ scatterplot +
     )
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 Here we use `annotate()` instead and it ignores the data
 
@@ -658,7 +679,7 @@ scatterplot +
     )
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 Even better, we can use `I()` to get coordinates relative to the plot
 space rather than relative to the data, for example if we always want to
 put an annotation in the top-left corner, regardless of the range of the
@@ -680,7 +701,7 @@ scatterplot +
     )
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ## Explore `shadowtext` package
 
@@ -738,7 +759,7 @@ penguins |>
     theme(legend.position = 'none')
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 ## Wrapping text over \>1 line in ggplot
 
@@ -754,7 +775,7 @@ penguins |>
          subtitle=str_wrap("a really long title. kasjdhf ;isjdghf khg kajsxdhf khg alsidgf kjhg ljhags dfj hgkjahsdgfkjhg a  ljhsdgf ljhglsdjhfg", width=50))
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 Instead use `ggtext` package - the element_textbox_simple will
 automatically wrap text to fit whatever space is available.
@@ -769,7 +790,7 @@ penguins |>
     theme(plot.subtitle = element_textbox_simple())
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 Maybe we need to wrap facet labels - we can use the label_wrap_gen
 function
@@ -788,7 +809,7 @@ df |>
     theme(legend.position="none")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 ## Discontinuous axes using `ggbreak` package
 
@@ -816,7 +837,7 @@ p2 <- p1 +
 p1 + p2
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Add marginal density plots
 
@@ -847,7 +868,7 @@ p1a <- ggMarginal(p1, type="density", groupColour = TRUE)
 p1a
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 If we want to use patchwork to combine \>1 ggMarginal plot, we need to
 use the `wrap_elements()` function:
@@ -856,7 +877,7 @@ use the `wrap_elements()` function:
 patchwork::wrap_elements(p1a) + patchwork::wrap_elements(p1a)
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 [A known issue with
 ggMarginal](https://github.com/daattali/ggExtra/issues/128) - it doesn’t
@@ -872,7 +893,7 @@ p1b <- ggMarginal(p1b, type="density", groupColour = TRUE)
 p1b
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 A workaround is to use `xlim` rather than coord_cartesian. The downside
 of that is that it actually REMOVES data outside the specified range, so
@@ -888,7 +909,7 @@ p1b <- ggMarginal(p1b, type="density", groupColour = TRUE)
 p1b
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
 
 We can also do it in basic ggplot (including changing the axis limits).
 I made a function to do that - it’s called `my_ggMarginal()` and is in
@@ -982,7 +1003,7 @@ penguins |>
                   my_subtitle = "by species")
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
 If we want to show \>1 of those plots together (from `my_ggMarginal`),
 we need a special function. First we add the `combine_plots = FALSE`
@@ -1006,7 +1027,7 @@ p1 <- penguins |>
 combine_myGGmarginal_plots(list(p1,p1))
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
 `geom_rug()` is an alternative way to show the marginal distributions:
 
@@ -1042,7 +1063,7 @@ p1 <- ggplot(mpg, aes(hwy)) +
 p1
 ```
 
-![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
 Maybe we want to look at the counts, or the x-axis bin boundaries - we
 can use `layer_data()`
@@ -2184,13 +2205,13 @@ df |> tidyr::separate_longer_delim(x, delim = " ")
 sessionInfo()
 ```
 
-    ## R version 4.5.3 (2026-03-11)
-    ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Tahoe 26.4
+    ## R version 4.5.2 (2025-10-31)
+    ## Platform: x86_64-apple-darwin20
+    ## Running under: macOS Tahoe 26.4.1
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     ## 
     ## locale:
     ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -2206,32 +2227,32 @@ sessionInfo()
     ##  [4] shadowtext_0.1.6     ggExtra_0.11.0       kableExtra_1.4.0    
     ##  [7] janitor_2.2.1        here_1.0.2           patchwork_1.3.2     
     ## [10] lubridate_1.9.5      forcats_1.0.1        stringr_1.6.0       
-    ## [13] dplyr_1.2.0          purrr_1.2.1          readr_2.2.0         
-    ## [16] tidyr_1.3.2          tibble_3.3.1         ggplot2_4.0.2       
+    ## [13] dplyr_1.2.1          purrr_1.2.2          readr_2.2.0         
+    ## [16] tidyr_1.3.2          tibble_3.3.1         ggplot2_4.0.3       
     ## [19] tidyverse_2.0.0     
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6            xfun_0.57               htmlwidgets_1.6.4      
-    ##  [4] tzdb_0.5.0              quadprog_1.5-8          yulab.utils_0.2.4      
-    ##  [7] vctrs_0.7.2             tools_4.5.3             generics_0.1.4         
-    ## [10] pkgconfig_2.0.3         ggplotify_0.1.3         RColorBrewer_1.1-3     
-    ## [13] S7_0.2.1                lifecycle_1.0.5         compiler_4.5.3         
-    ## [16] farver_2.1.2            textshaping_1.0.5       snakecase_0.11.1       
-    ## [19] litedown_0.9            ggfun_0.2.0             fontLiberation_0.1.0   
-    ## [22] httpuv_1.6.17           fontquiver_0.2.1        htmltools_0.5.9        
-    ## [25] yaml_2.3.12             pillar_1.11.1           later_1.4.8            
-    ## [28] MASS_7.3-65             mime_0.13               fontBitstreamVera_0.1.1
-    ## [31] commonmark_2.0.0        aplot_0.2.9             tidyselect_1.2.1       
-    ## [34] digest_0.6.39           stringi_1.8.7           labeling_0.4.3         
-    ## [37] rprojroot_2.1.1         fastmap_1.2.0           grid_4.5.3             
-    ## [40] cli_3.6.5               magrittr_2.0.4          withr_3.0.2            
-    ## [43] rappdirs_0.3.4          gdtools_0.5.0           scales_1.4.0           
-    ## [46] promises_1.5.0          timechange_0.4.0        rmarkdown_2.31         
-    ## [49] otel_0.2.0              hms_1.1.4               shiny_1.13.0           
-    ## [52] evaluate_1.0.5          knitr_1.51              miniUI_0.1.2           
-    ## [55] viridisLite_0.4.3       markdown_2.0            gridGraphics_0.5-1     
-    ## [58] rlang_1.1.7             gridtext_0.1.6          ggiraph_0.9.6          
-    ## [61] Rcpp_1.1.1              xtable_1.8-8            glue_1.8.0             
-    ## [64] xml2_1.5.2              directlabels_2025.6.24  svglite_2.2.2          
-    ## [67] rstudioapi_0.18.0       R6_2.6.1                fs_2.0.1               
-    ## [70] systemfonts_1.3.2
+    ##  [1] ggiraph_0.9.6           tidyselect_1.2.1        viridisLite_0.4.3      
+    ##  [4] farver_2.1.2            S7_0.2.2                fastmap_1.2.0          
+    ##  [7] fontquiver_0.2.1        promises_1.5.0          digest_0.6.39          
+    ## [10] timechange_0.4.0        mime_0.13               lifecycle_1.0.5        
+    ## [13] magrittr_2.0.5          compiler_4.5.2          rlang_1.2.0            
+    ## [16] tools_4.5.2             yaml_2.3.12             knitr_1.51             
+    ## [19] labeling_0.4.3          htmlwidgets_1.6.4       xml2_1.5.2             
+    ## [22] RColorBrewer_1.1-3      aplot_0.2.9             miniUI_0.1.2           
+    ## [25] withr_3.0.2             grid_4.5.2              gdtools_0.5.0          
+    ## [28] xtable_1.8-8            scales_1.4.0            MASS_7.3-65            
+    ## [31] dichromat_2.0-0.1       cli_3.6.6               rmarkdown_2.31         
+    ## [34] generics_0.1.4          otel_0.2.0              rstudioapi_0.18.0      
+    ## [37] tzdb_0.5.0              commonmark_2.0.0        directlabels_2026.4.23 
+    ## [40] ggplotify_0.1.3         vctrs_0.7.3             yulab.utils_0.2.4      
+    ## [43] fontBitstreamVera_0.1.1 litedown_0.9            gridGraphics_0.5-1     
+    ## [46] hms_1.1.4               systemfonts_1.3.2       glue_1.8.1             
+    ## [49] stringi_1.8.7           gtable_0.3.6            later_1.4.8            
+    ## [52] quadprog_1.5-8          pillar_1.11.1           rappdirs_0.3.4         
+    ## [55] htmltools_0.5.9         R6_2.6.1                textshaping_1.0.5      
+    ## [58] rprojroot_2.1.1         evaluate_1.0.5          shiny_1.13.0           
+    ## [61] markdown_2.0            gridtext_0.1.6          snakecase_0.11.1       
+    ## [64] httpuv_1.6.17           fontLiberation_0.1.0    ggfun_0.2.0            
+    ## [67] Rcpp_1.1.1-1.1          svglite_2.2.2           xfun_0.57              
+    ## [70] fs_2.1.0                pkgconfig_2.0.3

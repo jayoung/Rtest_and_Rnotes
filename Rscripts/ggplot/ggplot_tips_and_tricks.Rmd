@@ -140,6 +140,25 @@ p2 <- iris_tbl |>
 p1 + p2
 ```
 
+## Using a subset of the data within a layer
+
+Syntax is unintuitive.
+
+Here I overlay the species==setosa points in orange:
+
+```{r, fig.height=4, fig.width=4}
+p1 <- iris_tbl |> 
+    ggplot(aes(x=sepal_length, y=petal_length)) +
+    ## all data points:
+    geom_point(color="gray") + 
+    geom_point(data= ~ subset(.x, species=="setosa"),
+               color="orange") +
+    theme_classic() +
+    labs(title="Color points by species")
+
+p1 
+```
+
 ## Add labels to a plot that are closer to the data
 
 The `directlabels` package looks nice - can put labels directly on the plot instead of in the legend, like this:
