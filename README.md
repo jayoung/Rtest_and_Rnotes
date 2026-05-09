@@ -53,6 +53,12 @@ my_tbl |>
     janitor::remove_empty("cols") 
 ```
 
+R colors
+- online [color chart (n=125)](https://r-graph-gallery.com/42-colors-names.html)
+- online [color chart (n=657)](https://derekogle.com/NCGraphing/resources/colors)
+- [my color_testing.Rmd script](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/color_testing.md)
+
+
 ## My coding intentions
 
 Use `janitor::tabyl` more for cross-tables (see [demo](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/janitor_cross_tables_demo.md))
@@ -122,7 +128,7 @@ Rmarkdown:
 * [intro2r chapter 8](https://intro2r.com/rmarkdown_r.html)    
 * detailed [Rmarkdown guide](https://bookdown.org/yihui/rmarkdown/)    
 
-miscellaneous coll-looking R tips from [Luke Pemberton](https://lpembleton.rbind.io/ramblings/R/), like embedding smaller plots as insets on top of bigger ones, including colors in titles, nice axis formatting, etc, etc
+miscellaneous cool-looking R tips from [Luke Pemberton](https://lpembleton.rbind.io/ramblings/R/), like embedding smaller plots as insets on top of bigger ones, including colors in titles, nice axis formatting, etc, etc
 
 Blog post on working with [regular expressions](https://blog.djnavarro.net/posts/2024-12-16_regex-backreferences/)
 

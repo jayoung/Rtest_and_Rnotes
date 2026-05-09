@@ -228,19 +228,18 @@ See (`explore_debugging_functions.R`)[Rscripts/explore_debugging_functions.R] fo
 
 ## Pipes:
 
-I was using `magrittr`'s pipe in my code:   `%>%`.   
-
-I recently switched MOST code in some of my repos to the native R pipe: `|>` (introduced in R 4.1.0).
+I was previous using `magrittr`'s pipe in my code:   `%>%`.  But I've recently switched MOST code to the native R pipe: `|>` (introduced in R 4.1.0).
 
 Can insert a pipe in Rstudio using Command-shift-m on the mac. There is a setting in R studio to tell it which of those two styles of pipe you want to use.
 
 There are situations where the native pipe won't work and we need to use  `%>%`. More info [here](https://tidyverse.org/blog/2023/04/base-vs-magrittr-pipe/). Examples: 
 - when we use the `.` to represent the incoming data as an argument to one of the functions.  
 - if we don't include the parentheses after the function name, e.g. `my_dat |> nrow()` works but `my_dat |> nrow` doesn't. (and `my_dat %>% nrow` does work)
+- `nrow()` has caused me trouble in pipes. A better alternative is the `tibble::rowid_to_column()` function, e.g. `iris |> rowid_to_column(var="my_row_index") |> head()`
 
-`nrow()` has caused me trouble in pipes. A better alternative is the `tibble::rowid_to_column()` function, e.g. `iris |> rowid_to_column(var="my_row_index") |> head()`
 
 There are other [more complicated pipe types](https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html), including this pipe: `%<>%`. But I doubt I'll use them because it would make the code quite unreadable. 
+
 
 
 # reprex
