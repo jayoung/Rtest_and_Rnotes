@@ -8,12 +8,12 @@ Easiest way: on gizmo/rhino:
 
 (there are also links to those scripts in `~/bin`)
 
-Demo script and output, in `useful_functions/knit_using_shellScript`.
+Demo script and output, in `useful_functions/render_Rmd_testScripts`.
 
 Use newer R (4.5.2), via the Apptainer:
 
 ```
-cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript/renderUsingCommandLine_apptainer_series
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/render_Rmd_testScripts/renderUsingCommandLine_apptainer_series
 
 # with sbatch - works
 ../../render_Rmd_series_apptainer.pl script1.Rmd script2.Rmd 
@@ -28,7 +28,7 @@ rm -r zzz_Rmd_series.Rrender.apptainerWrap.sh zzz_Rmd_series.Rrender.log.txt zzz
 I also have a script that does the same thing using newer R (4.5.2) via the Apptainer:
 
 ```
-cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript/renderUsingCommandLine_apptainer_parallel
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/render_Rmd_testScripts/renderUsingCommandLine_apptainer_parallel
 
 ../../render_Rmd_parallel_apptainer.pl script1.Rmd scriptA.Rmd 
 
@@ -37,27 +37,16 @@ rm -r *.Rrender.apptainerWrap.sh *.Rrender.log.txt *.Rrender.Rcode.sh slurm-*.ou
 ```
 
 
+The script `script_using_mclapply.Rmd` runs some slowish test code with and without `mclapply`, using `system.time()` to show how long it took to run.  Demonstrates that I can do multithreaded work via the apptainer, without doing anything special.
 
-
-Some troubleshooting on num CPUs - I don't have it working yet:
 ```
-mkdir test
-cp script1.Rmd  script2.Rmd  zzz_Rmd_series.Rrender.Rcode.sh test
-cd test
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/render_Rmd_testScripts
 
-module purge
-module load Apptainer/1.1.6
+../render_Rmd_series_apptainer.pl -t 4 script_using_mclapply.Rmd
 
-### works with 1 CPU:
-apptainer run --bind /fh/fast:/fh/fast https://sif-registry.fredhutch.org/bioconductor_docker_RELEASE_3_22-R-4.5.2.sif \
-    bash zzz_Rmd_series.Rrender.Rcode.sh >> zzz_Rmd_series.Rrender.log.txt
-
-#### doesn't work with --cpus 2:
-apptainer run --cpus 2 --bind /fh/fast:/fh/fast https://sif-registry.fredhutch.org/bioconductor_docker_RELEASE_3_22-R-4.5.2.sif \
-    bash zzz_Rmd_series.Rrender.Rcode.sh >> zzz_Rmd_series.Rrender.log.txt
-
-module purge
+../render_Rmd_parallel_apptainer.pl -t 4 script_using_mclapply.Rmd
 ```
+
 
 
 ## older rendering (not using apptainer)
@@ -65,7 +54,7 @@ module purge
 Test render_Rmd_series.pl (uses the fhR/4.4.1-foss-2023b module)
 
 ```
-cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript
+cd ~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/render_Rmd_testScripts
 ../render_Rmd_series.pl script1.Rmd script2.Rmd 
 
 # reset, after a test:
@@ -84,7 +73,7 @@ ragg_png = function(..., res = 192) {
 knitr::opts_chunk$set(dev = "ragg_png", fig.ext = "png")
 ```
 
-I put those code lines in a (hidden) file called `~/.ragg_png_functions_from_dan.R` (also linked in an unhidden way, at `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/knit_using_shellScript/ragg_png_functions_from_dan.R`).
+I put those code lines in a (hidden) file called `~/.ragg_png_functions_from_dan.R` (also linked in an unhidden way, at `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/render_Rmd_testScripts/ragg_png_functions_from_dan.R`).
 
 I will source that from `.Rprofile` (global on rhino, and local if there is one), and then I shouldn't need to include it in my code.  Not putting in my Mac global for now - don't think it's relevant.
 

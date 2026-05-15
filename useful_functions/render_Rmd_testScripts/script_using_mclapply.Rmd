@@ -1,0 +1,50 @@
+---
+title: "script_using_mclapply"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(parallel)
+```
+
+```{r}
+num_interations <- 10^5
+num_threads <- 4
+```
+
+# Do something slow using lapply 
+
+`?system.time` gives me an idea for a slow function: `mad(runif(1000)`
+
+```{r}
+system.time(
+    result <- lapply(1:num_interations, function(i) {
+        mad(runif(1000))
+    })
+)
+```
+
+
+# Do something slow using mclapply 
+
+Running using Rstudio and 4 cores, I do see a successful speedup
+
+```{r}
+system.time(
+    result <- mclapply(1:num_interations, function(i) {
+        mad(runif(1000))
+    }, mc.cores=num_threads)
+)
+```
+
+
+# Finished
+
+
+```{r}
+sessionInfo()
+```

@@ -1,0 +1,5 @@
+running command:
+sbatch --job-name=Rmd -t 3-0 --cpus-per-task=4 --wrap="bash ./script_using_mclapply.Rrender.apptainerWrap.sh 2>&1 >> script_using_mclapply.Rrender.log.txt"
+
+Running apptainer
+Finished running apptainer

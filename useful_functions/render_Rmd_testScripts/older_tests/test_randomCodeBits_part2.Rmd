@@ -19,7 +19,7 @@ library(here)
 
 ```{r}
 # load iris_plus_groups
-load(file=here("Rscripts/zz_test_renderRmd_in_series/iris_plus_groups.Rdata"))
+load(file=here("useful_functions/render_Rmd_testScripts/older_tests/iris_plus_groups.Rdata"))
 ```
 
 ```{r, fig.height=3.5, fig.width=4.5}
@@ -31,7 +31,7 @@ iris_plus_groups |>
 ```
 
 ```{r}
-ggsave(filename=here("Rscripts/zz_test_renderRmd_in_series/iris_plus_groups_plot.pdf"),
+ggsave(filename=here("useful_functions/render_Rmd_testScripts/older_tests/iris_plus_groups_plot.pdf"),
        height=3.5, width=4.5)
 ```
 

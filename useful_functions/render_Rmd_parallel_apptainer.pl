@@ -32,14 +32,10 @@ GetOptions("series=s"      => \$series_name,
            "debug"         => \$debug # '--debug' to just test
            ) or die "\n\nterminating - unknown option(s) specified on command line\n\n"; 
 
-
-if ($numThreads > 1) {
-    die "\n\nTerminating - don't know how to make it work with >1 CPU yet\n\n";
-}
-
-
 #####################
-if ($use_sbatch == 1) {print "\n\nUsing sbatch to parallelize\n\n";}
+if(@ARGV == 0) {
+    die "\n\nTerminating - please specify one or more Rmd scripts to run\n\n";
+}
 
 foreach my $file (@ARGV) {
     if (!-e $file) {
