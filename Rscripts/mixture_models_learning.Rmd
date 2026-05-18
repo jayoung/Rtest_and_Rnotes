@@ -1,0 +1,240 @@
+---
+title: "mixture_models_learning"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+# Goal
+
+Learn about mixture modelling and explore related R packages.
+
+
+https://en.wikipedia.org/wiki/Mixture_model
+
+https://yifengedms.github.io/EDMS657-R-Tutorials/Mixture.html
+
+## General notes
+
+Often we model a mixture of subpopulations that all follow the same type of distribution (e.g. all normal) but it is also possible to model mixtures of different types of distribution.
+
+Expectation maximization algorithms are often used to do the modeling
+
+```{r setup1, include=FALSE}
+## keeping a small first chunk because weirdly Rstudio runs the first chunk at random times and it is slow
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r setup2, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+library(here) # for tracking project home dir location
+library(patchwork)
+```
+
+
+```{r, include=FALSE, message=FALSE}
+library(mclust)
+library(plotmm)
+library(mixtools)
+library(datasets)  ## for old faithful data
+```
+
+
+
+## try mclust 
+
+
+### mclust on example data
+
+
+
+https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html
+
+
+
+```{r}
+### multivariate
+## example data for mclust package
+# 145 rows, 4 columns
+data(diabetes)
+
+# diabetes |> dplyr::count(class)
+#      class  n
+# 1 Chemical 36
+# 2   Normal 76
+# 3    Overt 33
+```
+
+```{r}
+### univariate
+
+## 155 numeric values
+data(acidity)
+plot(density(acidity))
+```
+```{r}
+mod4 <- densityMclust(acidity)
+
+```
+
+```{r}
+summary(mod4)
+
+```
+
+I think E means the components have equal variance and V means they don't
+
+```{r}
+plot(mod4, what = "BIC")
+
+```
+Try [plotmm package](https://packages.oit.ncsu.edu/cran/web/packages/plotmm/vignettes/Getting-Started.html) for plotting model results
+
+```{r}
+```
+
+
+```{r}
+
+set.seed(576)
+
+## normalmixEM is from mixtools
+mixmdl <- normalmixEM(iris$Petal.Length, k = 2)
+
+# mixmdl$x |> length()
+
+# visualize
+plot_mm(mixmdl, 2) +
+  labs(title = "Univariate Gaussian Mixture Model",
+       subtitle = "Mixtools Object")
+```
+
+```{r}
+plot_cut_point(mixmdl, plot = TRUE, color = "amerika") # produces plot
+
+```
+### mixtools on example old faithful data
+
+```{r}
+```
+
+Show the data we are modelling
+
+```{r, fig.width=5, fig.height=3.5}
+wait_histo <- faithful |> 
+  ggplot(aes(x=waiting)) +
+  geom_histogram(breaks=seq(from=40, to=100, by=5),
+                 fill="lightgray", color="black", linewidth=0.2) +
+  theme_classic() +
+  labs(x="Wait time (minutes)",
+       y="number of observations",
+       title="Old faithful data,\ndistribution of wait time between eruptions")
+wait_histo
+```
+
+Do the modelling using `normalmixEM`:
+
+
+-the result (`wait1`) is a `mixEM` object
+- `mu` - we provide initial estimates for the means of each distribution. Because we start with a vector of 2 for mu, it models a mix of 2 normal distributions
+- `lambda` is the initial mixing proportion. (if you don't specify, it'll start with equal shares)
+- it does 9 interations as it optimizes the proportions and means and sigma
+- `sigma` is the starting standard deviation
+- you can use `mean.constr` to constrain one or more of the means, which could be useful in our case, where we could use the cir0 distribution to guess at one of the components. Same for `sd.constr`
+
+```{r}
+wait1 <- normalmixEM(faithful$waiting, 
+                     lambda = .5, 
+                     mu = c(55, 80), 
+                     sigma = 5)
+```
+
+
+```{r}
+summary(wait1)
+```
+
+
+Show the model:
+
+```{r}
+## plot() calls plot.mixEM 
+# ?plot.mixEM
+## by default this  makes two plots (loglik and density) and requires the user to hit return between each
+## but we can control that and only plot one of those at time
+plot(wait1, 
+     loglik=FALSE, density=TRUE,
+     cex.axis=1.4, cex.lab=1.4, cex.main=1.8, 
+     main2="Time between Old Faithful eruptions", 
+     xlab2="Minutes")
+```
+
+Show how the log-likelihood of the model changed as the ME iterated - after 2 iterations it didn't improve much
+
+```{r}
+plot(wait1, 
+     loglik=TRUE, density=FALSE,
+     cex.axis=1.4, cex.lab=1.4, cex.main=1.8)
+```
+
+plot_mm can plot the model. the gray shape is the distribution of the data being modelled, and the colors are the actual data
+
+```{r}
+p1 <- plot_mm(wait1, 2) +
+  labs(title = "Univariate Gaussian Mixture Model",
+       subtitle = "Mixtools Object") +
+  coord_cartesian(xlim=c(40,100)) 
+
+##  I checked - tthe gray shows density of the data that was modeled:
+# p1 +
+#   geom_density(data=faithful, aes(x=waiting), 
+#                color="forestgreen", lty=2)
+
+p1
+```
+
+
+```{r}
+# Fit a univariate mixture model via mixtools. 
+# This time around we allow the sigma (standard dev) to vary - we do tell it to expect 2 components but we don't give any other priors
+
+set.seed(576)
+
+mixmdl <- normalmixEM(faithful$waiting, k = 2)
+```
+
+
+
+# Customize a plot with `plot_mix_comps_normal()`
+
+
+```{r}
+data.frame(x = mixmdl$x) |>
+  ggplot() +
+  ## show distribution of the actual data
+  geom_histogram(aes(x, after_stat(density)), 
+                 binwidth = 5, colour = "black", fill="lightgray") +
+  ### plot component 1
+  stat_function(geom = "line", 
+                fun = plot_mix_comps_normal, # here is the function
+                args = list(mixmdl$mu[1], mixmdl$sigma[1], lam = mixmdl$lambda[1]),
+                colour = "red", lwd = 1.5) +
+  ### plot component 2
+  stat_function(geom = "line", 
+                fun = plot_mix_comps_normal, # here again as k = 2
+                args = list(mixmdl$mu[2], mixmdl$sigma[2], lam = mixmdl$lambda[2]),
+                colour = "blue", lwd = 1.5) +
+  ylab("Density") +
+  theme_classic()
+```
+
+
+# Finished
+
+
+```{r}
+sessionInfo()
+```
+
