@@ -15,6 +15,9 @@ https://en.wikipedia.org/wiki/Mixture_model
 
 https://yifengedms.github.io/EDMS657-R-Tutorials/Mixture.html
 
+https://mclust-org.github.io/mclust-book/
+
+
 # General notes
 
 Often we model a mixture of subpopulations that all follow the same type of distribution (e.g. all normal) but it is also possible to model mixtures of different types of distribution.
@@ -50,6 +53,7 @@ library(mclust)
 library(plotmm)
 library(mixtools)
 library(datasets)  ## for old faithful data
+library(tidyLPA)
 ```
 
 
@@ -141,6 +145,59 @@ title(main="QQ diagnostic plot", line=0.5)
 ```
 
 
+Made a few attempts to plot the individual components of an mclust model but I don't have it working yet. I bet there's some package that does it that I haven't found yet.
+
+```{r}
+## verbose FALSE so we don't get the progress message
+faithful_mclust_G2 <- densityMclust(faithful$waiting, G = 2, plot = FALSE, verbose=FALSE)
+```
+
+```{r, fig.height=3.5, fig.width=5}
+### here's how I can extract the mean and standard deviation of each component and plot them
+faithful_x_range_for_density <- extendrange(faithful$waiting, f = 0.3)
+faithful_x_values_for_density <- seq(from=faithful_x_range_for_density[1], 
+                                     to=faithful_x_range_for_density[2], 
+                                     length=1000)
+
+y1 <- dnorm(faithful_x_values_for_density, 
+            mean=faithful_mclust_G2$parameters$mean[1], 
+            sd=sqrt(faithful_mclust_G2$parameters$variance$sigmasq)) * faithful_mclust_G2$parameters$pro[1]  
+
+y2 <- dnorm(faithful_x_values_for_density, 
+            mean=faithful_mclust_G2$parameters$mean[2], 
+            sd=sqrt(faithful_mclust_G2$parameters$variance$sigmasq)) * faithful_mclust_G2$parameters$pro[2]  
+
+faithful_mclust_G2_model_to_plot <- tibble(x=faithful_x_values_for_density, 
+       y1=y1, 
+       y2=y2) |> 
+    mutate(y_total=y1+y2)
+
+faithful_mclust_G2_model_to_plot |> 
+    ggplot(aes(x=x, y=y1)) +
+    geom_histogram(data=faithful, aes(x=waiting, y=after_stat(density)), 
+                   fill="lightgray", color="darkgray",
+                   binwidth = 5) +
+    geom_density(data=faithful, aes(x=waiting, y=after_stat(density)), 
+                   color="darkgray") +
+    geom_line(color="red") +
+    geom_line(aes(x=x, y=y2), color="blue") +
+    geom_line(aes(x=x, y=y_total), color="purple") +
+    theme_classic() +
+    labs(x="Waiting time (minutes)",
+         y="Relative frequency",
+         title="Old Faithful waiting data and mclust G2 model",
+         subtitle=paste0("Gray histogram and density = real data\n",
+                         "Red/blue/purple = modeled components"))
+
+```
+
+
+
+```{r}
+# mclust1Dplot is only for multivariate models
+# mclust1Dplot(faithful_mclust_G2)
+```
+
 # Try mixtools package 
 
 Do the modelling using `mixtools::normalmixEM`:
@@ -194,6 +251,9 @@ plot(wait1,
 ```
 
 plotmm::plot_mm can also plot the model (uses ggplot approach). the gray shape is the distribution of the data being modelled, and the colors are the actual data
+
+Works on mixEM objects (e.g. output of mixtools::normalmixEM). Also supports objects modeled by 'EMCluster', and 'flexmix' packages (but not mclust).
+
 
 ```{r, fig.height=3.5, fig.width=5}
 p1 <- plot_mm(wait1, 2) +
@@ -301,6 +361,92 @@ mixturegram(y, pmbs, method = "pca", all.n = FALSE,
             id.con = NULL, score = 1, 
             main = "Mixturegram (Well-Separated Data)")
 
+```
+
+
+# Try tidyLPA
+
+
+
+I'm trying the `estimate_profiles` function from the `tidyLPA` package, which is a wrapper for mclust's mixture models
+
+See [tutorial](https://yifengedms.github.io/EDMS657-R-Tutorials/Mixture.html#Example_1:_Univariate_Mixtures) for a very brief outline.
+
+See [tidyLPA intro](https://cran.r-project.org/web/packages/tidyLPA/vignettes/Introduction_to_tidyLPA.html)
+
+```{r}
+faithful_tidyLPA <- estimate_profiles(faithful$waiting, 
+                              ## this says, try it with 1-6 mixture components
+                              n_profiles=1:6,
+                              variances = c("equal", "varying"),
+                              covariances = c("zero", "zero"))
+## by default it does the modelling using 'OpenMx' package but it can also use mclust or MplusAutomation
+
+```
+
+Here's the overall result:
+
+```{r}
+faithful_tidyLPA
+```
+
+
+```{r}
+faithful_tidyLPA |> 
+    compare_solutions()
+```
+
+`get_data()` gets the class assignments for each datapoint for each model. Here I choose the best model, and the output has 544 rows (two per observation in faithful$waiting - probability of being in each class)
+
+```{r}
+faithful_tidyLPA |> 
+    get_data() |> 
+    filter(model_number==1 & classes_number==2) |> 
+    head()
+```
+
+
+```{r}
+p1 <- faithful_tidyLPA |> 
+    get_fit() |> 
+    mutate(Model=as.factor(Model)) |> 
+    ggplot(aes(x=Classes, y=(0-BIC), #group=Model, 
+               color=Model)) +
+    geom_line() +
+    geom_point() +
+    theme_classic()+
+    labs(title="BIC")
+p2 <- faithful_tidyLPA |> 
+    get_fit() |> 
+    mutate(Model=as.factor(Model)) |> 
+    ggplot(aes(x=Classes, y=(0-AIC), #group=Model, 
+               color=Model)) +
+    geom_line() +
+    geom_point() +
+    theme_classic() +
+    labs(title="AIC")
+(p1 + p2) +
+    plot_layout(guides="collect")
+```
+
+```{r}
+faithful_tidyLPA |> 
+    get_estimates() |> 
+    filter(Model==1 & Classes==2) |> 
+    select(-Parameter, -Model, -Classes) |> 
+    relocate(Class)
+```
+
+```{r}
+
+```
+
+
+```{r}
+# faithful_mclust_G2 |> 
+     # filter(Model==1 & Classes==2) |> 
+    # plot_profiles()
+    # plot_density()
 ```
 
 
