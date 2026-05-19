@@ -12,7 +12,7 @@ Learn about mixture modelling and explore related R packages.
 
 <https://yifengedms.github.io/EDMS657-R-Tutorials/Mixture.html>
 
-## General notes
+# General notes
 
 Often we model a mixture of subpopulations that all follow the same type
 of distribution (e.g. all normal) but it is also possible to model
@@ -20,43 +20,63 @@ mixtures of different types of distribution.
 
 Expectation maximization algorithms are often used to do the modeling
 
-## try mclust
+## Packges used
 
-### mclust on example data
+mclust
+[vignette](https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html)
 
-<https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html>
+mixtools
+[vignette](https://cran.r-project.org/web/packages/mixtools/vignettes/mixtools.pdf)
+and [github](https://github.com/dsy109/mixtools) page
+
+[plotmm
+package](https://packages.oit.ncsu.edu/cran/web/packages/plotmm/vignettes/Getting-Started.html)
+for plotting model results
+
+# Example data
+
+The classic example dataset is the wait times between eruptions of the
+Old Faithful geyser, which seems to follow a bimodal distribution. See
+`?faithful` for more information.
+
+Show the data we are modelling:
 
 ``` r
-### multivariate
-## example data for mclust package
-# 145 rows, 4 columns
-data(diabetes)
-
-# diabetes |> dplyr::count(class)
-#      class  n
-# 1 Chemical 36
-# 2   Normal 76
-# 3    Overt 33
+wait_histo <- faithful |> 
+    ggplot(aes(x=waiting)) +
+    geom_histogram(breaks=seq(from=40, to=100, by=5),
+                   fill="lightgray", color="black", linewidth=0.2) +
+    theme_classic() +
+    labs(x="Wait time (minutes)",
+         y="number of observations",
+         title="Old Faithful data,\ndistribution of wait time between eruptions")
+wait_histo
 ```
 
-``` r
-### univariate
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
-## 155 numeric values
-data(acidity)
-plot(density(acidity))
+# Try mclust package
+
+Use the `densityMclust` function to model the data. The default setup
+(for univariate data, like we have) is:
+
+- it returns a `densityMclust` class object, but also produces a plot of
+  the estimated density
+- it models different numbers of classes (components), from 1-9
+- it models using equal “E” or unequal (“V”) variance
+- it can produces a bunch of other plot types, see `?plot.densityMclust`
+
+``` r
+faithful_mclust <- densityMclust(faithful$waiting, 
+                                 verbose=FALSE)
 ```
 
 ![](mixture_models_learning_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-``` r
-mod4 <- densityMclust(acidity)
-```
-
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+`summary()` is inelegant but shows me the model:
 
 ``` r
-summary(mod4)
+summary(faithful_mclust, parameters = TRUE)
 ```
 
     ## ------------------------------------------------------- 
@@ -66,89 +86,81 @@ summary(mod4)
     ## Mclust E (univariate, equal variance) model with 2 components: 
     ## 
     ##  log-likelihood   n df       BIC       ICL
-    ##       -185.9493 155  4 -392.0723 -398.5554
+    ##       -1034.002 272  4 -2090.427 -2099.576
+    ## 
+    ## Mixing probabilities:
+    ##         1         2 
+    ## 0.3609461 0.6390539 
+    ## 
+    ## Means:
+    ##        1        2 
+    ## 54.61675 80.09239 
+    ## 
+    ## Variances:
+    ##        1        2 
+    ## 34.44093 34.44093
 
-I think E means the components have equal variance and V means they
-don’t
+We can also ask it to plot the BIC of each model. Here we see that two
+classes is the the most likely solution fit, and that equal variance is
+slightly more likely than unequal variance.
+
+BIC is a metric that includes some penalty for each additional parameter
+in the model, so that it tries to avoid overfitting.
 
 ``` r
-plot(mod4, what = "BIC")
+plot(faithful_mclust, what = "BIC")
+```
+
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+We can show the model and the underlying data together:
+
+``` r
+plot(faithful_mclust, what = "density", data = faithful$waiting)
 ```
 
 ![](mixture_models_learning_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
-Try [plotmm
-package](https://packages.oit.ncsu.edu/cran/web/packages/plotmm/vignettes/Getting-Started.html)
-for plotting model results
+
+“Diagnostic” plot shows actual and modeled distributions. `type` can
+also be `qq`
 
 ``` r
-set.seed(576)
-
-## normalmixEM is from mixtools
-mixmdl <- normalmixEM(iris$Petal.Length, k = 2)
+plot(faithful_mclust, what = "diagnostic", type="cdf")
 ```
 
-    ## number of iterations= 9
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
-# mixmdl$x |> length()
-
-# visualize
-plot_mm(mixmdl, 2) +
-  labs(title = "Univariate Gaussian Mixture Model",
-       subtitle = "Mixtools Object")
+plot(faithful_mclust, what = "diagnostic", type="qq")
 ```
 
 ![](mixture_models_learning_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-``` r
-plot_cut_point(mixmdl, plot = TRUE, color = "amerika") # produces plot
-```
+# Try mixtools package
 
-    ## Registered S3 method overwritten by 'wesanderson':
-    ##   method        from   
-    ##   print.palette amerika
+Do the modelling using `mixtools::normalmixEM`:
 
-    ## `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+- the result (`wait1`) is a `mixEM` object
+- `mu` - we provide initial estimates for the means of each
+  distribution. Because we start with a vector of 2 for mu, it models a
+  mix of 2 normal distributions
+- `lambda` is the initial mixing proportion. (if you don’t specify,
+  it’ll start with equal shares)
+- it does 9 interations as it optimizes the proportions and means and
+  sigma
+- `sigma` is the starting standard deviation
+- you can use `mean.constr` to constrain one or more of the means, which
+  could be useful in our case, where we could use the cir0 distribution
+  to guess at one of the components. Same for `sd.constr`
 
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
-\### mixtools on example old faithful data
+Let’s tell it there are 2 categories, but nothing else (normalmixEM does
+not allow us to try different k all in one call, like mclust does). By
+default, the variance to be different on the two components but you can
+constrain it to be the same. You can specify starting mu (mean) and
+sigma (standard deviation), and you can constrain some components but
+not others (using mean.constr and sd.constr, see ?normalmixEM)
 
-Show the data we are modelling
-
-``` r
-wait_histo <- faithful |> 
-  ggplot(aes(x=waiting)) +
-  geom_histogram(breaks=seq(from=40, to=100, by=5),
-                 fill="lightgray", color="black", linewidth=0.2) +
-  theme_classic() +
-  labs(x="Wait time (minutes)",
-       y="number of observations",
-       title="Old faithful data,\ndistribution of wait time between eruptions")
-wait_histo
-```
-
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
-
-Do the modelling using `normalmixEM`:
-
--the result (`wait1`) is a `mixEM` object - `mu` - we provide initial
-estimates for the means of each distribution. Because we start with a
-vector of 2 for mu, it models a mix of 2 normal distributions - `lambda`
-is the initial mixing proportion. (if you don’t specify, it’ll start
-with equal shares) - it does 9 interations as it optimizes the
-proportions and means and sigma - `sigma` is the starting standard
-deviation - you can use `mean.constr` to constrain one or more of the
-means, which could be useful in our case, where we could use the cir0
-distribution to guess at one of the components. Same for `sd.constr`
-
-``` r
-wait1 <- normalmixEM(faithful$waiting, 
-                     lambda = .5, 
-                     mu = c(55, 80), 
-                     sigma = 5)
-```
-
-    ## number of iterations= 9
+Show a summary of the model:
 
 ``` r
 summary(wait1)
@@ -161,43 +173,39 @@ summary(wait1)
     ## sigma   5.86909  5.86909
     ## loglik at estimate:  -1034.002
 
-Show the model:
+Plot the model and the input data:
+
+- plot() calls plot.mixEM (`?plot.mixEM`)
+- by default this makes two plots (density and loglik) and requires the
+  user to hit return between each, but we can control that:
+- density plot (left) shows the component distributions
+- `loglik` plot (right) shows how the log-likelihood of the model
+  changed as the ME iterated - after 2 iterations it didn’t improve much
 
 ``` r
-## plot() calls plot.mixEM 
-# ?plot.mixEM
-## by default this  makes two plots (loglik and density) and requires the user to hit return between each
-## but we can control that and only plot one of those at time
+par(mfrow=c(1,2))
 plot(wait1, 
      loglik=FALSE, density=TRUE,
-     cex.axis=1.4, cex.lab=1.4, cex.main=1.8, 
-     main2="Time between Old Faithful eruptions", 
+     main2="Model (curves) and data (histogram)" ,
      xlab2="Minutes")
-```
 
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
-
-Show how the log-likelihood of the model changed as the ME iterated -
-after 2 iterations it didn’t improve much
-
-``` r
 plot(wait1, 
-     loglik=TRUE, density=FALSE,
-     cex.axis=1.4, cex.lab=1.4, cex.main=1.8)
+     loglik=TRUE, density=FALSE, main1="Log-likelihoods")
 ```
 
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
-plot_mm can plot the model. the gray shape is the distribution of the
-data being modelled, and the colors are the actual data
+plotmm::plot_mm can also plot the model. the gray shape is the
+distribution of the data being modelled, and the colors are the actual
+data
 
 ``` r
 p1 <- plot_mm(wait1, 2) +
-  labs(title = "Univariate Gaussian Mixture Model",
-       subtitle = "Mixtools Object") +
-  coord_cartesian(xlim=c(40,100)) 
+    labs(title = "normalmixEM model for faithful$waiting",
+         subtitle = "Plotted using plot_mm") +
+    coord_cartesian(xlim=c(40,100)) 
 
-##  I checked - tthe gray shows density of the data that was modeled:
+##  I checked - the gray shows density of the data that was modeled:
 # p1 +
 #   geom_density(data=faithful, aes(x=waiting), 
 #                color="forestgreen", lty=2)
@@ -205,42 +213,79 @@ p1 <- plot_mm(wait1, 2) +
 p1
 ```
 
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+Can also customize that using `plot_mix_comps_normal()` as follows:
 
 ``` r
-# Fit a univariate mixture model via mixtools. 
-# This time around we allow the sigma (standard dev) to vary - we do tell it to expect 2 components but we don't give any other priors
-
-set.seed(576)
-
-mixmdl <- normalmixEM(faithful$waiting, k = 2)
+data.frame(x = wait2$x) |>
+    ggplot() +
+    ## show distribution of the actual data
+    geom_histogram(aes(x, after_stat(density)), 
+                   binwidth = 5, colour = "black", fill="lightgray") +
+    ### plot component 1
+    stat_function(geom = "line", 
+                  fun = plot_mix_comps_normal, # here is the function
+                  args = list(wait2$mu[1], wait2$sigma[1], lam = wait2$lambda[1]),
+                  colour = "red", lwd = 1.5) +
+    ### plot component 2
+    stat_function(geom = "line", 
+                  fun = plot_mix_comps_normal, # here again as k = 2
+                  args = list(wait2$mu[2], wait2$sigma[2], lam = wait2$lambda[2]),
+                  colour = "blue", lwd = 1.5) +
+    ylab("Density") +
+    theme_classic()
 ```
 
-    ## number of iterations= 24
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
-# Customize a plot with `plot_mix_comps_normal()`
+`plot_cut_point()` - if we want to use the model to predict which class
+each datapoint is in, we might want to determine the thresholds between
+classes:
 
 ``` r
-data.frame(x = mixmdl$x) |>
-  ggplot() +
-  ## show distribution of the actual data
-  geom_histogram(aes(x, after_stat(density)), 
-                 binwidth = 5, colour = "black", fill="lightgray") +
-  ### plot component 1
-  stat_function(geom = "line", 
-                fun = plot_mix_comps_normal, # here is the function
-                args = list(mixmdl$mu[1], mixmdl$sigma[1], lam = mixmdl$lambda[1]),
-                colour = "red", lwd = 1.5) +
-  ### plot component 2
-  stat_function(geom = "line", 
-                fun = plot_mix_comps_normal, # here again as k = 2
-                args = list(mixmdl$mu[2], mixmdl$sigma[2], lam = mixmdl$lambda[2]),
-                colour = "blue", lwd = 1.5) +
-  ylab("Density") +
-  theme_classic()
+## message=FALSE otherwise I get a message about the binwidth
+plot_cut_point(wait1, plot = TRUE, color = "amerika") + # produces plot
+    labs(x="Wait time (minutes)")
 ```
 
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+mixtools has a function called multmixmodel.sel that assesses how many
+components are in the data, but that’s only for multivariate data. I
+don’t see an equivalent function for univariate data, unless we have \>1
+sample of the data. I think maybe we are supposed to subsample for a
+bootstrapping approach, see ?boot.se
+
+# mixtools::mixturegram
+
+See ?mixturegram
+
+We generate some example data that’s a 30:70 mix of two normal
+distributions, with means of -6 and 0, and standard deviation of 1 for
+both
+
+``` r
+set.seed(100)
+n <- 100
+w <- rmultinom(n,1,c(.3,.7))
+y <- sapply(1:n, function(i)  {
+    w[1,i]*rnorm(1,-6,1) + w[2,i]*rnorm(1,0,1)
+})
+```
+
+Show the distribution of the data:
+
+``` r
+tibble(y=y) |> 
+    ggplot(aes(x=y)) +
+    geom_density() +
+    theme_classic()
+```
+
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+Show a ‘mixturegram’. I don’t understand what the “PC score” is here.
 
 # Finished
 
