@@ -541,7 +541,11 @@ faithful_tidyLPA |>
 
 # TidyDensity package
 
-`tidy_normal()` might be helpful
+`tidy_normal()` might be helpful.
+
+See [blog
+post](https://www.spsanderson.com/steveondata/posts/2025-06-23/) or
+[vignette](https://cran.r-project.org/web/packages/TidyDensity/vignettes/getting-started.html)
 
 ``` r
 tidy_normal(.n = 200, 
