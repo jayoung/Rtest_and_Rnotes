@@ -2,7 +2,7 @@ mixture_models_learning
 ================
 Janet Young
 
-2026-05-18
+2026-05-19
 
 # Goal
 
@@ -21,6 +21,12 @@ of distribution (e.g. all normal) but it is also possible to model
 mixtures of different types of distribution.
 
 Expectation maximization algorithms are often used to do the modeling
+
+See also [a
+script](https://github.com/gak2882/SATAY/blob/main/260615_flowData_analysis/Rscripts_janet/100_flowData_analysis_janet.Rmd)
+and [its
+output](https://github.com/gak2882/SATAY/blob/main/260615_flowData_analysis/Rscripts_janet/100_flowData_analysis_janet.Rmd)
+that I wrote to looks at flow sorting data for the 2micron SATAY project
 
 # Packages used
 
@@ -419,7 +425,7 @@ faithful_tidyLPA <- estimate_profiles(faithful$waiting,
                               n_profiles=1:6,
                               variances = c("equal", "varying"),
                               covariances = c("zero", "zero"))
-## by default it does the modelling using 'OpenMx' package but it can also use mclust or MplusAutomation
+## by default it says it does the modelling using 'OpenMx' package but it can also use mclust or MplusAutomation. ?estimate_profiles is a bit ambiguous about what the default is, actually.
 ```
 
 Here’s the overall result:
