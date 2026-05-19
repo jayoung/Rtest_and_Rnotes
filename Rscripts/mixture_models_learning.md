@@ -539,6 +539,44 @@ faithful_tidyLPA |>
     # plot_density()
 ```
 
+# TidyDensity package
+
+`tidy_normal()` might be helpful
+
+``` r
+tidy_normal(.n = 200, 
+            .mean = 0, .sd = 1, 
+            .num_sims = 1, .return_tibble = TRUE) |> 
+    ggplot(aes(x=y)) +
+    geom_density() +
+    theme_classic()
+```
+
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+
+Use tidy_normal to get a mixture distribution:
+
+``` r
+dat <- bind_rows(
+    tidy_normal(.n = 100, 
+                   .mean = 0, .sd = 1, 
+                   .num_sims = 1, .return_tibble = TRUE) |> 
+        mutate(my_sim_num="A"),
+    tidy_normal(.n = 500, 
+                   .mean = 10, .sd = 1, 
+                   .num_sims = 1, .return_tibble = TRUE)  |> 
+        mutate(my_sim_num="B"))
+
+## geom_density default is to scaling so that each group has the same area, 
+# use after_stat(count) to scale accordingly
+dat |>
+    ggplot(aes(x=y, y=after_stat(count), group=my_sim_num, color=my_sim_num)) +
+    geom_density(position="stack") +
+    theme_classic()
+```
+
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+
 # Finished
 
 ``` r
@@ -563,11 +601,11 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] tidyLPA_2.0.2    tidySEM_0.2.10   mixtools_2.0.0.1 plotmm_0.1.2    
-    ##  [5] mclust_6.1.2     patchwork_1.3.2  here_1.0.2       kableExtra_1.4.0
-    ##  [9] lubridate_1.9.5  forcats_1.0.1    stringr_1.6.0    dplyr_1.2.1     
-    ## [13] purrr_1.2.1      readr_2.2.0      tidyr_1.3.2      tibble_3.3.1    
-    ## [17] ggplot2_4.0.2    tidyverse_2.0.0 
+    ##  [1] TidyDensity_1.5.2 tidyLPA_2.0.2     tidySEM_0.2.10    mixtools_2.0.0.1 
+    ##  [5] plotmm_0.1.2      mclust_6.1.2      patchwork_1.3.2   here_1.0.2       
+    ##  [9] kableExtra_1.4.0  lubridate_1.9.5   forcats_1.0.1     stringr_1.6.0    
+    ## [13] dplyr_1.2.1       purrr_1.2.1       readr_2.2.0       tidyr_1.3.2      
+    ## [17] tibble_3.3.1      ggplot2_4.0.2     tidyverse_2.0.0  
     ## 
     ## loaded via a namespace (and not attached):
     ##   [1] mnormt_2.1.2        sandwich_3.1-1      rlang_1.1.7        

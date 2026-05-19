@@ -54,6 +54,7 @@ library(plotmm)
 library(mixtools)
 library(datasets)  ## for old faithful data
 library(tidyLPA)
+library(TidyDensity)
 ```
 
 
@@ -437,10 +438,6 @@ faithful_tidyLPA |>
     relocate(Class)
 ```
 
-```{r}
-
-```
-
 
 ```{r}
 # faithful_mclust_G2 |> 
@@ -450,7 +447,41 @@ faithful_tidyLPA |>
 ```
 
 
+# TidyDensity package  
 
+`tidy_normal()` might be helpful
+
+```{r, fig.height=3.5, fig.width=5}
+
+tidy_normal(.n = 200, 
+            .mean = 0, .sd = 1, 
+            .num_sims = 1, .return_tibble = TRUE) |> 
+    ggplot(aes(x=y)) +
+    geom_density() +
+    theme_classic()
+```
+
+Use tidy_normal to get a mixture distribution:
+
+```{r, fig.height=3.5, fig.width=5}
+
+dat <- bind_rows(
+    tidy_normal(.n = 100, 
+                   .mean = 0, .sd = 1, 
+                   .num_sims = 1, .return_tibble = TRUE) |> 
+        mutate(my_sim_num="A"),
+    tidy_normal(.n = 500, 
+                   .mean = 10, .sd = 1, 
+                   .num_sims = 1, .return_tibble = TRUE)  |> 
+        mutate(my_sim_num="B"))
+
+## geom_density default is to scaling so that each group has the same area, 
+# use after_stat(count) to scale accordingly
+dat |>
+    ggplot(aes(x=y, y=after_stat(count), group=my_sim_num, color=my_sim_num)) +
+    geom_density(position="stack") +
+    theme_classic()
+```
 
 # Finished
 
