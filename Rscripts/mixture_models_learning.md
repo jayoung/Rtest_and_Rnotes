@@ -20,7 +20,7 @@ mixtures of different types of distribution.
 
 Expectation maximization algorithms are often used to do the modeling
 
-## Packges used
+# Packages used
 
 mclust
 [vignette](https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html)
@@ -49,8 +49,18 @@ wait_histo <- faithful |>
     theme_classic() +
     labs(x="Wait time (minutes)",
          y="number of observations",
-         title="Old Faithful data,\ndistribution of wait time between eruptions")
-wait_histo
+         title="(histogram)")
+
+wait_density <- faithful |> 
+    ggplot(aes(x=waiting)) +
+    geom_density() +
+    theme_classic() +
+    labs(x="Wait time (minutes)",
+         y="Relative frequency",
+         title="density plot")
+
+(wait_histo + wait_density) +
+    plot_annotation(title="Old Faithful data,\ndistribution of wait time between eruptions")
 ```
 
 ![](mixture_models_learning_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
@@ -60,20 +70,18 @@ wait_histo
 Use the `densityMclust` function to model the data. The default setup
 (for univariate data, like we have) is:
 
-- it returns a `densityMclust` class object, but also produces a plot of
-  the estimated density
+- it returns a `densityMclust` class object
 - it models different numbers of classes (components), from 1-9
 - it models using equal “E” or unequal (“V”) variance
 - it can produces a bunch of other plot types, see `?plot.densityMclust`
 
 ``` r
-faithful_mclust <- densityMclust(faithful$waiting, 
+faithful_mclust <- densityMclust(faithful$waiting,
+                                 plot=FALSE, # default is to plot the density of the data
                                  verbose=FALSE)
 ```
 
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
-
-`summary()` is inelegant but shows me the model:
+`summary()` is inelegant but shows me the best model:
 
 ``` r
 summary(faithful_mclust, parameters = TRUE)
@@ -100,41 +108,42 @@ summary(faithful_mclust, parameters = TRUE)
     ##        1        2 
     ## 34.44093 34.44093
 
-We can also ask it to plot the BIC of each model. Here we see that two
-classes is the the most likely solution fit, and that equal variance is
-slightly more likely than unequal variance.
+We can also ask it to plot the BIC of each model it considered.
+
+Here we see that two classes is the the most likely solution fit, and
+that equal variance is slightly more likely than unequal variance.
 
 BIC is a metric that includes some penalty for each additional parameter
 in the model, so that it tries to avoid overfitting.
 
+We can show the model and the underlying data together:
+
 ``` r
+par(mfrow=c(1,2))
 plot(faithful_mclust, what = "BIC")
+title(main="model selection", outer=FALSE, line=0.5)
+
+plot(faithful_mclust, what = "density", data = faithful$waiting)
+title(main="best model", outer=FALSE, line=0.5)
+
+title(main="mclust modelling", outer=TRUE, line=-2)
 ```
 
 ![](mixture_models_learning_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-We can show the model and the underlying data together:
+“Diagnostic” plots show actual and modeled distributions.
 
 ``` r
-plot(faithful_mclust, what = "density", data = faithful$waiting)
+par(mfrow=c(1,2))
+
+plot(faithful_mclust, what = "diagnostic", type="cdf")
+title(main="CDF diagnostic plot", line=0.5)
+
+plot(faithful_mclust, what = "diagnostic", type="qq")
+title(main="QQ diagnostic plot", line=0.5)
 ```
 
 ![](mixture_models_learning_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
-
-“Diagnostic” plot shows actual and modeled distributions. `type` can
-also be `qq`
-
-``` r
-plot(faithful_mclust, what = "diagnostic", type="cdf")
-```
-
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
-
-``` r
-plot(faithful_mclust, what = "diagnostic", type="qq")
-```
-
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 # Try mixtools package
 
@@ -193,11 +202,11 @@ plot(wait1,
      loglik=TRUE, density=FALSE, main1="Log-likelihoods")
 ```
 
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
-plotmm::plot_mm can also plot the model. the gray shape is the
-distribution of the data being modelled, and the colors are the actual
-data
+plotmm::plot_mm can also plot the model (uses ggplot approach). the gray
+shape is the distribution of the data being modelled, and the colors are
+the actual data
 
 ``` r
 p1 <- plot_mm(wait1, 2) +
@@ -213,7 +222,7 @@ p1 <- plot_mm(wait1, 2) +
 p1
 ```
 
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 Can also customize that using `plot_mix_comps_normal()` as follows:
 
@@ -237,7 +246,7 @@ data.frame(x = wait2$x) |>
     theme_classic()
 ```
 
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 `plot_cut_point()` - if we want to use the model to predict which class
 each datapoint is in, we might want to determine the thresholds between
@@ -249,7 +258,7 @@ plot_cut_point(wait1, plot = TRUE, color = "amerika") + # produces plot
     labs(x="Wait time (minutes)")
 ```
 
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 mixtools has a function called multmixmodel.sel that assesses how many
 components are in the data, but that’s only for multivariate data. I
@@ -257,7 +266,7 @@ don’t see an equivalent function for univariate data, unless we have \>1
 sample of the data. I think maybe we are supposed to subsample for a
 bootstrapping approach, see ?boot.se
 
-# mixtools::mixturegram
+### mixtools::mixturegram
 
 See ?mixturegram
 
@@ -283,9 +292,54 @@ tibble(y=y) |>
     theme_classic()
 ```
 
-![](mixture_models_learning_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 Show a ‘mixturegram’. I don’t understand what the “PC score” is here.
+
+``` r
+selection <- function(i, data, rep=30){
+    out <- replicate(rep,normalmixEM(data,epsilon=1e-06,
+                                     k=i,maxit=5000),simplify=FALSE)
+    counts <- lapply(1:rep,function(j) 
+        table(apply(out[[j]]$posterior,1,
+                    which.max)))
+    counts.length <- sapply(counts, length)
+    counts.min <- sapply(counts, min)
+    counts.test <- (counts.length != i)|(counts.min < 5)
+    if(sum(counts.test) > 0 & sum(counts.test) < rep) 
+        out <- out[!counts.test]
+    l <- unlist(lapply(out, function(x) x$loglik))
+    tmp <- out[[which.max(l)]]
+}
+
+### does mixture modelling with 2:5 classes, replicating each 30 times
+all.out <- lapply(2:5, selection, data = y, rep = 2)
+```
+
+    ## number of iterations= 7 
+    ## number of iterations= 7 
+    ## number of iterations= 52 
+    ## number of iterations= 88 
+    ## number of iterations= 266 
+    ## number of iterations= 111 
+    ## number of iterations= 262 
+    ## number of iterations= 69
+
+``` r
+## pmbs is a list of length 4, each is a matrix, 100 rows by 2,3,4,5 columns
+pmbs <- lapply(1:length(all.out), function(i) 
+    all.out[[i]]$post)
+
+
+mixturegram(y, pmbs, method = "pca", all.n = FALSE,
+            id.con = NULL, score = 1, 
+            main = "Mixturegram (Well-Separated Data)")
+```
+
+![](mixture_models_learning_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+    ## $stopping
+    ## [1] 1.000000000 0.012826548 0.005056038 0.004510841 0.003132543
 
 # Finished
 

@@ -22,7 +22,7 @@ Often we model a mixture of subpopulations that all follow the same type of dist
 Expectation maximization algorithms are often used to do the modeling
 
 
-## Packges used
+# Packages used
 
 
 mclust [vignette](https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html)
@@ -60,7 +60,7 @@ The classic example dataset is the wait times between eruptions of the Old Faith
 
 Show the data we are modelling:
 
-```{r, fig.height=3.5, fig.width=5}
+```{r, fig.height=3.5, fig.width=8}
 wait_histo <- faithful |> 
     ggplot(aes(x=waiting)) +
     geom_histogram(breaks=seq(from=40, to=100, by=5),
@@ -68,57 +68,76 @@ wait_histo <- faithful |>
     theme_classic() +
     labs(x="Wait time (minutes)",
          y="number of observations",
-         title="Old Faithful data,\ndistribution of wait time between eruptions")
-wait_histo
+         title="(histogram)")
+
+wait_density <- faithful |> 
+    ggplot(aes(x=waiting)) +
+    geom_density() +
+    theme_classic() +
+    labs(x="Wait time (minutes)",
+         y="Relative frequency",
+         title="density plot")
+
+(wait_histo + wait_density) +
+    plot_annotation(title="Old Faithful data,\ndistribution of wait time between eruptions")
 ```
+
 
 # Try mclust package
 
 
 Use the `densityMclust` function to model the data. The default setup (for univariate data, like we have) is:
 
-- it returns a `densityMclust` class object, but also produces a plot of the estimated density
+- it returns a `densityMclust` class object
 - it models different numbers of classes (components), from 1-9
 - it models using equal "E" or unequal ("V") variance
 - it can produces a bunch of other plot types, see `?plot.densityMclust`
 
 ```{r, fig.height=3.5, fig.width=5, message=FALSE, warning=FALSE}
-faithful_mclust <- densityMclust(faithful$waiting, 
+faithful_mclust <- densityMclust(faithful$waiting,
+                                 plot=FALSE, # default is to plot the density of the data
                                  verbose=FALSE)
 ```
 
-`summary()` is inelegant but shows me the model:
+`summary()` is inelegant but shows me the best model:
 
 ```{r}
 summary(faithful_mclust, parameters = TRUE)
 ```
 
-We can also ask it to plot the BIC of each model. Here we see that two classes is the the most likely solution fit, and that equal variance is slightly more likely than unequal variance.
+We can also ask it to plot the BIC of each model it considered. 
+
+Here we see that two classes is the the most likely solution fit, and that equal variance is slightly more likely than unequal variance.
 
 BIC is a metric that includes some penalty for each additional parameter in the model, so that it tries to avoid overfitting.
-
-```{r, fig.height=3.5, fig.width=5, message=FALSE, warning=FALSE}
-plot(faithful_mclust, what = "BIC")
-```
 
 
 We can show the model and the underlying data together:
 
-```{r, fig.height=3.5, fig.width=5, message=FALSE, warning=FALSE}
+
+```{r, fig.height=3.5, fig.width=8, message=FALSE, warning=FALSE}
+par(mfrow=c(1,2))
+plot(faithful_mclust, what = "BIC")
+title(main="model selection", outer=FALSE, line=0.5)
+
 plot(faithful_mclust, what = "density", data = faithful$waiting)
+title(main="best model", outer=FALSE, line=0.5)
+
+title(main="mclust modelling", outer=TRUE, line=-2)
 ```
 
 
 
-"Diagnostic" plot shows actual and modeled distributions. `type` can also be `qq`
+"Diagnostic" plots show actual and modeled distributions.
 
-```{r, fig.height=3.5, fig.width=5, message=FALSE, warning=FALSE}
+```{r, fig.height=3.5, fig.width=8, message=FALSE, warning=FALSE}
+par(mfrow=c(1,2))
+
 plot(faithful_mclust, what = "diagnostic", type="cdf")
-```
+title(main="CDF diagnostic plot", line=0.5)
 
-
-```{r, fig.height=3.5, fig.width=5, message=FALSE, warning=FALSE}
 plot(faithful_mclust, what = "diagnostic", type="qq")
+title(main="QQ diagnostic plot", line=0.5)
 ```
 
 
@@ -174,7 +193,7 @@ plot(wait1,
      loglik=TRUE, density=FALSE, main1="Log-likelihoods")
 ```
 
-plotmm::plot_mm can also plot the model. the gray shape is the distribution of the data being modelled, and the colors are the actual data
+plotmm::plot_mm can also plot the model (uses ggplot approach). the gray shape is the distribution of the data being modelled, and the colors are the actual data
 
 ```{r, fig.height=3.5, fig.width=5}
 p1 <- plot_mm(wait1, 2) +
@@ -228,7 +247,7 @@ mixtools has a function called multmixmodel.sel that assesses how many component
 
 
 
-# mixtools::mixturegram
+### mixtools::mixturegram
 
 See ?mixturegram
 
@@ -254,7 +273,7 @@ tibble(y=y) |>
 
 Show a 'mixturegram'. I don't understand what the "PC score" is here.
 
-```{r, include=FALSE}
+```{r}
 selection <- function(i, data, rep=30){
     out <- replicate(rep,normalmixEM(data,epsilon=1e-06,
                                      k=i,maxit=5000),simplify=FALSE)
