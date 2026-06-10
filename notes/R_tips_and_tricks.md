@@ -180,14 +180,22 @@ help.search("plot")
 
 help(package="BiocInstaller")
 will list the functions
+```
 
+`sos::findFn()` can search tons of package docs, finds help pages for any function that mentions Petal.Length. When I then call PL, it shoots up an html page with links to all of those
+
+```
 library(sos) 
 PL <- findFn("Petal.Length")  
-#### seems like it goes through lots of R docs, finds help pages for any function that mentions Petal.Length. When I then call PL, it shoots up an html page with links to all of those
+```
 
+`RSiteSearch()` is similar - also shoots up a web page with links to lots of things mentioning Petal.Length. From utils package. 
+```
 RSiteSearch("Petal.Length")  
-### shoots up a web page with links to lots of things mentioning Petal.Length. From utils package. 
+```
 
+Bioconductor vignettes:
+```
 library(Biobase)
 openVignette(package="seqLogo") #### openVignette is a Biobase function
 
@@ -215,7 +223,10 @@ print(v1)  ### brings up the pdf
 edit (v1)  ### brings up the associated R code
 ```
 
-## Debugging
+
+
+
+# Debugging
 
 
 Three options:    
@@ -226,7 +237,7 @@ See (`explore_debugging_functions.R`)[Rscripts/explore_debugging_functions.R] fo
 
 [A tutorial](https://data-flair.training/blogs/debugging-in-r-programming/) on debigging
 
-## Pipes:
+# Pipes:
 
 I was previous using `magrittr`'s pipe in my code:   `%>%`.  But I've recently switched MOST code to the native R pipe: `|>` (introduced in R 4.1.0).
 
