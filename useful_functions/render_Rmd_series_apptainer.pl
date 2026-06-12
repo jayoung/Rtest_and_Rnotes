@@ -21,6 +21,7 @@ my $use_sbatch = 1;
 my $numThreads = 1;
 my $walltime = "3-0";
 my $debug = 0;
+my $sbatchOptions = "";   # e.g. --sbatch_opt="--exclude=gizmoj6"
 
 GetOptions("series=s"      => \$series_name,
            "apptainer=s"   => \$apptainer_module,
@@ -28,6 +29,7 @@ GetOptions("series=s"      => \$series_name,
            "html=i"        => \$keep_html,
            "t=i"           => \$numThreads,
            "sbatch=i"      => \$use_sbatch,
+           "sbatch_opt=s"  => \$sbatchOptions,
            "wall=s"        => \$walltime,
            "debug"         => \$debug # '--debug' to just test
            ) or die "\n\nterminating - unknown option(s) specified on command line\n\n"; 
@@ -118,7 +120,7 @@ close APP;
 
 my $command;
 if ($use_sbatch == 1) {
-    $command = "sbatch --job-name=Rmd -t $walltime --cpus-per-task=$numThreads --wrap=\"bash ./$apptainer_wrapper 2>&1 >> $logfile\"";
+    $command = "sbatch $sbatchOptions --job-name=Rmd -t $walltime --cpus-per-task=$numThreads --wrap=\"bash ./$apptainer_wrapper 2>&1 >> $logfile\"";
 } else {
     $command = "bash ./$apptainer_wrapper 2>&1 >> $logfile";
 }
