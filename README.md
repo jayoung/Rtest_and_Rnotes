@@ -70,6 +70,13 @@ R colors
 - [my color_testing.Rmd script](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/color_testing.md)
 
 
+Warnings in Rmd documents - the default is to only display certain warnings once per 8 hours (or something). Use this in an Rmd chunk to display warnings >1 every time:
+
+```
+options(lifecycle_verbosity = "warning")
+```
+
+
 ## My coding intentions
 
 Use `janitor::tabyl` more for cross-tables (see [demo](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/janitor_cross_tables_demo.md))
