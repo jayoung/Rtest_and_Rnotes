@@ -24,7 +24,18 @@ Some notes I'm storing in other repos:
 
 ## Quick things I often need to remember or copy/paste:
 
-To Knit/render an Rmd doc from the linux command line, I have a couple of scripts in this repo (in `useful_functions`) that I can run from gizmo/rhino: `render_Rmd.pl` (run scripts in parallel) and `render_Rmd_series.pl` (run scripts in series) 
+To Knit/render an Rmd doc from the linux command line, I have a couple of scripts in this repo (in `useful_functions`) that I can run from gizmo/rhino: `render_Rmd_parallel_apptainer.pl` (run scripts in parallel) and `render_Rmd_series_apptainer.pl` (run scripts in series). Also see `render_Rmd_series_forMac.perl` 
+
+
+Format a table with kable
+```
+|> 
+   rename_with(~ str_replace_all(., "_", " ")) |>
+   kable(format.args = list(big.mark = ","),
+         digits=1) |> 
+   kable_styling(full_width = FALSE)
+```
+
 
 Insert an image into a .md or .Rmd document:
 ```

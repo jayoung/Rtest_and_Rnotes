@@ -2,10 +2,12 @@
 
 We use the `renv` package within each Rproject to manage package versions and allow reproducibility
 
+
+See [below](renv_notes.md#initialize-a-new-project) for how to initialize a new project using `renv` (I do it the non-default way because I use Bioconductor packages).
+
 When you use Rstudio to initialize a new project you can tell it to (a) use `renv` and (b) start an associated git repo.
 
 When you start a fresh project using `renv` it doesn't see ANY of the packages we installed system-wide.
-
 
 Example repo where I used `renv`: [test_Rpackage_versions](https://github.com/jayoung/test_Rpackage_versions). Cloned on my work laptop in `/Users/jayoung/Documents/local_files/Rprojects/test_Rpackage_versions`.
 

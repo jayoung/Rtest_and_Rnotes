@@ -75,11 +75,20 @@ knitr::opts_chunk$set(dev = "ragg_png", fig.ext = "png")
 
 I put those code lines in a (hidden) file called `~/.ragg_png_functions_from_dan.R` (also linked in an unhidden way, at `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes/useful_functions/render_Rmd_testScripts/ragg_png_functions_from_dan.R`).
 
-I will source that from `.Rprofile` (global on rhino, and local if there is one), and then I shouldn't need to include it in my code.  Not putting in my Mac global for now - don't think it's relevant.
+I will source that from `.Rprofile` (global on rhino, and local if there is one), and then I shouldn't need to include it in my code. 
 
+I'm also placing a copy of rhino::`~/.ragg_png_functions_from_dan.R` into the 16" MBPro's `/Users/jayoung`. xxx have not yet put it on the 2024 work laptop xxx.
+
+Then, within an `.Rprofile` file, I can include this chunk and it should pick up that file no matter which computer I run on:
 ```
-source("/home/jayoung/.ragg_png_functions_from_dan.R")
+## run some code from Dan Tenenbaum that helps me produce png files (not svg) if I render an Rscript via a shell script:
+ragg_func_file <- "/home/jayoung/.ragg_png_functions_from_dan.R"
+if (!file.exists(ragg_func_file)) {
+    ragg_func_file <- "/Users/jayoung/.ragg_png_functions_from_dan.R"
+}
+source(ragg_func_file)
 ```
+
 
 See also advice on ["Two Hidden Ways to Set Global Chunk Options for knitr"](https://yihui.org/en/2023/10/opts-chunk/).
 
