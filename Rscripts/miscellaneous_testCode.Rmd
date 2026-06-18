@@ -34,7 +34,7 @@ For all these code chunks, I just show the first 6 rows of the data
 
 Example data from [stackoverflow](https://stackoverflow.com/questions/61367186/pivot-longer-into-multiple-columns) (show first 6 rows)
 
-```{r}
+```{r pivot_longer with multiple columns}
 
 dat <- tribble(
     ~group,  ~BP,  ~HS,  ~BB, ~lowerBP, ~upperBP, ~lowerHS, ~upperHS, ~lowerBB, ~upperBB,
@@ -53,7 +53,7 @@ dat |>
 
 First we pivot_longer using names_pattern argument (show first 6 rows)
 
-```{r}
+```{r pivot_longer using names_pattern}
 longer <- dat |> 
     pivot_longer(cols=-group, 
                  names_pattern = "(.*)(..)$", 
@@ -68,7 +68,7 @@ longer |>
 Then we pivot wider to get the data how we really want it to look:
 
 
-```{r}
+```{r pivot_wider}
 answer <- longer |> 
     pivot_wider(id_cols = c(group, name), 
                 names_from = limit, values_from = value, 
@@ -81,7 +81,7 @@ answer |>
 
 Alternative in one step, using the special `.value` tag for the `names_to` argument:
 
-```{r}
+```{r pivot_longer with multiple columns in one step}
 dat |> 
     rename_with(~sub("^(BP|HS|BB)$", "values\\1", .)) |>     # add prefix values
     pivot_longer(cols= -1,
@@ -121,7 +121,7 @@ us_rent_income |>
 
 From [here](https://rfortherestofus.com/2024/04/seperate-fcts)
 
-```{r}
+```{r separate_longer trick read data}
 
 details <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-25/details.csv",
                            show_col_types = FALSE)
@@ -134,7 +134,7 @@ board_games |>
     kable_styling(full_width = FALSE)
 ```
 
-```{r}
+```{r separate_longer trick do it}
 board_games |>
     separate_longer_delim(cols = boardgamecategory, delim = ", ") |>
     mutate(
@@ -149,14 +149,15 @@ board_games |>
                 `'` = ""
             ) |> 
                 coll() ## coll() tells str_replace_all() that we explicitly do not want to use regular expressions.
-        ))|> 
+        )) |> 
+    slice_head(n=10) |> 
     kable() |> 
     kable_styling(full_width = FALSE)
 ```
 
 ## barplots of counts in each category
 
-```{r}
+```{r simple barplots, fig.height=3, fig.width=4}
 m |> 
     ggplot(aes(x=as.factor(cyl))) +
     geom_bar()
@@ -169,7 +170,7 @@ m |>
 
 Here the statistical summary applies to all observations in the facet together.
 
-```{r, fig.height=3.5, fig.width=6}
+```{r add num observations to facetted plot, fig.height=3.5, fig.width=6}
 ## calculate the summary stats separately.
 # note that the facetting variable (Species) is a column in the summary 
 iris_summary <- iris |> 
@@ -198,7 +199,7 @@ Each facet is a geom_boxplot.
 Here the statistical summary applies to each group within each facet.
 
 
-```{r}
+```{r add num observations to facetted plot geom_boxplot}
 ## get example data in long format
 iris_long <- iris |> 
     pivot_longer(cols=-Species, names_to="variable", values_to="value")
@@ -386,14 +387,14 @@ attributes(b)
 
 https://github.com/sfirke/packagemetrics?tab=readme-ov-file
 
-```{r}
+```{r get package list metrics}
 # devtools::install_github("sfirke/packagemetrics")
 library("packagemetrics")
 dplyr_and_dt <- package_list_metrics(c("dplyr", "data.table"))
 # data frame
 ```
 
-```{r}
+```{r metrics table}
 metrics_table(dplyr_and_dt)
 ```
 
