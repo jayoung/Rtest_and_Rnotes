@@ -10,10 +10,16 @@ use Getopt::Long;
 
 ## questions - if I want to use multiple threads inside the apptainer, does it work any differently?
 
+## xx haven't actually tested this now that I added R_LIBS_USER
+
 my $series_name = "zzz_Rmd_series"; ## this will be used as the start of the output file names for those files that relate to all Rmd files in the series
 
 my $apptainer_module = "Apptainer/1.1.6";
 my $sif = "https://sif-registry.fredhutch.org/bioconductor_docker_RELEASE_3_22-R-4.5.2.sif";
+
+### If I'm using renv to manage packages, I need to supply the .libPaths() via R_LIBS_USER:
+my $using_renv = 1;
+my $r_libs_user = "/fh/fast/malik_h/user/jayoung/forOtherPeople/forGrantKing/SATAY_stuff/2micron_miscAnalyses/renv/library/linux-ubuntu-noble/R-4.5/x86_64-pc-linux-gnu";
 
 my $keep_html = 0;
 
@@ -21,15 +27,15 @@ my $use_sbatch = 1;
 my $numThreads = 1;
 my $walltime = "3-0";
 my $debug = 0;
-my $sbatchOptions = "";   # e.g. --sbatch_opt="--exclude=gizmoj6"
 
 GetOptions("series=s"      => \$series_name,
            "apptainer=s"   => \$apptainer_module,
            "sif=s"         => \$sif,
+           "renv=i"        => \$using_renv,
+           "lib_dir"       => \$r_libs_user,
            "html=i"        => \$keep_html,
            "t=i"           => \$numThreads,
            "sbatch=i"      => \$use_sbatch,
-           "sbatch_opt=s"  => \$sbatchOptions,
            "wall=s"        => \$walltime,
            "debug"         => \$debug # '--debug' to just test
            ) or die "\n\nterminating - unknown option(s) specified on command line\n\n"; 
@@ -61,6 +67,10 @@ foreach my $file (@ARGV) {
     open (SH, "> $shellScript");
     print SH  "#!/bin/bash\n";
     print SH "\n\n";
+
+    ### set R_LIBS_USER to this project dir because I'm using renv
+    print SH "export R_LIBS_USER=$r_libs_user\n\n";
+
     print SH "Rscript -e 'rmarkdown::render(\"$file\", output_format=\"github_document\", clean=TRUE)' > $Rout 2> $Rerr\n\n";
     if (!$keep_html) { print SH "rm $fileStem.html 2>&1 >> $logfile\n"; }
     close SH;
@@ -90,7 +100,7 @@ foreach my $file (@ARGV) {
 
     my $command;
     if ($use_sbatch == 1) {
-        $command = "sbatch $sbatchOptions --job-name=Rmd -t $walltime --cpus-per-task=$numThreads --wrap=\"bash ./$apptainer_wrapper 2>&1 >> $logfile\"";
+        $command = "sbatch --job-name=Rmd -t $walltime --cpus-per-task=$numThreads --wrap=\"bash ./$apptainer_wrapper 2>&1 >> $logfile\"";
     } else {
         $command = "bash ./$apptainer_wrapper 2>&1 >> $logfile";
     }
