@@ -16,7 +16,8 @@ my $apptainer_module = "Apptainer/1.1.6";
 my $sif = "https://sif-registry.fredhutch.org/bioconductor_docker_RELEASE_3_22-R-4.5.2.sif";
 
 ### If I'm using renv to manage packages, I need to supply the .libPaths() via R_LIBS_USER:
-my $using_renv = 1;
+my $using_renv = 0;
+# example lib location for the 2micron_miscAnalyses repo:
 my $r_libs_user = "/fh/fast/malik_h/user/jayoung/forOtherPeople/forGrantKing/SATAY_stuff/2micron_miscAnalyses/renv/library/linux-ubuntu-noble/R-4.5/x86_64-pc-linux-gnu";
 
 my $keep_html = 0;
