@@ -2,7 +2,7 @@ ggtree_demo
 ================
 Janet Young
 
-2026-04-08
+2026-07-14
 
 The rendered version of this Rmd script is
 [here](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/phylogenetics/ggtree_demo.md).
@@ -70,6 +70,106 @@ nwk_tree |>
 
 ![](ggtree_demo_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
+# ggtree layouts
+
+Different ggtree layouts are shown
+[here](https://yulab-smu.top/treedata-book/chapter4.html?q=equal_angle#tree-layouts).
+This is the same thing but easier to read:
+
+``` r
+set.seed(2017-02-16)
+my_tree <- rtree(50)  # default is to make rooted trees
+# my_mrca <- getMRCA(my_tree, my_tree$tip.label)
+
+my_tree_unrooted <- unroot(my_tree)
+# my_mrca_unrooted <- getMRCA(my_tree_unrooted, my_tree$tip.label)
+```
+
+``` r
+ggtree_params <- list()
+
+ggtree_params[["rectangular"]] <- list(layout = "rectangular")
+ggtree_params[["roundrect"]] <- list(layout = "roundrect")
+ggtree_params[["slanted"]] <- list(layout = "slanted")
+ggtree_params[["ellipse"]] <- list(layout = "ellipse")
+ggtree_params[["circular"]] <- list(layout = "circular")
+ggtree_params[["fan"]] <- list(layout="fan", open.angle=120)
+ggtree_params[["equal_angle"]] <- list(layout = "equal_angle")
+ggtree_params[["daylight"]] <- list(layout = "daylight")
+ggtree_params[["no_blen_rectang"]] <- list(layout = "rectangular", branch.length="none")
+ggtree_params[["no_blen_ellipse"]] <- list(layout="ellipse", branch.length="none")
+ggtree_params[["no_blen_circular"]] <- list(branch.length="none", layout="circular")
+ggtree_params[["no_blen_daylight"]] <- list(branch.length="none", layout="daylight")
+
+### utility function for troubleshooting
+cat_args <- function(my_args_list) {
+    all_args <- sapply(names(my_args_list), function(x) {
+        paste0("arg_name:",x, " , value:",my_args_list[[x]])
+    })
+    all_args <- paste(all_args, collapse="\n")
+    return(all_args)
+}
+# cat_args(ggtree_params[["rectangular"]])
+
+make_all_ggtree_layout_plots <- function(one_tree, parameter_list) {
+    this_mrca <- getMRCA(one_tree, one_tree$tip.label)
+    output_plots <- lapply(names(parameter_list), function(x) {
+        # cat ("x ",x," this_mrca2 ", this_mrca, "\n")
+        p <- parameter_list[[x]]
+        if("branch.length" %in% names(p)) {
+            b <- p[["branch.length"]]
+        } else {
+            b <- "branch.length"  ## ggtree default
+        }
+        if("open.angle" %in% names(p)) {
+            a <- p[["open.angle"]]
+        } else {
+            a <- 0  ## ggtree default
+        }
+        ggtree(one_tree, 
+               layout=p[["layout"]],
+               branch.length=b,
+               open.angle=a) +
+            geom_nodepoint(aes(subset= (node == !!this_mrca)), 
+                           color="red", alpha=0.5, size=2)  + 
+            labs(title=x) +
+            theme(plot.title = element_text(hjust = 0.5, size=10))
+    })
+    names(output_plots) <- names(parameter_list)
+    return(output_plots)   
+}
+ggtree_plots <- make_all_ggtree_layout_plots(my_tree, ggtree_params)
+ggtree_plots_unrooted <- make_all_ggtree_layout_plots(my_tree_unrooted, ggtree_params)
+
+wrap_plots(ggtree_plots) +
+    plot_annotation(title="Rooted tree layouts")
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+``` r
+wrap_plots(ggtree_plots_unrooted) +
+    plot_annotation(title="Unrooted tree layouts")
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+Same plots, but focus just on the circular layout versus the daylight
+layout, for both rooted and unrooted trees.
+
+I think the circular layout implicitly implies that there IS a root,
+even when the tree is actuall unrooted.
+
+``` r
+(ggtree_plots[["circular"]] + labs(title="Rooted circular") +
+     ggtree_plots[["daylight"]] + labs(title="Rooted daylight")) / 
+    (ggtree_plots_unrooted[["circular"]] + labs(title="Unrooted circular") +
+         ggtree_plots_unrooted[["daylight"]] + labs(title="Unrooted daylight")) +
+    plot_annotation(caption="Red dot = MRCA of all tips")
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
 # Associate a tree with additional data
 
 Make a fake data tibble with info on each of the taxa in nwk_tree
@@ -88,19 +188,19 @@ nwk_tree_tip_dat
     ## # A tibble: 13 × 4
     ##    taxon fake_height fake_phenotype fake_phenotype2
     ##    <chr>       <dbl> <chr>          <chr>          
-    ##  1 A            91.9 nose           scales         
-    ##  2 B            82.5 teeth          fur            
-    ##  3 C            74.3 teeth          fur            
-    ##  4 D           118.  teeth          spikes         
-    ##  5 E           195.  nose           fur            
-    ##  6 F           101.  nose           scales         
-    ##  7 G            81.1 tail           scales         
-    ##  8 H           105.  tail           spikes         
-    ##  9 I           143.  teeth          scales         
-    ## 10 J           129.  tail           fur            
-    ## 11 K           128.  nose           scales         
-    ## 12 L            90.3 nose           scales         
-    ## 13 M            85.9 tail           scales
+    ##  1 A            95.1 tail           fur            
+    ##  2 B            46.9 nose           spikes         
+    ##  3 C            76.1 teeth          scales         
+    ##  4 D           105.  teeth          spikes         
+    ##  5 E            96.5 tail           scales         
+    ##  6 F            81.8 nose           fur            
+    ##  7 G            87.9 teeth          scales         
+    ##  8 H           120.  nose           fur            
+    ##  9 I            96.0 nose           fur            
+    ## 10 J            51.2 teeth          scales         
+    ## 11 K           148.  teeth          fur            
+    ## 12 L           106.  teeth          spikes         
+    ## 13 M           162.  nose           spikes
 
 ## Combine tree and tbl
 
@@ -162,16 +262,16 @@ nwk_tree_with_info
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE         91.9 nose           scales         
-    ##  2     2 B     TRUE         82.5 teeth          fur            
-    ##  3     3 C     TRUE         74.3 teeth          fur            
-    ##  4     4 D     TRUE        118.  teeth          spikes         
-    ##  5     5 E     TRUE        195.  nose           fur            
-    ##  6     6 F     TRUE        101.  nose           scales         
-    ##  7     7 G     TRUE         81.1 tail           scales         
-    ##  8     8 H     TRUE        105.  tail           spikes         
-    ##  9     9 I     TRUE        143.  teeth          scales         
-    ## 10    10 J     TRUE        129.  tail           fur            
+    ##  1     1 A     TRUE         95.1 tail           fur            
+    ##  2     2 B     TRUE         46.9 nose           spikes         
+    ##  3     3 C     TRUE         76.1 teeth          scales         
+    ##  4     4 D     TRUE        105.  teeth          spikes         
+    ##  5     5 E     TRUE         96.5 tail           scales         
+    ##  6     6 F     TRUE         81.8 nose           fur            
+    ##  7     7 G     TRUE         87.9 teeth          scales         
+    ##  8     8 H     TRUE        120.  nose           fur            
+    ##  9     9 I     TRUE         96.0 nose           fur            
+    ## 10    10 J     TRUE         51.2 teeth          scales         
     ## # ℹ 15 more rows
 
 Demo using `addInfoToTree` (by default it looks for the tip labels in
@@ -213,23 +313,25 @@ nwk_tree_with_info_2
     ## # The 'node', 'label' and 'isTip' are from the phylo tree.
     ##     node label isTip fake_height fake_phenotype fake_phenotype2
     ##    <int> <chr> <lgl>       <dbl> <chr>          <chr>          
-    ##  1     1 A     TRUE         91.9 nose           scales         
-    ##  2     2 B     TRUE         82.5 teeth          fur            
-    ##  3     3 C     TRUE         74.3 teeth          fur            
-    ##  4     4 D     TRUE        118.  teeth          spikes         
-    ##  5     5 E     TRUE        195.  nose           fur            
-    ##  6     6 F     TRUE        101.  nose           scales         
-    ##  7     7 G     TRUE         81.1 tail           scales         
-    ##  8     8 H     TRUE        105.  tail           spikes         
-    ##  9     9 I     TRUE        143.  teeth          scales         
-    ## 10    10 J     TRUE        129.  tail           fur            
+    ##  1     1 A     TRUE         95.1 tail           fur            
+    ##  2     2 B     TRUE         46.9 nose           spikes         
+    ##  3     3 C     TRUE         76.1 teeth          scales         
+    ##  4     4 D     TRUE        105.  teeth          spikes         
+    ##  5     5 E     TRUE         96.5 tail           scales         
+    ##  6     6 F     TRUE         81.8 nose           fur            
+    ##  7     7 G     TRUE         87.9 teeth          scales         
+    ##  8     8 H     TRUE        120.  nose           fur            
+    ##  9     9 I     TRUE         96.0 nose           fur            
+    ## 10    10 J     TRUE         51.2 teeth          scales         
     ## # ℹ 15 more rows
 
 ## Manipulating info tibble in treedata objects
 
 If we want to manipulate the information AFTER we associate it with the
 tree, we first use `as_tibble()`, then manipulate, then use
-`as.treedata(branch.length, label)`:
+`as.treedata(branch.length, label)`. More detail
+[below](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/phylogenetics/ggtree_demo.md#turning-a-tibble-back-into-a-tree)
+but here’s a simple example:
 
 ``` r
 p1 <- nwk_tree_with_info_2 |> 
@@ -247,7 +349,7 @@ p2 <- nwk_tree_with_info_2 |>
 p1 + p2
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ## Treat a treedata object like a tibble
 
@@ -264,16 +366,16 @@ as_tibble(nwk_tree_with_info_2)
     ## # via as.treedata or as.phylo
     ##    parent  node branch.length label fake_height fake_phenotype fake_phenotype2
     ##     <int> <int>         <dbl> <chr>       <dbl> <chr>          <chr>          
-    ##  1     20     1             4 A            91.9 nose           scales         
-    ##  2     20     2             4 B            82.5 teeth          fur            
-    ##  3     19     3             5 C            74.3 teeth          fur            
-    ##  4     18     4             6 D           118.  teeth          spikes         
-    ##  5     17     5            21 E           195.  nose           fur            
-    ##  6     22     6             4 F           101.  nose           scales         
-    ##  7     22     7            12 G            81.1 tail           scales         
-    ##  8     21     8             8 H           105.  tail           spikes         
-    ##  9     24     9             5 I           143.  teeth          scales         
-    ## 10     24    10             2 J           129.  tail           fur            
+    ##  1     20     1             4 A            95.1 tail           fur            
+    ##  2     20     2             4 B            46.9 nose           spikes         
+    ##  3     19     3             5 C            76.1 teeth          scales         
+    ##  4     18     4             6 D           105.  teeth          spikes         
+    ##  5     17     5            21 E            96.5 tail           scales         
+    ##  6     22     6             4 F            81.8 nose           fur            
+    ##  7     22     7            12 G            87.9 teeth          scales         
+    ##  8     21     8             8 H           120.  nose           fur            
+    ##  9     24     9             5 I            96.0 nose           fur            
+    ## 10     24    10             2 J            51.2 teeth          scales         
     ## # ℹ 15 more rows
 
 We can also directly access extraInfo, but that doesn’t contain a column
@@ -287,16 +389,16 @@ nwk_tree_with_info_2@extraInfo
     ## # A tibble: 25 × 4
     ##     node fake_height fake_phenotype fake_phenotype2
     ##    <int>       <dbl> <chr>          <chr>          
-    ##  1     1        91.9 nose           scales         
-    ##  2     2        82.5 teeth          fur            
-    ##  3     3        74.3 teeth          fur            
-    ##  4     4       118.  teeth          spikes         
-    ##  5     5       195.  nose           fur            
-    ##  6     6       101.  nose           scales         
-    ##  7     7        81.1 tail           scales         
-    ##  8     8       105.  tail           spikes         
-    ##  9     9       143.  teeth          scales         
-    ## 10    10       129.  tail           fur            
+    ##  1     1        95.1 tail           fur            
+    ##  2     2        46.9 nose           spikes         
+    ##  3     3        76.1 teeth          scales         
+    ##  4     4       105.  teeth          spikes         
+    ##  5     5        96.5 tail           scales         
+    ##  6     6        81.8 nose           fur            
+    ##  7     7        87.9 teeth          scales         
+    ##  8     8       120.  nose           fur            
+    ##  9     9        96.0 nose           fur            
+    ## 10    10        51.2 teeth          scales         
     ## # ℹ 15 more rows
 
 ## Plot tree with annotations
@@ -314,7 +416,30 @@ nwk_tree_with_info |>
                   color="black") # add dots to taxa, using subset
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+# Extract a subclade
+
+Note that the tree must be ROOTED for this operation to mean anything.
+In an unrooted tree, all nodes descend from all other nodes because the
+branches have no inherent direction.
+
+We identify the node that defines the subtree we want using (e.g.)
+`getMRCA()` and then we use the `extract.clade()` function:
+
+``` r
+# nwk_tree is already rooted
+nwk_tree_subtree <- extract.clade(nwk_tree, 
+                                  node=getMRCA(nwk_tree, c("A","E")))
+
+nwk_tree_subtree_with_info <- addInfoToTree(nwk_tree_subtree, nwk_tree_tip_dat)
+
+nwk_tree_subtree_with_info |> 
+    ggtree(aes(color=fake_phenotype)) + 
+    geom_tiplab(show.legend=FALSE) 
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 # Add heatmap to the right side of a tree
 
@@ -359,21 +484,13 @@ same order
 Now plot:
 
 ``` r
+## adding warning=FALSE because of ggtree warning about using size versus linewidth
+## adding message=FALSE because ggtree likes to tell us when it's replacing an existing scale
 ## save a ggtree plot object
 p <- ggtree(beast_tree, mrsd="2013-01-01") + 
     geom_treescale(x=2008, y=1, offset=2) + 
     geom_tiplab(size=2)
-```
 
-    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-    ## ℹ Please use `linewidth` instead.
-    ## ℹ The deprecated feature was likely used in the ggtree package.
-    ##   Please report the issue at <https://github.com/YuLab-SMU/ggtree/issues>.
-    ## This warning is displayed once per session.
-    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-    ## generated.
-
-``` r
 ## add the heatmap to the righthand side. 
 gheatmap(p, genotype, offset=15, width=1.5, font.size=3,
          colnames_offset_y= -1) + 
@@ -381,10 +498,7 @@ gheatmap(p, genotype, offset=15, width=1.5, font.size=3,
     scale_y_continuous(expand=c(0.1, 0.1))
 ```
 
-    ## Scale for y is already present.
-    ## Adding another scale for y, which will replace the existing scale.
-
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 Same thing but also:  
 - add x axis scale bar (and heatmap colnames are less ugly now)  
@@ -413,7 +527,7 @@ gheatmap(p, genotype, offset=8, width=0.6,
     ## Scale for fill is already present.
     ## Adding another scale for fill, which will replace the existing scale.
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 Show that first plot in circle layout (ignore branch lengths)
 
@@ -436,7 +550,7 @@ gheatmap(p, genotype,
     ## Scale for y is already present.
     ## Adding another scale for y, which will replace the existing scale.
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 ## gheatmap example with my fake tree and fake data
 
@@ -464,7 +578,7 @@ gheatmap(p, tip_dat_for_heatmap,
          width=0.25, font.size=3) 
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 Or maybe we turn that into WT/ nonWT
 
@@ -486,7 +600,7 @@ gheatmap(p, tip_dat_for_heatmap2,
     ## Scale for fill is already present.
     ## Adding another scale for fill, which will replace the existing scale.
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 Note that it doesn’t work if tip_dat_for_heatmap3 is a tibble (see plot
 below, not useful), although it doesn’t give an error, it just doesn’t
@@ -510,7 +624,110 @@ gheatmap(p, tip_dat_for_heatmap3,
     ## Scale for fill is already present.
     ## Adding another scale for fill, which will replace the existing scale.
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+# Tree plus data to the right
+
+geom_point to the right
+
+``` r
+tr <- rtree(10)
+dd <- tibble(id=tr$tip.label) |> 
+    mutate(value=as.integer(str_remove(id, "t")))
+```
+
+``` r
+p <- ggtree(tr) +
+    geom_tiplab() +
+    geom_facet(panel = "Data", 
+               data = dd,  ## the first column of dd, no matter what it's called, is where ggtree looks for the taxon labels
+               geom = geom_point, mapping = aes(x = value)) + 
+    theme_light() +   # need theme_bw or similar to get the x axis scales to show
+    xlim_tree(10) + # alter tree x scale
+    xlim_expand(c(0, 13), "Data") # alter points x scale
+p
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+
+geom_col to the right
+
+``` r
+p <- ggtree(tr) +
+    geom_tiplab() +
+    geom_facet(panel = "Data", data = dd, 
+               geom = geom_col, mapping = aes(x = value),
+               orientation = "y") + 
+    theme_light() +   # need theme_bw or similar to get the x axis scales to show
+    xlim_tree(10) + # alter tree x scale
+    xlim_expand(c(0, 3), "Data") # alter col x scale
+p
+```
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+
+It CAN handle missing data:
+
+``` r
+dd_slice <- slice_head(dd, n=5)
+
+ggtree(tr) +
+    geom_tiplab() +
+    geom_facet(panel = "Data", data = dd_slice, 
+               geom = geom_col, mapping = aes(x = value),
+               orientation = "y") + 
+    theme_light() +   # need theme_bw or similar to get the x axis scales to show
+    xlim_tree(10) + # alter tree x scale
+    xlim_expand(c(0, 3), "Data") # alter col x scale
+```
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+
+Simple geom_fruit demo:
+
+``` r
+ggtree(tr) +
+    geom_tiplab() +
+    geom_fruit(
+        data=dd, 
+        geom=geom_col, 
+        mapping=aes(x=value, y=id)
+    ) 
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+
+Now control how it looks more
+
+``` r
+ggtree(tr) +
+    geom_tiplab() +
+    geom_fruit(
+        data=dd, 
+        geom=geom_col, 
+        mapping=aes(x=value, y=id),
+        pwidth=0.8, ## pwidth affects width of the geom_col plot, relative to tree width (default is 0.2)
+        offset=0.1, ## add some space between tree and plot
+        axis.params = list(
+            axis = "x",
+            text.size = 4,
+            vjust = 1, hjust = 0.5,
+            limits = c(0, 10),
+            line.size=0.5, line.color = "black",
+            title="value", title.size=6
+        )
+    ) 
+```
+
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 # Understanding the x/y coordinates of a ggtree plot
 
@@ -526,7 +743,7 @@ simple_tree_plot <- nwk_tree |>
 simple_tree_plot
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
 
 and use `simple_tree_plot@data` to show the data:
 
@@ -1236,109 +1453,6 @@ TRUE
 
 </table>
 
-# Tree plus data to the right
-
-geom_point to the right
-
-``` r
-tr <- rtree(10)
-dd <- tibble(id=tr$tip.label) |> 
-    mutate(value=as.integer(str_remove(id, "t")))
-```
-
-``` r
-p <- ggtree(tr) +
-    geom_tiplab() +
-    geom_facet(panel = "Data", 
-               data = dd,  ## the first column of dd, no matter what it's called, is where ggtree looks for the taxon labels
-               geom = geom_point, mapping = aes(x = value)) + 
-    theme_light() +   # need theme_bw or similar to get the x axis scales to show
-    xlim_tree(10) + # alter tree x scale
-    xlim_expand(c(0, 13), "Data") # alter points x scale
-p
-```
-
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
-
-geom_col to the right
-
-``` r
-p <- ggtree(tr) +
-    geom_tiplab() +
-    geom_facet(panel = "Data", data = dd, 
-               geom = geom_col, mapping = aes(x = value),
-               orientation = "y") + 
-    theme_light() +   # need theme_bw or similar to get the x axis scales to show
-    xlim_tree(10) + # alter tree x scale
-    xlim_expand(c(0, 3), "Data") # alter col x scale
-p
-```
-
-    ## Warning in min(x): no non-missing arguments to min; returning Inf
-
-    ## Warning in max(x): no non-missing arguments to max; returning -Inf
-
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
-
-It CAN handle missing data:
-
-``` r
-dd_slice <- slice_head(dd, n=5)
-
-ggtree(tr) +
-    geom_tiplab() +
-    geom_facet(panel = "Data", data = dd_slice, 
-               geom = geom_col, mapping = aes(x = value),
-               orientation = "y") + 
-    theme_light() +   # need theme_bw or similar to get the x axis scales to show
-    xlim_tree(10) + # alter tree x scale
-    xlim_expand(c(0, 3), "Data") # alter col x scale
-```
-
-    ## Warning in min(x): no non-missing arguments to min; returning Inf
-
-    ## Warning in max(x): no non-missing arguments to max; returning -Inf
-
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
-
-Simple geom_fruit demo:
-
-``` r
-ggtree(tr) +
-    geom_tiplab() +
-    geom_fruit(
-        data=dd, 
-        geom=geom_col, 
-        mapping=aes(x=value, y=id)
-    ) 
-```
-
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
-
-Now control how it looks more
-
-``` r
-ggtree(tr) +
-    geom_tiplab() +
-    geom_fruit(
-        data=dd, 
-        geom=geom_col, 
-        mapping=aes(x=value, y=id),
-        pwidth=0.8, ## pwidth affects width of the geom_col plot, relative to tree width (default is 0.2)
-        offset=0.1, ## add some space between tree and plot
-        axis.params = list(
-            axis = "x",
-            text.size = 4,
-            vjust = 1, hjust = 0.5,
-            limits = c(0, 10),
-            line.size=0.5, line.color = "black",
-            title="value", title.size=6
-        )
-    ) 
-```
-
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
-
 # Turning a tibble back into a tree
 
 Sometimes we take a tree, use `as_tibble()` (it becomes a `tbl_tree`
@@ -1375,15 +1489,13 @@ tree.owls |>
     labs(title="tree.owls coerced")
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
 ``` r
-(tree.owls |> 
-        as_tibble() |> 
-        as.treedata())@phylo$edge.length
+temp_edge_lengths <- (tree.owls |> 
+                          as_tibble() |> 
+                          as.treedata())@phylo$edge.length
 ```
-
-    ## [1]  8.2  4.2  7.3 13.5  6.3  3.1
 
 This double coercion is a cheating way to get a pure tibble rather than
 a `tbl_tree` object. Now we lose branch lengths:
@@ -1400,7 +1512,7 @@ tree.owls |>
     labs(title="tree.owls coerced")
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
 But we can avoid losing branch lengths by supplying a couple of
 arguments to `as.treedata()`:
@@ -1417,107 +1529,7 @@ tree.owls |>
     labs(title="tree.owls coerced")
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
-
-# ggtree layouts
-
-Different ggtree layouts are shown
-[here](https://yulab-smu.top/treedata-book/chapter4.html?q=equal_angle#tree-layouts).
-This is the same thing but easier to read:
-
-``` r
-set.seed(2017-02-16)
-my_tree <- rtree(50)  # default is to make rooted trees
-# my_mrca <- getMRCA(my_tree, my_tree$tip.label)
-
-my_tree_unrooted <- unroot(my_tree)
-# my_mrca_unrooted <- getMRCA(my_tree_unrooted, my_tree$tip.label)
-```
-
-``` r
-ggtree_params <- list()
-
-ggtree_params[["rectangular"]] <- list(layout = "rectangular")
-ggtree_params[["roundrect"]] <- list(layout = "roundrect")
-ggtree_params[["slanted"]] <- list(layout = "slanted")
-ggtree_params[["ellipse"]] <- list(layout = "ellipse")
-ggtree_params[["circular"]] <- list(layout = "circular")
-ggtree_params[["fan"]] <- list(layout="fan", open.angle=120)
-ggtree_params[["equal_angle"]] <- list(layout = "equal_angle")
-ggtree_params[["daylight"]] <- list(layout = "daylight")
-ggtree_params[["no_blen_rectang"]] <- list(layout = "rectangular", branch.length="none")
-ggtree_params[["no_blen_ellipse"]] <- list(layout="ellipse", branch.length="none")
-ggtree_params[["no_blen_circular"]] <- list(branch.length="none", layout="circular")
-ggtree_params[["no_blen_daylight"]] <- list(branch.length="none", layout="daylight")
-
-### utility function for troubleshooting
-cat_args <- function(my_args_list) {
-    all_args <- sapply(names(my_args_list), function(x) {
-        paste0("arg_name:",x, " , value:",my_args_list[[x]])
-    })
-    all_args <- paste(all_args, collapse="\n")
-    return(all_args)
-}
-# cat_args(ggtree_params[["rectangular"]])
-
-make_all_ggtree_layout_plots <- function(one_tree, parameter_list) {
-    this_mrca <- getMRCA(one_tree, one_tree$tip.label)
-    output_plots <- lapply(names(parameter_list), function(x) {
-        # cat ("x ",x," this_mrca2 ", this_mrca, "\n")
-        p <- parameter_list[[x]]
-        if("branch.length" %in% names(p)) {
-            b <- p[["branch.length"]]
-        } else {
-            b <- "branch.length"  ## ggtree default
-        }
-        if("open.angle" %in% names(p)) {
-            a <- p[["open.angle"]]
-        } else {
-            a <- 0  ## ggtree default
-        }
-        ggtree(one_tree, 
-               layout=p[["layout"]],
-               branch.length=b,
-               open.angle=a) +
-            geom_nodepoint(aes(subset= (node == !!this_mrca)), 
-                           color="red", alpha=0.5, size=2)  + 
-            labs(title=x) +
-            theme(plot.title = element_text(hjust = 0.5, size=10))
-    })
-    names(output_plots) <- names(parameter_list)
-    return(output_plots)   
-}
-ggtree_plots <- make_all_ggtree_layout_plots(my_tree, ggtree_params)
-ggtree_plots_unrooted <- make_all_ggtree_layout_plots(my_tree_unrooted, ggtree_params)
-
-wrap_plots(ggtree_plots) +
-    plot_annotation(title="Rooted tree layouts")
-```
-
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
-
-``` r
-wrap_plots(ggtree_plots_unrooted) +
-    plot_annotation(title="Unrooted tree layouts")
-```
-
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
-
-Same plots, but focus just on the circular layout versus the daylight
-layout, for both rooted and unrooted trees.
-
-I think the circular layout implicitly implies that there IS a root,
-even when the tree is actuall unrooted.
-
-``` r
-(ggtree_plots[["circular"]] + labs(title="Rooted circular") +
-ggtree_plots[["daylight"]] + labs(title="Rooted daylight")) / 
-(ggtree_plots_unrooted[["circular"]] + labs(title="Unrooted circular") +
-ggtree_plots_unrooted[["daylight"]] + labs(title="Unrooted daylight")) +
-    plot_annotation(caption="Red dot = MRCA of all tips")
-```
-
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
 # Adjusting position of geom_tippoint symbols
 
@@ -1532,7 +1544,7 @@ nwk_tree |>
     geom_treescale()
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
 But for equal_angle (and daylight) we have to use the `angle` parameter
 created under the hood when ggtree runs (thank you to Brad Jones for the
@@ -1547,7 +1559,7 @@ nwk_tree |>
                   color="red") 
 ```
 
-![](ggtree_demo_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
+![](ggtree_demo_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 # Finished
 
@@ -1557,7 +1569,7 @@ sessionInfo()
 
     ## R version 4.5.3 (2026-03-11)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Tahoe 26.4
+    ## Running under: macOS Tahoe 26.5.2
     ## 
     ## Matrix products: default
     ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
@@ -1595,9 +1607,9 @@ sessionInfo()
     ## [37] cli_3.6.5               magrittr_2.0.5          utf8_1.2.6             
     ## [40] withr_3.0.2             gdtools_0.5.0           scales_1.4.0           
     ## [43] rappdirs_0.3.4          timechange_0.4.0        rmarkdown_2.31         
-    ## [46] otel_0.2.0              hms_1.1.4               evaluate_1.0.5         
-    ## [49] knitr_1.51              viridisLite_0.4.3       gridGraphics_0.5-1     
-    ## [52] rlang_1.1.7             ggiraph_0.9.6           Rcpp_1.1.1             
-    ## [55] glue_1.8.0              xml2_1.5.2              svglite_2.2.2          
-    ## [58] rstudioapi_0.18.0       jsonlite_2.0.0          R6_2.6.1               
-    ## [61] systemfonts_1.3.2       fs_2.0.1
+    ## [46] otel_0.2.0              ragg_1.5.2              hms_1.1.4              
+    ## [49] evaluate_1.0.5          knitr_1.51              viridisLite_0.4.3      
+    ## [52] gridGraphics_0.5-1      rlang_1.1.7             ggiraph_0.9.6          
+    ## [55] Rcpp_1.1.1              glue_1.8.0              xml2_1.5.2             
+    ## [58] svglite_2.2.2           rstudioapi_0.18.0       jsonlite_2.0.0         
+    ## [61] R6_2.6.1                systemfonts_1.3.2       fs_2.0.1

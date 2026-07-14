@@ -10,6 +10,7 @@ The rendered version of this Rmd script is [here](https://github.com/jayoung/Rte
 
 (this doesn't work on the fhR 4.2.0 I could run via the Hutch Rstudio server, with the package versions I have there right now.  But fhR 4.4.0 is fine)
 
+
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(patchwork)
@@ -56,6 +57,99 @@ Plot it using ggtree
 nwk_tree |> 
     ggtree() +
     geom_tiplab()
+```
+
+# ggtree layouts
+
+Different ggtree layouts are shown [here](https://yulab-smu.top/treedata-book/chapter4.html?q=equal_angle#tree-layouts). This is the same thing but easier to read:
+
+```{r, example trees for layout demos}
+set.seed(2017-02-16)
+my_tree <- rtree(50)  # default is to make rooted trees
+# my_mrca <- getMRCA(my_tree, my_tree$tip.label)
+
+my_tree_unrooted <- unroot(my_tree)
+# my_mrca_unrooted <- getMRCA(my_tree_unrooted, my_tree$tip.label)
+```
+
+```{r, message=FALSE}
+ggtree_params <- list()
+
+ggtree_params[["rectangular"]] <- list(layout = "rectangular")
+ggtree_params[["roundrect"]] <- list(layout = "roundrect")
+ggtree_params[["slanted"]] <- list(layout = "slanted")
+ggtree_params[["ellipse"]] <- list(layout = "ellipse")
+ggtree_params[["circular"]] <- list(layout = "circular")
+ggtree_params[["fan"]] <- list(layout="fan", open.angle=120)
+ggtree_params[["equal_angle"]] <- list(layout = "equal_angle")
+ggtree_params[["daylight"]] <- list(layout = "daylight")
+ggtree_params[["no_blen_rectang"]] <- list(layout = "rectangular", branch.length="none")
+ggtree_params[["no_blen_ellipse"]] <- list(layout="ellipse", branch.length="none")
+ggtree_params[["no_blen_circular"]] <- list(branch.length="none", layout="circular")
+ggtree_params[["no_blen_daylight"]] <- list(branch.length="none", layout="daylight")
+
+### utility function for troubleshooting
+cat_args <- function(my_args_list) {
+    all_args <- sapply(names(my_args_list), function(x) {
+        paste0("arg_name:",x, " , value:",my_args_list[[x]])
+    })
+    all_args <- paste(all_args, collapse="\n")
+    return(all_args)
+}
+# cat_args(ggtree_params[["rectangular"]])
+
+make_all_ggtree_layout_plots <- function(one_tree, parameter_list) {
+    this_mrca <- getMRCA(one_tree, one_tree$tip.label)
+    output_plots <- lapply(names(parameter_list), function(x) {
+        # cat ("x ",x," this_mrca2 ", this_mrca, "\n")
+        p <- parameter_list[[x]]
+        if("branch.length" %in% names(p)) {
+            b <- p[["branch.length"]]
+        } else {
+            b <- "branch.length"  ## ggtree default
+        }
+        if("open.angle" %in% names(p)) {
+            a <- p[["open.angle"]]
+        } else {
+            a <- 0  ## ggtree default
+        }
+        ggtree(one_tree, 
+               layout=p[["layout"]],
+               branch.length=b,
+               open.angle=a) +
+            geom_nodepoint(aes(subset= (node == !!this_mrca)), 
+                           color="red", alpha=0.5, size=2)  + 
+            labs(title=x) +
+            theme(plot.title = element_text(hjust = 0.5, size=10))
+    })
+    names(output_plots) <- names(parameter_list)
+    return(output_plots)   
+}
+ggtree_plots <- make_all_ggtree_layout_plots(my_tree, ggtree_params)
+ggtree_plots_unrooted <- make_all_ggtree_layout_plots(my_tree_unrooted, ggtree_params)
+
+wrap_plots(ggtree_plots) +
+    plot_annotation(title="Rooted tree layouts")
+```
+
+
+```{r}
+wrap_plots(ggtree_plots_unrooted) +
+    plot_annotation(title="Unrooted tree layouts")
+```
+
+
+Same plots, but focus just on the circular layout versus the daylight layout, for both rooted and unrooted trees. 
+
+I think the circular layout implicitly implies that there IS a root, even when the tree is actuall unrooted.
+
+
+```{r}
+(ggtree_plots[["circular"]] + labs(title="Rooted circular") +
+     ggtree_plots[["daylight"]] + labs(title="Rooted daylight")) / 
+    (ggtree_plots_unrooted[["circular"]] + labs(title="Unrooted circular") +
+         ggtree_plots_unrooted[["daylight"]] + labs(title="Unrooted daylight")) +
+    plot_annotation(caption="Red dot = MRCA of all tips")
 ```
 
 
@@ -114,7 +208,7 @@ nwk_tree_with_info_2
 
 ## Manipulating info tibble in treedata objects
 
-If we want to manipulate the information AFTER we associate it with the tree, we first use `as_tibble()`, then manipulate, then use `as.treedata(branch.length, label)`:
+If we want to manipulate the information AFTER we associate it with the tree, we first use `as_tibble()`, then manipulate, then use `as.treedata(branch.length, label)`. More detail [below](https://github.com/jayoung/Rtest_and_Rnotes/blob/main/Rscripts/phylogenetics/ggtree_demo.md#turning-a-tibble-back-into-a-tree) but here's a simple example:
 
 ```{r}
 p1 <- nwk_tree_with_info_2 |> 
@@ -162,6 +256,25 @@ nwk_tree_with_info |>
                   color="black") # add dots to taxa, using subset
 ```
 
+# Extract a subclade
+
+Note that the tree must be ROOTED for this operation to mean anything.  In an unrooted tree, all nodes descend from all other nodes because the branches have no inherent direction.
+
+We identify the node that defines the subtree we want using (e.g.) `getMRCA()` and then we use the `extract.clade()` function:
+
+```{r}
+# nwk_tree is already rooted
+nwk_tree_subtree <- extract.clade(nwk_tree, 
+                                  node=getMRCA(nwk_tree, c("A","E")))
+
+nwk_tree_subtree_with_info <- addInfoToTree(nwk_tree_subtree, nwk_tree_tip_dat)
+
+nwk_tree_subtree_with_info |> 
+    ggtree(aes(color=fake_phenotype)) + 
+    geom_tiplab(show.legend=FALSE) 
+```
+
+
 
 # Add heatmap to the right side of a tree
 
@@ -203,7 +316,9 @@ colnames(genotype) <- sub("\\.$", "", colnames(genotype))
 
 Now plot:
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
+## adding warning=FALSE because of ggtree warning about using size versus linewidth
+## adding message=FALSE because ggtree likes to tell us when it's replacing an existing scale
 ## save a ggtree plot object
 p <- ggtree(beast_tree, mrsd="2013-01-01") + 
     geom_treescale(x=2008, y=1, offset=2) + 
@@ -311,31 +426,6 @@ gheatmap(p, tip_dat_for_heatmap3,
                       name="")
 ```
 
-# Understanding the x/y coordinates of a ggtree plot
-
-Useful when we want to calculate positions for other annotations, or to understand what order the tiplabels are in
-
-Show the a very simple plot for the small tree (`nwk_tree`):
-
-```{r, fig.height=4, fig.width=4}
-simple_tree_plot <- nwk_tree |> 
-    ggtree() +
-    geom_tiplab()
-simple_tree_plot
-```
-
-and use `simple_tree_plot@data` to show the data:
-
-```{r}
-simple_tree_plot@data |> 
-    arrange(desc(y)) |> 
-    filter(isTip) |> 
-    kable() |> 
-    kable_styling(full_width=TRUE)
-```
-
-
-
 
 
 # Tree plus data to the right
@@ -427,6 +517,31 @@ ggtree(tr) +
 ```
 
 
+# Understanding the x/y coordinates of a ggtree plot
+
+Useful when we want to calculate positions for other annotations, or to understand what order the tiplabels are in
+
+Show the a very simple plot for the small tree (`nwk_tree`):
+
+```{r, fig.height=4, fig.width=4}
+simple_tree_plot <- nwk_tree |> 
+    ggtree() +
+    geom_tiplab()
+simple_tree_plot
+```
+
+and use `simple_tree_plot@data` to show the data:
+
+```{r}
+simple_tree_plot@data |> 
+    arrange(desc(y)) |> 
+    filter(isTip) |> 
+    kable() |> 
+    kable_styling(full_width=TRUE)
+```
+
+
+
 
 # Turning a tibble back into a tree
 
@@ -456,9 +571,9 @@ tree.owls |>
     hexpand(0.3) +
     labs(title="tree.owls coerced")
 
-(tree.owls |> 
-        as_tibble() |> 
-        as.treedata())@phylo$edge.length
+temp_edge_lengths <- (tree.owls |> 
+                          as_tibble() |> 
+                          as.treedata())@phylo$edge.length
 ```
 
 This double coercion is a cheating way to get a pure tibble rather than a `tbl_tree` object. Now we lose branch lengths:
@@ -489,99 +604,6 @@ tree.owls |>
     labs(title="tree.owls coerced")
 ```
 
-
-# ggtree layouts
-
-Different ggtree layouts are shown [here](https://yulab-smu.top/treedata-book/chapter4.html?q=equal_angle#tree-layouts). This is the same thing but easier to read:
-
-```{r, example trees for layout demos}
-set.seed(2017-02-16)
-my_tree <- rtree(50)  # default is to make rooted trees
-# my_mrca <- getMRCA(my_tree, my_tree$tip.label)
-
-my_tree_unrooted <- unroot(my_tree)
-# my_mrca_unrooted <- getMRCA(my_tree_unrooted, my_tree$tip.label)
-```
-
-```{r, message=FALSE}
-ggtree_params <- list()
-
-ggtree_params[["rectangular"]] <- list(layout = "rectangular")
-ggtree_params[["roundrect"]] <- list(layout = "roundrect")
-ggtree_params[["slanted"]] <- list(layout = "slanted")
-ggtree_params[["ellipse"]] <- list(layout = "ellipse")
-ggtree_params[["circular"]] <- list(layout = "circular")
-ggtree_params[["fan"]] <- list(layout="fan", open.angle=120)
-ggtree_params[["equal_angle"]] <- list(layout = "equal_angle")
-ggtree_params[["daylight"]] <- list(layout = "daylight")
-ggtree_params[["no_blen_rectang"]] <- list(layout = "rectangular", branch.length="none")
-ggtree_params[["no_blen_ellipse"]] <- list(layout="ellipse", branch.length="none")
-ggtree_params[["no_blen_circular"]] <- list(branch.length="none", layout="circular")
-ggtree_params[["no_blen_daylight"]] <- list(branch.length="none", layout="daylight")
-
-### utility function for troubleshooting
-cat_args <- function(my_args_list) {
-    all_args <- sapply(names(my_args_list), function(x) {
-        paste0("arg_name:",x, " , value:",my_args_list[[x]])
-    })
-    all_args <- paste(all_args, collapse="\n")
-    return(all_args)
-}
-# cat_args(ggtree_params[["rectangular"]])
-
-make_all_ggtree_layout_plots <- function(one_tree, parameter_list) {
-    this_mrca <- getMRCA(one_tree, one_tree$tip.label)
-    output_plots <- lapply(names(parameter_list), function(x) {
-        # cat ("x ",x," this_mrca2 ", this_mrca, "\n")
-        p <- parameter_list[[x]]
-        if("branch.length" %in% names(p)) {
-            b <- p[["branch.length"]]
-        } else {
-            b <- "branch.length"  ## ggtree default
-        }
-        if("open.angle" %in% names(p)) {
-            a <- p[["open.angle"]]
-        } else {
-            a <- 0  ## ggtree default
-        }
-        ggtree(one_tree, 
-               layout=p[["layout"]],
-               branch.length=b,
-               open.angle=a) +
-            geom_nodepoint(aes(subset= (node == !!this_mrca)), 
-                           color="red", alpha=0.5, size=2)  + 
-            labs(title=x) +
-            theme(plot.title = element_text(hjust = 0.5, size=10))
-    })
-    names(output_plots) <- names(parameter_list)
-    return(output_plots)   
-}
-ggtree_plots <- make_all_ggtree_layout_plots(my_tree, ggtree_params)
-ggtree_plots_unrooted <- make_all_ggtree_layout_plots(my_tree_unrooted, ggtree_params)
-
-wrap_plots(ggtree_plots) +
-    plot_annotation(title="Rooted tree layouts")
-```
-
-
-```{r}
-wrap_plots(ggtree_plots_unrooted) +
-    plot_annotation(title="Unrooted tree layouts")
-```
-
-
-Same plots, but focus just on the circular layout versus the daylight layout, for both rooted and unrooted trees. 
-
-I think the circular layout implicitly implies that there IS a root, even when the tree is actuall unrooted.
-
-
-```{r}
-(ggtree_plots[["circular"]] + labs(title="Rooted circular") +
-ggtree_plots[["daylight"]] + labs(title="Rooted daylight")) / 
-(ggtree_plots_unrooted[["circular"]] + labs(title="Unrooted circular") +
-ggtree_plots_unrooted[["daylight"]] + labs(title="Unrooted daylight")) +
-    plot_annotation(caption="Red dot = MRCA of all tips")
-```
 
 
 
