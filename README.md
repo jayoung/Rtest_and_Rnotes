@@ -167,7 +167,7 @@ Small daily lessons:
 
 Data Science resources [list](https://nrennie.rbind.io/data-science-resources/)
 
-
+`tibblify` package for turning nested lists into tibbles (e.g. could be useful for complex JSON or XML files)
 
 
 ## Useful packages
@@ -312,6 +312,8 @@ See also [here](http://www.sthda.com/english/wiki/ggplot2-violin-plot-easy-funct
 [`ggpattern`](https://coolbutuseless.github.io/package/ggpattern/index.html) for using patterns (or images) as fill in ggplots
 
 [`gcplyr` package](https://mikeblazanin.github.io/gcplyr/) for microbial growth curves. Can help read platereader data (with metadata) in and get it in a tidy format. Can model various parameters of growth curves, "like growth rate/doubling time, maximum density (carrying capacity), lag time, area under the curve, diauxic shifts, extinction, and more without fitting an equation for growth to your data."
+
+`ggcube` for 3d plots ggplot-style
 
 ### ggplot themes
 
