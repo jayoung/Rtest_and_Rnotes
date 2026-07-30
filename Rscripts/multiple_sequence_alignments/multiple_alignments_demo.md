@@ -1,14 +1,18 @@
-alignment_coordinates
+multiple_alignments_demo
 ================
 Janet Young
 
-2025-08-29
+2026-07-30
 
 # Goal
 
-given coordinates of one or more features in a reference sequence,
-figure out what the coordinates are in an alignment that contains the
-reference sequence
+Demonstrate various code tricks for multiple alignments
+
+1.  Coordinates. Given coordinates of one or more features in a
+    reference sequence, figure out what the coordinates are in an
+    alignment that contains the reference sequence
+
+2.  Getting alignment slices and concatenating them
 
 # Load libraries
 
@@ -320,7 +324,7 @@ human_features
     ## 2 region2   101   140 +            167     209
     ## 3 region3   331   400 +            400     469
 
-## Extract aligned regions
+## Extract aligned regions and concatenate
 
 Get those three regions from the alignment - we use the `narrow`
 function
@@ -380,6 +384,8 @@ human_feature_alns
     ## [33]    70 CTCCTCACCTTACATGCCGGCCG...CAACTGGCCCGGAGGATCCGGG olive_baboon_CENP...
     ## [34]    70 CTCCTCACCTTACATGCCGGCCG...CAACTGGCCCGGAGGATCCGGG green_monkey_CENP...
 
+# Concatenate alignment slices
+
 We can use the `xscat` function to join those alignment pieces together.
 
 Here’s the simplest way to use `xscat`.
@@ -436,9 +442,9 @@ do.call("xscat", human_feature_alns)
 sessionInfo()
 ```
 
-    ## R version 4.5.1 (2025-06-13)
+    ## R version 4.5.3 (2026-03-11)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Sequoia 15.6.1
+    ## Running under: macOS Tahoe 26.5.2
     ## 
     ## Matrix products: default
     ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
@@ -455,24 +461,21 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] Biostrings_2.76.0   GenomeInfoDb_1.44.1 XVector_0.48.0     
-    ##  [4] IRanges_2.42.0      S4Vectors_0.46.0    BiocGenerics_0.54.0
-    ##  [7] generics_0.1.4      here_1.0.1          lubridate_1.9.4    
-    ## [10] forcats_1.0.0       stringr_1.5.1       dplyr_1.1.4        
-    ## [13] purrr_1.1.0         readr_2.1.5         tidyr_1.3.1        
-    ## [16] tibble_3.3.0        ggplot2_3.5.2       tidyverse_2.0.0    
+    ##  [1] Biostrings_2.78.0   Seqinfo_1.0.0       XVector_0.50.0     
+    ##  [4] IRanges_2.44.0      S4Vectors_0.48.0    BiocGenerics_0.56.0
+    ##  [7] generics_0.1.4      here_1.0.2          lubridate_1.9.5    
+    ## [10] forcats_1.0.1       stringr_1.6.0       dplyr_1.2.1        
+    ## [13] purrr_1.2.1         readr_2.2.0         tidyr_1.3.2        
+    ## [16] tibble_3.3.1        ggplot2_4.0.2       tidyverse_2.0.0    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] utf8_1.2.6              stringi_1.8.7           hms_1.1.3              
-    ##  [4] digest_0.6.37           magrittr_2.0.3          evaluate_1.0.4         
-    ##  [7] grid_4.5.1              timechange_0.3.0        RColorBrewer_1.1-3     
-    ## [10] fastmap_1.2.0           rprojroot_2.1.0         jsonlite_2.0.0         
-    ## [13] httr_1.4.7              UCSC.utils_1.4.0        scales_1.4.0           
-    ## [16] cli_3.6.5               crayon_1.5.3            rlang_1.1.6            
-    ## [19] withr_3.0.2             yaml_2.3.10             tools_4.5.1            
-    ## [22] tzdb_0.5.0              GenomeInfoDbData_1.2.14 vctrs_0.6.5            
-    ## [25] R6_2.6.1                lifecycle_1.0.4         pkgconfig_2.0.3        
-    ## [28] pillar_1.11.0           gtable_0.3.6            glue_1.8.0             
-    ## [31] xfun_0.52               tidyselect_1.2.1        rstudioapi_0.17.1      
-    ## [34] knitr_1.50              farver_2.1.2            htmltools_0.5.8.1      
-    ## [37] rmarkdown_2.29          compiler_4.5.1
+    ##  [1] utf8_1.2.6         stringi_1.8.7      hms_1.1.4          digest_0.6.39     
+    ##  [5] magrittr_2.0.5     evaluate_1.0.5     grid_4.5.3         timechange_0.4.0  
+    ##  [9] RColorBrewer_1.1-3 fastmap_1.2.0      rprojroot_2.1.1    scales_1.4.0      
+    ## [13] textshaping_1.0.5  cli_3.6.5          crayon_1.5.3       rlang_1.1.7       
+    ## [17] withr_3.0.2        yaml_2.3.12        otel_0.2.0         tools_4.5.3       
+    ## [21] tzdb_0.5.0         vctrs_0.7.2        R6_2.6.1           lifecycle_1.0.5   
+    ## [25] ragg_1.5.2         pkgconfig_2.0.3    pillar_1.11.1      gtable_0.3.6      
+    ## [29] glue_1.8.0         systemfonts_1.3.2  xfun_0.57          tidyselect_1.2.1  
+    ## [33] rstudioapi_0.18.0  knitr_1.51         farver_2.1.2       htmltools_0.5.9   
+    ## [37] rmarkdown_2.31     compiler_4.5.3     S7_0.2.1

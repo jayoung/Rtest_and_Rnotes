@@ -1,5 +1,5 @@
 ---
-title: "alignment_coordinates"
+title: "multiple_alignments_demo"
 author: "Janet Young\n"
 date: "`r Sys.Date()`\n"
 output: github_document
@@ -8,8 +8,11 @@ always_allow_html: true
 
 # Goal 
 
-given coordinates of one or more features in a reference sequence, figure out what the coordinates are in an alignment that contains the reference sequence
+Demonstrate various code tricks for multiple alignments
 
+1. Coordinates. Given coordinates of one or more features in a reference sequence, figure out what the coordinates are in an alignment that contains the reference sequence
+
+2. Getting alignment slices and concatenating them
 
 # Load libraries
 
@@ -216,7 +219,7 @@ human_features
 
 
 
-## Extract aligned regions
+## Extract aligned regions and concatenate
 
 Get those three regions from the alignment - we use the `narrow` function
 
@@ -230,6 +233,7 @@ human_feature_alns <- lapply(1:nrow(human_features),
 human_feature_alns
 ```
 
+# Concatenate alignment slices
 
 We can use the `xscat` function to join those alignment pieces together.
 

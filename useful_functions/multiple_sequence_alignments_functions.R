@@ -504,7 +504,7 @@ alignedStringDistMatrix <- function(x, weightmat=NULL, indel.weight=1L)
         ## length. Weight is 0 for a match, 1 for a mismatch that doesn't
         ## involve "-", and 'indel.weight' for a mismatch that involves "-".
         ## Returns a numeric vector parallel to 'vol1' and 'vol2'.
-        get_weigths <- function(vol1, vol2) {
+        get_weights <- function(vol1, vol2) {
             not_equal <- vol1 != vol2
             is_minus <- vol1 == "-" | vol2 == "-"
             (not_equal & !is_minus) + (not_equal & is_minus) * indel.weight
@@ -518,7 +518,7 @@ alignedStringDistMatrix <- function(x, weightmat=NULL, indel.weight=1L)
         ## same length. The weight between 2 given letters is obtained
         ## from 'weightmat'.
         ## Returns a numeric vector parallel to 'vol1' and 'vol2'.
-        get_weigths <- function(vol1, vol2) weightmat[cbind(vol1, vol2)]
+        get_weights <- function(vol1, vol2) weightmat[cbind(vol1, vol2)]
     }
     ans <- matrix(NA_integer_, nrow=length(x), ncol=length(x))
     x_names <- names(x)
@@ -530,7 +530,7 @@ alignedStringDistMatrix <- function(x, weightmat=NULL, indel.weight=1L)
         vol1 <- vol_list[[i]]
         for (j in seq_len(i)) {
             vol2 <- vol_list[[j]]
-            ans[i, j] <- ans[j, i] <- sum(get_weigths(vol1, vol2))
+            ans[i, j] <- ans[j, i] <- sum(get_weights(vol1, vol2))
         }
     }
     ans
