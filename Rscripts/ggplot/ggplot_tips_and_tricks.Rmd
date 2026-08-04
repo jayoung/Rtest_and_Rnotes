@@ -446,6 +446,39 @@ df |>
 ```
 
 
+## Use a secondary y-axis
+
+
+This code uses a secondary y axis trick from the [R graph gallery](https://r-graph-gallery.com/line-chart-dual-Y-axis-ggplot2.html)
+
+
+```{r, fig.height=2.5, fig.width=4}
+# Build dummy data
+data_secondY <- data.frame(
+    day = as.Date("2019-01-01") + 0:99,
+    temperature = runif(100) + seq(1,100)^2.5 / 10000,
+    price = runif(100) + seq(100,1)^1.5 / 10
+)
+
+# Value used to transform the data
+coeff <- 10
+
+data_secondY |> 
+    ggplot(aes(x=day)) +
+    geom_line( aes(y=temperature)) + 
+    geom_line( aes(y=price / coeff), color="red") + # Divide by 10 to get the same range than the temperature
+    scale_y_continuous(
+        # name = "temperature",  # could also relabel first axis
+        # Add a second axis and specify its features
+        sec.axis = sec_axis(~.*coeff, name="price")
+    ) +
+    theme_classic() +
+    theme( axis.line.y.right = element_line(color = "red"),
+           axis.ticks.y.right = element_line(color = "red"),
+           axis.text.y.right = element_text(color = "red"),
+           axis.title.y.right = element_text(color = "red")  )
+```
+
 
 ## Discontinuous axes using `ggbreak` package
 
