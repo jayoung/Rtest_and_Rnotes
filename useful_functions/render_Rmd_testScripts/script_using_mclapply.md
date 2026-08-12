@@ -2,7 +2,7 @@ script_using_mclapply
 ================
 Janet Young
 
-2026-05-14
+2026-08-11
 
 ``` r
 num_interations <- 10^5
@@ -22,7 +22,7 @@ system.time(
 ```
 
     ##    user  system elapsed 
-    ##  11.121   0.072  11.193
+    ##  11.232   0.144  11.374
 
 # Do something slow using mclapply
 
@@ -37,7 +37,7 @@ system.time(
 ```
 
     ##    user  system elapsed 
-    ##   8.472   0.240   4.183
+    ##  11.578   0.328   3.388
 
 # Finished
 
@@ -69,7 +69,8 @@ sessionInfo()
     ## [8] base     
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] compiler_4.5.2    fastmap_1.2.0     cli_3.6.5         ragg_1.5.0       
-    ##  [5] htmltools_0.5.8.1 tools_4.5.2       yaml_2.3.10       rmarkdown_2.30   
-    ##  [9] knitr_1.50        digest_0.6.37     xfun_0.54         textshaping_1.0.4
-    ## [13] lifecycle_1.0.5   systemfonts_1.3.1 rlang_1.2.0       evaluate_1.0.5
+    ##  [1] digest_0.6.37     fastmap_1.2.0     xfun_0.60         knitr_1.50       
+    ##  [5] htmltools_0.5.8.1 rmarkdown_2.30    lifecycle_1.0.5   cli_3.6.5        
+    ##  [9] textshaping_1.0.4 systemfonts_1.3.1 compiler_4.5.2    rstudioapi_0.17.1
+    ## [13] tools_4.5.2       ragg_1.5.0        evaluate_1.0.5    yaml_2.3.10      
+    ## [17] rlang_1.3.0

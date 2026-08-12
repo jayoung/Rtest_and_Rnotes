@@ -7,6 +7,7 @@ A lot of this is quite old, and most of it is only for myself, not meant for oth
 rhino location: `~/FH_fast_storage/git_more_repos/Rtest_and_Rnotes`
 
 
+
 ## Very partial table of contents of this repo
 
 There are many files in this repo, but these are some that will probably be useful frequently:
@@ -124,11 +125,19 @@ investigate [`targets` package](https://books.ropensci.org/targets/), for workfl
 
 ## Resources
 
+RStudio's [cheatsheets](http://rstudio.com/resources/cheatsheets) on various aspects of R coding.  Helps you remember function names when you're coding.
+
+A [four-part course](https://fredhutchio.github.io/r_intro/) put together by Kate Hertweck (former Hutch instructor). I think it's good.  Was updated in 2020 - not sure it will continue to be updated, but not many of the basics change.
+
+Another, more in-depth [R course](https://stat545.com/r-basics.html).
+
+R For The Rest Of Us [resources](https://rfortherestofus.com/resources)
+
+RStudio's [on-demand webinars](http://rstudio.com/resources/webinars). 
+
 [R primers](https://r-primers.andrewheiss.com)
 
 Nick Tierney's (mostly) [rstats blog](https://www.njtierney.com)
-
-R For The Rest Of Us [resources](https://rfortherestofus.com/resources)
 
 Advice on [making figures](https://github.com/MichaelClerx/making-figures/tree/main)
 
@@ -160,6 +169,11 @@ Bioconductor support:
 Small daily lessons:
 - [25-day advent calendaR](https://github.com/kiirsti/ggplot_adventcalendaR) providing an introduction to ggplot2
 - The 25 days of chRistmas: [an R advent calendaR](https://kiirstio.wixsite.com/kowen/post/the-25-days-of-christmas-an-r-advent-calendar)
+
+
+
+If you don't want to learn R, maybe try [grafify online](https://grafifyonline.shinyapps.io/grafify/)
+
 
 ### haven't looked yet: future
 

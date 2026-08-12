@@ -40,7 +40,9 @@ Don't use the Rstudio way, because I want to specify that we are using Bioconduc
 
 ```
 library("renv")
-renv::init(bioconductor = "3.22")
+renv::init(bioconductor = "3.22") 
+     # 3.22 for R 4.5 
+     # 3.23 for R 4.6 
 ```
 
 Now, the Bioconductor repos will be available when we run `install.packages()`, and we no longer use the BiocManager::install method:
@@ -58,6 +60,10 @@ Initialization does a lot of things:
 - creates `renv.lock` - a json style file that records the versions of all packages used. Updated every time we run `renv::snapshot()`
 - creates `renv` directory - package management will occur in here. It contains its own `.gitignore` file that means the packages themselves don't get synced to git, only the metadata about versions.
 - creates `.Rprofile` file, which will source a long script called `renv/activate.R` every time R is restarted for this project
+
+Also - in Rstudio, the knit button has a menu - set 'knit directory' to be 'project directory' (perhaps also see tools-options-Rmarkdown-evaluate chunks).
+
+When using renv, we should be reading project/.Rprofile (not ~/.Rprofile) and the library paths should not include the blobal library paths
 
 
 ### If I cloned a project from git into a new place
