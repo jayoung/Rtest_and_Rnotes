@@ -1,0 +1,126 @@
+---
+title: "trees_collapse_clades"
+author: "Janet Young\n"
+date: "`r Sys.Date()`\n"
+output: github_document
+always_allow_html: true
+---
+
+# Goal
+
+Run demo code from [Luis D. Verde Arregoitia](https://luisdva.github.io/rstats/reduce-tree/) to collapse some clades of a displayed tree.
+
+Also see code in the FAM90A1 repo - [genomes.Rmd script](https://github.com/jayoung/FAM90A1/blob/main/Rscripts/genomes.md#big-tree-aln10-but-collapse-some-clades)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(geiger)
+library(ggtree)
+```
+
+Get example tree and display it:
+
+```{r, fig.height=11, fig.width=7}
+data("caniformia")
+caniftree <- caniformia$phy
+
+full_plot <- caniftree |> 
+    ggtree() +
+    geom_tiplab(size=2.5) +
+    hexpand(0.3)
+
+full_plot
+```
+
+Get tree in tibble format, and figure out which clades to collapse
+
+```{r}
+canif_df <- as_tibble(caniftree)
+canif_df <- canif_df %>% 
+    mutate(genus=str_extract(label,".*?(?=_)")) %>% # regex!
+    filter(!is.na(genus)) # drops internal nodes
+```
+
+```{r}
+# process nodes for label placement
+formrca <- canif_df %>%
+    add_count(genus, name = "numnodes") %>% ## add_count is a dplyr function - like count, but adds a new column to the dataframe
+    filter(numnodes>2)
+
+## 9 genus have >2 nodes
+# formrca$genus |> unique() |> length()
+
+### get node numbers per genus 
+## returns a list, one item per genus, containing all node numbers of tips per genus 
+gen_nodes <- formrca %>%
+    group_split(genus) %>%
+    purrr::map(pull, node)
+
+#### get genus names
+## returns a list, one item per genus, containing genus name
+gnamesvec <- formrca %>%
+    group_split(genus) %>%
+    purrr::map(pull, genus) %>%
+    purrr::map(unique)
+```
+
+
+```{r}
+### make a simple tibble - one row per genus, with mrca node
+
+# define function for getting MRCA node
+getCladeNode <- function(tree, nodesvec, gname) {
+    nodenum <- getMRCA(tree, tip = nodesvec)
+    tibble(clade = gname, node = nodenum)
+}
+genNodes <- purrr::map2_df(gen_nodes, gnamesvec,
+                           ~ getCladeNode(caniftree, .x, .y)) # formula notation
+```
+
+
+
+
+Now we can use that to first scale clades (shrink vertically) then to collapse them (turn them into triangles).  Need to do all the scaling first, then the collapsing afterwards, otherwise it doesn't work.
+
+
+```{r, fig.height=7, fig.width=7}
+#### scale each clade
+full_plot_scaled <- purrr::reduce(
+    genNodes$node,
+    \(x,y) x |> 
+        scaleClade(y, 0.2),
+    .init = full_plot
+)
+# full_plot_scaled
+
+#### collapse nodes and add clade labels
+full_plot_scaled_collapsed <- purrr::reduce2(
+    genNodes$node,
+    genNodes$clade,
+    \(x,y,z) x |> 
+        ggtree::collapse(y, mode="max") + 
+        geom_cladelab(
+            node=y,label=z,
+            barsize = 1, 
+            offset.text = -1.25,
+            vjust = 0,
+            align= TRUE,
+            fontsize = 2.75
+        ),
+    .init = full_plot_scaled
+)
+full_plot_scaled_collapsed
+
+```
+
+
+# Finished
+
+```{r}
+sessionInfo()
+```
+
+
+
