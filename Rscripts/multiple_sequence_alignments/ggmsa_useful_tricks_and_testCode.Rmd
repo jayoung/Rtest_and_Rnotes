@@ -15,6 +15,7 @@ ggmsa code does seem to generate a lot of warnings - I am suppressing them here.
 
 ```{r setup, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
 library(ggtree)
 library(ape)
 library(Biostrings)
@@ -34,6 +35,43 @@ dist_matrix <- as.dist(pwalign::stringDist(prot_aln, method = "hamming")/width(p
 tree <- bionj(dist_matrix)
 
 dna_aln <- readDNAStringSet(here("Rscripts/multiple_sequence_alignments/example_alignment_files/ggmsa_tests_example_for_github.fa"))
+```
+
+
+# Simple ggmsa
+
+
+
+```{r, warning=FALSE, message=FALSE}
+ggmsa(prot_aln, start=1, end = 50, seq_name=TRUE, border=FALSE) 
+```
+
+
+
+Wrap a longer alignment over multiple rows (this alignment is ~450aa long)
+
+```{r, fig.height=11, fig.width=7, warning=FALSE, message=FALSE}
+ggmsa(prot_aln, seq_name=TRUE, border=FALSE) + 
+    facet_msa(field = 100)
+```
+
+# Turn background shading off
+
+`none_bg=TRUE` works to turn off the background, but it also turns off the sequence names which is unhelpful
+
+```{r, warning=FALSE, message=FALSE}
+ggmsa(prot_aln, start=1, end = 50, none_bg=TRUE, seq_name=TRUE, border=FALSE) 
+```
+
+instead we can set up an all-white color scheme and use it in the `custom_color` argument
+
+```{r, warning=FALSE, message=FALSE}
+### make a dataframe
+all_white_df <- data.frame(names = c(LETTERS[1:26],"-"), 
+                           color = "#FFFFFF", 
+                           stringsAsFactors = FALSE)
+
+ggmsa(prot_aln, start=1, end = 50, custom_color=all_white_df, seq_name=TRUE, border=FALSE) 
 ```
 
 # Plot tree+aln using ggmsa::geom_msa
@@ -100,6 +138,37 @@ prot_aln[1:2] |>
           seq_name = TRUE)
 ```
 
+Can have color brightness reflect conservation, although it seems to work with some color schemes and not others. Not sure how useful this is.
+
+```{r}
+prot_aln |> 
+    ggmsa(start=200, end=250, seq_name = TRUE,
+          color = "Hydrophobicity", 
+          by_conservation=TRUE)
+```
+
+
+# Maybe we want to add our own layers to the ggmsa
+
+
+```{r, fig.height=1.2, fig.width=7, warning=FALSE, message=FALSE}
+## define some positions to highligh
+annot_tbl <- tibble(x=c(10,20)) 
+
+prot_aln[1:2] |> 
+    ggmsa(start=1, end=50, 
+          custom_color=all_white_df, border=FALSE,
+          position_highlight = c(),
+          seq_name = TRUE) +
+    ### tick marks above the alignment
+    geom_segment(data=annot_tbl,
+                 aes(x=x, xend=x, y=3, yend=4),
+                 linewidth=4) +
+    ### red highlight
+    geom_rect(data=annot_tbl,
+              aes(xmin=x-0.5, xmax=x+0.5, ymin=0, ymax=3),
+              fill = "red", alpha = 0.3) 
+```
 
 # Finished
 
