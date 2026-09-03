@@ -2,7 +2,7 @@ ggplot_tips_and_tricks
 ================
 Janet Young
 
-2026-08-03
+2026-09-02
 
 # Goal
 
@@ -26,6 +26,8 @@ library(ggtext)
 library(ggbreak) 
 
 library(palmerpenguins)
+
+library(gginnards) ## to peer inside ggplot objects and manipulate them
 
 ### for my_ggMarginal:
 source(here("useful_functions/other_functions.R"))
@@ -2210,6 +2212,73 @@ NA
 
 </table>
 
+Make a slightly more complex plot example
+
+``` r
+p2 <- ggplot(mpg, aes(x=hwy, y=cty)) +
+    geom_point(size=0.25) +
+    geom_smooth(color="darkred", lty=2, method="loess", formula=y~x) +
+    theme_classic()
+p2
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-39-1.png)<!-- -->
+
+`summary()` on a ggplot object:
+
+- above the dashed line it shows the data used
+- below the dashed line it shows each layer (separated by a space)
+
+``` r
+summary(p2)
+```
+
+    ## data: manufacturer, model, displ, year, cyl, trans, drv, cty, hwy, fl,
+    ##   class [234x11]
+    ## mapping:  x = ~hwy, y = ~cty
+    ## faceting:  <empty> 
+    ## -----------------------------------
+    ## geom_point: na.rm = FALSE
+    ## stat_identity: na.rm = FALSE
+    ## position_identity 
+    ## 
+    ## geom_smooth: na.rm = FALSE, orientation = NA, se = TRUE
+    ## stat_smooth: na.rm = FALSE, orientation = NA, se = TRUE, method = loess, formula = y ~ x
+    ## position_identity
+
+This helps us see what each layer is:
+
+``` r
+summary(p2$layers)
+```
+
+    ##             Length Class         Mode       
+    ## geom_point  17     LayerInstance environment
+    ## geom_smooth 17     LayerInstance environment
+
+The [`gginnnards`
+package](https://cran.rstudio.com/web/packages/gginnards/vignettes/user-guide-2.html)
+might be useful. Here’s [another help
+page](https://docs.r4photobiology.info/gginnards/) for gginnards.
+
+This [ggplot2
+resource](https://ggplot2-book.org/internals#sec-ggplotbuild) might also
+help.
+
+gginnnards allows us to delete all layers matching a certain geom, or by
+their index
+
+``` r
+p2a <- delete_layers(p2, "GeomPoint") +
+    labs(subtitle="delete GeomPoint layer")
+p2b <- delete_layers(p2, idx=2)+
+    labs(subtitle="delete layer 2")
+
+p2a + p2b
+```
+
+![](ggplot_tips_and_tricks_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
+
 # Random test code that should go elsewhere
 
 ``` r
@@ -2239,13 +2308,13 @@ df |> tidyr::separate_longer_delim(x, delim = " ")
 sessionInfo()
 ```
 
-    ## R version 4.5.3 (2026-03-11)
-    ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Tahoe 26.6
+    ## R version 4.6.1 (2026-06-24)
+    ## Platform: aarch64-apple-darwin23
+    ## Running under: macOS Tahoe 26.6.2
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
     ## 
     ## locale:
     ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -2257,36 +2326,38 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] palmerpenguins_0.1.1 ggbreak_0.1.7        ggtext_0.1.2        
-    ##  [4] shadowtext_0.1.6     ggExtra_0.11.0       kableExtra_1.4.0    
-    ##  [7] janitor_2.2.1        here_1.0.2           patchwork_1.3.2     
-    ## [10] lubridate_1.9.5      forcats_1.0.1        stringr_1.6.0       
-    ## [13] dplyr_1.2.1          purrr_1.2.1          readr_2.2.0         
-    ## [16] tidyr_1.3.2          tibble_3.3.1         ggplot2_4.0.2       
-    ## [19] tidyverse_2.0.0     
+    ##  [1] gginnards_0.2.0-2    palmerpenguins_0.1.1 ggbreak_0.1.7       
+    ##  [4] ggtext_0.2.0         shadowtext_0.1.6     ggExtra_0.11.0      
+    ##  [7] kableExtra_1.4.1     janitor_2.2.1        here_1.0.2          
+    ## [10] patchwork_1.3.2      lubridate_1.9.5      forcats_1.0.1       
+    ## [13] stringr_1.6.0        dplyr_1.2.1          purrr_1.2.2         
+    ## [16] readr_2.2.0          tidyr_1.3.2          tibble_3.3.1        
+    ## [19] ggplot2_4.0.3        tidyverse_2.0.0     
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] gtable_0.3.6            xfun_0.57               htmlwidgets_1.6.4      
-    ##  [4] tzdb_0.5.0              quadprog_1.5-8          yulab.utils_0.2.4      
-    ##  [7] vctrs_0.7.2             tools_4.5.3             generics_0.1.4         
-    ## [10] pkgconfig_2.0.3         ggplotify_0.1.3         RColorBrewer_1.1-3     
-    ## [13] S7_0.2.1                lifecycle_1.0.5         compiler_4.5.3         
-    ## [16] farver_2.1.2            textshaping_1.0.5       snakecase_0.11.1       
-    ## [19] litedown_0.9            ggfun_0.2.0             fontLiberation_0.1.0   
-    ## [22] httpuv_1.6.17           fontquiver_0.2.1        htmltools_0.5.9        
-    ## [25] yaml_2.3.12             pillar_1.11.1           later_1.4.8            
-    ## [28] MASS_7.3-65             mime_0.13               fontBitstreamVera_0.1.1
-    ## [31] commonmark_2.0.0        aplot_0.2.9             tidyselect_1.2.1       
-    ## [34] digest_0.6.39           stringi_1.8.7           labeling_0.4.3         
-    ## [37] rprojroot_2.1.1         fastmap_1.2.0           grid_4.5.3             
-    ## [40] cli_3.6.5               magrittr_2.0.5          withr_3.0.2            
-    ## [43] rappdirs_0.3.4          gdtools_0.5.0           scales_1.4.0           
-    ## [46] promises_1.5.0          timechange_0.4.0        rmarkdown_2.31         
-    ## [49] otel_0.2.0              ragg_1.5.2              hms_1.1.4              
-    ## [52] shiny_1.13.0            evaluate_1.0.5          knitr_1.51             
-    ## [55] miniUI_0.1.2            viridisLite_0.4.3       markdown_2.0           
-    ## [58] gridGraphics_0.5-1      rlang_1.1.7             gridtext_0.1.6         
-    ## [61] ggiraph_0.9.6           Rcpp_1.1.1              xtable_1.8-8           
-    ## [64] glue_1.8.0              xml2_1.5.2              directlabels_2025.6.24 
-    ## [67] svglite_2.2.2           rstudioapi_0.18.0       R6_2.6.1               
-    ## [70] fs_2.0.1                systemfonts_1.3.2
+    ##  [1] ggiraph_0.9.6           tidyselect_1.2.1        viridisLite_0.4.3      
+    ##  [4] farver_2.1.2            S7_0.2.2                fastmap_1.2.0          
+    ##  [7] fontquiver_0.2.1        promises_1.5.0          digest_0.6.39          
+    ## [10] timechange_0.4.0        mime_0.13               lifecycle_1.0.5        
+    ## [13] magrittr_2.0.5          compiler_4.6.1          rlang_1.3.0            
+    ## [16] tools_4.6.1             yaml_2.3.12             data.table_1.18.6.1    
+    ## [19] knitr_1.51              labeling_0.4.3          htmlwidgets_1.6.4      
+    ## [22] xml2_1.6.0              RColorBrewer_1.1-3      aplot_0.3.1            
+    ## [25] miniUI_0.1.2            withr_3.0.3             grid_4.6.1             
+    ## [28] gdtools_0.5.1           xtable_1.8-8            scales_1.4.0           
+    ## [31] MASS_7.3-66             cli_3.6.6               rmarkdown_2.32         
+    ## [34] ragg_1.5.2              generics_0.1.4          otel_0.2.0             
+    ## [37] rstudioapi_0.19.0       tzdb_0.5.0              directlabels_2026.8.27 
+    ## [40] commonmark_2.0.0        splines_4.6.1           ggplotify_0.1.3        
+    ## [43] vctrs_0.7.3             yulab.utils_0.2.5       Matrix_1.7-6           
+    ## [46] fontBitstreamVera_0.1.1 litedown_0.11           gridGraphics_0.5-1     
+    ## [49] hms_1.1.4               systemfonts_1.3.2       glue_1.8.1             
+    ## [52] stringi_1.8.9           gtable_0.3.6            later_1.4.8            
+    ## [55] pillar_1.11.1           rappdirs_0.3.4          htmltools_0.5.9        
+    ## [58] R6_2.6.1                textshaping_1.0.5       rprojroot_2.1.1        
+    ## [61] lattice_0.23-1          evaluate_1.0.5          shiny_1.14.0           
+    ## [64] markdown_2.0            gridtext_0.1.6          snakecase_0.11.1       
+    ## [67] httpuv_1.6.17           fontLiberation_0.1.0    ggfun_0.2.1            
+    ## [70] Rcpp_1.1.2              nlme_3.1-171            svglite_2.2.2          
+    ## [73] mgcv_1.9-4              xfun_0.60               fs_2.1.0               
+    ## [76] pkgconfig_2.0.3

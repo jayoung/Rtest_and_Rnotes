@@ -31,6 +31,8 @@ library(ggbreak)
 
 library(palmerpenguins)
 
+library(gginnards) ## to peer inside ggplot objects and manipulate them
+
 ### for my_ggMarginal:
 source(here("useful_functions/other_functions.R"))
 ```
@@ -640,6 +642,48 @@ layer_data(p1, i = 1) |>
     kable(digits=2) |> 
     kable_styling(full_width = FALSE)
 ```
+
+Make a slightly more complex plot example
+
+
+```{r, fig.height=2, fig.width=2}
+p2 <- ggplot(mpg, aes(x=hwy, y=cty)) +
+    geom_point(size=0.25) +
+    geom_smooth(color="darkred", lty=2, method="loess", formula=y~x) +
+    theme_classic()
+p2
+```
+
+`summary()` on a ggplot object:  
+
+- above the dashed line it shows the data used
+- below the dashed line it shows each layer (separated by a space)
+
+```{r}
+summary(p2)
+```
+This helps us see what each layer is:
+
+```{r}
+summary(p2$layers)
+```
+
+The [`gginnnards` package](https://cran.rstudio.com/web/packages/gginnards/vignettes/user-guide-2.html) might be useful. Here's [another help page](https://docs.r4photobiology.info/gginnards/) for gginnards. 
+
+This [ggplot2 resource](https://ggplot2-book.org/internals#sec-ggplotbuild) might also help.
+
+gginnnards allows us to delete all layers matching a certain geom, or by their index
+
+```{r, fig.height=2, fig.width=4}
+p2a <- delete_layers(p2, "GeomPoint") +
+    labs(subtitle="delete GeomPoint layer")
+p2b <- delete_layers(p2, idx=2)+
+    labs(subtitle="delete layer 2")
+
+p2a + p2b
+```
+
+
 
 # Random test code that should go elsewhere
 
