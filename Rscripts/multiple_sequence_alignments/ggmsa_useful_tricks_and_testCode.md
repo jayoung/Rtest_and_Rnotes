@@ -1,4 +1,4 @@
-ggmsa_demo
+ggmsa_useful_tricks_and_testCode
 ================
 Janet Young
 

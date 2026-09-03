@@ -1,5 +1,5 @@
 ---
-title: "ggmsa_demo"
+title: "ggmsa_useful_tricks_and_testCode"
 author: "Janet Young\n"
 date: "`r Sys.Date()`\n"
 output: github_document
