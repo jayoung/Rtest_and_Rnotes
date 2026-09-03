@@ -69,7 +69,7 @@ instead we can set up an all-white color scheme and use it in the
 `custom_color` argument
 
 ``` r
-### make a dataframe
+### make a custom color scheme
 all_white_df <- data.frame(names = c(LETTERS[1:26],"-"), 
                            color = "#FFFFFF", 
                            stringsAsFactors = FALSE)
@@ -181,7 +181,6 @@ prot_aln |>
 # Maybe we want to add our own layers to the ggmsa
 
 ``` r
-## define some positions to highligh
 annot_tbl <- tibble(x=c(10,20)) 
 
 prot_aln[1:2] |> 
@@ -200,6 +199,109 @@ prot_aln[1:2] |>
 ```
 
 ![](ggmsa_useful_tricks_and_testCode_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+# explore the ggplot layers a bit more
+
+``` r
+library(gginnards)
+```
+
+``` r
+p <- prot_aln[1:5] |> 
+    ggmsa(start=200, end=250, seq_name = TRUE)
+p
+```
+
+![](ggmsa_useful_tricks_and_testCode_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+That plot has two layers - layer 1 is the colored tiles - layer 2 has
+the letters and x and y axis labels - x range in each tbl is roughly
+1-50 in both - y range in each tbl is 1-2 in layer 1, 0.7-2.3 in layer 2
+
+[gginnards
+help](https://cran.rstudio.com/web/packages/gginnards/vignettes/user-guide-2.html)
+
+``` r
+# summary(p)
+summary(p$layers)
+```
+
+    ##              Length Class         Mode       
+    ## geom_tile    17     LayerInstance environment
+    ## geom_polygon 17     LayerInstance environment
+
+Delete layer 1 (the background) shows us that layer 2 is the letters, x
+and y axis labels
+
+``` r
+delete_layers(p, idx=1L)
+```
+
+![](ggmsa_useful_tricks_and_testCode_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+Delete layer 1 (the colored tiles background) shows us that layer 2 is
+the letters, x and y axis labels Deleting layer 2 (the letters etc)
+shows us that layer 1 is the colored tiles
+
+``` r
+delete_layers(p, idx=2L)
+```
+
+![](ggmsa_useful_tricks_and_testCode_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+``` r
+## looks like there are 2 tbls
+plot_tbls <- lapply(1:2, function(x) {
+  layer_data(p, i=x)
+})
+# get x range and y range
+# sapply(plot_tbls, function(one_tbl) {
+#   range(one_tbl$x)
+# })
+# 
+# sapply(plot_tbls, function(one_tbl) {
+#   range(one_tbl$y)
+# })
+
+# sapply(plot_tbls, dim)
+#       [,1]  [,2]
+# [1,] 13028 13028
+# [2,]    15     9
+```
+
+First layer tbl (the tiles), first two rows:
+
+``` r
+head(plot_tbls[[1]], 2)
+```
+
+    ##     x y PANEL group  xmin  xmax ymin ymax    fill colour linewidth linetype
+    ## 1 200 5     1     5 199.5 200.5  4.5  5.5 #74ce98   grey       0.2        1
+    ## 2 200 5     1     5 199.5 200.5  4.5  5.5 #74ce98   grey       0.2        1
+    ##   alpha width height
+    ## 1    NA     1      1
+    ## 2    NA     1      1
+
+Second tbl (the letters, and axes), first two rows:
+
+``` r
+head(plot_tbls[[2]], 2)
+```
+
+    ##   group        x        y PANEL colour      fill linewidth linetype alpha
+    ## 1     5 200.3651 5.450000     1     NA #333333FF       0.5        1    NA
+    ## 2     5 200.3651 5.342784     1     NA #333333FF       0.5        1    NA
+
+PANEL is always 1 in each tbl
+
+``` r
+sapply(plot_tbls, function(one_tbl) {
+  table(one_tbl$PANEL==1)
+})
+```
+
+    ##  TRUE  TRUE 
+    ## 24996 24996
 
 # Finished
 
@@ -226,13 +328,14 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] here_1.0.2          ggmsa_1.18.0        Biostrings_2.80.1  
-    ##  [4] Seqinfo_1.2.0       XVector_0.52.0      IRanges_2.46.0     
-    ##  [7] S4Vectors_0.50.2    BiocGenerics_0.58.1 generics_0.1.4     
-    ## [10] ape_5.8-1           ggtree_4.2.0        lubridate_1.9.5    
-    ## [13] forcats_1.0.1       stringr_1.6.0       dplyr_1.2.1        
-    ## [16] purrr_1.2.2         readr_2.2.0         tidyr_1.3.2        
-    ## [19] tibble_3.3.1        ggplot2_4.0.3       tidyverse_2.0.0    
+    ##  [1] gginnards_0.2.0-2   here_1.0.2          ggmsa_1.18.0       
+    ##  [4] Biostrings_2.80.1   Seqinfo_1.2.0       XVector_0.52.0     
+    ##  [7] IRanges_2.46.0      S4Vectors_0.50.2    BiocGenerics_0.58.1
+    ## [10] generics_0.1.4      ape_5.8-1           ggtree_4.2.0       
+    ## [13] lubridate_1.9.5     forcats_1.0.1       stringr_1.6.0      
+    ## [16] dplyr_1.2.1         purrr_1.2.2         readr_2.2.0        
+    ## [19] tidyr_1.3.2         tibble_3.3.1        ggplot2_4.0.3      
+    ## [22] tidyverse_2.0.0    
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] gtable_0.3.6            xfun_0.60               htmlwidgets_1.6.4      

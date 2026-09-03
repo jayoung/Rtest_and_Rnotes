@@ -66,7 +66,7 @@ ggmsa(prot_aln, start=1, end = 50, none_bg=TRUE, seq_name=TRUE, border=FALSE)
 instead we can set up an all-white color scheme and use it in the `custom_color` argument
 
 ```{r, warning=FALSE, message=FALSE}
-### make a dataframe
+### make a custom color scheme
 all_white_df <- data.frame(names = c(LETTERS[1:26],"-"), 
                            color = "#FFFFFF", 
                            stringsAsFactors = FALSE)
@@ -152,7 +152,6 @@ prot_aln |>
 
 
 ```{r, fig.height=1.2, fig.width=7, warning=FALSE, message=FALSE}
-## define some positions to highligh
 annot_tbl <- tibble(x=c(10,20)) 
 
 prot_aln[1:2] |> 
@@ -169,6 +168,93 @@ prot_aln[1:2] |>
               aes(xmin=x-0.5, xmax=x+0.5, ymin=0, ymax=3),
               fill = "red", alpha = 0.3) 
 ```
+
+# explore the ggplot layers a bit more
+
+```{r}
+library(gginnards)
+```
+
+```{r, fig.height=2, fig.width=7, warning=FALSE, message=FALSE}
+p <- prot_aln[1:5] |> 
+    ggmsa(start=200, end=250, seq_name = TRUE)
+p
+```
+
+
+
+That plot has two layers
+- layer 1 is the colored tiles
+- layer 2 has the letters and x and y axis labels
+- x range in each tbl is roughly 1-50 in both
+- y range in each tbl is 1-2 in layer 1, 0.7-2.3 in layer 2
+
+[gginnards help](https://cran.rstudio.com/web/packages/gginnards/vignettes/user-guide-2.html)
+
+
+```{r}
+# summary(p)
+summary(p$layers)
+```
+
+
+Delete layer 1 (the background) shows us that layer 2 is the letters, x and y axis labels
+
+```{r, fig.height=2, fig.width=7, warning=FALSE, message=FALSE}
+delete_layers(p, idx=1L)
+```
+
+
+Delete layer 1 (the colored tiles background) shows us that layer 2 is the letters, x and y axis labels
+Deleting layer 2 (the letters etc) shows us that layer 1 is the colored tiles
+
+```{r, fig.height=2, fig.width=7, warning=FALSE, message=FALSE}
+delete_layers(p, idx=2L)
+```
+
+
+
+```{r, warning=FALSE}
+## looks like there are 2 tbls
+plot_tbls <- lapply(1:2, function(x) {
+  layer_data(p, i=x)
+})
+# get x range and y range
+# sapply(plot_tbls, function(one_tbl) {
+#   range(one_tbl$x)
+# })
+# 
+# sapply(plot_tbls, function(one_tbl) {
+#   range(one_tbl$y)
+# })
+
+# sapply(plot_tbls, dim)
+#       [,1]  [,2]
+# [1,] 13028 13028
+# [2,]    15     9
+```
+
+First layer tbl (the tiles), first two rows:
+
+```{r}
+head(plot_tbls[[1]], 2)
+```
+
+Second tbl (the letters, and axes), first two rows:
+
+```{r}
+head(plot_tbls[[2]], 2)
+```
+
+PANEL is always 1 in each tbl
+
+```{r}
+sapply(plot_tbls, function(one_tbl) {
+  table(one_tbl$PANEL==1)
+})
+```
+
+
 
 # Finished
 
