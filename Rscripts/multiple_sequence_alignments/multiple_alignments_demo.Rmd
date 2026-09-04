@@ -22,9 +22,10 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
 
-## Biostrings is a bioconductor package, not a regular R package. This page has instructions on how to install it:
+## Biostrings and GenomicRanges are Bioconductor packages, not regular R packages. This page has instructions on how to install them:
 ## https://bioconductor.org/packages/release/bioc/html/Biostrings.html
 library(Biostrings)
+library(GenomicRanges)
 ```
 
 # Read example alignment
@@ -61,7 +62,9 @@ Set up a couple of functions
 
 `getUngappedPosOneSeq` takes a single gapped sequence (i.e. a sequence in the alignment), and gets a tibble of position in each sequence versus position in alignment. We use cumulative sum of non-gap bases.
 
-`makeLookupTibble` is a bigger function that applies the `getUngappedPosOneSeq` to every sequence in an alignment and returns a tibble
+`getAlnPosLookupTable` is a bigger function that applies the `getUngappedPosOneSeq` to every sequence in an alignment and returns a tibble. 
+
+A combined version of those functions is also called `getAlnPosLookupTable` and can be found in the file `useful_functions/multiple_sequence_alignments_functions.R`, which I often read into other scripts so I don't have to redefine the function each time.
 
 
 ```{r}
@@ -77,8 +80,8 @@ getUngappedPosOneSeq <- function(myGappedSeq) {
     return(myCounts)
 }
 
-##### makeLookupTibble - a function to take an alignment, and for every single sequence, get a position lookup table, and join the together
-makeLookupTibble <- function(alignment) {
+##### getAlnPosLookupTable - a function to take an alignment, and for every single sequence, get a position lookup table, and join the together
+getAlnPosLookupTable <- function(alignment) {
     output <- tibble(aln_pos=1:width(alignment)[1])
     each_seq_lookup <- sapply( names(alignment), function(each_seq_name) {
         getUngappedPosOneSeq( alignment[[each_seq_name]] )
@@ -88,10 +91,11 @@ makeLookupTibble <- function(alignment) {
 }
 ```
 
+
 Make a position lookup tibble for our alignment, just the reference sequence.  Show the last few rows of the tibble.
 
 ```{r}
-alnPos_lookup_table <- makeLookupTibble( aln[ref_name] )
+alnPos_lookup_table <- getAlnPosLookupTable( aln[ref_name] )
 
 alnPos_lookup_table |> 
     tail()
@@ -109,6 +113,7 @@ It gives us a matrix object with a row for each nucleotide (class) it counted, a
 aln_counts <- consensusMatrix(aln, baseOnly=TRUE)
 aln_counts[,1:10]
 ```
+
 Maybe we want to use the lookup table we made earlier to add human positions on to that alignment
 
 First, let's turn that matrix 90 degrees and make it into a tibble, which will be easier to work with
@@ -189,7 +194,7 @@ addAlnCoords <- function(feature_tbl,
     ## get lookup tbl in a useful format
     lookup_tbl <- lookup_tbl |> 
         select(aln_pos, ref_pos=matches(refseq_name))
-
+    
     # look up start aln_pos
     feature_tbl <- left_join(feature_tbl,
                              lookup_tbl,
@@ -206,7 +211,7 @@ addAlnCoords <- function(feature_tbl,
 ```
 
 
-Use `addAlnCoords` with our lookup table to convert coordinates in the example features tibble (`human_features`)
+Use `addAlnCoords` with our lookup table to convert coordinates in the example features tibble (`human_features`), adding them as extra columns.
 
 ```{r}
 human_features <- addAlnCoords( feature_tbl=human_features, 
@@ -217,7 +222,31 @@ human_features
 
 
 
+More often I store the features as a GRanges object, in which case I can use the `convertCoordsOneSeq` function defined in the `useful_functions/multiple_sequence_alignments_functions.R` file, which I often read in to otehr scripts.
 
+Here's how we convert the original human_features object to GRanges - get a version BEFORE I added alignment coordinates, so I can demo how we convert them using that other function.
+
+
+```{r}
+human_features_gr <- human_features |> 
+    select(start, end, strand, "name") |> 
+    mutate(seqnames="human_CENPA_ORF") |> 
+    GRanges()
+human_features_gr
+```
+
+xxx
+
+do we get the same result using the convertCoordsOneSeq function that's in the useful_functions file?
+
+```{r}
+source( here("useful_functions/multiple_sequence_alignments_functions.R") )
+
+### by default the function returns get position in the alignment, but you could also ask for positions in other sequences in the alignment if those are in the lookup table
+human_features_gr <- convertCoordsOneSeq( human_features_gr, 
+                                          lookup_tbl=alnPos_lookup_table )
+human_features_gr
+```
 
 ## Extract aligned regions and concatenate
 
@@ -226,10 +255,10 @@ Get those three regions from the alignment - we use the `narrow` function
 ```{r}
 human_feature_alns <- lapply(1:nrow(human_features), 
                              function(i) {
-    narrow(aln, 
-           start=human_features$start_aln[i],
-           end=human_features$end_aln[i] )
-})
+                                 narrow(aln, 
+                                        start=human_features$start_aln[i],
+                                        end=human_features$end_aln[i] )
+                             })
 human_feature_alns
 ```
 

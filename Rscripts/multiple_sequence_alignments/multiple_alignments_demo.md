@@ -2,7 +2,7 @@ multiple_alignments_demo
 ================
 Janet Young
 
-2026-08-11
+2026-09-03
 
 # Goal
 
@@ -22,9 +22,10 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
 
-## Biostrings is a bioconductor package, not a regular R package. This page has instructions on how to install it:
+## Biostrings and GenomicRanges are Bioconductor packages, not regular R packages. This page has instructions on how to install them:
 ## https://bioconductor.org/packages/release/bioc/html/Biostrings.html
 library(Biostrings)
+library(GenomicRanges)
 ```
 
 # Read example alignment
@@ -76,9 +77,15 @@ Set up a couple of functions
 in the alignment), and gets a tibble of position in each sequence versus
 position in alignment. We use cumulative sum of non-gap bases.
 
-`makeLookupTibble` is a bigger function that applies the
+`getAlnPosLookupTable` is a bigger function that applies the
 `getUngappedPosOneSeq` to every sequence in an alignment and returns a
-tibble
+tibble.
+
+A combined version of those functions is also called
+`getAlnPosLookupTable` and can be found in the file
+`useful_functions/multiple_sequence_alignments_functions.R`, which I
+often read into other scripts so I don’t have to redefine the function
+each time.
 
 ``` r
 ###### getUngappedPosOneSeq is a function to take a single aligned sequence, and to return a number for each position in the alignment that represents the position in the original sequence
@@ -93,8 +100,8 @@ getUngappedPosOneSeq <- function(myGappedSeq) {
     return(myCounts)
 }
 
-##### makeLookupTibble - a function to take an alignment, and for every single sequence, get a position lookup table, and join the together
-makeLookupTibble <- function(alignment) {
+##### getAlnPosLookupTable - a function to take an alignment, and for every single sequence, get a position lookup table, and join the together
+getAlnPosLookupTable <- function(alignment) {
     output <- tibble(aln_pos=1:width(alignment)[1])
     each_seq_lookup <- sapply( names(alignment), function(each_seq_name) {
         getUngappedPosOneSeq( alignment[[each_seq_name]] )
@@ -108,7 +115,7 @@ Make a position lookup tibble for our alignment, just the reference
 sequence. Show the last few rows of the tibble.
 
 ``` r
-alnPos_lookup_table <- makeLookupTibble( aln[ref_name] )
+alnPos_lookup_table <- getAlnPosLookupTable( aln[ref_name] )
 
 alnPos_lookup_table |> 
     tail()
@@ -291,7 +298,7 @@ addAlnCoords <- function(feature_tbl,
     ## get lookup tbl in a useful format
     lookup_tbl <- lookup_tbl |> 
         select(aln_pos, ref_pos=matches(refseq_name))
-
+    
     # look up start aln_pos
     feature_tbl <- left_join(feature_tbl,
                              lookup_tbl,
@@ -308,7 +315,8 @@ addAlnCoords <- function(feature_tbl,
 ```
 
 Use `addAlnCoords` with our lookup table to convert coordinates in the
-example features tibble (`human_features`)
+example features tibble (`human_features`), adding them as extra
+columns.
 
 ``` r
 human_features <- addAlnCoords( feature_tbl=human_features, 
@@ -324,6 +332,60 @@ human_features
     ## 2 region2   101   140 +            167     209
     ## 3 region3   331   400 +            400     469
 
+More often I store the features as a GRanges object, in which case I can
+use the `convertCoordsOneSeq` function defined in the
+`useful_functions/multiple_sequence_alignments_functions.R` file, which
+I often read in to otehr scripts.
+
+Here’s how we convert the original human_features object to GRanges -
+get a version BEFORE I added alignment coordinates, so I can demo how we
+convert them using that other function.
+
+``` r
+human_features_gr <- human_features |> 
+    select(start, end, strand, "name") |> 
+    mutate(seqnames="human_CENPA_ORF") |> 
+    GRanges()
+human_features_gr
+```
+
+    ## GRanges object with 3 ranges and 1 metadata column:
+    ##              seqnames    ranges strand |        name
+    ##                 <Rle> <IRanges>  <Rle> | <character>
+    ##   [1] human_CENPA_ORF      1-90      + |     region1
+    ##   [2] human_CENPA_ORF   101-140      + |     region2
+    ##   [3] human_CENPA_ORF   331-400      + |     region3
+    ##   -------
+    ##   seqinfo: 1 sequence from an unspecified genome; no seqlengths
+
+xxx
+
+do we get the same result using the convertCoordsOneSeq function that’s
+in the useful_functions file?
+
+``` r
+source( here("useful_functions/multiple_sequence_alignments_functions.R") )
+
+### by default the function returns get position in the alignment, but you could also ask for positions in other sequences in the alignment if those are in the lookup table
+human_features_gr <- convertCoordsOneSeq( human_features_gr, 
+                                          lookup_tbl=alnPos_lookup_table )
+human_features_gr
+```
+
+    ## GRanges object with 3 ranges and 5 metadata columns:
+    ##       seqnames    ranges strand |   orig_seqnames orig_start  orig_end
+    ##          <Rle> <IRanges>  <Rle> |        <factor>  <integer> <integer>
+    ##   [1]  aln_pos     1-156      + | human_CENPA_ORF          1        90
+    ##   [2]  aln_pos   167-209      + | human_CENPA_ORF        101       140
+    ##   [3]  aln_pos   400-469      + | human_CENPA_ORF        331       400
+    ##       orig_width        name
+    ##        <numeric> <character>
+    ##   [1]         90     region1
+    ##   [2]         40     region2
+    ##   [3]         70     region3
+    ##   -------
+    ##   seqinfo: 1 sequence from an unspecified genome; no seqlengths
+
 ## Extract aligned regions and concatenate
 
 Get those three regions from the alignment - we use the `narrow`
@@ -332,10 +394,10 @@ function
 ``` r
 human_feature_alns <- lapply(1:nrow(human_features), 
                              function(i) {
-    narrow(aln, 
-           start=human_features$start_aln[i],
-           end=human_features$end_aln[i] )
-})
+                                 narrow(aln, 
+                                        start=human_features$start_aln[i],
+                                        end=human_features$end_aln[i] )
+                             })
 human_feature_alns
 ```
 
@@ -444,7 +506,7 @@ sessionInfo()
 
     ## R version 4.6.1 (2026-06-24)
     ## Platform: aarch64-apple-darwin23
-    ## Running under: macOS Tahoe 26.6.1
+    ## Running under: macOS Tahoe 26.6.2
     ## 
     ## Matrix products: default
     ## BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
@@ -461,20 +523,22 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] Biostrings_2.80.1   Seqinfo_1.2.0       XVector_0.52.0     
-    ##  [4] IRanges_2.46.0      S4Vectors_0.50.1    BiocGenerics_0.58.1
-    ##  [7] generics_0.1.4      here_1.0.2          lubridate_1.9.5    
-    ## [10] forcats_1.0.1       stringr_1.6.0       dplyr_1.2.1        
-    ## [13] purrr_1.2.2         readr_2.2.0         tidyr_1.3.2        
-    ## [16] tibble_3.3.1        ggplot2_4.0.3       tidyverse_2.0.0    
+    ##  [1] GenomicRanges_1.64.0 Biostrings_2.80.1    Seqinfo_1.2.0       
+    ##  [4] XVector_0.52.0       IRanges_2.46.0       S4Vectors_0.50.2    
+    ##  [7] BiocGenerics_0.58.1  generics_0.1.4       here_1.0.2          
+    ## [10] lubridate_1.9.5      forcats_1.0.1        stringr_1.6.0       
+    ## [13] dplyr_1.2.1          purrr_1.2.2          readr_2.2.0         
+    ## [16] tidyr_1.3.2          tibble_3.3.1         ggplot2_4.0.3       
+    ## [19] tidyverse_2.0.0     
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] utf8_1.2.6         stringi_1.8.9      hms_1.1.4          digest_0.6.39     
     ##  [5] magrittr_2.0.5     evaluate_1.0.5     grid_4.6.1         timechange_0.4.0  
     ##  [9] RColorBrewer_1.1-3 fastmap_1.2.0      rprojroot_2.1.1    scales_1.4.0      
-    ## [13] cli_3.6.6          rlang_1.3.0        crayon_1.5.3       withr_3.0.3       
-    ## [17] yaml_2.3.12        otel_0.2.0         tools_4.6.1        tzdb_0.5.0        
-    ## [21] vctrs_0.7.3        R6_2.6.1           lifecycle_1.0.5    pkgconfig_2.0.3   
-    ## [25] pillar_1.11.1      gtable_0.3.6       glue_1.8.1         xfun_0.60         
-    ## [29] tidyselect_1.2.1   rstudioapi_0.19.0  knitr_1.51         farver_2.1.2      
-    ## [33] htmltools_0.5.9    rmarkdown_2.31     compiler_4.6.1     S7_0.2.2
+    ## [13] textshaping_1.0.5  cli_3.6.6          crayon_1.5.3       rlang_1.3.0       
+    ## [17] withr_3.0.3        yaml_2.3.12        otel_0.2.0         tools_4.6.1       
+    ## [21] tzdb_0.5.0         vctrs_0.7.3        R6_2.6.1           lifecycle_1.0.5   
+    ## [25] ragg_1.5.2         pkgconfig_2.0.3    pillar_1.11.1      gtable_0.3.6      
+    ## [29] glue_1.8.1         systemfonts_1.3.2  xfun_0.60          tidyselect_1.2.1  
+    ## [33] rstudioapi_0.19.0  knitr_1.51         farver_2.1.2       htmltools_0.5.9   
+    ## [37] rmarkdown_2.32     compiler_4.6.1     S7_0.2.2

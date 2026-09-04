@@ -292,6 +292,9 @@ convertCoordsOneSeq <- function(queryCoords_gr,
                                 keep_mcols=TRUE) {
     querySeqName <- unique(seqnames(queryCoords_gr)) |> 
         as.character()
+    if(querySeqName==targetSeqName) {
+        stop("\n\nERROR - the targetSeqName argument you supplied is the same as the sequence in the query coordinates - nothing to convert\n\n")
+    }
     if(length(querySeqName) > 1) {
         stop("\n\nERROR in convertCoordsOneSeq function - the GRanges objects contains multiple different seqnames\n\n")
     }
