@@ -358,10 +358,7 @@ human_features_gr
     ##   -------
     ##   seqinfo: 1 sequence from an unspecified genome; no seqlengths
 
-xxx
-
-do we get the same result using the convertCoordsOneSeq function that’s
-in the useful_functions file?
+Now let’s convert coordinates using `convertCoordsOneSeq`:
 
 ``` r
 source( here("useful_functions/multiple_sequence_alignments_functions.R") )
